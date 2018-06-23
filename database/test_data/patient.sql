@@ -1,3 +1,4 @@
+use `casn-app`;
 insert into patient (Id, CiviContactId, PatientIdentifier, FirstName, LastName, Phone, IsMinor, PreferredLanguage, PreferredContactMethod, Created, Updated) values (1, 16594, 'bdc3e3be-c8e5-492d-9c8a-5eaf558aaee5', 'Rosabel', 'Youle', '4139498709', false, 'Oriya', 3, '2018-06-01 19:45:03', '2018-06-11 18:03:09');
 insert into patient (Id, CiviContactId, PatientIdentifier, FirstName, LastName, Phone, IsMinor, PreferredLanguage, PreferredContactMethod, Created, Updated) values (2, 10202, 'aaf99222-7864-4ead-af91-77cef2c53be6', 'Abbie', 'Ewin', '2933599965', false, 'Malayalam', 2, '2018-06-17 20:04:24', '2018-03-30 21:39:27');
 insert into patient (Id, CiviContactId, PatientIdentifier, FirstName, LastName, Phone, IsMinor, PreferredLanguage, PreferredContactMethod, Created, Updated) values (3, 18969, 'fed83ca1-bc42-4fa6-8a3d-4a2edbd0f7c9', 'Elyssa', 'Pyatt', '3835727996', false, 'Pashto', 1, '2018-01-24 03:47:45', '2018-03-04 18:23:14');
