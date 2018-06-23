@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `casn-app`.`patient` (
   `LastName` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `Phone` VARCHAR(20) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `IsMinor` BIT(1) NOT NULL,
-  `PreferredLanguage` VARCHAR(10) NOT NULL,
+  `PreferredLanguage` VARCHAR(25) NOT NULL,
   `PreferredContactMethod` TINYINT(1) NOT NULL COMMENT '0 = Reserved, 1 = Text, 2 = Phone, 3 = Email',
   `Created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Updated` DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
