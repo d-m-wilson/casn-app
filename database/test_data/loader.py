@@ -1,4 +1,5 @@
 import MySQLdb
+import random
 
 APPOINTMENT_UPDATE="""
 update appointment 
@@ -19,6 +20,27 @@ insert into appointment
 	values (%s)
 ;
 """
+
+""" Fake data for DRIVE """
+ADDRESSES=[
+	'101 Main St',
+	'14 High St',
+	'44 Riverside',
+	'12345 Maple Ln']
+CITIES=[
+	'Houston',
+	'Katy',
+	'Pasadena',
+	'Cypress']
+STATES=['TX']
+POSTAL_CODES=[
+	'11111',
+	'22222',
+	'33333']
+
+def pick_one(l):
+	return l[random.randrange(len(l))]
+
 def connect_to_db():
 	db = MySQLdb.Connect(
 		host="casnapptest.dmwilson.info",
@@ -63,7 +85,6 @@ def tryone():
 	db.commit()
 	db.close()
 
-import random
 
 def make_random_appts(count=10):
 	vols = load_table('volunteer',where='IsDispatcher = 1')
@@ -74,11 +95,56 @@ def make_random_appts(count=10):
  	db = connect_to_db()
  	db.begin()
  	for ii in range(count):
-	 	v = vols[random.randrange(len(vols))] 
-	 	p = pats[random.randrange(len(pats))]
+	 	v = pick_one(vols) 
+	 	p = pick_one(pats)
  		make_appt(db,v,p)
  	db.commit()
  	db.close()
+
+DRIVE_INSERT="""
+insert into drive
+	(AppointmentID,Direction,
+		# DriverId,
+		StartAddress, StartCity, StartState, StartPostalCode,
+		EndAddress, EndCity, EndState, EndPostalCode
+		# Created, Updated
+	) values (%d, %d, %s, %s)
+;
+"""
+
+def make_random_drive(db,apptId):
+	from_add = "'%s', '%s', '%s', '%s' "%(pick_one(ADDRESSES), pick_one(CITIES), pick_one(STATES), pick_one(POSTAL_CODES),)
+	to_add = "'%s', '%s', '%s', '%s' "%(pick_one(ADDRESSES), pick_one(CITIES), pick_one(STATES), pick_one(POSTAL_CODES),)
+	dirs = random.randrange(10)
+	if dirs < 9:		
+		db.query(DRIVE_INSERT%(apptId,1,from_add,to_add))
+	if dirs > 0:
+		db.query(DRIVE_INSERT%(apptId,2,to_add,from_add))
+
+
+def make_drives():
+	appts = load_table('appointment','Id')
+	apIds = set()
+	for a in appts:
+		apIds.add(int(a["Id"]))
+	drives = load_table('drive','AppointmentId')
+	for d in drives:
+		apIds.remove(int(d["AppointmentId"]))
+
+ 	db = connect_to_db()
+ 	db.begin()
+	for a in apIds: 
+		make_random_drive(db,a)
+ 	db.commit()
+ 	db.close()
+
+def del_drive(n):
+	db = connect_to_db()
+	db.begin()
+	db.query('delete from drive where id = %d'%n)
+	db.commit()
+	db.close()
+
 
 def set_random_appt_dates():
 	appts = load_table('appointment') # ,"Id, AppointmentId")
