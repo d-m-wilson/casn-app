@@ -1,0 +1,24 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "d14f81b16af077cca1a86193a9bfc0e87d1636923dff160cb61b7eb56f437548"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "2.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "6497c46": {
+            "path": "./vendor/mysql-connector-python-8.0.11.tar.gz"
+        }
+    },
+    "develop": {}
+}
