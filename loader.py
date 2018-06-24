@@ -15,7 +15,7 @@ select %s from %s
 
 APPT_INSERT="""
 insert into appointment
-	(DispatcherID,PatientID,ClinicId,PickupLocationVague,DropoffLocationVague,AppointmentDate)
+	(DispatcherID,PatientID,ClinicId,PickupLocationVague,DropoffLocationVague,AppointmentDate,AppointmentTypeId)
 	values (%s)
 ;
 """
@@ -42,13 +42,14 @@ def rand_date():
 		8+random.randrange(8),15*random.randrange(4))
 
 def make_appt(db,vol,patient,floc='here',tloc='there'):
-	vals = "%d, %d, %d, '%s', '%s', '%s'"% (
+	vals = "%d, %d, %d, '%s', '%s', '%s', %d"% (
 		vol['Id'],
 		patient['Id'],
-		1234,
-		floc,
-		tloc,
-		rand_date(),
+		1234, #clinic ID
+		floc, #from, vague
+		tloc, #to, vague
+		rand_date(), #appt-date
+		random.randrange(4)+1, #appt-type
 		)
 	db.query(APPT_INSERT%vals)
 
