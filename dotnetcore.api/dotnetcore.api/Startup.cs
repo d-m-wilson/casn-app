@@ -28,7 +28,12 @@ namespace dotnetcore.api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<casn_appContext>(ServiceLifetime.Scoped);
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(jsonOpts =>
+                {
+                    jsonOpts.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    //jsonOpts.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.All;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -24,7 +24,12 @@ namespace dotnetcore.api.Controllers
         [HttpGet]
         public IEnumerable<Drive> GetDrive()
         {
-            return _context.Drive;
+            var result = _context.Drive
+                .Include(drive => drive.Appointment)
+                .Include(drive => drive.Driver)
+                .ToList();
+
+            return result;
         }
 
         // GET: api/Drives/5
