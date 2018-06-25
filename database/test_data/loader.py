@@ -22,6 +22,9 @@ insert into appointment
 """
 
 """ Fake data for DRIVE """
+STREETS = [
+	"Maple", "Market", "High", "Main", "Crocket", "Buffalo Bayou", "Smith", "Peach Tree"
+	]
 ADDRESSES=[
 	'101 Main St',
 	'14 High St',
@@ -33,10 +36,6 @@ CITIES=[
 	'Pasadena',
 	'Cypress']
 STATES=['TX']
-POSTAL_CODES=[
-	'11111',
-	'22222',
-	'33333']
 
 def pick_one(l):
 	return l[random.randrange(len(l))]
@@ -113,13 +112,17 @@ insert into drive
 """
 
 def make_random_drive(db,apptId):
-	from_add = "'%s', '%s', '%s', '%s' "%(pick_one(ADDRESSES), pick_one(CITIES), pick_one(STATES), pick_one(POSTAL_CODES),)
-	to_add = "'%s', '%s', '%s', '%s' "%(pick_one(ADDRESSES), pick_one(CITIES), pick_one(STATES), pick_one(POSTAL_CODES),)
+	street = "%d %s"% (random.randrange(100000)+1, pick_one (STREETS))
+	post_code = random.randrange(99999)+1
+	from_add = "'%s', '%s', '%s', '%d' "%(street, pick_one(CITIES), pick_one(STATES), post_code,)
+	street = "%d %s"% (random.randrange(100000)+1, pick_one (STREETS))
+	post_code = random.randrange(99999)+1
+	to_add = "'%s', '%s', '%s', '%d' "%(street, pick_one(CITIES), pick_one(STATES), post_code,)
 	dirs = random.randrange(10)
 	if dirs < 9:		
-		db.query(DRIVE_INSERT%(apptId,1,from_add,to_add))
+		print(DRIVE_INSERT%(apptId,1,from_add,to_add))
 	if dirs > 0:
-		db.query(DRIVE_INSERT%(apptId,2,to_add,from_add))
+		print(DRIVE_INSERT%(apptId,2,to_add,from_add))
 
 
 def make_drives():
@@ -129,7 +132,12 @@ def make_drives():
 		apIds.add(int(a["Id"]))
 	drives = load_table('drive','AppointmentId')
 	for d in drives:
-		apIds.remove(int(d["AppointmentId"]))
+		aId = d.get("AppointmentId")
+		if aId:
+			try:
+				apIds.remove(int(aId))
+			except:
+				pass
 
  	db = connect_to_db()
  	db.begin()
