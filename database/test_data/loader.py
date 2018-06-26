@@ -25,20 +25,16 @@ insert into appointment
 STREETS = [
 	"Maple", "Market", "High", "Main", "Crocket", "Buffalo Bayou", "Smith", "Peach Tree"
 	]
-ADDRESSES=[
-	'101 Main St',
-	'14 High St',
-	'44 Riverside',
-	'12345 Maple Ln']
 CITIES=[
 	'Houston',
 	'Katy',
 	'Pasadena',
-	'Cypress']
+	'Cypress',
+	]
 STATES=['TX']
 
-def pick_one(l):
-	return l[random.randrange(len(l))]
+def pick_one(seq):
+	return seq[random.randrange(len(seq))]
 
 def connect_to_db():
 	db = MySQLdb.Connect(
@@ -61,6 +57,10 @@ def rand_date():
 	return "2018-%02d-%02d %02d:%02d:00"%(
 		6+random.randrange(7),1+random.randrange(29),
 		8+random.randrange(8),15*random.randrange(4))
+
+def rand_vague_loc():
+	return '%s, %s'%(pick_one(STREETS),pick_one(CITIES))
+
 
 def make_appt(db,vol,patient,floc='here',tloc='there'):
 	vals = "%d, %d, %d, '%s', '%s', '%s', %d"% (
@@ -86,17 +86,17 @@ def tryone():
 
 
 def make_random_appts(count=10):
-	vols = load_table('volunteer',where='IsDispatcher = 1')
-	for v in vols:
-		if v["IsDispatcher"] == '\x00':
-			vols.remove(v)
+	dispatchers = load_table('volunteer',where='IsDispatcher = 1')
  	pats = load_table('patient')
  	db = connect_to_db()
  	db.begin()
  	for ii in range(count):
-	 	v = pick_one(vols) 
-	 	p = pick_one(pats)
- 		make_appt(db,v,p)
+		make_appt(db,
+	 		pick_one(dispatchers),
+	 		pick_one(pats),
+			floc=rand_vague_loc(),
+			tloc=rand_vague_loc()
+		)
  	db.commit()
  	db.close()
 
@@ -107,22 +107,25 @@ insert into drive
 		StartAddress, StartCity, StartState, StartPostalCode,
 		EndAddress, EndCity, EndState, EndPostalCode
 		# Created, Updated
-	) values (%d, %d, %s, %s)
+	) values (%d, %d,
+		%s,
+		%s)
 ;
 """
 
+def rand_precise_loc():
+	street = "%d %s"% (random.randrange(99999)+1, pick_one (STREETS))
+	post_code = random.randrange(99999)+1
+	return "'%s', '%s', '%s', '%05d' "%(street, pick_one(CITIES), pick_one(STATES), post_code,)
+
 def make_random_drive(db,apptId):
-	street = "%d %s"% (random.randrange(100000)+1, pick_one (STREETS))
-	post_code = random.randrange(99999)+1
-	from_add = "'%s', '%s', '%s', '%d' "%(street, pick_one(CITIES), pick_one(STATES), post_code,)
-	street = "%d %s"% (random.randrange(100000)+1, pick_one (STREETS))
-	post_code = random.randrange(99999)+1
-	to_add = "'%s', '%s', '%s', '%d' "%(street, pick_one(CITIES), pick_one(STATES), post_code,)
+	from_add = rand_precise_loc()
+	to_add = rand_precise_loc()
 	dirs = random.randrange(10)
 	if dirs < 9:		
-		print(DRIVE_INSERT%(apptId,1,from_add,to_add))
+		db_query(DRIVE_INSERT%(apptId,1,from_add,to_add))
 	if dirs > 0:
-		print(DRIVE_INSERT%(apptId,2,to_add,from_add))
+		db_query(DRIVE_INSERT%(apptId,2,to_add,from_add))
 
 
 def make_drives():
