@@ -66,3 +66,4 @@
 # custom behaviors
 *.tar.gz binary
 *.mwb binary
+*.yaml -crlf

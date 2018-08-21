@@ -1,0 +1,335 @@
+swagger: '2.0'
+info:
+  description: This is a test CASN API
+  version: 1.0.0
+  title: CASN API
+  # put the contact info for your development or API team
+  contact:
+    email: katie@clinicaccess.org
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: dispatcher
+  description: dispatcher only calls 
+- name: driver
+  description: driver only calls 
+
+paths:
+  /patient:
+    get:
+      tags:
+      - dispatcher
+      summary: gets patient by patientIdentifier
+      operationId: getPatientByPatientIdentifier
+      description: |
+        Search for existing patients by the dispatcher created patientIdentifier (patient ID)
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: patientIdentifier
+        description: pass a search string for looking up patientIdentifier
+        required: true
+        type: string
+        minLength: 4
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            $ref: '#/definitions/patient'
+        400:
+          description: GAH IT IS SO BROKEN
+        404:
+          description: patient not found frownies 
+    post:
+      tags:
+      - dispatcher
+      summary: adds a patient
+      operationId: addPatient
+      description: Adds patient to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: patientData
+        description: patientData to add
+        schema:
+          $ref: '#/definitions/patient'
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: the item already exists
+  /dispatcher/appointments:
+    get:
+      tags:
+      - dispatcher
+      summary: gets appointments with dispatcher-level details
+      operationId: getAllAppointmentsForDispatcher
+      description: |
+        Get all appointments within a default date range (possibly adjustable w/ query params).
+        Appointments include details, e.g. exact location, available only to dispatchers.
+      produces:
+      - application/json
+      responses:
+        200:
+          description: all appointments in date range
+          schema:
+            $ref: '#/definitions/allAppointments'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: Error - Not Found
+  /dispatcher/appointments/{appointmentID}:
+    get:
+      tags:
+      - dispatcher
+      summary: gets appointment by appointmentID
+      operationId: getAppointmentForDispatcherByID
+      description: |
+        Search for existing appointment by appointmentIdentifier, return dispatcher-level details
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: appointmentID
+        description: pass an appointmentIdentifier
+        required: true
+        type: string
+      - in: query
+        name: startDate
+        description: pass a startDate by which to filter
+        required: false
+        type: string # ?? TODO
+        minLength: 4 # ??
+      - in: query
+        name: endDate
+        description: pass an endDate by which to filter
+        required: false
+        type: string # ?? TODO
+        minLength: 4 # ??
+      responses:
+        200:
+          description: Success. Found appointment.
+          schema:
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: No appointment found.
+
+
+definitions:
+  patient:
+    type: object
+    required:
+    - patientIdentifier
+    - firstName
+    - lastName
+    - phone
+    - isMinor
+    - preferredLanguage
+    - preferredContactMethod
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      civiContactId:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      patientIdentifier:
+        type: string
+        minLength: 4
+        maxLength: 45
+        example: JS1234
+      firstName:
+        type: string
+        maxLength: 50
+        example: Jane
+      lastName:
+        type: string
+        maxLength: 50
+        example: Smith
+      phone:
+        type: string
+        minLength: 10
+        maxLength: 20
+        example: 5555551234
+      isMinor:
+        type: boolean
+        example: false
+      preferredLanguage:
+        type: string
+        maxLength: 25
+        example: French
+      preferredContactMethod:
+        type: integer
+        format: int32
+        example: 1
+      created:
+        type: string
+        format: date-time
+        readOnly: true
+      updated:
+        type: string
+        format: date-time
+        readOnly: true
+
+  appointment:
+    type: object
+    required:
+    - dispatcherId
+    - patientId
+    - clinicId
+    - appointmentDate
+    - appointmentTypeId
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      dispatcherId:
+        type: integer
+        format: int64
+        example: 42
+      patientId:
+        type: integer
+        format: int64
+        example: 42
+      clinicId:
+        type: integer
+        format: int64
+        example: 42
+      pickupLocationVague:
+        type: string
+        maxLength: 255
+        example: US59 S and BW8
+      dropoffLocationVague:
+        type: string
+        maxLength: 255
+        example: I10 W and 610
+      appointmentDate:
+        type: string
+        format: date-time
+        example: 2018-08-03T14:30:00.000Z
+      appointmentTypeId:
+        type: integer
+        format: int32
+        example: 1
+      created:
+        type: string
+        format: date-time
+        readOnly: true
+      updated:
+        type: string
+        format: date-time
+        readOnly: true
+
+  drive:
+    type: object
+    required:
+    - appointmentId
+    - direction
+    - startAddress
+    - startCity
+    - startState
+    - startPostalCode
+    - endAddress
+    - endCity
+    - endState
+    - endPostalCode
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      appointmentId:
+        type: integer
+        format: int64
+        example: 42
+      direction:
+        type: integer
+        format: int32
+        example: 1
+        description: 1 = toClinic, 2 = fromClinic
+      driverId:
+        type: integer
+        format: int64
+        example: 42
+      startAddress:
+        type: string
+        maxLength: 100 
+        example: 11415 Roark Rd
+      startCity:
+        type: string
+        maxLength: 50
+        example: Houston
+      startState:
+        type: string
+        maxLength: 30
+        example: TX
+      startPostalCode:
+        type: string
+        maxLength: 10
+        example: 77031
+      endAddress:
+        type: string
+        maxLength: 100
+        example: 7373 Old Katy Rd
+      endCity:
+        type: string
+        maxLength: 50
+        example: Houston
+      endState:
+        type: string
+        maxLength: 30
+        example: TX
+      endPostalCode:
+        type: string
+        maxLength: 10
+        example: 77024
+      created:
+        type: string
+        format: date-time
+        readOnly: true
+      updated:
+        type: string
+        format: date-time
+        readOnly: true
+    
+  appointmentDTO:
+    $ref: '#/definitions/appointment'
+    properties:
+      driveTo:
+        $ref: '#/definitions/drive'
+      driveFrom:
+        $ref: '#/definitions/drive'
+      patient:
+        $ref: '#/definitions/patient'
+      
+
+  allAppointments:
+    type: array
+    items:
+      $ref: '#/definitions/appointmentDTO'
+
+
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /CASN/CASN_App/1.0.0
+schemes:
+ - https
