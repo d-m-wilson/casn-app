@@ -176,7 +176,8 @@ paths:
         404:
           description: Error. The appointment ID you requested does not exist.
     delete:
-      tags: - dispatcher
+      tags:
+        - dispatcher
       responses:
         200:
           description: Success. Appointment with ID: {appointmentID} was deleted.
