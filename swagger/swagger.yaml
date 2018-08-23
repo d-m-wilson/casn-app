@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: This is a test CASN API
-  version: 1.0.0
+  version: 0.0.2
   title: CASN API
   # put the contact info for your development or API team
   contact:
@@ -153,22 +153,35 @@ paths:
     put:
       tags:
         - dispatcher
+      summary: updates an existing appointment
+      operationId: updateAppointment
+      description: Updates appointment (and corresponding drive) information
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: appointmentData
+        description: appointmentData with updated fields
+        schema:
+          $ref: '#/definitions/appointmentDTO'
       responses:
         200:
-          description: Success. Found appointment.
+          description: Success. Created appointment.
           schema:
             $ref: '#/definitions/appointmentDTO'
         400:
           description: Client Error - please check your request format & try again.
         404:
-          description: No appointment found.
+          description: Error. The appointment ID you requested does not exist.
     delete:
       tags: - dispatcher
       responses:
         200:
-          description: Success. Found appointment.
+          description: Success. Appointment with ID: {appointmentID} was deleted.
           schema:
-            $ref: '#/definitions/appointmentDTO'
+            $ref: deleteSuccessMessage
         400:
           description: Client Error - please check your request format & try again.
         404:
@@ -427,6 +440,14 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/appointmentDTO'
+
+  deleteSuccessMessage:
+    type: object
+    properties:
+      body:
+        type: string
+        example: 'Success. Your {dataType} of ID {objectID} has been deleted.'
+      example:
 
 
 # Added by API Auto Mocking Plugin
