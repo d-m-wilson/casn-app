@@ -200,7 +200,7 @@ paths:
         404:
           description: No appointment found.
 
-  /drive/approve:
+  /drives/approve:
     # TODO: This could be handled by a simple PUT request to /drive.
     # Presumably, other logic (e.g. notifying the approved volunteer)
     # will make this operation unique enough to justify its own endpoint.
