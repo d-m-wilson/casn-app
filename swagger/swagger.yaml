@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: This is a test CASN API
-  version: 0.0.2
+  version: "0.0.3"
   title: CASN API
   # put the contact info for your development or API team
   contact:
@@ -161,8 +161,14 @@ paths:
       produces:
       - application/json
       parameters:
+      - in: path
+        name: appointmentID
+        description: pass an appointmentIdentifier
+        required: true
+        type: string
       - in: body
         name: appointmentData
+        required: true
         description: appointmentData with updated fields
         schema:
           $ref: '#/definitions/appointmentDTO'
@@ -178,11 +184,17 @@ paths:
     delete:
       tags:
         - dispatcher
+      parameters:
+      - in: path
+        name: appointmentID
+        description: pass an appointmentIdentifier
+        required: true
+        type: string
       responses:
         200:
-          description: Success. Appointment with ID: {appointmentID} was deleted.
+          description: Success. Appointment with ID {appointmentID} was deleted.
           schema:
-            $ref: deleteSuccessMessage
+            $ref: '#/definitions/deleteSuccessMessage'
         400:
           description: Client Error - please check your request format & try again.
         404:
@@ -204,19 +216,20 @@ paths:
       - application/json
       parameters:
       - in: body
-        name: driveId
-        description: id of drive to update
+        name: driveData
         schema:
-          type: integer
-          format: int64
-          example: 42
-      - in: body
-        name: volunteerId
-        description: id of volunteer to add as driver
-        schema:
-          type: integer
-          format: int64
-          example: 42
+          type: object
+          properties:
+            driveId:
+              description: id of drive to update
+              type: integer
+              format: int64
+              example: 42
+            volunteerId:
+              description: id of volunteer to add as driver
+              type: integer
+              format: int64
+              example: 42
       responses:
         200:
           description: Success. Added driver to drive.
@@ -485,10 +498,9 @@ definitions:
   deleteSuccessMessage:
     type: object
     properties:
-      body:
+      message:
         type: string
         example: 'Success. Your {dataType} of ID {objectID} has been deleted.'
-      example:
 
 
 # Added by API Auto Mocking Plugin
