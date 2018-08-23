@@ -187,6 +187,46 @@ paths:
         404:
           description: No appointment found.
 
+  /drive/approve:
+    # TODO: This could be handled by a simple PUT request to /drive.
+    # Presumably, other logic (e.g. notifying the approved volunteer)
+    # will make this operation unique enough to justify its own endpoint.
+    post:
+      tags:
+        - dispatcher
+      summary: approves a volunteer for a drive
+      operationId: addDriver
+      description: Adds driverId to a drive
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: driveId
+        description: id of drive to update
+        schema:
+          type: integer
+          format: int64
+          example: 42
+      - in: body
+        name: volunteerId
+        description: id of volunteer to add as driver
+        schema:
+          type: integer
+          format: int64
+          example: 42
+      responses:
+        200:
+          description: Success. Added driver to drive.
+          schema:
+            # TODO: Should we send back the whole appt? Seems reasonable.
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: Error. The driveId or volunteerId was not found.
+
 
 definitions:
   patient:
