@@ -88,6 +88,31 @@ paths:
           description: Client Error - please check your request format & try again.
         404:
           description: Error - Not Found
+    post:
+      tags:
+        - dispatcher
+      summary: adds a new appointment
+      operationId: addAppointment
+      description: Adds appointment (and drives) to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: appointmentData
+        description: appointmentData to add
+        schema:
+          $ref: '#/definitions/appointmentDTO'
+      responses:
+        200:
+          description: Success. Created appointment.
+          schema:
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        409:
+          description: Error. That appointment already exists.
   /dispatcher/appointments/{appointmentID}:
     get:
       tags:
@@ -125,8 +150,10 @@ paths:
           description: Client Error - please check your request format & try again.
         404:
           description: No appointment found.
-    post:
-          responses:
+    put:
+      tags:
+        - dispatcher
+      responses:
         200:
           description: Success. Found appointment.
           schema:
@@ -135,8 +162,17 @@ paths:
           description: Client Error - please check your request format & try again.
         404:
           description: No appointment found.
-    put:
     delete:
+      tags: - dispatcher
+      responses:
+        200:
+          description: Success. Found appointment.
+          schema:
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: No appointment found.
 
 
 definitions:
