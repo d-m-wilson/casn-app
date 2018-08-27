@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: This is a test CASN API
-  version: 1.0.0
+  version: "0.0.3"
   title: CASN API
   # put the contact info for your development or API team
   contact:
@@ -14,9 +14,9 @@ info:
 # tags are used for organizing operations
 tags:
 - name: dispatcher
-  description: dispatcher only calls 
+  description: dispatcher only calls
 - name: driver
-  description: driver only calls 
+  description: driver only calls
 
 paths:
   /patient:
@@ -44,7 +44,7 @@ paths:
         400:
           description: GAH IT IS SO BROKEN
         404:
-          description: patient not found frownies 
+          description: patient not found frownies
     post:
       tags:
       - dispatcher
@@ -88,6 +88,31 @@ paths:
           description: Client Error - please check your request format & try again.
         404:
           description: Error - Not Found
+    post:
+      tags:
+        - dispatcher
+      summary: adds a new appointment
+      operationId: addAppointment
+      description: Adds appointment (and drives) to the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: appointmentData
+        description: appointmentData to add
+        schema:
+          $ref: '#/definitions/appointmentDTO'
+      responses:
+        200:
+          description: Success. Created appointment.
+          schema:
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        409:
+          description: Error. That appointment already exists.
   /dispatcher/appointments/{appointmentID}:
     get:
       tags:
@@ -125,6 +150,96 @@ paths:
           description: Client Error - please check your request format & try again.
         404:
           description: No appointment found.
+    put:
+      tags:
+        - dispatcher
+      summary: updates an existing appointment
+      operationId: updateAppointment
+      description: Updates appointment (and corresponding drive) information
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: appointmentID
+        description: pass an appointmentIdentifier
+        required: true
+        type: string
+      - in: body
+        name: appointmentData
+        required: true
+        description: appointmentData with updated fields
+        schema:
+          $ref: '#/definitions/appointmentDTO'
+      responses:
+        200:
+          description: Success. Created appointment.
+          schema:
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: Error. The appointment ID you requested does not exist.
+    delete:
+      tags:
+        - dispatcher
+      parameters:
+      - in: path
+        name: appointmentID
+        description: pass an appointmentIdentifier
+        required: true
+        type: string
+      responses:
+        200:
+          description: Success. Appointment with ID {appointmentID} was deleted.
+          schema:
+            $ref: '#/definitions/deleteSuccessMessage'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: No appointment found.
+
+  /drives/approve:
+    # TODO: This could be handled by a simple PUT request to /drive.
+    # Presumably, other logic (e.g. notifying the approved volunteer)
+    # will make this operation unique enough to justify its own endpoint.
+    post:
+      tags:
+        - dispatcher
+      summary: approves a volunteer for a drive
+      operationId: addDriver
+      description: Adds driverId to a drive
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: driveData
+        schema:
+          type: object
+          properties:
+            driveId:
+              description: id of drive to update
+              type: integer
+              format: int64
+              example: 42
+            volunteerId:
+              description: id of volunteer to add as driver
+              type: integer
+              format: int64
+              example: 42
+      responses:
+        200:
+          description: Success. Added driver to drive.
+          schema:
+            # TODO: Should we send back the whole appt? Seems reasonable.
+            $ref: '#/definitions/appointmentDTO'
+        400:
+          description: Client Error - please check your request format & try again.
+        404:
+          description: Error. The driveId or volunteerId was not found.
 
 
 definitions:
@@ -178,6 +293,59 @@ definitions:
         type: integer
         format: int32
         example: 1
+      created:
+        type: string
+        format: date-time
+        readOnly: true
+      updated:
+        type: string
+        format: date-time
+        readOnly: true
+
+  volunteer:
+    type: object
+    required:
+    # TODO: Which of these should be required?
+    - civiContactId
+    - firstName
+    - lastName
+    - mobilePhone
+    - googleAccount
+    - isDriver
+    - isDispatcher
+    - isActive
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      civiContactId:
+        type: integer
+        format: int64
+        example: 42
+      firstName:
+        type: string
+        maxLength: 50
+        example: John
+      lastName:
+        type: string
+        maxLength: 50
+        example: John
+      mobilePhone:
+        type: string
+        maxLength: 20
+        example: 1234567890
+      googleAccount:
+        type: string
+        maxLength: 20
+        example: di93jdkjf8
+      isDriver:
+        type: boolean
+        example: false
+      isDispatcher:
+        type: boolean
+        example: false
       created:
         type: string
         format: date-time
@@ -272,7 +440,7 @@ definitions:
         example: 42
       startAddress:
         type: string
-        maxLength: 100 
+        maxLength: 100
         example: 11415 Roark Rd
       startCity:
         type: string
@@ -310,7 +478,7 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-    
+
   appointmentDTO:
     $ref: '#/definitions/appointment'
     properties:
@@ -320,12 +488,19 @@ definitions:
         $ref: '#/definitions/drive'
       patient:
         $ref: '#/definitions/patient'
-      
+
 
   allAppointments:
     type: array
     items:
       $ref: '#/definitions/appointmentDTO'
+
+  deleteSuccessMessage:
+    type: object
+    properties:
+      message:
+        type: string
+        example: 'Success. Your {dataType} of ID {objectID} has been deleted.'
 
 
 # Added by API Auto Mocking Plugin
