@@ -1,92 +1,105 @@
 swagger: '2.0'
 info:
   description: This is a test CASN API
-  version: "0.0.3"
+  version: "1.0.0"
   title: CASN API
-  # put the contact info for your development or API team
   contact:
     email: katie@clinicaccess.org
-
   license:
     name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-
-# tags are used for organizing operations
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-- name: dispatcher
-  description: dispatcher only calls
-- name: driver
-  description: driver only calls
-
+  - name: dispatcher
+    description: dispatcher only calls
+  - name: driver
+    description: driver only calls
 paths:
+  /clinic:
+    get:
+      summary: gets list of clinics
+      operationId: getClinics
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/clinic'
+          
   /patient:
     get:
       tags:
-      - dispatcher
+        - dispatcher
       summary: gets patient by patientIdentifier
       operationId: getPatientByPatientIdentifier
-      description: |
-        Search for existing patients by the dispatcher created patientIdentifier (patient ID)
+      description: >
+        Search for existing patients by the dispatcher created patientIdentifier
+        (patient ID)
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: query
-        name: patientIdentifier
-        description: pass a search string for looking up patientIdentifier
-        required: true
-        type: string
-        minLength: 4
+        - in: query
+          name: patientIdentifier
+          description: pass a search string for looking up patientIdentifier
+          required: true
+          type: string
+          minLength: 4
       responses:
-        200:
+        '200':
           description: search results matching criteria
           schema:
             $ref: '#/definitions/patient'
-        400:
+        '400':
           description: GAH IT IS SO BROKEN
-        404:
+        '404':
           description: patient not found frownies
     post:
       tags:
-      - dispatcher
+        - dispatcher
       summary: adds a patient
       operationId: addPatient
       description: Adds patient to the system
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: body
-        name: patientData
-        description: patientData to add
-        schema:
-          $ref: '#/definitions/patient'
+        - in: body
+          name: patientData
+          description: patientData to add
+          schema:
+            $ref: '#/definitions/patient'
       responses:
-        201:
+        '201':
           description: item created
-        400:
-          description: invalid input, object invalid
-        409:
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
           description: the item already exists
   /dispatcher/appointments:
     get:
       tags:
-      - dispatcher
+        - dispatcher
       summary: gets appointments with dispatcher-level details
       operationId: getAllAppointmentsForDispatcher
-      description: |
-        Get all appointments within a default date range (possibly adjustable w/ query params).
-        Appointments include details, e.g. exact location, available only to dispatchers.
+      description: >
+        Get all appointments within a default date range (possibly adjustable w/
+        query params).
+
+        Appointments include details, e.g. exact location, available only to
+        dispatchers.
       produces:
-      - application/json
+        - application/json
       responses:
-        200:
+        '200':
           description: all appointments in date range
           schema:
             $ref: '#/definitions/allAppointments'
-        400:
+        '400':
           description: Client Error - please check your request format & try again.
-        404:
+        '404':
           description: Error - Not Found
     post:
       tags:
@@ -95,60 +108,61 @@ paths:
       operationId: addAppointment
       description: Adds appointment (and drives) to the system
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: body
-        name: appointmentData
-        description: appointmentData to add
-        schema:
-          $ref: '#/definitions/appointmentDTO'
+        - in: body
+          name: appointmentData
+          description: appointmentData to add
+          schema:
+            $ref: '#/definitions/appointmentDTO'
       responses:
-        200:
+        '200':
           description: Success. Created appointment.
           schema:
             $ref: '#/definitions/appointmentDTO'
-        400:
+        '400':
           description: Client Error - please check your request format & try again.
-        409:
+        '409':
           description: Error. That appointment already exists.
-  /dispatcher/appointments/{appointmentID}:
+  '/dispatcher/appointments/{appointmentID}':
     get:
       tags:
-      - dispatcher
+        - dispatcher
       summary: gets appointment by appointmentID
       operationId: getAppointmentForDispatcherByID
-      description: |
-        Search for existing appointment by appointmentIdentifier, return dispatcher-level details
+      description: >
+        Search for existing appointment by appointmentIdentifier, return
+        dispatcher-level details
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: appointmentID
-        description: pass an appointmentIdentifier
-        required: true
-        type: string
-      - in: query
-        name: startDate
-        description: pass a startDate by which to filter
-        required: false
-        type: string # ?? TODO
-        minLength: 4 # ??
-      - in: query
-        name: endDate
-        description: pass an endDate by which to filter
-        required: false
-        type: string # ?? TODO
-        minLength: 4 # ??
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          type: string
+        - in: query
+          name: startDate
+          description: pass a startDate by which to filter
+          required: false
+          type: string
+          minLength: 4
+        - in: query
+          name: endDate
+          description: pass an endDate by which to filter
+          required: false
+          type: string
+          minLength: 4
       responses:
-        200:
+        '200':
           description: Success. Found appointment.
           schema:
             $ref: '#/definitions/appointmentDTO'
-        400:
+        '400':
           description: Client Error - please check your request format & try again.
-        404:
+        '404':
           description: No appointment found.
     put:
       tags:
@@ -157,53 +171,49 @@ paths:
       operationId: updateAppointment
       description: Updates appointment (and corresponding drive) information
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: path
-        name: appointmentID
-        description: pass an appointmentIdentifier
-        required: true
-        type: string
-      - in: body
-        name: appointmentData
-        required: true
-        description: appointmentData with updated fields
-        schema:
-          $ref: '#/definitions/appointmentDTO'
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          type: string
+        - in: body
+          name: appointmentData
+          required: true
+          description: appointmentData with updated fields
+          schema:
+            $ref: '#/definitions/appointmentDTO'
       responses:
-        200:
+        '200':
           description: Success. Created appointment.
           schema:
             $ref: '#/definitions/appointmentDTO'
-        400:
+        '400':
           description: Client Error - please check your request format & try again.
-        404:
+        '404':
           description: Error. The appointment ID you requested does not exist.
     delete:
       tags:
         - dispatcher
       parameters:
-      - in: path
-        name: appointmentID
-        description: pass an appointmentIdentifier
-        required: true
-        type: string
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          type: string
       responses:
-        200:
-          description: Success. Appointment with ID {appointmentID} was deleted.
+        '200':
+          description: 'Success. Appointment with ID {appointmentID} was deleted.'
           schema:
             $ref: '#/definitions/deleteSuccessMessage'
-        400:
+        '400':
           description: Client Error - please check your request format & try again.
-        404:
+        '404':
           description: No appointment found.
-
   /drives/approve:
-    # TODO: This could be handled by a simple PUT request to /drive.
-    # Presumably, other logic (e.g. notifying the approved volunteer)
-    # will make this operation unique enough to justify its own endpoint.
     post:
       tags:
         - dispatcher
@@ -211,48 +221,79 @@ paths:
       operationId: addDriver
       description: Adds driverId to a drive
       consumes:
-      - application/json
+        - application/json
       produces:
-      - application/json
+        - application/json
       parameters:
-      - in: body
-        name: driveData
-        schema:
-          type: object
-          properties:
-            driveId:
-              description: id of drive to update
-              type: integer
-              format: int64
-              example: 42
-            volunteerId:
-              description: id of volunteer to add as driver
-              type: integer
-              format: int64
-              example: 42
+        - in: body
+          name: driveData
+          schema:
+            type: object
+            properties:
+              driveId:
+                description: id of drive to update
+                type: integer
+                format: int64
+                example: 42
+              volunteerId:
+                description: id of volunteer to add as driver
+                type: integer
+                format: int64
+                example: 42
       responses:
-        200:
+        '200':
           description: Success. Added driver to drive.
           schema:
-            # TODO: Should we send back the whole appt? Seems reasonable.
             $ref: '#/definitions/appointmentDTO'
-        400:
+        '400':
           description: Client Error - please check your request format & try again.
-        404:
+        '404':
           description: Error. The driveId or volunteerId was not found.
-
-
+          
 definitions:
+  clinic:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      civiContactId:
+        type: integer
+        format: int64
+        readOnly: true
+        example: 42
+      name:
+        type: string
+        maxLength: 100
+        example: 
+      phone:
+        type: string
+        maxLength: 20
+      address:
+        type: string
+        maxLength: 100
+      city:
+        type: string
+        maxLength: 50
+      state:
+        type: string
+        maxLength: 30
+      postalCode:
+        type: string
+        maxLength: 10
+  
   patient:
     type: object
     required:
-    - patientIdentifier
-    - firstName
-    - lastName
-    - phone
-    - isMinor
-    - preferredLanguage
-    - preferredContactMethod
+      - patientIdentifier
+      - firstName
+      - lastName
+      - phone
+      - isMinor
+      - preferredLanguage
+      - preferredContactMethod
     properties:
       id:
         type: integer
@@ -301,19 +342,17 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-
   volunteer:
     type: object
     required:
-    # TODO: Which of these should be required?
-    - civiContactId
-    - firstName
-    - lastName
-    - mobilePhone
-    - googleAccount
-    - isDriver
-    - isDispatcher
-    - isActive
+      - civiContactId
+      - firstName
+      - lastName
+      - mobilePhone
+      - googleAccount
+      - isDriver
+      - isDispatcher
+      - isActive
     properties:
       id:
         type: integer
@@ -354,15 +393,14 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-
   appointment:
     type: object
     required:
-    - dispatcherId
-    - patientId
-    - clinicId
-    - appointmentDate
-    - appointmentTypeId
+      - dispatcherId
+      - patientId
+      - clinicId
+      - appointmentDate
+      - appointmentTypeId
     properties:
       id:
         type: integer
@@ -405,20 +443,19 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-
   drive:
     type: object
     required:
-    - appointmentId
-    - direction
-    - startAddress
-    - startCity
-    - startState
-    - startPostalCode
-    - endAddress
-    - endCity
-    - endState
-    - endPostalCode
+      - appointmentId
+      - direction
+      - startAddress
+      - startCity
+      - startState
+      - startPostalCode
+      - endAddress
+      - endCity
+      - endState
+      - endPostalCode
     properties:
       id:
         type: integer
@@ -433,7 +470,7 @@ definitions:
         type: integer
         format: int32
         example: 1
-        description: 1 = toClinic, 2 = fromClinic
+        description: '1 = toClinic, 2 = fromClinic'
       driverId:
         type: integer
         format: int64
@@ -478,7 +515,6 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-
   appointmentDTO:
     $ref: '#/definitions/appointment'
     properties:
@@ -488,13 +524,10 @@ definitions:
         $ref: '#/definitions/drive'
       patient:
         $ref: '#/definitions/patient'
-
-
   allAppointments:
     type: array
     items:
       $ref: '#/definitions/appointmentDTO'
-
   deleteSuccessMessage:
     type: object
     properties:
