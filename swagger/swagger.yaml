@@ -92,6 +92,19 @@ paths:
         dispatchers.
       produces:
         - application/json
+      parameters:
+        - in: query
+          name: startDate
+          description: pass a startDate by which to filter
+          required: false
+          type: string
+          minLength: 4
+        - in: query
+          name: endDate
+          description: pass an endDate by which to filter
+          required: false
+          type: string
+          minLength: 4
       responses:
         '200':
           description: all appointments in date range
@@ -143,18 +156,6 @@ paths:
           description: pass an appointmentIdentifier
           required: true
           type: string
-        - in: query
-          name: startDate
-          description: pass a startDate by which to filter
-          required: false
-          type: string
-          minLength: 4
-        - in: query
-          name: endDate
-          description: pass an endDate by which to filter
-          required: false
-          type: string
-          minLength: 4
       responses:
         '200':
           description: Success. Found appointment.
@@ -209,6 +210,66 @@ paths:
           description: 'Success. Appointment with ID {appointmentID} was deleted.'
           schema:
             $ref: '#/definitions/deleteSuccessMessage'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: No appointment found.
+  /driver/appointments:
+    get:
+      tags:
+        - driver
+      summary: gets appointments with driver-level details
+      operationId: getAllAppointmentsForDriver
+      description: >
+        Get all appointments within a default date range (possibly adjustable w/ query params).
+
+        Appointments DO NOT include details, e.g. exact location, available only to dispatchers.
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: startDate
+          description: pass a startDate by which to filter
+          required: false
+          type: string
+          minLength: 4
+        - in: query
+          name: endDate
+          description: pass an endDate by which to filter
+          required: false
+          type: string
+          minLength: 4
+      responses:
+        '200':
+          description: all appointments in date range
+          schema:
+            $ref: '#/definitions/allAppointments'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error - Not Found
+  '/driver/appointments/{appointmentID}':
+    get:
+      tags:
+        - driver
+      summary: gets appointment by appointmentID
+      operationId: getAppointmentForDriverByID
+      description: >
+        Search for existing appointment by appointmentIdentifier, return
+        driver-level details
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success. Found appointment.
+          schema:
+            $ref: '#/definitions/appointmentDTO'
         '400':
           description: Client Error - please check your request format & try again.
         '404':
