@@ -213,6 +213,35 @@ paths:
           description: Client Error - please check your request format & try again.
         '404':
           description: No appointment found.
+  /drives/apply:
+    post:
+      tags:
+        - driver
+      summary: applies a volunteer for a drive
+      operationId: addDriveApplicant
+      description: Adds a volunteer drive application
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: driveId
+          schema:
+            type: object
+            properties:
+              driveId:
+                description: id of drive user is applying for
+                type: integer
+                format: int64
+                example: 42
+      responses:
+        '200':
+          description: Success. Added applicant record.
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error. The driveId or volunteerId was not found.
   /drives/approve:
     post:
       tags:
