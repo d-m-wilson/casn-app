@@ -27,7 +27,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/clinic'
-          
+
   /patient:
     get:
       tags:
@@ -226,30 +226,23 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: driveData
+          name: volunteerDriveId
           schema:
             type: object
             properties:
-              driveId:
+              volunteerDriveId:
                 description: id of drive to update
-                type: integer
-                format: int64
-                example: 42
-              volunteerId:
-                description: id of volunteer to add as driver
                 type: integer
                 format: int64
                 example: 42
       responses:
         '200':
           description: Success. Added driver to drive.
-          schema:
-            $ref: '#/definitions/appointmentDTO'
         '400':
           description: Client Error - please check your request format & try again.
         '404':
           description: Error. The driveId or volunteerId was not found.
-          
+
 definitions:
   clinic:
     type: object
@@ -267,7 +260,7 @@ definitions:
       name:
         type: string
         maxLength: 100
-        example: 
+        example:
       phone:
         type: string
         maxLength: 20
@@ -283,7 +276,7 @@ definitions:
       postalCode:
         type: string
         maxLength: 10
-  
+
   patient:
     type: object
     required:
@@ -344,15 +337,6 @@ definitions:
         readOnly: true
   volunteer:
     type: object
-    required:
-      - civiContactId
-      - firstName
-      - lastName
-      - mobilePhone
-      - googleAccount
-      - isDriver
-      - isDispatcher
-      - isActive
     properties:
       id:
         type: integer
