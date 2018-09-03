@@ -332,6 +332,29 @@ paths:
           description: Client Error - please check your request format & try again.
         '404':
           description: Error. The driveId or volunteerId was not found.
+  /volunteerDrive:
+    get:
+      tags:
+        - dispatcher
+      summary: get list of applicants for a drive
+      operationId: getVolunteerDrives
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: driveId
+          description: id of drive
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/volunteerDrive'
+        
 
 definitions:
   clinic:
@@ -504,7 +527,7 @@ definitions:
       appointmentDate:
         type: string
         format: date-time
-        example: 2018-08-03T14:30:00.000Z
+        example: "2018-08-03T14:30:00.000Z"
       appointmentTypeId:
         type: integer
         format: int32
@@ -608,6 +631,43 @@ definitions:
       message:
         type: string
         example: 'Success. Your {dataType} of ID {objectID} has been deleted.'
+  volunteerDrive:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 42
+      volunteerId:
+        type: integer
+        format: int64
+        example: 42
+      firstName:
+        type: string
+        maxLength: 50
+        example: Alice
+      lastName:
+        type: string
+        maxLength: 50
+        example: Wagner
+      mobilePhone:
+        type: string
+        maxLength: 20
+        example: "5555554321"
+      driveId:
+        type: integer
+        format: int64
+        example: 42
+      created:
+        type: string
+        format: date-time
+        readOnly: true
+        example: "2018-08-03T14:30:00.000Z"
+      updated:
+        type: string
+        format: date-time
+        readOnly: true
+        example: "2018-08-03T14:30:00.000Z"
 
 
 # Added by API Auto Mocking Plugin
