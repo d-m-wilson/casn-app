@@ -1,0 +1,704 @@
+openapi: 3.0.0
+info:
+  description: This is a test CASN API
+  version: 1.0.0
+  title: CASN API
+  contact:
+    email: katie@clinicaccess.org
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0'
+tags:
+  - name: dispatcher
+    description: dispatcher only calls
+  - name: driver
+    description: driver only calls
+paths:
+  /clinic:
+    get:
+      summary: gets list of clinics
+      operationId: getClinics
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/clinic'
+  /patient:
+    get:
+      tags:
+        - dispatcher
+      summary: gets patient by patientIdentifier
+      operationId: getPatientByPatientIdentifier
+      description: >
+        Search for existing patients by the dispatcher created patientIdentifier
+        (patient ID)
+      parameters:
+        - in: query
+          name: patientIdentifier
+          description: pass a search string for looking up patientIdentifier
+          required: true
+          schema:
+            type: string
+            minLength: 4
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/patient'
+        '400':
+          description: GAH IT IS SO BROKEN
+        '404':
+          description: patient not found frownies
+    post:
+      tags:
+        - dispatcher
+      summary: adds a patient
+      operationId: addPatient
+      description: Adds patient to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: the item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/patient'
+        description: patientData to add
+  /dispatcher/appointments:
+    get:
+      tags:
+        - dispatcher
+      summary: gets appointments with dispatcher-level details
+      operationId: getAllAppointmentsForDispatcher
+      description: >
+        Get all appointments within a default date range (possibly adjustable w/
+        query params).
+
+        Appointments include details, e.g. exact location, available only to
+        dispatchers.
+      parameters:
+        - in: query
+          name: startDate
+          description: pass a startDate by which to filter
+          required: false
+          schema:
+            type: string
+            minLength: 4
+        - in: query
+          name: endDate
+          description: pass an endDate by which to filter
+          required: false
+          schema:
+            type: string
+            minLength: 4
+      responses:
+        '200':
+          description: all appointments in date range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allAppointments'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error - Not Found
+    post:
+      tags:
+        - dispatcher
+      summary: adds a new appointment
+      operationId: addAppointment
+      description: Adds appointment (and drives) to the system
+      responses:
+        '200':
+          description: Success. Created appointment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointmentDTO'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '409':
+          description: Error. That appointment already exists.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/appointmentDTO'
+        description: appointmentData to add
+  /dispatcher/appointments/{appointmentID}:
+    get:
+      tags:
+        - dispatcher
+      summary: gets appointment by appointmentID
+      operationId: getAppointmentForDispatcherByID
+      description: >
+        Search for existing appointment by appointmentIdentifier, return
+        dispatcher-level details
+      parameters:
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success. Found appointment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointmentDTO'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: No appointment found.
+    put:
+      tags:
+        - dispatcher
+      summary: updates an existing appointment
+      operationId: updateAppointment
+      description: Updates appointment (and corresponding drive) information
+      parameters:
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success. Created appointment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointmentDTO'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error. The appointment ID you requested does not exist.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/appointmentDTO'
+        description: appointmentData with updated fields
+        required: true
+    delete:
+      tags:
+        - dispatcher
+      parameters:
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Success. Appointment with ID {appointmentID} was deleted.'
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/deleteSuccessMessage'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: No appointment found.
+  /driver/appointments:
+    get:
+      tags:
+        - driver
+      summary: gets appointments with driver-level details
+      operationId: getAllAppointmentsForDriver
+      description: >
+        Get all appointments within a default date range (possibly adjustable w/
+        query params).
+
+        Appointments DO NOT include details, e.g. exact location, available only
+        to dispatchers.
+      parameters:
+        - in: query
+          name: startDate
+          description: pass a startDate by which to filter
+          required: false
+          schema:
+            type: string
+            minLength: 4
+        - in: query
+          name: endDate
+          description: pass an endDate by which to filter
+          required: false
+          schema:
+            type: string
+            minLength: 4
+      responses:
+        '200':
+          description: all appointments in date range
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/allAppointments'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error - Not Found
+  /driver/appointments/{appointmentID}:
+    get:
+      tags:
+        - driver
+      summary: gets appointment by appointmentID
+      operationId: getAppointmentForDriverByID
+      description: >
+        Search for existing appointment by appointmentIdentifier, return
+        driver-level details
+      parameters:
+        - in: path
+          name: appointmentID
+          description: pass an appointmentIdentifier
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success. Found appointment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointmentDTO'
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: No appointment found.
+  /driver/myDrives:
+    get:
+      tags:
+        - driver
+      summary: gets applied-for and approved drives for the current user
+      operationId: getMyDrives
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/driverDrive'
+  /drives/apply:
+    post:
+      tags:
+        - driver
+      summary: applies a volunteer for a drive
+      operationId: addDriveApplicant
+      description: Adds a volunteer drive application
+      responses:
+        '200':
+          description: Success. Added applicant record.
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error. The driveId or volunteerId was not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                driveId:
+                  description: id of drive user is applying for
+                  type: integer
+                  format: int64
+                  example: 42
+  /drives/approve:
+    post:
+      tags:
+        - dispatcher
+      summary: approves a volunteer for a drive
+      operationId: addDriver
+      description: Adds driverId to a drive
+      responses:
+        '200':
+          description: Success. Added driver to drive.
+        '400':
+          description: Client Error - please check your request format & try again.
+        '404':
+          description: Error. The driveId or volunteerId was not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                volunteerDriveId:
+                  description: id of drive to update
+                  type: integer
+                  format: int64
+                  example: 42
+  /volunteerDrive:
+    get:
+      tags:
+        - dispatcher
+      summary: get list of applicants for a drive
+      operationId: getVolunteerDrives
+      parameters:
+        - in: query
+          name: driveId
+          description: id of drive
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/volunteerDrive'
+components:
+  schemas:
+    clinic:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
+        civiContactId:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
+        name:
+          type: string
+          maxLength: 100
+          example: null
+        phone:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 50
+        state:
+          type: string
+          maxLength: 30
+        postalCode:
+          type: string
+          maxLength: 10
+    patient:
+      type: object
+      required:
+        - patientIdentifier
+        - firstName
+        - lastName
+        - phone
+        - isMinor
+        - preferredLanguage
+        - preferredContactMethod
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
+        civiContactId:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
+        patientIdentifier:
+          type: string
+          minLength: 4
+          maxLength: 45
+          example: 'JS1234'
+        firstName:
+          type: string
+          maxLength: 50
+          example: 'Jane'
+        lastName:
+          type: string
+          maxLength: 50
+          example: 'Smith'
+        phone:
+          type: string
+          minLength: 10
+          maxLength: 20
+          example: '5555551234'
+        isMinor:
+          type: boolean
+          example: false
+        preferredLanguage:
+          type: string
+          maxLength: 25
+          example: 'French'
+        preferredContactMethod:
+          type: integer
+          format: int32
+          example: 1
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+    appointment:
+      type: object
+      required:
+        - dispatcherId
+        - patientId
+        - clinicId
+        - appointmentDate
+        - appointmentTypeId
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
+        dispatcherId:
+          type: integer
+          format: int64
+          example: 42
+        patientId:
+          type: integer
+          format: int64
+          example: 42
+        clinicId:
+          type: integer
+          format: int64
+          example: 42
+        pickupLocationVague:
+          type: string
+          maxLength: 255
+          example: 'US59 S and BW8'
+        dropoffLocationVague:
+          type: string
+          maxLength: 255
+          example: 'I10 W and 610'
+        appointmentDate:
+          type: string
+          format: date-time
+          example: '2018-08-03T14:30:00.000Z'
+        appointmentTypeId:
+          type: integer
+          format: int32
+          example: 1
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+    drive:
+      type: object
+      required:
+        - appointmentId
+        - direction
+        - startAddress
+        - startCity
+        - startState
+        - startPostalCode
+        - endAddress
+        - endCity
+        - endState
+        - endPostalCode
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
+        appointmentId:
+          type: integer
+          format: int64
+          example: 42
+        direction:
+          type: integer
+          format: int32
+          example: 1
+          description: '1 = toClinic, 2 = fromClinic'
+        driverId:
+          type: integer
+          format: int64
+          example: 42
+        startAddress:
+          type: string
+          maxLength: 100
+          example: '11415 Roark Rd'
+        startCity:
+          type: string
+          maxLength: 50
+          example: 'Houston'
+        startState:
+          type: string
+          maxLength: 30
+          example: 'TX'
+        startPostalCode:
+          type: string
+          maxLength: 10
+          example: '77031'
+        endAddress:
+          type: string
+          maxLength: 100
+          example: '7373 Old Katy Rd'
+        endCity:
+          type: string
+          maxLength: 50
+          example: 'Houston'
+        endState:
+          type: string
+          maxLength: 30
+          example: 'TX'
+        endPostalCode:
+          type: string
+          maxLength: 10
+          example: '77024'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+    appointmentDTO:
+      properties:
+        appointment:
+          $ref: '#/components/schemas/appointment'
+        driveTo:
+          $ref: '#/components/schemas/drive'
+        driveFrom:
+          $ref: '#/components/schemas/drive'
+        patient:
+          $ref: '#/components/schemas/patient'
+    allAppointments:
+      type: array
+      items:
+        $ref: '#/components/schemas/appointmentDTO'
+    deleteSuccessMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Success. Your {dataType} of ID {objectID} has been deleted.'
+    volunteerDrive:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 42
+        volunteerId:
+          type: integer
+          format: int64
+          example: 42
+        firstName:
+          type: string
+          maxLength: 50
+          example: 'Alice'
+        lastName:
+          type: string
+          maxLength: 50
+          example: 'Wagner'
+        mobilePhone:
+          type: string
+          maxLength: 20
+          example: '5555554321'
+        driveId:
+          type: integer
+          format: int64
+          example: 42
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2018-08-03T14:30:00.000Z'
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2018-08-03T14:30:00.000Z'
+    driverDrive:
+      type: object
+      required:
+        - id
+        - volunteerDriveId
+        - appointmentId
+        - appointmentTypeId
+        - clinicId
+        - appointmentDate
+        - direction
+        - isApproved
+        - patientIdentifier
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 42
+        volunteerDriveId:
+          type: integer
+          format: int64
+          example: 42
+        appointmentId:
+          type: integer
+          format: int64
+          example: 42
+        appointmentTypeId:
+          type: integer
+          format: int32
+          example: 1
+        clinicId:
+          type: integer
+          format: int64
+          example: 42
+        appointmentDate:
+          type: string
+          format: date-time
+          example: '2018-08-03T14:30:00.000Z'
+        direction:
+          type: integer
+          format: int32
+          example: 1
+          description: '1 = toClinic, 2 = fromClinic'
+        isApproved:
+          type: boolean
+          example: false
+        startLocation:
+          type: string
+          maxLength: 255
+          example: 'US59 S and BW8'
+        endLocation:
+          type: string
+          maxLength: 255
+          example: '7373 Old Katy Rd Houston, TX 77008'
+        patientIdentifier:
+          type: string
+          minLength: 4
+          maxLength: 45
+          example: 'JS1234'
+        patientName:
+          type: string
+          maxLength: 100
+          example: 'Jane Smith'
