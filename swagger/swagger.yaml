@@ -655,6 +655,7 @@ definitions:
       - appointmentDate
       - direction
       - isApproved
+      - patientIdentifier
     properties:
       id:
         type: integer
@@ -700,7 +701,6 @@ definitions:
         type: string
         minLength: 4
         maxLength: 45
-        required: true
         example: 'JS1234'
       patientName:
         type: string
