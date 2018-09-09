@@ -1,7 +1,11 @@
 swagger: '2.0'
+host: virtserver.swaggerhub.com
+basePath: /d-m-wilson/CASN_App_Copy1/1.0.0
+schemes:
+  - https
 info:
   description: This is a test CASN API
-  version: "1.0.0"
+  version: 1.0.0
   title: CASN API
   contact:
     email: katie@clinicaccess.org
@@ -27,7 +31,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/clinic'
-
   /patient:
     get:
       tags:
@@ -139,7 +142,7 @@ paths:
           description: Client Error - please check your request format & try again.
         '409':
           description: Error. That appointment already exists.
-  '/dispatcher/appointments/{appointmentID}':
+  /dispatcher/appointments/{appointmentID}:
     get:
       tags:
         - dispatcher
@@ -221,9 +224,11 @@ paths:
       summary: gets appointments with driver-level details
       operationId: getAllAppointmentsForDriver
       description: >
-        Get all appointments within a default date range (possibly adjustable w/ query params).
+        Get all appointments within a default date range (possibly adjustable w/
+        query params).
 
-        Appointments DO NOT include details, e.g. exact location, available only to dispatchers.
+        Appointments DO NOT include details, e.g. exact location, available only
+        to dispatchers.
       produces:
         - application/json
       parameters:
@@ -248,7 +253,7 @@ paths:
           description: Client Error - please check your request format & try again.
         '404':
           description: Error - Not Found
-  '/driver/appointments/{appointmentID}':
+  /driver/appointments/{appointmentID}:
     get:
       tags:
         - driver
@@ -274,6 +279,21 @@ paths:
           description: Client Error - please check your request format & try again.
         '404':
           description: No appointment found.
+  /driver/myDrives:
+    get:
+      tags:
+        - driver
+      summary: gets applied-for and approved drives for the current user
+      operationId: getMyDrives
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/driverDrive'
   /drives/apply:
     post:
       tags:
@@ -348,14 +368,12 @@ paths:
           format: int64
           required: true
       responses:
-        200:
+        '200':
           description: successful operation
           schema:
             type: array
             items:
               $ref: '#/definitions/volunteerDrive'
-        
-
 definitions:
   clinic:
     type: object
@@ -373,7 +391,7 @@ definitions:
       name:
         type: string
         maxLength: 100
-        example:
+        example: null
       phone:
         type: string
         maxLength: 20
@@ -389,7 +407,6 @@ definitions:
       postalCode:
         type: string
         maxLength: 10
-
   patient:
     type: object
     required:
@@ -415,73 +432,31 @@ definitions:
         type: string
         minLength: 4
         maxLength: 45
-        example: JS1234
+        example: 'JS1234'
       firstName:
         type: string
         maxLength: 50
-        example: Jane
+        example: 'Jane'
       lastName:
         type: string
         maxLength: 50
-        example: Smith
+        example: 'Smith'
       phone:
         type: string
         minLength: 10
         maxLength: 20
-        example: 5555551234
+        example: '5555551234'
       isMinor:
         type: boolean
         example: false
       preferredLanguage:
         type: string
         maxLength: 25
-        example: French
+        example: 'French'
       preferredContactMethod:
         type: integer
         format: int32
         example: 1
-      created:
-        type: string
-        format: date-time
-        readOnly: true
-      updated:
-        type: string
-        format: date-time
-        readOnly: true
-  volunteer:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
-        readOnly: true
-        example: 42
-      civiContactId:
-        type: integer
-        format: int64
-        example: 42
-      firstName:
-        type: string
-        maxLength: 50
-        example: John
-      lastName:
-        type: string
-        maxLength: 50
-        example: John
-      mobilePhone:
-        type: string
-        maxLength: 20
-        example: 1234567890
-      googleAccount:
-        type: string
-        maxLength: 20
-        example: di93jdkjf8
-      isDriver:
-        type: boolean
-        example: false
-      isDispatcher:
-        type: boolean
-        example: false
       created:
         type: string
         format: date-time
@@ -519,15 +494,15 @@ definitions:
       pickupLocationVague:
         type: string
         maxLength: 255
-        example: US59 S and BW8
+        example: 'US59 S and BW8'
       dropoffLocationVague:
         type: string
         maxLength: 255
-        example: I10 W and 610
+        example: 'I10 W and 610'
       appointmentDate:
         type: string
         format: date-time
-        example: "2018-08-03T14:30:00.000Z"
+        example: '2018-08-03T14:30:00.000Z'
       appointmentTypeId:
         type: integer
         format: int32
@@ -575,35 +550,35 @@ definitions:
       startAddress:
         type: string
         maxLength: 100
-        example: 11415 Roark Rd
+        example: '11415 Roark Rd'
       startCity:
         type: string
         maxLength: 50
-        example: Houston
+        example: 'Houston'
       startState:
         type: string
         maxLength: 30
-        example: TX
+        example: 'TX'
       startPostalCode:
         type: string
         maxLength: 10
-        example: 77031
+        example: '77031'
       endAddress:
         type: string
         maxLength: 100
-        example: 7373 Old Katy Rd
+        example: '7373 Old Katy Rd'
       endCity:
         type: string
         maxLength: 50
-        example: Houston
+        example: 'Houston'
       endState:
         type: string
         maxLength: 30
-        example: TX
+        example: 'TX'
       endPostalCode:
         type: string
         maxLength: 10
-        example: 77024
+        example: '77024'
       created:
         type: string
         format: date-time
@@ -613,8 +588,9 @@ definitions:
         format: date-time
         readOnly: true
   appointmentDTO:
-    $ref: '#/definitions/appointment'
     properties:
+      appointment:
+        $ref: '#/definitions/appointment'
       driveTo:
         $ref: '#/definitions/drive'
       driveFrom:
@@ -645,15 +621,15 @@ definitions:
       firstName:
         type: string
         maxLength: 50
-        example: Alice
+        example: 'Alice'
       lastName:
         type: string
         maxLength: 50
-        example: Wagner
+        example: 'Wagner'
       mobilePhone:
         type: string
         maxLength: 20
-        example: "5555554321"
+        example: '5555554321'
       driveId:
         type: integer
         format: int64
@@ -662,16 +638,71 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-        example: "2018-08-03T14:30:00.000Z"
+        example: '2018-08-03T14:30:00.000Z'
       updated:
         type: string
         format: date-time
         readOnly: true
-        example: "2018-08-03T14:30:00.000Z"
-
-
-# Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-basePath: /CASN/CASN_App/1.0.0
-schemes:
- - https
+        example: '2018-08-03T14:30:00.000Z'
+  driverDrive:
+    type: object
+    required:
+      - id
+      - volunteerDriveId
+      - appointmentId
+      - appointmentTypeId
+      - clinicId
+      - appointmentDate
+      - direction
+      - isApproved
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 42
+      volunteerDriveId:
+        type: integer
+        format: int64
+        example: 42
+      appointmentId:
+        type: integer
+        format: int64
+        example: 42
+      appointmentTypeId:
+        type: integer
+        format: int32
+        example: 1
+      clinicId:
+        type: integer
+        format: int64
+        example: 42
+      appointmentDate:
+        type: string
+        format: date-time
+        example: '2018-08-03T14:30:00.000Z'
+      direction:
+        type: integer
+        format: int32
+        example: 1
+        description: '1 = toClinic, 2 = fromClinic'
+      isApproved:
+        type: boolean
+        example: false
+      startLocation:
+        type: string
+        maxLength: 255
+        example: 'US59 S and BW8'
+      endLocation:
+        type: string
+        maxLength: 255
+        example: '7373 Old Katy Rd Houston, TX 77008'
+      patientIdentifier:
+        type: string
+        minLength: 4
+        maxLength: 45
+        required: true
+        example: 'JS1234'
+      patientName:
+        type: string
+        maxLength: 100
+        example: 'Jane Smith'
