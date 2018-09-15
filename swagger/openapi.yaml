@@ -200,6 +200,7 @@ paths:
     delete:
       tags:
         - dispatcher
+      operationId: deleteAppointment
       parameters:
         - in: path
           name: appointmentID
