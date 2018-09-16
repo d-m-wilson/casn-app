@@ -5,11 +5,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 /* Angular Material Components */
 import { MatSidenavModule,
          MatToolbarModule,
-         MatIconModule } from '@angular/material';
+         MatIconModule,
+         MatCardModule } from '@angular/material';
+import { ScheduleRideComponent } from './schedule-ride/schedule-ride.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ScheduleRideComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -17,6 +22,7 @@ import { MatSidenavModule,
     MatSidenavModule,
     MatToolbarModule,
     MatIconModule,
+    MatCardModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
