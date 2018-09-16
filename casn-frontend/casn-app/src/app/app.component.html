@@ -2,7 +2,7 @@
 <!--********************************************************************
                           Sidenav Menu
 **********************************************************************-->
-  <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+  <mat-sidenav #sidenav mode="over" [(opened)]="opened">
     Sidenav content
   </mat-sidenav>
 <!--********************************************************************
@@ -12,7 +12,7 @@
     <mat-toolbar color="primary">
       <span>CASN</span>
       <span class="fill-remaining-space"></span>
-      <button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button>
+      <mat-icon class="clicky" (click)="sidenav.toggle()">menu</mat-icon>
     </mat-toolbar>
   </mat-sidenav-content>
 </mat-sidenav-container>
