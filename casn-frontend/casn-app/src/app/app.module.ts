@@ -6,7 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule,
          MatToolbarModule,
          MatIconModule,
-         MatCardModule } from '@angular/material';
+         MatCardModule,
+         MatButtonModule } from '@angular/material';
 import { ScheduleRideComponent } from './schedule-ride/schedule-ride.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
@@ -23,6 +24,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
