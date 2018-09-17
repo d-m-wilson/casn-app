@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+// import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 /* Angular Material Components */
 import {
   MatButtonModule,
@@ -13,7 +15,7 @@ import {
 /* Custom Components */
 import { ScheduleRideComponent } from './schedule-ride/schedule-ride.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-/* Services & Routing */
+/* Routing */
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -25,6 +27,8 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     MatButtonModule,
     MatCardModule,
