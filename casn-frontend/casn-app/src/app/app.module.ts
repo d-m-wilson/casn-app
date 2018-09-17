@@ -17,12 +17,14 @@ import { ScheduleRideComponent } from './schedule-ride/schedule-ride.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 /* Routing */
 import { AppRoutingModule } from './app-routing.module';
+import { PatientsComponent } from './patients/patients.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ScheduleRideComponent,
-    DashboardComponent
+    DashboardComponent,
+    PatientsComponent
   ],
   imports: [
     BrowserModule,
