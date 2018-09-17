@@ -6,9 +6,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 /* Angular Material Components */
 import {
+  MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
   MatIconModule,
+  MatInputModule,
   MatSidenavModule,
   MatToolbarModule,
 } from '@angular/material';
@@ -32,9 +34,11 @@ import { RidesComponent } from './rides/rides.component';
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatInputModule,
     MatSidenavModule,
     MatToolbarModule,
   ],
