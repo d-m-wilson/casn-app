@@ -7,6 +7,7 @@ import { ScheduleRideComponent } from './schedule-ride/schedule-ride.component';
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'schedule-ride', component: ScheduleRideComponent },
   // { path: '', redirectTo: '/dashboard', pathMatch: 'full', canActivate: [ AuthGuard ] },
   // { path: 'dashboard', component: DashboardComponent, canActivate: [ AuthGuard ] },
   // { path: 'facts', component: FactsComponent, canActivate: [ AuthGuard ] },
