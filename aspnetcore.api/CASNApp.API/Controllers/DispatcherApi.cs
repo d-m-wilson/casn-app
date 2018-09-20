@@ -10,20 +10,30 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CASNApp.API.Controllers
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
     public class DispatcherApiController : Controller
-    { 
+    {
+        private readonly Entities.casn_appContext dbContext;
+
+        public DispatcherApiController(Entities.casn_appContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         /// <summary>
         /// adds a new appointment
         /// </summary>
@@ -33,7 +43,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="409">Error. That appointment already exists.</response>
         [HttpPost]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/dispatcher/appointments")]
+        [Route("api/dispatcher/appointments")]
         [ValidateModelState]
         [SwaggerOperation("AddAppointment")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
@@ -67,7 +77,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="404">Error. The driveId or volunteerId was not found.</response>
         [HttpPost]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/drives/approve")]
+        [Route("api/drives/approve")]
         [ValidateModelState]
         [SwaggerOperation("AddDriver")]
         public virtual IActionResult AddDriver([FromBody]Body1 body1)
@@ -94,7 +104,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">invalid input, object invalid</response>
         /// <response code="409">the item already exists</response>
         [HttpPost]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/patient")]
+        [Route("api/patient")]
         [ValidateModelState]
         [SwaggerOperation("AddPatient")]
         public virtual IActionResult AddPatient([FromBody]Patient patient)
@@ -120,7 +130,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="404">No appointment found.</response>
         [HttpDelete]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/dispatcher/appointments/{appointmentID}")]
+        [Route("api/dispatcher/appointments/{appointmentID}")]
         [ValidateModelState]
         [SwaggerOperation("DeleteAppointment")]
         [SwaggerResponse(statusCode: 200, type: typeof(DeleteSuccessMessage), description: "Success. Appointment with ID {appointmentID} was deleted.")]
@@ -155,7 +165,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="404">Error - Not Found</response>
         [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/dispatcher/appointments")]
+        [Route("api/dispatcher/appointments")]
         [ValidateModelState]
         [SwaggerOperation("GetAllAppointmentsForDispatcher")]
         [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "all appointments in date range")]
@@ -189,7 +199,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="404">No appointment found.</response>
         [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/dispatcher/appointments/{appointmentID}")]
+        [Route("api/dispatcher/appointments/{appointmentID}")]
         [ValidateModelState]
         [SwaggerOperation("GetAppointmentForDispatcherByID")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Found appointment.")]
@@ -223,29 +233,37 @@ namespace CASNApp.API.Controllers
         /// <response code="400">GAH IT IS SO BROKEN</response>
         /// <response code="404">patient not found frownies</response>
         [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/patient")]
+        [Route("api/patient")]
         [ValidateModelState]
         [SwaggerOperation("GetPatientByPatientIdentifier")]
         [SwaggerResponse(statusCode: 200, type: typeof(Patient), description: "search results matching criteria")]
-        public virtual IActionResult GetPatientByPatientIdentifier([FromQuery][Required()] [MinLength(4)]string patientIdentifier)
-        { 
+        public virtual async Task<IActionResult> GetPatientByPatientIdentifier([FromQuery][Required()] [MinLength(4)]string patientIdentifier)
+        {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(Patient));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
 
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"civiContactId\" : 42,\r\n  \"firstName\" : \"Jane\",\r\n  \"lastName\" : \"Smith\",\r\n  \"isMinor\" : true,\r\n  \"patientIdentifier\" : \"JS1234\",\r\n  \"preferredLanguage\" : \"French\",\r\n  \"preferredContactMethod\" : 1,\r\n  \"phone\" : \"5555551234\",\r\n  \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n  \"id\" : 42,\r\n  \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<Patient>(exampleJson)
-            : default(Patient);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var patients = await dbContext.Patient
+                .AsNoTracking()
+                .Where(p => p.PatientIdentifier == patientIdentifier)
+                .Select(p => new Models.Patient(p))
+                .ToListAsync();
+
+            if (patients.Count == 0)
+            {
+                return NotFound();
+            }
+            else if (patients.Count == 1)
+            {
+                return new ObjectResult(patients.First());
+            }
+            else
+            {
+                return new BadRequestResult();
+            }
+
         }
 
         /// <summary>
@@ -254,7 +272,7 @@ namespace CASNApp.API.Controllers
         /// <param name="driveId">id of drive</param>
         /// <response code="200">successful operation</response>
         [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/volunteerDrive")]
+        [Route("api/volunteerDrive")]
         [ValidateModelState]
         [SwaggerOperation("GetVolunteerDrives")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<VolunteerDrive>), description: "successful operation")]
@@ -283,7 +301,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="404">Error. The appointment ID you requested does not exist.</response>
         [HttpPut]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/dispatcher/appointments/{appointmentID}")]
+        [Route("api/dispatcher/appointments/{appointmentID}")]
         [ValidateModelState]
         [SwaggerOperation("UpdateAppointment")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]

@@ -19,6 +19,9 @@ using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using CASNApp.API.Filters;
+using CASNApp.API.Entities;
+using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace CASNApp.API
 {
@@ -49,6 +52,22 @@ namespace CASNApp.API
         {
             // Add framework services.
             services
+                //.AddDbContextPool<casn_appContext>(options =>
+                //{
+                //    options.UseMySql(_configuration["DbConnectionString"], mysqlOptions =>
+                //    {
+                //        mysqlOptions.ServerVersion(new Version(5, 7, 22), ServerType.MySql)
+                //            .EnableRetryOnFailure(2);
+                //    });
+                //})
+                .AddDbContext<casn_appContext>(options =>
+                    {
+                        options.UseMySql(_configuration["DbConnectionString"], mysqlOptions =>
+                            {
+                                mysqlOptions.ServerVersion(new Version(5, 7, 22), ServerType.MySql)
+                                    .EnableRetryOnFailure(2);
+                            });
+                    }, ServiceLifetime.Scoped, ServiceLifetime.Scoped)
                 .AddMvc()
                 .AddJsonOptions(opts =>
                 {
@@ -66,11 +85,11 @@ namespace CASNApp.API
                     {
                         Version = "1.0.0",
                         Title = "CASN API",
-                        Description = "CASN API (ASP.NET Core 2.0)",
+                        Description = "CASN API (ASP.NET Core 2.1)",
                         Contact = new Contact()
                         {
-                           Name = "OpenAPI-Generator Contributors",
-                           Url = "https://github.com/openapitools/openapi-generator",
+                           Name = "CASN App Contributors",
+                           Url = "https://github.com/d-m-wilson/casn-app",
                            Email = "katie@clinicaccess.org"
                         },
                         TermsOfService = ""
@@ -79,7 +98,7 @@ namespace CASNApp.API
                     c.DescribeAllEnumsAsStrings();
                     c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{_hostingEnv.ApplicationName}.xml");
                     // Sets the basePath property in the Swagger document generated
-                    c.DocumentFilter<BasePathFilter>("/d-m-wilson/CASN_App_OAS3/1.0.0");
+                    c.DocumentFilter<BasePathFilter>("/api");
 
                     // Include DataAnnotation attributes on Controller Action parameters as Swagger validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!

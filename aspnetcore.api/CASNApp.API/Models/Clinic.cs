@@ -28,7 +28,7 @@ namespace CASNApp.API.Models
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id")]
-        public long? Id { get; private set; }
+        public long Id { get; private set; }
 
         /// <summary>
         /// Gets or Sets CiviContactId
