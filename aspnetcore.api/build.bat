@@ -3,7 +3,7 @@
 
 @echo off
 
-dotnet restore CASNApp.API\CASNApp.API
-dotnet build CASNApp.API\CASNApp.API
-echo Now, run the following to start the project: dotnet run -p CASNApp.API\CASNApp.API\CASNApp.API.csproj --launch-profile web.
+dotnet restore CASNApp.API
+dotnet build CASNApp.API
+echo Now, run the following to start the project: dotnet run -p CASNApp.API\CASNApp.API.csproj --launch-profile web.
 echo.
