@@ -125,9 +125,7 @@ namespace CASNApp.API.Models
 
             return 
                 (
-                    Id == other.Id ||
-                    Id != null &&
-                    Id.Equals(other.Id)
+                    Id == other.Id
                 ) && 
                 (
                     CiviContactId == other.CiviContactId ||
@@ -176,7 +174,6 @@ namespace CASNApp.API.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (CiviContactId != null)
                     hashCode = hashCode * 59 + CiviContactId.GetHashCode();
