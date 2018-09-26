@@ -107,19 +107,36 @@ namespace CASNApp.API.Controllers
         [Route("api/patient")]
         [ValidateModelState]
         [SwaggerOperation("AddPatient")]
-        public virtual IActionResult AddPatient([FromBody]Patient patient)
+        public virtual async Task<IActionResult> AddPatient([FromBody]Patient patient)
         { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
+            if (!ModelState.IsValid ||
+                patient == null ||
+                string.IsNullOrWhiteSpace(patient.PatientIdentifier) ||
+                (string.IsNullOrWhiteSpace(patient.FirstName) && string.IsNullOrWhiteSpace(patient.LastName)) ||
+                string.IsNullOrWhiteSpace(patient.Phone))
+            {
+                return BadRequest();
+            }
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+            var exists = await dbContext.Patient
+                .Where(p => p.PatientIdentifier == patient.PatientIdentifier)
+                .AnyAsync();
 
-            //TODO: Uncomment the next line to return response 409 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(409);
+            if (exists)
+            {
+                return Conflict();
+            }
 
+            var patientEntity = new Entities.Patient(patient);
 
-            throw new NotImplementedException();
+            dbContext.Patient.Add(patientEntity);
+            await dbContext.SaveChangesAsync();
+
+            patient.Id = patientEntity.Id;
+            patient.Created = patientEntity.Created;
+            patient.Updated = patientEntity.Updated;
+
+            return CreatedAtAction(nameof(AddPatient), patient);
         }
 
         /// <summary>
