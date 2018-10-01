@@ -31,13 +31,15 @@ import { fakeBackendProvider } from './auth-services/fake-backend';
 import { JwtInterceptor } from './auth-services/jwt.interceptor';
 import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     PatientsComponent,
-    RidesComponent
+    RidesComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
