@@ -27,6 +27,7 @@ import { fakeBackendProvider } from './auth-services/fake-backend';
 import { JwtInterceptor } from './auth-services/jwt.interceptor';
 import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
+import { ApiModule } from './api/api.module';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -61,6 +62,7 @@ import { RidesComponent } from './rides/rides.component';
     MatToolbarModule,
   ],
   providers: [
+    ApiModule,
     AuthGuard,
     AuthenticationService,
     UserService,
