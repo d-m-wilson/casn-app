@@ -4,7 +4,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 /* Angular Material Components */
 import {
   MatAutocompleteModule,
@@ -18,12 +17,8 @@ import {
   MatSidenavModule,
   MatToolbarModule,
 } from '@angular/material';
-/* Custom Components */
-import { DashboardComponent } from './dashboard/dashboard.component';
 /* Routing */
 import { AppRoutingModule } from './app-routing.module';
-import { PatientsComponent } from './patients/patients.component';
-import { RidesComponent } from './rides/rides.component';
 /* Custom Services & HTTP Interceptors */
 import { AuthGuard } from './auth-services/auth-guard.service';
 import { AuthenticationService } from './auth-services/auth.service';
@@ -31,7 +26,11 @@ import { fakeBackendProvider } from './auth-services/fake-backend';
 import { JwtInterceptor } from './auth-services/jwt.interceptor';
 import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
+/* Custom Components */
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { PatientsComponent } from './patients/patients.component';
+import { RidesComponent } from './rides/rides.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +44,7 @@ import { LoginComponent } from './login/login.component';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AppRoutingModule,
     MatAutocompleteModule,
@@ -64,8 +64,8 @@ import { LoginComponent } from './login/login.component';
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    // provider used to create fake backend for dev TODO: DELETE
-    // fakeBackendProvider
+    // provider used to create fake backend for dev
+    fakeBackendProvider
   ],
   bootstrap: [AppComponent]
 })
