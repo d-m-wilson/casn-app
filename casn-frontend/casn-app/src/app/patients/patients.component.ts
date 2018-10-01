@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+import { DispatcherService } from '../api/api/dispatcher.service';
 
 @Component({
   selector: 'app-patients',
@@ -11,7 +12,26 @@ import {map, startWith} from 'rxjs/operators';
 export class PatientsComponent implements OnInit {
   languages = ['English', 'Spanish', 'Other'];
   contactMethods = ['phone call', 'text', 'email'];
+  // TODO: This may become a simple text input + search rather than autocomplete
+  patientOptions: string[] = ['1234', '5225', '8274'];
 
+  /*********************************************************************
+                      Constructor, Lifecycle Hooks
+  **********************************************************************/
+  constructor( private dispatcherService: DispatcherService ) { }
+
+  ngOnInit() {
+    this.getAppts();
+    this.filteredPatientOptions = this.patientSearchControl.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value))
+      );
+  }
+
+  /*********************************************************************
+                      Form Methods
+  **********************************************************************/
   // PatientId - last 4 digits of phone number, add 5th digit on duplicate
   patientForm = new FormGroup({
     firstName: new FormControl(''),
@@ -22,22 +42,20 @@ export class PatientsComponent implements OnInit {
   });
 
   patientSearchControl = new FormControl();
-  patientOptions: string[] = ['1234', '5225', '8274'];
   filteredPatientOptions: Observable<string[]>;
-
-  constructor() { }
-
-  ngOnInit() {
-    this.filteredPatientOptions = this.patientSearchControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      );
-  }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.patientOptions.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  /*********************************************************************
+                      Service Calls
+  **********************************************************************/
+  getAppts() {
+    this.dispatcherService.getAllAppointmentsForDispatcher().subscribe(a => {
+      console.log("Appointments are:", a);
+    })
   }
 
 }
