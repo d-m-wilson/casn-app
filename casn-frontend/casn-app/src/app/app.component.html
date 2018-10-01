@@ -3,14 +3,14 @@
                           Sidenav Menu
 **********************************************************************-->
   <mat-sidenav #sidenav mode="over" [(opened)]="opened">
-    Sidenav content
+      <button mat-raised-button color="accent" routerLink="/login">Log Out</button>
   </mat-sidenav>
 <!--********************************************************************
                           Main App Content
 **********************************************************************-->
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <span>CASN</span>
+      <span routerLink="/">CASN</span>
       <span class="fill-remaining-space"></span>
       <mat-icon class="clicky" (click)="sidenav.toggle()">menu</mat-icon>
     </mat-toolbar>
