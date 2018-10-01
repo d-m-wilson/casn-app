@@ -9,7 +9,7 @@ import {map, startWith} from 'rxjs/operators';
   styleUrls: ['./patients.component.css']
 })
 export class PatientsComponent implements OnInit {
-  languages = ['english', 'spanish', 'vietnamese'];
+  languages = ['English', 'Spanish', 'Other'];
   contactMethods = ['phone call', 'text', 'email'];
 
   // PatientId - last 4 digits of phone number, add 5th digit on duplicate
@@ -22,7 +22,7 @@ export class PatientsComponent implements OnInit {
   });
 
   patientSearchControl = new FormControl();
-  patientOptions: string[] = ['One', 'Two', 'Three'];
+  patientOptions: string[] = ['1234', '5225', '8274'];
   filteredPatientOptions: Observable<string[]>;
 
   constructor() { }
