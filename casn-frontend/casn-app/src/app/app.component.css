@@ -9,3 +9,7 @@
 .fill-remaining-space {
   flex: 1 1 auto;
 }
+
+.logo {
+  height: 100%;
+}
