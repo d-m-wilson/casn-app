@@ -11,7 +11,7 @@ import { DispatcherService } from '../api/api/dispatcher.service';
 })
 export class PatientsComponent implements OnInit {
   languages = ['English', 'Spanish', 'Other'];
-  contactMethods = ['phone call', 'text', 'email'];
+  contactMethods = ['Call', 'Text', 'Email'];
   // TODO: This may become a simple text input + search rather than autocomplete
   patientOptions: string[] = ['1234', '5225', '8274'];
 
