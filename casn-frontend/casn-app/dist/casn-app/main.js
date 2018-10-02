@@ -980,7 +980,7 @@ var AppRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".app-container {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0;\n}\n\n.fill-remaining-space {\n  flex: 1 1 auto;\n}\n"
+module.exports = ".app-container {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0;\n}\n\n.fill-remaining-space {\n  flex: 1 1 auto;\n}\n\n.logo {\n  height: 100%;\n}\n\n.side-menu {\n  display: flex;\n  flex-direction: column;\n}\n"
 
 /***/ }),
 
@@ -991,7 +991,7 @@ module.exports = ".app-container {\n  position: absolute;\n  top: 0;\n  bottom: 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-sidenav-container class=\"app-container\">\n<!--********************************************************************\n                          Sidenav Menu\n**********************************************************************-->\n  <mat-sidenav #sidenav mode=\"over\" [(opened)]=\"opened\">\n      <button mat-raised-button color=\"accent\" routerLink=\"/login\">Log Out</button>\n  </mat-sidenav>\n<!--********************************************************************\n                          Main App Content\n**********************************************************************-->\n  <mat-sidenav-content>\n    <mat-toolbar color=\"primary\">\n      <span routerLink=\"/\">CASN</span>\n      <span class=\"fill-remaining-space\"></span>\n      <mat-icon class=\"clicky\" (click)=\"sidenav.toggle()\">menu</mat-icon>\n    </mat-toolbar>\n    <main>\n      <router-outlet></router-outlet>\n    </main>\n  </mat-sidenav-content>\n</mat-sidenav-container>\n"
+module.exports = "<mat-sidenav-container class=\"app-container\">\n<!--********************************************************************\n                          Sidenav Menu\n**********************************************************************-->\n  <mat-sidenav class=\"side-menu\" #sidenav mode=\"over\" [(opened)]=\"opened\">\n    <button mat-raised-button color=\"primary\" routerLink=\"/\" (click)=\"sidenav.close()\">My Dashboard</button>\n    <button mat-raised-button color=\"primary\" routerLink=\"/patient\" (click)=\"sidenav.close()\">Schedule a Ride</button>\n    <button mat-raised-button color=\"primary\" (click)=\"sidenav.close()\">View Schedule</button>\n    <button mat-raised-button color=\"accent\" routerLink=\"/login\" (click)=\"sidenav.close()\">Log Out</button>\n  </mat-sidenav>\n<!--********************************************************************\n                          Main App Content\n**********************************************************************-->\n  <mat-sidenav-content>\n    <mat-toolbar color=\"primary\">\n      <img class=\"logo\"\n           src=\"assets/img/casn-logo.png\"\n           alt=\"CASN logo\"\n           routerLink=\"/\">\n      <span class=\"fill-remaining-space\"></span>\n      <mat-icon class=\"clicky\" (click)=\"sidenav.toggle()\">menu</mat-icon>\n    </mat-toolbar>\n    <main>\n      <router-outlet></router-outlet>\n    </main>\n  </mat-sidenav-content>\n</mat-sidenav-container>\n"
 
 /***/ }),
 
@@ -1573,7 +1573,7 @@ var UserService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "main {\n  display: flex;\n  flex-direction: column;\n  min-height: 90vh;\n  align-items: center;\n  justify-content: space-around;\n}\n\n.btn-dash {\n  width: 250px;\n  height: 125px;\n  border-radius: 10px;\n}\n"
+module.exports = "main {\n  display: flex;\n  flex-direction: column;\n  min-height: 90vh;\n  align-items: center;\n  justify-content: space-around;\n}\n\n.btn-dash {\n  width: 250px;\n  height: 75px;\n  border-radius: 50px;\n}\n"
 
 /***/ }),
 
@@ -1584,7 +1584,7 @@ module.exports = "main {\n  display: flex;\n  flex-direction: column;\n  min-hei
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<main>\n  <button class=\"btn-dash\"\n          mat-raised-button\n          color=\"primary\"\n          routerLink=\"/patient\">Schedule a Ride</button>\n  <button class=\"btn-dash\"\n          mat-raised-button\n          color=\"primary\"\n          routerLink=\"/view-schedule\">View Schedule</button>\n</main>\n"
+module.exports = "<main>\n  <button class=\"btn-dash\"\n          mat-raised-button\n          color=\"primary\"\n          routerLink=\"/patient\">\n          <mat-icon>departure_board</mat-icon> Schedule a Ride\n  </button>\n  <button class=\"btn-dash\"\n          mat-raised-button\n          color=\"primary\"\n          routerLink=\"/view-schedule\">\n          <mat-icon>event_note</mat-icon> View Schedule\n  </button>\n</main>\n"
 
 /***/ }),
 
@@ -1759,7 +1759,7 @@ module.exports = "main {\n  display: flex;\n  flex-direction: column;\n  align-i
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<main>\n<!--********************************************************************\n                        Patient Search Field\n**********************************************************************-->\n  <h2>Add or Lookup Patient</h2>\n  <mat-form-field class=\"example-full-width\" >\n    <input type=\"text\"\n           placeholder=\"Patient Identifier\"\n           aria-label=\"Patient Identifier\"\n           matInput [formControl]=\"patientSearchControl\" [matAutocomplete]=\"auto\">\n    <mat-autocomplete #auto=\"matAutocomplete\">\n      <mat-option *ngFor=\"let p of filteredPatientOptions | async\" [value]=\"p\">\n        {{ p }}\n      </mat-option>\n    </mat-autocomplete>\n  </mat-form-field>\n<!--********************************************************************\n                        Patient Detail Form\n**********************************************************************-->\n  <form [formGroup]=\"patientForm\">\n    <mat-form-field >\n      <input matInput\n            type=\"text\"\n            formControlName=\"firstName\"\n            placeholder=\"First Name\">\n    </mat-form-field>\n    <mat-form-field >\n      <input matInput\n             type=\"text\"\n             formControlName=\"lastName\"\n             placeholder=\"Last Name\">\n    </mat-form-field>\n    <mat-form-field>\n      <input matInput\n             type=\"text\"\n             formControlName=\"phoneNumber\"\n             placeholder=\"Phone Number\">\n    </mat-form-field>\n    <mat-checkbox>Minor?</mat-checkbox>\n    <mat-form-field>\n      <mat-select placeholder=\"Preferred Language\"\n                  formControlName=\"preferredLanguage\">\n        <mat-option *ngFor=\"let l of languages\" [value]=\"l\">\n          {{ l }}\n        </mat-option>\n      </mat-select>\n    </mat-form-field>\n    <mat-form-field>\n      <mat-select placeholder=\"Preferred Contact Method\"\n                  formControlName=\"preferredContactMethod\">\n        <mat-option *ngFor=\"let c of contactMethods\" [value]=\"c\">\n          {{ c }}\n        </mat-option>\n      </mat-select>\n    </mat-form-field>\n  </form>\n  <button class=\"next-btn\" mat-raised-button color=\"primary\">Next</button>\n</main>\n"
+module.exports = "<main>\n<!--********************************************************************\n                        Patient Search Field\n**********************************************************************-->\n  <h2>Add or Lookup Patient</h2>\n  <mat-form-field class=\"example-full-width\" appearance=\"outline\">\n    <input type=\"text\"\n           placeholder=\"Patient Identifier\"\n           aria-label=\"Patient Identifier\"\n           matInput [formControl]=\"patientSearchControl\" [matAutocomplete]=\"auto\">\n    <mat-autocomplete #auto=\"matAutocomplete\">\n      <mat-option *ngFor=\"let p of filteredPatientOptions | async\" [value]=\"p\">\n        {{ p }}\n      </mat-option>\n    </mat-autocomplete>\n  </mat-form-field>\n<!--********************************************************************\n                        Patient Detail Form\n**********************************************************************-->\n  <form [formGroup]=\"patientForm\">\n    <mat-form-field appearance=\"outline\">\n      <input matInput\n            type=\"text\"\n            formControlName=\"firstName\"\n            placeholder=\"First Name\">\n    </mat-form-field>\n    <mat-form-field appearance=\"outline\">\n      <input matInput\n             type=\"text\"\n             formControlName=\"lastName\"\n             placeholder=\"Last Name\">\n    </mat-form-field>\n    <mat-form-field appearance=\"outline\">\n      <input matInput\n             type=\"text\"\n             formControlName=\"phoneNumber\"\n             placeholder=\"Phone Number\">\n    </mat-form-field>\n    <mat-checkbox>Minor?</mat-checkbox>\n    <mat-form-field appearance=\"outline\">\n      <mat-select placeholder=\"Preferred Language\"\n                  formControlName=\"preferredLanguage\">\n        <mat-option *ngFor=\"let l of languages\" [value]=\"l\">\n          {{ l }}\n        </mat-option>\n      </mat-select>\n    </mat-form-field>\n    <mat-form-field appearance=\"outline\">\n      <mat-select placeholder=\"Preferred Contact Method\"\n                  formControlName=\"preferredContactMethod\">\n        <mat-option *ngFor=\"let c of contactMethods\" [value]=\"c\">\n          {{ c }}\n        </mat-option>\n      </mat-select>\n    </mat-form-field>\n  </form>\n  <button class=\"next-btn\" mat-raised-button color=\"primary\">Next</button>\n</main>\n"
 
 /***/ }),
 
@@ -1797,7 +1797,7 @@ var PatientsComponent = /** @class */ (function () {
     function PatientsComponent(dispatcherService) {
         this.dispatcherService = dispatcherService;
         this.languages = ['English', 'Spanish', 'Other'];
-        this.contactMethods = ['phone call', 'text', 'email'];
+        this.contactMethods = ['Call', 'Text', 'Email'];
         // TODO: This may become a simple text input + search rather than autocomplete
         this.patientOptions = ['1234', '5225', '8274'];
         /*********************************************************************
