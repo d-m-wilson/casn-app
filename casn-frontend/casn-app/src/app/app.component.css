@@ -13,3 +13,8 @@
 .logo {
   height: 100%;
 }
+
+.side-menu {
+  display: flex;
+  flex-direction: column;
+}

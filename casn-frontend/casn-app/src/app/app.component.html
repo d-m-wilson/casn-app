@@ -2,8 +2,11 @@
 <!--********************************************************************
                           Sidenav Menu
 **********************************************************************-->
-  <mat-sidenav #sidenav mode="over" [(opened)]="opened">
-      <button mat-raised-button color="accent" routerLink="/login">Log Out</button>
+  <mat-sidenav class="side-menu" #sidenav mode="over" [(opened)]="opened">
+    <button mat-raised-button color="primary" routerLink="/" (click)="sidenav.close()">My Dashboard</button>
+    <button mat-raised-button color="primary" routerLink="/patient" (click)="sidenav.close()">Schedule a Ride</button>
+    <button mat-raised-button color="primary" (click)="sidenav.close()">View Schedule</button>
+    <button mat-raised-button color="accent" routerLink="/login" (click)="sidenav.close()">Log Out</button>
   </mat-sidenav>
 <!--********************************************************************
                           Main App Content
