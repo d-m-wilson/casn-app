@@ -9,7 +9,7 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
-  - url: 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0'
+  - url: 'https://casn-app-server/api'
 tags:
   - name: dispatcher
     description: dispatcher only calls
