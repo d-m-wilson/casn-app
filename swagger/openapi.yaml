@@ -594,8 +594,6 @@ components:
           $ref: '#/components/schemas/drive'
         driveFrom:
           $ref: '#/components/schemas/drive'
-        patient:
-          $ref: '#/components/schemas/patient'
     allAppointments:
       type: array
       items:
