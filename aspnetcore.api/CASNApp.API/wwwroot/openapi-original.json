@@ -13,7 +13,7 @@
     "version" : "1.0.0"
   },
   "servers" : [ {
-    "url" : "https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0"
+    "url" : "https://casn-app-server/api"
   } ],
   "security" : [ {
     "BearerAuth" : [ ]
@@ -811,9 +811,6 @@
           },
           "driveFrom" : {
             "$ref" : "#/components/schemas/drive"
-          },
-          "patient" : {
-            "$ref" : "#/components/schemas/patient"
           }
         },
         "example" : {

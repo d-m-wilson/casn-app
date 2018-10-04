@@ -7,7 +7,7 @@ namespace CASNApp.API.Entities
     {
         public Patient()
         {
-            Appointment = new HashSet<Appointment>();
+            Appointments = new HashSet<Appointment>();
         }
 
         public uint Id { get; set; }
@@ -23,6 +23,6 @@ namespace CASNApp.API.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public ICollection<Appointment> Appointment { get; set; }
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }

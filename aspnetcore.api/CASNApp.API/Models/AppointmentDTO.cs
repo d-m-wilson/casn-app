@@ -43,12 +43,6 @@ namespace CASNApp.API.Models
         public Drive DriveFrom { get; set; }
 
         /// <summary>
-        /// Gets or Sets Patient
-        /// </summary>
-        [DataMember(Name="patient")]
-        public Patient Patient { get; set; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -59,7 +53,6 @@ namespace CASNApp.API.Models
             sb.Append("  Appointment: ").Append(Appointment).Append("\n");
             sb.Append("  DriveTo: ").Append(DriveTo).Append("\n");
             sb.Append("  DriveFrom: ").Append(DriveFrom).Append("\n");
-            sb.Append("  Patient: ").Append(Patient).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -110,11 +103,6 @@ namespace CASNApp.API.Models
                     DriveFrom == other.DriveFrom ||
                     DriveFrom != null &&
                     DriveFrom.Equals(other.DriveFrom)
-                ) && 
-                (
-                    Patient == other.Patient ||
-                    Patient != null &&
-                    Patient.Equals(other.Patient)
                 );
         }
 
@@ -134,8 +122,6 @@ namespace CASNApp.API.Models
                     hashCode = hashCode * 59 + DriveTo.GetHashCode();
                     if (DriveFrom != null)
                     hashCode = hashCode * 59 + DriveFrom.GetHashCode();
-                    if (Patient != null)
-                    hashCode = hashCode * 59 + Patient.GetHashCode();
                 return hashCode;
             }
         }

@@ -7,7 +7,7 @@ namespace CASNApp.API.Entities
     {
         public Appointment()
         {
-            Drive = new HashSet<Drive>();
+            Drives = new HashSet<Drive>();
         }
 
         public uint Id { get; set; }
@@ -25,6 +25,6 @@ namespace CASNApp.API.Entities
         public Clinic Clinic { get; set; }
         public Volunteer Dispatcher { get; set; }
         public Patient Patient { get; set; }
-        public ICollection<Drive> Drive { get; set; }
+        public ICollection<Drive> Drives { get; set; }
     }
 }

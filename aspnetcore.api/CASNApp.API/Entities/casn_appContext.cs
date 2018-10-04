@@ -87,18 +87,18 @@ namespace CASNApp.API.Entities
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Clinic)
-                    .WithMany(p => p.Appointment)
+                    .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.ClinicId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_appointment_clinicId");
 
                 entity.HasOne(d => d.Dispatcher)
-                    .WithMany(p => p.Appointment)
+                    .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.DispatcherId)
                     .HasConstraintName("fk_appointment_DispatcherId");
 
                 entity.HasOne(d => d.Patient)
-                    .WithMany(p => p.Appointment)
+                    .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.PatientId)
                     .HasConstraintName("fk_appointment_PatientId");
             });
@@ -225,12 +225,12 @@ namespace CASNApp.API.Entities
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Appointment)
-                    .WithMany(p => p.Drive)
+                    .WithMany(p => p.Drives)
                     .HasForeignKey(d => d.AppointmentId)
                     .HasConstraintName("fk_drive_AppointmentId");
 
                 entity.HasOne(d => d.Driver)
-                    .WithMany(p => p.Drive)
+                    .WithMany(p => p.Drives)
                     .HasForeignKey(d => d.DriverId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_drive_DriverId");
@@ -384,12 +384,12 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.VolunteerId).HasColumnName("volunteerId");
 
                 entity.HasOne(d => d.Drive)
-                    .WithMany(p => p.VolunteerDrive)
+                    .WithMany(p => p.VolunteerDrives)
                     .HasForeignKey(d => d.DriveId)
                     .HasConstraintName("fk_volunteer_drive_DriveId");
 
                 entity.HasOne(d => d.Volunteer)
-                    .WithMany(p => p.VolunteerDrive)
+                    .WithMany(p => p.VolunteerDrives)
                     .HasForeignKey(d => d.VolunteerId)
                     .HasConstraintName("fk_volunteer_drive_VolunteerId");
             });

@@ -17,6 +17,7 @@ using CASNApp.API.Attributes;
 using CASNApp.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -47,8 +48,41 @@ namespace CASNApp.API.Controllers
         [ValidateModelState]
         [SwaggerOperation("AddAppointment")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
-        public virtual IActionResult AddAppointment([FromBody]AppointmentDTO appointmentDTO)
-        { 
+        public virtual async Task<IActionResult> AddAppointment([FromBody]AppointmentDTO appointmentDTO)
+        {
+            uint userId = 0;
+
+            try
+            {
+                StringValues authHeaders;
+
+                HttpContext.Request.Headers.TryGetValue("Authorization", out authHeaders);
+
+                var firstBearerAuthHeader = authHeaders
+                    .Where(v => v != null && v.Contains("Bearer ", StringComparison.InvariantCultureIgnoreCase))
+                    .First();
+
+                var json = firstBearerAuthHeader.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Last();
+                
+                var token = JsonConvert.DeserializeAnonymousType(json, new { userId = 0L });
+
+                if (token.userId == 0)
+                    return Unauthorized();
+
+                userId = (uint)token.userId;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return Unauthorized();
+            }
+
+            if (!appointmentDTO.Validate())
+            {
+                return BadRequest(appointmentDTO);
+            }
+
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(AppointmentDTO));
 
@@ -58,14 +92,63 @@ namespace CASNApp.API.Controllers
             //TODO: Uncomment the next line to return response 409 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(409);
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"patient\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"patientIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"patientId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)
-            : default(AppointmentDTO);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var appointment = appointmentDTO.Appointment;
+            var driveTo = appointmentDTO.DriveTo;
+            var driveFrom = appointmentDTO.DriveFrom;
+
+            var clinic = await dbContext.Clinic
+                .AsNoTracking()
+                .Where(c => c.Id == appointment.ClinicId)
+                .FirstOrDefaultAsync();
+
+            if (clinic == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            var appointmentEntity = new Entities.Appointment
+            {
+                DispatcherId = userId,
+                PatientId = (uint)appointment.PatientId.Value,
+                ClinicId = (uint)appointment.ClinicId.Value,
+                PickupLocationVague = appointment.PickupLocationVague,
+                DropoffLocationVague = appointment.DropoffLocationVague,
+                AppointmentDate = appointment.AppointmentDate.Value,
+                AppointmentTypeId = appointment.AppointmentTypeId.Value,
+                IsActive = true,
+                Created = DateTime.UtcNow,
+                Updated = null,
+            };
+
+            var driveToEntity = new Entities.Drive
+            {
+                Appointment = appointmentEntity,
+                Direction = Drive.DirectionToClinic,
+                DriverId = null,
+                StartAddress = driveTo.StartAddress,
+                StartCity = driveTo.StartCity,
+                StartState = driveTo.StartState,
+                StartPostalCode = driveTo.StartPostalCode,
+                IsActive = true,
+                Created = DateTime.UtcNow,
+                Updated = null,
+            };
+
+            var driveFromEntity = new Entities.Drive
+            {
+                Appointment = appointmentEntity,
+                Direction = Drive.DirectionFromClinic,
+                DriverId = null,
+                EndAddress = driveTo.StartAddress,
+                EndCity = driveTo.StartCity,
+                EndState = driveTo.StartState,
+                EndPostalCode = driveTo.StartPostalCode,
+                IsActive = true,
+                Created = DateTime.UtcNow,
+                Updated = null,
+            };
+
+            return new ObjectResult(appointmentDTO);
         }
 
         /// <summary>
