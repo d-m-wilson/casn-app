@@ -10,10 +10,16 @@ form {
   margin: 10px;
 }
 
+.patient-form-group {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
 .mat-form-field, .mat-checkbox {
   margin: 5px 0;
 }
 
-.next-btn {
+.form-btn {
   margin: 10px 5px;
 }

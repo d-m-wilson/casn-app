@@ -3,56 +3,112 @@
                         Patient Search Field
 **********************************************************************-->
   <h2>Add or Lookup Patient</h2>
-  <mat-form-field class="example-full-width" appearance="outline">
-    <input type="text"
-           placeholder="Patient Identifier"
-           aria-label="Patient Identifier"
-           matInput [formControl]="patientSearchControl" [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let p of filteredPatientOptions | async" [value]="p">
-        {{ p }}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-<!--********************************************************************
-                        Patient Detail Form
-**********************************************************************-->
-  <form [formGroup]="patientForm">
-    <mat-form-field appearance="outline">
-      <input matInput
-            type="text"
-            formControlName="firstName"
-            placeholder="First Name">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <input matInput
-             type="text"
-             formControlName="lastName"
-             placeholder="Last Name">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <input matInput
-             type="text"
-             formControlName="phoneNumber"
-             placeholder="Phone Number">
-    </mat-form-field>
-    <mat-checkbox>Minor?</mat-checkbox>
-    <mat-form-field appearance="outline">
-      <mat-select placeholder="Preferred Language"
-                  formControlName="preferredLanguage">
-        <mat-option *ngFor="let l of languages" [value]="l">
-          {{ l }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-select placeholder="Preferred Contact Method"
-                  formControlName="preferredContactMethod">
-        <mat-option *ngFor="let c of contactMethods" [value]="c">
-          {{ c }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+
+    <div class="patient-form-group">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Patient Identifier</mat-label>
+        <input type="text"
+        placeholder="1234"
+        aria-label="Patient Identifier"
+        matInput
+        formControlName="patientIdentifier">
+        <!-- <mat-error *ngIf="patientIdentifier.invalid">This field is required.</mat-error> -->
+      </mat-form-field>
+
+      <button class="form-btn"
+              mat-raised-button
+              color="primary"
+              [disabled]="patientForm.controls['patientIdentifier'].invalid"
+              *ngIf="!displayPatientForm"
+              (click)="searchPatientIdentifier()">Next</button>
+    </div>
+
+  <!--********************************************************************
+                          Patient Detail Form
+  **********************************************************************-->
+    <div class="patient-form-group" *ngIf="displayPatientForm">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput
+              type="text"
+              formControlName="firstName"
+              aria-label="First Name"
+              placeholder="Jane">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput
+               type="text"
+               formControlName="lastName"
+               aria-label="Last Name"
+               placeholder="Doe">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <input matInput
+               type="text"
+               formControlName="phone"
+               aria-label="Phone Number"
+               placeholder="Phone Number">
+      </mat-form-field>
+      <mat-checkbox formControlName="isMinor"
+                    aria-label="Minor">Minor?</mat-checkbox>
+      <mat-form-field appearance="outline">
+        <mat-label>Preferred Language</mat-label>
+        <mat-select placeholder="Language"
+                    aria-label="Preferred Language"
+                    formControlName="preferredLanguage">
+          <mat-option *ngFor="let l of languages" [value]="l">
+            {{ l }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Preferred Contact Method</mat-label>
+        <mat-select placeholder="Contact Method"
+                    aria-label="Preferred Contact Method"
+                    formControlName="preferredContactMethod">
+          <mat-option *ngFor="let c of contactMethods" [value]="c">
+            {{ c }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button class="form-btn"
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!patientForm.valid">Next</button>
+      <button mat-raised-button
+              color="warn"
+              class="form-btn"
+              (click)="handleCancelClick()">Cancel</button>
+    </div>
   </form>
-  <button class="next-btn" mat-raised-button color="primary">Next</button>
+
+  <!--********************************************************************
+                              Form Debug
+  **********************************************************************-->
+  <div class="debug">
+    <p>Form Status: {{ patientForm.status }}</p>
+    <p>Form Value: {{ patientForm.value | json }}</p>
+  </div>
 </main>
+
+<!--********************************************************************
+                            Patient Modal
+**********************************************************************-->
+<div *ngIf="displayPatientFoundModal" class="modal">
+  <div class="modal-content">
+    <h2>Found Matching Patient: {{ patient.firstName }} {{ patient.lastName }}</h2>
+    <p>Is this your patient?</p>
+    <div class="modal-ctrl-btns">
+      <button mat-raised-button
+              color="primary"
+              (click)="handleYesClick()">Yes</button>
+      <button mat-raised-button
+              color="accent"
+              (click)="handleNoClick()">No</button>
+    </div>
+  </div>
+</div>

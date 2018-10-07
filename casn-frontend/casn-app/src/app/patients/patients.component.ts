@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { DispatcherService } from '../api/api/dispatcher.service';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-patients',
@@ -10,51 +12,82 @@ import { DispatcherService } from '../api/api/dispatcher.service';
   styleUrls: ['./patients.component.css']
 })
 export class PatientsComponent implements OnInit {
-  languages = ['English', 'Spanish', 'Other'];
-  contactMethods = ['Call', 'Text', 'Email'];
-  // TODO: This may become a simple text input + search rather than autocomplete
-  patientOptions: string[] = ['1234', '5225', '8274'];
+  patient: any;
+  /* Display flags for patient lookup feature */
+  displayPatientFoundModal: boolean = false;
+  displayPatientForm: boolean = false;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  constructor( private dispatcherService: DispatcherService ) { }
+  constructor( private ds: DispatcherService,
+               private fb: FormBuilder,
+               private location: Location ) { }
 
-  ngOnInit() {
-    this.getAppts();
-    this.filteredPatientOptions = this.patientSearchControl.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => this._filter(value))
-      );
+  ngOnInit() { }
+
+  /*********************************************************************
+                                Form
+  **********************************************************************/
+  languages: string[] = ['English', 'Spanish', 'Other'];
+  contactMethods: string[] = ['Call', 'Text', 'Email'];
+
+  patientForm = this.fb.group({
+    patientIdentifier: ['', [Validators.required, Validators.minLength(4),
+                        Validators.maxLength(6)]],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    phone: ['', Validators.required],
+    isMinor: [false, Validators.required],
+    preferredLanguage: ['', Validators.required],
+    preferredContactMethod: ['', Validators.required],
+  })
+
+  onSubmit(): void {}
+
+  /*********************************************************************
+                              Click Handlers
+  **********************************************************************/
+  handleYesClick() {
+    this.displayPatientFoundModal = false;
+    this.displayPatientForm = true;
+    this.patientForm.setValue(this.patient);
+  }
+
+  handleNoClick() {
+    this.displayPatientFoundModal = false;
+    this.patient = {}
+  }
+
+  handleCancelClick() {
+    if(confirm('Are you sure? Any unsaved changes will be lost.')) {
+      this.patientForm.reset();
+      this.displayPatientForm = false;
+      this.goBack();
+    }
   }
 
   /*********************************************************************
-                      Form Methods
+                            Service Calls
   **********************************************************************/
-  // PatientId - last 4 digits of phone number, add 5th digit on duplicate
-  patientForm = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    phoneNumber: new FormControl(''),
-    preferredLanguage: new FormControl(''),
-    preferredContactMethod: new FormControl(''),
-  });
-
-  patientSearchControl = new FormControl();
-  filteredPatientOptions: Observable<string[]>;
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.patientOptions.filter(option => option.toLowerCase().includes(filterValue));
+  goBack(): void {
+    this.location.back();
   }
 
-  /*********************************************************************
-                      Service Calls
-  **********************************************************************/
-  getAppts() {
-    this.dispatcherService.getAllAppointmentsForDispatcher().subscribe(a => {
-      console.log("Appointments are:", a);
+  searchPatientIdentifier(): void {
+    const id = this.patientForm.value.patientIdentifier;
+    this.ds.getPatientByPatientIdentifier(id).subscribe(p => {
+      console.log("The patient is:", p);
+      this.patient = {
+        patientIdentifier: p.patientIdentifier,
+        firstName: p.firstName,
+        lastName: p.lastName,
+        phone: p.phone,
+        isMinor: p.isMinor,
+        preferredLanguage: p.preferredLanguage,
+        preferredContactMethod: p.preferredContactMethod,
+      };
+      this.displayPatientFoundModal = true;
     })
   }
 
