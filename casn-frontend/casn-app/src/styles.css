@@ -14,3 +14,8 @@ body {
 .clicky {
   cursor: pointer;
 }
+
+/* Comment out to show debug messages for development */
+/* .debug {
+  display: none;
+} */
