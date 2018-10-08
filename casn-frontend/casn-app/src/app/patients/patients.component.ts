@@ -56,9 +56,8 @@ export class PatientsComponent implements OnInit {
     if(isNewPatient) {
       this.saveNewPatient();
     } else {
-      // TODO: There should be an update patient endpoint
+      // TODO: There should be an update patient endpoint, right?
       this.saveNewPatient();
-      // this.updatePatient();
     }
   }
 
@@ -118,7 +117,5 @@ export class PatientsComponent implements OnInit {
       alert('Success! Your patient has been saved.');
     });
   }
-
-  // updatePatient(): void {}
 
 }
