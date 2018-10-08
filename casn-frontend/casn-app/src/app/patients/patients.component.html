@@ -13,13 +13,14 @@
         aria-label="Patient Identifier"
         matInput
         formControlName="patientIdentifier">
-        <!-- <mat-error *ngIf="patientIdentifier.invalid">This field is required.</mat-error> -->
+        <mat-error *ngIf="f.patientIdentifier.errors?.required">This field is required.</mat-error>
+        <mat-error *ngIf="f.patientIdentifier.errors?.minlength || f.patientIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
       </mat-form-field>
 
       <button class="form-btn"
               mat-raised-button
               color="primary"
-              [disabled]="patientForm.controls['patientIdentifier'].invalid"
+              [disabled]="f.patientIdentifier.invalid"
               *ngIf="!displayPatientForm"
               (click)="searchPatientIdentifier()">Next</button>
     </div>
@@ -35,6 +36,7 @@
               formControlName="firstName"
               aria-label="First Name"
               placeholder="Jane">
+        <mat-error *ngIf="f.firstName.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Last Name</mat-label>
@@ -43,14 +45,17 @@
                formControlName="lastName"
                aria-label="Last Name"
                placeholder="Doe">
+        <mat-error *ngIf="f.lastName.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Phone Number</mat-label>
         <input matInput
                type="text"
                formControlName="phone"
+               mask="(000) 000-0000"
                aria-label="Phone Number"
                placeholder="Phone Number">
+        <mat-error *ngIf="f.phone.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <mat-checkbox formControlName="isMinor"
                     aria-label="Minor">Minor?</mat-checkbox>
@@ -63,16 +68,18 @@
             {{ l }}
           </mat-option>
         </mat-select>
+        <mat-error *ngIf="f.preferredLanguage.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Preferred Contact Method</mat-label>
         <mat-select placeholder="Contact Method"
                     aria-label="Preferred Contact Method"
                     formControlName="preferredContactMethod">
-          <mat-option *ngFor="let c of contactMethods" [value]="c">
-            {{ c }}
+          <mat-option *ngFor="let c of contactMethods" [value]="c.value">
+            {{ c.displayValue }}
           </mat-option>
         </mat-select>
+        <mat-error *ngIf="f.preferredContactMethod.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <button class="form-btn"
               mat-raised-button
@@ -100,7 +107,7 @@
 **********************************************************************-->
 <div *ngIf="displayPatientFoundModal" class="modal">
   <div class="modal-content">
-    <h2>Found Matching Patient: {{ patient.firstName }} {{ patient.lastName }}</h2>
+    <h2>Found Matching Patient: {{ existingPatient.firstName }} {{ existingPatient.lastName }}</h2>
     <p>Is this your patient?</p>
     <div class="modal-ctrl-btns">
       <button mat-raised-button
