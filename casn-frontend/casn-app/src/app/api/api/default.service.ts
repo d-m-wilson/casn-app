@@ -30,7 +30,8 @@ import { DefaultServiceInterface }                            from './default.se
 })
 export class DefaultService implements DefaultServiceInterface {
 
-    protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
+    // protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
+    protected basePath = 'https://casnapptest.dmwilson.info/api';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -62,7 +63,7 @@ export class DefaultService implements DefaultServiceInterface {
 
     /**
      * gets list of clinics
-     * 
+     *
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */

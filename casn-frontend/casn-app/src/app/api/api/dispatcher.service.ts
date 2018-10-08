@@ -35,7 +35,8 @@ import { DispatcherServiceInterface }                            from './dispatc
 })
 export class DispatcherService implements DispatcherServiceInterface {
 
-    protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
+    // protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
+    protected basePath = 'https://casnapptest.dmwilson.info/api';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -116,7 +117,7 @@ export class DispatcherService implements DispatcherServiceInterface {
     /**
      * approves a volunteer for a drive
      * Adds driverId to a drive
-     * @param body1 
+     * @param body1
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -208,8 +209,8 @@ export class DispatcherService implements DispatcherServiceInterface {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * @param appointmentID pass an appointmentIdentifier
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -254,7 +255,7 @@ export class DispatcherService implements DispatcherServiceInterface {
 
     /**
      * gets appointments with dispatcher-level details
-     * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers. 
+     * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers.
      * @param startDate pass a startDate by which to filter
      * @param endDate pass an endDate by which to filter
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -306,7 +307,7 @@ export class DispatcherService implements DispatcherServiceInterface {
 
     /**
      * gets appointment by appointmentID
-     * Search for existing appointment by appointmentIdentifier, return dispatcher-level details 
+     * Search for existing appointment by appointmentIdentifier, return dispatcher-level details
      * @param appointmentID pass an appointmentIdentifier
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -351,7 +352,7 @@ export class DispatcherService implements DispatcherServiceInterface {
 
     /**
      * gets patient by patientIdentifier
-     * Search for existing patients by the dispatcher created patientIdentifier (patient ID) 
+     * Search for existing patients by the dispatcher created patientIdentifier (patient ID)
      * @param patientIdentifier pass a search string for looking up patientIdentifier
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -402,7 +403,7 @@ export class DispatcherService implements DispatcherServiceInterface {
 
     /**
      * get list of applicants for a drive
-     * 
+     *
      * @param driveId id of drive
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
