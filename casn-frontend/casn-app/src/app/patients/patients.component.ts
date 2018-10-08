@@ -90,25 +90,26 @@ export class PatientsComponent implements OnInit {
     this.location.back();
   }
 
+  // TODO: Uncomment this once get patient endpoint is live.
   searchPatientIdentifier(): void {
-    const id = this.patientForm.value.patientIdentifier;
-    this.ds.getPatientByPatientIdentifier(id).subscribe(p => {
-      console.log("Get patient request returned:", p);
-      if(p.patientIdentifier) {
-        this.existingPatient = {
-          patientIdentifier: p.patientIdentifier,
-          firstName: p.firstName,
-          lastName: p.lastName,
-          phone: p.phone,
-          isMinor: p.isMinor,
-          preferredLanguage: p.preferredLanguage,
-          preferredContactMethod: p.preferredContactMethod,
-        };
-        this.displayPatientFoundModal = true;
-      } else {
+    // const id = this.patientForm.value.patientIdentifier;
+    // this.ds.getPatientByPatientIdentifier(id).subscribe(p => {
+    //   console.log("Get patient request returned:", p);
+    //   if(p.patientIdentifier) {
+    //     this.existingPatient = {
+    //       patientIdentifier: p.patientIdentifier,
+    //       firstName: p.firstName,
+    //       lastName: p.lastName,
+    //       phone: p.phone,
+    //       isMinor: p.isMinor,
+    //       preferredLanguage: p.preferredLanguage,
+    //       preferredContactMethod: p.preferredContactMethod,
+    //     };
+    //     this.displayPatientFoundModal = true;
+    //   } else {
         this.displayPatientForm = true;
-      }
-    })
+    //   }
+    // })
   }
 
   saveNewPatient(): void {
