@@ -4,6 +4,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxMaskModule } from 'ngx-mask';
 /* Angular Material Components */
 import {
   MatAutocompleteModule,
@@ -43,6 +44,7 @@ import { RidesComponent } from './rides/rides.component';
     LoginComponent
   ],
   imports: [
+    NgxMaskModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
