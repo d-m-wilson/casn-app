@@ -113,9 +113,10 @@ export class PatientsComponent implements OnInit {
   }
 
   saveNewPatient(): void {
-    this.ds.addPatient().subscribe(p => {
+    this.ds.addPatient(this.patientForm.value).subscribe(p => {
       console.log("Save patient response is", p);
       alert('Success! Your patient has been saved.');
+      this.goBack();
     });
   }
 
