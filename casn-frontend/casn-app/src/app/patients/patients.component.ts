@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, catchError } from 'rxjs/operators';
 import { DispatcherService } from '../api/api/dispatcher.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -34,6 +34,8 @@ export class PatientsComponent implements OnInit {
   contactMethods: any[] = [ {value: 1, displayValue: 'Call'},
                             {value: 2, displayValue: 'Text'},
                             {value: 3, displayValue:'Email'} ];
+
+  patientIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
 
   patientForm = this.fb.group({
     patientIdentifier: ['', [Validators.required, Validators.minLength(4),
@@ -72,7 +74,7 @@ export class PatientsComponent implements OnInit {
 
   handleNoClick(): void {
     this.displayPatientFoundModal = false;
-    this.existingPatient = {}
+    this.f.patientIdentifier.setValue(this.patientIdentifierSearch.value);
   }
 
   handleCancelClick(): void {
@@ -90,31 +92,41 @@ export class PatientsComponent implements OnInit {
     this.location.back();
   }
 
-  // TODO: Uncomment this once get patient endpoint is live.
+  // TODO: Return something besides 404 when no patient found.
   searchPatientIdentifier(): void {
-    // const id = this.patientForm.value.patientIdentifier;
-    // this.ds.getPatientByPatientIdentifier(id).subscribe(p => {
-    //   console.log("Get patient request returned:", p);
-    //   if(p.patientIdentifier) {
-    //     this.existingPatient = {
-    //       patientIdentifier: p.patientIdentifier,
-    //       firstName: p.firstName,
-    //       lastName: p.lastName,
-    //       phone: p.phone,
-    //       isMinor: p.isMinor,
-    //       preferredLanguage: p.preferredLanguage,
-    //       preferredContactMethod: p.preferredContactMethod,
-    //     };
-    //     this.displayPatientFoundModal = true;
-    //   } else {
+    const id = this.patientForm.value.patientIdentifier;
+    this.ds.getPatientByPatientIdentifier(id).subscribe(
+      p => {
+        console.log("Get patient request returned:", p);
+        if(p.patientIdentifier) {
+          this.existingPatient = {
+            patientIdentifier: p.patientIdentifier,
+            firstName: p.firstName,
+            lastName: p.lastName,
+            phone: p.phone,
+            isMinor: p.isMinor,
+            preferredLanguage: p.preferredLanguage,
+            preferredContactMethod: p.preferredContactMethod,
+          };
+          this.displayPatientFoundModal = true;
+        } else {
+          this.displayPatientForm = true;
+          this.f.patientIdentifier.setValue(this.patientIdentifierSearch.value);
+
+        }
+      },
+      err => {
+        console.log("404 - No existing patient was found");
         this.displayPatientForm = true;
-    //   }
-    // })
+        this.f.patientIdentifier.setValue(this.patientIdentifierSearch.value);
+
+      }
+    );
   }
 
   saveNewPatient(): void {
-    this.ds.addPatient(this.patientForm.value).subscribe(p => {
-      console.log("Save patient response is", p);
+    this.ds.addPatient(this.patientForm.value).subscribe(data => {
+      console.log("Save patient response is", data);
       alert('Success! Your patient has been saved.');
       this.goBack();
     });

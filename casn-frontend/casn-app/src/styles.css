@@ -46,7 +46,7 @@ body {
 /* Submit/Cancel btns */
 .modal-ctrl-btns {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
 
 /* The Close Button */

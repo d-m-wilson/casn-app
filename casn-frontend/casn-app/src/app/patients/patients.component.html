@@ -3,8 +3,32 @@
                         Patient Search Field
 **********************************************************************-->
   <h2>Add or Lookup Patient</h2>
-  <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+  <div class="patient-form-group" *ngIf="!displayPatientForm">
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Patient Identifier</mat-label>
+      <input type="text"
+      placeholder="1234"
+      aria-label="Patient Identifier"
+      matInput
+      [formControl]="patientIdentifierSearch">
+      <mat-error *ngIf="patientIdentifierSearch.errors?.required">This field is required.</mat-error>
+      <mat-error *ngIf="patientIdentifierSearch.errors?.minlength || f.patientIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
+    </mat-form-field>
 
+    <button class="form-btn"
+            mat-raised-button
+            color="primary"
+            [disabled]="patientIdentifierSearch.invalid"
+            *ngIf="!displayPatientForm"
+            (click)="searchPatientIdentifier()">Next</button>
+  </div>
+
+<!--********************************************************************
+                            Patient Detail Form
+**********************************************************************-->
+  <form [formGroup]="patientForm"
+        (ngSubmit)="onSubmit()"
+        *ngIf="displayPatientForm">
     <div class="patient-form-group">
       <mat-form-field class="example-full-width" appearance="outline">
         <mat-label>Patient Identifier</mat-label>
@@ -16,19 +40,9 @@
         <mat-error *ngIf="f.patientIdentifier.errors?.required">This field is required.</mat-error>
         <mat-error *ngIf="f.patientIdentifier.errors?.minlength || f.patientIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
       </mat-form-field>
-
-      <button class="form-btn"
-              mat-raised-button
-              color="primary"
-              [disabled]="f.patientIdentifier.invalid"
-              *ngIf="!displayPatientForm"
-              (click)="searchPatientIdentifier()">Next</button>
     </div>
 
-  <!--********************************************************************
-                          Patient Detail Form
-  **********************************************************************-->
-    <div class="patient-form-group" *ngIf="displayPatientForm">
+  <div class="patient-form-group">
       <mat-form-field appearance="outline">
         <mat-label>First Name</mat-label>
         <input matInput
@@ -36,7 +50,7 @@
               formControlName="firstName"
               aria-label="First Name"
               placeholder="Jane">
-        <mat-error *ngIf="f.firstName.errors?.required">This field is required.</mat-error>
+        <mat-error *ngIf="submitted && f.firstName.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Last Name</mat-label>
@@ -115,7 +129,7 @@
               (click)="handleYesClick()">Yes</button>
       <button mat-raised-button
               color="accent"
-              (click)="handleNoClick()">No</button>
+              (click)="handleNoClick()">No, I'll create a different ID.</button>
     </div>
   </div>
 </div>
