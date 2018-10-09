@@ -16,9 +16,9 @@ body {
 }
 
 /* Comment out to show debug messages for development */
-/* .debug {
+.debug {
   display: none;
-} */
+}
 
 /* The Modal (background) */
 .modal {
