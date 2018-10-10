@@ -94,7 +94,7 @@ export class PatientsComponent implements OnInit {
 
   // TODO: Return something besides 404 when no patient found.
   searchPatientIdentifier(): void {
-    const id = this.patientForm.value.patientIdentifier;
+    const id = this.patientIdentifierSearch.value;
     this.ds.getPatientByPatientIdentifier(id).subscribe(
       p => {
         console.log("Get patient request returned:", p);
