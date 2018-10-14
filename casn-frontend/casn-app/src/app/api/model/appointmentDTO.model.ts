@@ -11,12 +11,10 @@
  */
 import { Appointment } from './appointment.model';
 import { Drive } from './drive.model';
-import { Patient } from './patient.model';
 
 
-export interface AppointmentDTO { 
+export interface AppointmentDTO {
     appointment?: Appointment;
     driveTo?: Drive;
     driveFrom?: Drive;
-    patient?: Patient;
 }
