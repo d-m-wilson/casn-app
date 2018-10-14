@@ -74,10 +74,10 @@ export class DispatcherService implements DispatcherServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addAppointment(appointmentDTO?: AppointmentDTO, observe?: 'body', reportProgress?: boolean): Observable<AppointmentDTO>;
-    public addAppointment(appointmentDTO?: AppointmentDTO, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<AppointmentDTO>>;
-    public addAppointment(appointmentDTO?: AppointmentDTO, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<AppointmentDTO>>;
-    public addAppointment(appointmentDTO?: AppointmentDTO, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public addAppointment(appointmentDTO?: any, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public addAppointment(appointmentDTO?: any, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public addAppointment(appointmentDTO?: any, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public addAppointment(appointmentDTO?: any, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
