@@ -35,6 +35,7 @@ import { DispatcherServiceInterface }                            from './dispatc
 })
 export class DispatcherService implements DispatcherServiceInterface {
 
+    // TODO: Add these to env
     // protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
     protected basePath = 'https://casnapptest.dmwilson.info/api';
     public defaultHeaders = new HttpHeaders();
