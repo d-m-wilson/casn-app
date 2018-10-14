@@ -3,7 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith, catchError } from 'rxjs/operators';
 import { DispatcherService } from '../api/api/dispatcher.service';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 @Component({
@@ -22,7 +22,8 @@ export class PatientsComponent implements OnInit {
   **********************************************************************/
   constructor( private ds: DispatcherService,
                private fb: FormBuilder,
-               private location: Location ) { }
+               private location: Location,
+               private router: Router ) { }
 
   ngOnInit() { }
 
@@ -59,8 +60,8 @@ export class PatientsComponent implements OnInit {
     if(isNewPatient) {
       this.saveNewPatient();
     } else {
-      // TODO: There should be an update patient endpoint, right?
-      this.location.go('/appointments');
+      // TODO: There should be an update patient endpoint
+      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value }]);
     }
   }
 
@@ -128,8 +129,8 @@ export class PatientsComponent implements OnInit {
   saveNewPatient(): void {
     this.ds.addPatient(this.patientForm.value).subscribe(data => {
       console.log("Save patient response is", data);
-      alert('Success! Your patient has been saved.');
-      this.goBack();
+      // alert('Success! Your patient has been saved.');
+      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value }]);
     });
   }
 
