@@ -31,7 +31,8 @@
       <mat-label>Clinic</mat-label>
       <mat-select placeholder="Clinic"
                   aria-label="Clinic"
-                  formControlName="clinicId">
+                  formControlName="clinicId"
+                  (selectionChange)="setDropoffLocation()">
         <mat-option *ngFor="let c of clinics" [value]="c.id">
           {{ c.name }}
         </mat-option>

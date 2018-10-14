@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
   styleUrls: ['./appointments.component.css']
 })
 export class AppointmentsComponent implements OnInit {
+  patientIdentifier: string;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -20,11 +21,12 @@ export class AppointmentsComponent implements OnInit {
   constructor( private ds: DispatcherService,
                private defaultService: DefaultService,
                private fb: FormBuilder,
+               private route: ActivatedRoute,
                private location: Location,
                private router: Router ) { }
 
   ngOnInit() {
-    // TODO: Get patientIdentifier
+    this.getPatient();
     this.getClinics();
   }
 
@@ -36,7 +38,7 @@ export class AppointmentsComponent implements OnInit {
   apptForm = this.fb.group({
     // TODO: Figure out what is appointmentTypeId
     // appointmentTypeId: [''],
-    patientIdentifier: ['', [Validators.required, Validators.minLength(4),
+    patientIdentifier: [, [Validators.required, Validators.minLength(4),
                         Validators.maxLength(6)]],
     dispatcherId: [9876, Validators.required],
     clinicId: ['', Validators.required],
@@ -55,7 +57,15 @@ export class AppointmentsComponent implements OnInit {
   onSubmit(): void {
     if(!this.apptForm.valid) { return; }
     console.log("--Submitting Appt Form...", this.apptForm);
+    console.log(this.f.appointmentDate);
     this.saveNewAppt();
+  }
+
+  setDropoffLocation(): void {
+    const loc = this.clinics.find(c => {
+      return c.id === this.f.clinicId.value;
+    })
+    this.f.dropoffLocationExact.setValue(loc.address);
   }
 
   /*********************************************************************
@@ -75,6 +85,11 @@ export class AppointmentsComponent implements OnInit {
     this.location.back();
   }
 
+  getPatient(): void {
+    this.patientIdentifier = this.route.snapshot.paramMap.get('patientIdentifier');
+    this.f.patientIdentifier.setValue(this.patientIdentifier);
+  }
+
   getClinics(): void {
     this.defaultService.getClinics().subscribe(data => {
       console.log("Clinics are", data);
@@ -83,11 +98,11 @@ export class AppointmentsComponent implements OnInit {
   }
 
   saveNewAppt(): void {
-    // this.ds.addPatient(this.apptForm.value).subscribe(data => {
-    //   console.log("Save appt response is", data);
-    //   alert('Success! Your appointment has been saved.');
-    //   this.router.navigate(['']);
-    // });
+    this.ds.addAppointment(this.apptForm.value).subscribe(data => {
+      console.log("Save appt response is", data);
+      alert('Success! Your appointment has been saved.');
+      this.router.navigate(['']);
+    });
   }
 
 }
