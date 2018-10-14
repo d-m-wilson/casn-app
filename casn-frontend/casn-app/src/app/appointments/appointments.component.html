@@ -1,3 +1,116 @@
-<p>
-  appointments works!
-</p>
+<main>
+<!--********************************************************************
+                              Appt Form
+**********************************************************************-->
+  <h2>Create Appointment</h2>
+  <form [formGroup]="apptForm" (ngSubmit)="onSubmit()">
+    <div class="patient-form-group">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Patient ID</mat-label>
+        <input type="text"
+        placeholder="1234"
+        aria-label="Patient Identifier"
+        matInput
+        formControlName="patientIdentifier">
+        <mat-error *ngIf="f.patientIdentifier.errors?.required">This field is required.</mat-error>
+        <mat-error *ngIf="f.patientIdentifier.errors?.minlength || f.patientIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Dispatcher ID</mat-label>
+        <input type="number"
+        placeholder="4321"
+        aria-label="Dispatcher Identifier"
+        matInput
+        formControlName="dispatcherId">
+        <mat-error *ngIf="f.dispatcherId.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+    </div>
+
+  <div class="patient-form-group">
+    <mat-form-field appearance="outline">
+      <mat-label>Clinic</mat-label>
+      <mat-select placeholder="Clinic"
+                  aria-label="Clinic"
+                  formControlName="clinicId">
+        <mat-option *ngFor="let c of clinics" [value]="c.id">
+          {{ c.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="f.clinicId.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Appointment Date</mat-label>
+      <input matInput
+             [matDatepicker]="picker"
+             placeholder="Choose a date"
+             formControlName="appointmentDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <!-- TODO: Add timepicker component -->
+    <mat-form-field appearance="outline">
+      <mat-label>Appointment Time</mat-label>
+      <input matInput
+            type="text"
+            mask="00:00"
+            formControlName="appointmentTime"
+            aria-label="Appointment Time"
+            placeholder="03:20">
+      <mat-error *ngIf="f.pickupLocationExact.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Exact Pickup Location</mat-label>
+      <input matInput
+            type="text"
+            formControlName="pickupLocationExact"
+            aria-label="Exact Pickup Location"
+            placeholder="345 Main St, Apt F">
+      <mat-error *ngIf="f.pickupLocationExact.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Exact Dropoff Location</mat-label>
+      <input matInput
+             type="text"
+             formControlName="dropoffLocationExact"
+             aria-label="Exact Dropoff Location"
+             placeholder="21 Park Dr. Ste 200">
+      <mat-error *ngIf="f.dropoffLocationExact.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Vague Pickup Location</mat-label>
+        <input matInput
+              type="text"
+              formControlName="pickupLocationVague"
+              aria-label="Vague Pickup Location"
+              placeholder="23rd and Main St.">
+        <mat-error *ngIf="f.pickupLocationVague.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Vague Dropoff Location</mat-label>
+        <input matInput
+               type="text"
+               formControlName="dropoffLocationVague"
+               aria-label="Vague Dropoff Location"
+               placeholder="Yale St. off I-45">
+        <mat-error *ngIf="f.dropoffLocationVague.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+      <button class="form-btn"
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!apptForm.valid">Submit</button>
+      <button mat-raised-button
+              color="warn"
+              class="form-btn"
+              (click)="handleCancelClick()">Cancel</button>
+    </div>
+  </form>
+
+  <!--********************************************************************
+                              Form Debug
+  **********************************************************************-->
+  <div class="debug">
+    <p>Form Status: {{ apptForm.status }}</p>
+    <p>Form Value: {{ apptForm.value | json }}</p>
+  </div>
+</main>
