@@ -98,8 +98,15 @@ export class AppointmentsComponent implements OnInit {
   }
 
   saveNewAppt(): void {
-    this.ds.addAppointment(this.apptForm.value).subscribe(data => {
+    this.ds.addAppointment(this.apptForm.value).subscribe(
+    data => {
       console.log("Save appt response is", data);
+      alert('Success! Your appointment has been saved.');
+      this.router.navigate(['']);
+    },
+    err => {
+      // TODO: Handle errors
+      console.log("--Error saving appt data...", err);
       alert('Success! Your appointment has been saved.');
       this.router.navigate(['']);
     });
