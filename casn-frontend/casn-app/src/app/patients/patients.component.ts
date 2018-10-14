@@ -29,11 +29,11 @@ export class PatientsComponent implements OnInit {
   /*********************************************************************
                                 Form
   **********************************************************************/
+  // TODO: Remove French? Was used bc dummy data includes it.
   languages: string[] = ['English', 'Spanish', 'French', 'Other'];
-  // NOTE: Ask about number mapping here.
-  contactMethods: any[] = [ {value: 1, displayValue: 'Call'},
-                            {value: 2, displayValue: 'Text'},
-                            {value: 3, displayValue:'Email'} ];
+  contactMethods: any[] = [ {value: 1, displayValue: 'Text'},
+                            {value: 2, displayValue: 'Call'},
+                            {value: 3, displayValue: 'Email'} ];
 
   patientIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
 
@@ -42,10 +42,11 @@ export class PatientsComponent implements OnInit {
                         Validators.maxLength(6)]],
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
-    phone: ['', Validators.required],
+    phone: ['', Validators.required], // TODO: Require either phone OR email
+    // email: [''],
     isMinor: [false, Validators.required],
-    preferredLanguage: ['', Validators.required],
-    preferredContactMethod: ['', Validators.required],
+    preferredLanguage: ['English', Validators.required],
+    preferredContactMethod: [1, Validators.required],
   })
 
   // convenience getter for easy access to form fields
@@ -59,7 +60,7 @@ export class PatientsComponent implements OnInit {
       this.saveNewPatient();
     } else {
       // TODO: There should be an update patient endpoint, right?
-      this.saveNewPatient();
+      this.location.go('/appointments');
     }
   }
 
