@@ -46,7 +46,9 @@ namespace CASNApp.API.Entities
                 entity.HasIndex(e => e.PatientId)
                     .HasName("fk_appointment_PatientId_idx");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.AppointmentDate)
                     .HasColumnName("appointmentDate")
@@ -107,7 +109,9 @@ namespace CASNApp.API.Entities
             {
                 entity.ToTable("clinic");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.Address)
                     .IsRequired()
@@ -168,7 +172,9 @@ namespace CASNApp.API.Entities
                 entity.HasIndex(e => e.DriverId)
                     .HasName("fk_drive_DriverId_idx");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.AppointmentId).HasColumnName("appointmentId");
 
@@ -240,7 +246,9 @@ namespace CASNApp.API.Entities
             {
                 entity.ToTable("patient");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.CiviContactId).HasColumnName("civiContactId");
 
@@ -298,7 +306,9 @@ namespace CASNApp.API.Entities
             {
                 entity.ToTable("volunteer");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.CiviContactId).HasColumnName("civiContactId");
 
@@ -361,7 +371,9 @@ namespace CASNApp.API.Entities
                 entity.HasIndex(e => e.VolunteerId)
                     .HasName("fk_volunteer_drive_VolunteerId_idx");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
 
                 entity.Property(e => e.Created)
                     .HasColumnName("created")

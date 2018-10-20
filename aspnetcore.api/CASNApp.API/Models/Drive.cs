@@ -28,7 +28,7 @@ namespace CASNApp.API.Models
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id")]
-        public long? Id { get; private set; }
+        public long? Id { get; internal set; }
 
         /// <summary>
         /// Gets or Sets AppointmentId
@@ -54,56 +54,48 @@ namespace CASNApp.API.Models
         /// <summary>
         /// Gets or Sets StartAddress
         /// </summary>
-        [Required]
         [DataMember(Name="startAddress")]
         public string StartAddress { get; set; }
 
         /// <summary>
         /// Gets or Sets StartCity
         /// </summary>
-        [Required]
         [DataMember(Name="startCity")]
         public string StartCity { get; set; }
 
         /// <summary>
         /// Gets or Sets StartState
         /// </summary>
-        [Required]
         [DataMember(Name="startState")]
         public string StartState { get; set; }
 
         /// <summary>
         /// Gets or Sets StartPostalCode
         /// </summary>
-        [Required]
         [DataMember(Name="startPostalCode")]
         public string StartPostalCode { get; set; }
 
         /// <summary>
         /// Gets or Sets EndAddress
         /// </summary>
-        [Required]
         [DataMember(Name="endAddress")]
         public string EndAddress { get; set; }
 
         /// <summary>
         /// Gets or Sets EndCity
         /// </summary>
-        [Required]
         [DataMember(Name="endCity")]
         public string EndCity { get; set; }
 
         /// <summary>
         /// Gets or Sets EndState
         /// </summary>
-        [Required]
         [DataMember(Name="endState")]
         public string EndState { get; set; }
 
         /// <summary>
         /// Gets or Sets EndPostalCode
         /// </summary>
-        [Required]
         [DataMember(Name="endPostalCode")]
         public string EndPostalCode { get; set; }
 
@@ -111,13 +103,13 @@ namespace CASNApp.API.Models
         /// Gets or Sets Created
         /// </summary>
         [DataMember(Name="created")]
-        public DateTime? Created { get; private set; }
+        public DateTime? Created { get; internal set; }
 
         /// <summary>
         /// Gets or Sets Updated
         /// </summary>
         [DataMember(Name="updated")]
-        public DateTime? Updated { get; private set; }
+        public DateTime? Updated { get; internal set; }
 
         /// <summary>
         /// Returns the string presentation of the object

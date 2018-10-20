@@ -28,7 +28,7 @@ namespace CASNApp.API.Models
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id")]
-        public long? Id { get; private set; }
+        public long? Id { get; internal set; }
 
         /// <summary>
         /// Gets or Sets DispatcherId
@@ -81,13 +81,13 @@ namespace CASNApp.API.Models
         /// Gets or Sets Created
         /// </summary>
         [DataMember(Name="created")]
-        public DateTime? Created { get; private set; }
+        public DateTime? Created { get; internal set; }
 
         /// <summary>
         /// Gets or Sets Updated
         /// </summary>
         [DataMember(Name="updated")]
-        public DateTime? Updated { get; private set; }
+        public DateTime? Updated { get; internal set; }
 
         /// <summary>
         /// Returns the string presentation of the object

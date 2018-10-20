@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
@@ -50,55 +51,28 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
         public virtual async Task<IActionResult> AddAppointment([FromBody]AppointmentDTO appointmentDTO)
         {
-            uint userId = 0;
-
-            try
-            {
-                StringValues authHeaders;
-
-                HttpContext.Request.Headers.TryGetValue("Authorization", out authHeaders);
-
-                var firstBearerAuthHeader = authHeaders
-                    .Where(v => v != null && v.Contains("Bearer ", StringComparison.InvariantCultureIgnoreCase))
-                    .First();
-
-                var json = firstBearerAuthHeader.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                    .Last();
-                
-                var token = JsonConvert.DeserializeAnonymousType(json, new { userId = 0L });
-
-                if (token.userId == 0)
-                    return Unauthorized();
-
-                userId = (uint)token.userId;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return Unauthorized();
-            }
-
             if (!appointmentDTO.Validate())
             {
                 return BadRequest(appointmentDTO);
             }
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AppointmentDTO));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 409 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(409);
-
             var appointment = appointmentDTO.Appointment;
             var driveTo = appointmentDTO.DriveTo;
             var driveFrom = appointmentDTO.DriveFrom;
 
+            var dispatcher = await dbContext.Volunteer
+                .AsNoTracking()
+                .Where(v => v.Id == appointment.DispatcherId)
+                .FirstOrDefaultAsync();
+
+            if (dispatcher == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
             var clinic = await dbContext.Clinic
                 .AsNoTracking()
-                .Where(c => c.Id == appointment.ClinicId)
+                .Where(c => c.Id == appointment.ClinicId) // TODO: Later we'll use the userId from the JWT
                 .FirstOrDefaultAsync();
 
             if (clinic == null)
@@ -106,11 +80,21 @@ namespace CASNApp.API.Controllers
                 return BadRequest(appointmentDTO);
             }
 
+            var patient = await dbContext.Patient
+                .AsNoTracking()
+                .Where(p => p.Id == appointment.PatientId)
+                .FirstOrDefaultAsync();
+
+            if (patient == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
             var appointmentEntity = new Entities.Appointment
             {
-                DispatcherId = userId,
-                PatientId = (uint)appointment.PatientId.Value,
-                ClinicId = (uint)appointment.ClinicId.Value,
+                DispatcherId = dispatcher.Id,
+                PatientId = patient.Id,
+                ClinicId = clinic.Id,
                 PickupLocationVague = appointment.PickupLocationVague,
                 DropoffLocationVague = appointment.DropoffLocationVague,
                 AppointmentDate = appointment.AppointmentDate.Value,
@@ -129,6 +113,10 @@ namespace CASNApp.API.Controllers
                 StartCity = driveTo.StartCity,
                 StartState = driveTo.StartState,
                 StartPostalCode = driveTo.StartPostalCode,
+                EndAddress = clinic.Address,
+                EndCity = clinic.City,
+                EndState = clinic.State,
+                EndPostalCode = clinic.PostalCode,
                 IsActive = true,
                 Created = DateTime.UtcNow,
                 Updated = null,
@@ -139,6 +127,10 @@ namespace CASNApp.API.Controllers
                 Appointment = appointmentEntity,
                 Direction = Drive.DirectionFromClinic,
                 DriverId = null,
+                StartAddress = clinic.Address,
+                StartCity = clinic.City,
+                StartState = clinic.State,
+                StartPostalCode = clinic.PostalCode,
                 EndAddress = driveTo.StartAddress,
                 EndCity = driveTo.StartCity,
                 EndState = driveTo.StartState,
@@ -147,6 +139,29 @@ namespace CASNApp.API.Controllers
                 Created = DateTime.UtcNow,
                 Updated = null,
             };
+
+            dbContext.Appointment.Add(appointmentEntity);
+            dbContext.Drive.Add(driveToEntity);
+            dbContext.Drive.Add(driveFromEntity);
+
+            await dbContext.SaveChangesAsync();
+
+            appointment.Id = appointmentEntity.Id;
+            appointment.Created = appointmentEntity.Created;
+
+            driveTo.Id = driveToEntity.Id;
+            driveTo.EndAddress = driveToEntity.EndAddress;
+            driveTo.EndCity = driveToEntity.EndCity;
+            driveTo.EndState = driveToEntity.EndState;
+            driveTo.EndPostalCode = driveToEntity.EndPostalCode;
+            driveTo.Created = driveToEntity.Created;
+
+            driveFrom.Id = driveFromEntity.Id;
+            driveFrom.EndAddress = driveFromEntity.EndAddress;
+            driveFrom.EndCity = driveFromEntity.EndCity;
+            driveFrom.EndState = driveFromEntity.EndState;
+            driveFrom.EndPostalCode = driveFromEntity.EndPostalCode;
+            driveFrom.Created = driveFromEntity.Created;
 
             return new ObjectResult(appointmentDTO);
         }
