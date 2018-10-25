@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000'
+  apiUrl: 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0'
 };
 
 /*
