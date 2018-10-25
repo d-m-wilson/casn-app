@@ -26,6 +26,7 @@ import { DriverDrive } from '../model/driverDrive.model';
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { DriverServiceInterface }                            from './driver.serviceInterface';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({
@@ -33,7 +34,7 @@ import { DriverServiceInterface }                            from './driver.serv
 })
 export class DriverService implements DriverServiceInterface {
 
-    protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
+    protected basePath = environment.apiUrl;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
@@ -66,7 +67,7 @@ export class DriverService implements DriverServiceInterface {
     /**
      * applies a volunteer for a drive
      * Adds a volunteer drive application
-     * @param body 
+     * @param body
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -112,7 +113,7 @@ export class DriverService implements DriverServiceInterface {
 
     /**
      * gets appointments with driver-level details
-     * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments DO NOT include details, e.g. exact location, available only to dispatchers. 
+     * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments DO NOT include details, e.g. exact location, available only to dispatchers.
      * @param startDate pass a startDate by which to filter
      * @param endDate pass an endDate by which to filter
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -164,7 +165,7 @@ export class DriverService implements DriverServiceInterface {
 
     /**
      * gets appointment by appointmentID
-     * Search for existing appointment by appointmentIdentifier, return driver-level details 
+     * Search for existing appointment by appointmentIdentifier, return driver-level details
      * @param appointmentID pass an appointmentIdentifier
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -209,7 +210,7 @@ export class DriverService implements DriverServiceInterface {
 
     /**
      * gets applied-for and approved drives for the current user
-     * 
+     *
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */

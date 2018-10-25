@@ -23,6 +23,7 @@ import { Clinic } from '../model/clinic.model';
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { DefaultServiceInterface }                            from './default.serviceInterface';
+import { environment } from '../../../environments/environment';
 
 
 @Injectable({
@@ -30,9 +31,7 @@ import { DefaultServiceInterface }                            from './default.se
 })
 export class DefaultService implements DefaultServiceInterface {
 
-    // TODO: Add these to env
-    // protected basePath = 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0';
-    protected basePath = 'https://casnapptest.dmwilson.info/api';
+    protected basePath = environment.apiUrl;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
 
