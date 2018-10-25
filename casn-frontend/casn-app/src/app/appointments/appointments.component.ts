@@ -40,14 +40,12 @@ export class AppointmentsComponent implements OnInit {
                      ];
 
   apptForm = this.fb.group({
-    // TODO: Add HTML element for this (dropdown))
     appointmentTypeId: [3, Validators.required],
     patientIdentifier: ['', [Validators.required, Validators.minLength(4),
                         Validators.maxLength(6)]],
     dispatcherId: [9876, Validators.required],
     clinicId: ['', Validators.required],
     appointmentDate: ['', Validators.required],
-    appointmentTime: ['', Validators.required],
     pickupLocationExact: ['', Validators.required],
     dropoffLocationExact: ['', Validators.required],
     pickupLocationVague: ['', Validators.required],
@@ -59,7 +57,7 @@ export class AppointmentsComponent implements OnInit {
 
   onSubmit(): void {
     if(!this.apptForm.valid) { return; }
-    console.log("--Submitting Appt Form...", this.apptForm);
+    console.log("--Submitting Appt Form...", this.apptForm.value);
     // TODO: Construct appt datetime. UTC
     console.log(this.f.appointmentDate);
     this.saveNewAppt();
@@ -109,10 +107,8 @@ export class AppointmentsComponent implements OnInit {
       this.router.navigate(['']);
     },
     err => {
-      // TODO: Handle errors
       console.log("--Error saving appt data...", err);
-      alert('Success! Your appointment has been saved.');
-      this.router.navigate(['']);
+      alert('An error occurred, and your appointment was not saved.');
     });
   }
 

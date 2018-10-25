@@ -52,23 +52,18 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Appointment Date</mat-label>
-      <input matInput
+      <!-- <input matInput
              [matDatepicker]="picker"
              placeholder="Choose a date"
              formControlName="appointmentDate">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <!-- TODO: Add timepicker component -->
-    <mat-form-field appearance="outline">
-      <mat-label>Appointment Time</mat-label>
-      <input matInput
-            type="text"
-            mask="00:00"
-            formControlName="appointmentTime"
-            aria-label="Appointment Time"
-            placeholder="03:20">
-      <mat-error *ngIf="f.pickupLocationExact.errors?.required">This field is required.</mat-error>
+      <mat-datepicker #picker></mat-datepicker> -->
+      <input [owlDateTimeTrigger]="dt5"
+             [owlDateTime]="dt5"
+             matInput
+             placeholder="Choose a date"
+             formControlName="appointmentDate">
+      <owl-date-time [pickerMode]="'dialog'" #dt5></owl-date-time>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Exact Pickup Location</mat-label>
