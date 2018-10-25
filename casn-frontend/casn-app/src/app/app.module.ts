@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 /* Angular Material Components */
 import {
   MatAutocompleteModule,
@@ -49,6 +50,8 @@ import { AppointmentsComponent } from './appointments/appointments.component';
   ],
   imports: [
     NgxMaskModule.forRoot(),
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
