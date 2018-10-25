@@ -4,6 +4,9 @@
 /* @import '~@angular/material/prebuilt-themes/pink-bluegrey.css'; */
 /* @import '~@angular/material/prebuilt-themes/indigo-pink.css'; */
 
+/* ng-datetime-picker */
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
 body {
   font-family: 'Roboto', sans-serif;
   color: #555;
