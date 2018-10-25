@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-// import { map, startWith, catchError } from 'rxjs/operators';
 import { DispatcherService } from '../api/api/dispatcher.service';
 import { DefaultService } from '../api/api/default.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -34,22 +33,26 @@ export class AppointmentsComponent implements OnInit {
                                 Form
   **********************************************************************/
   clinics: any[] = [];
+  // TODO: These should be fetched from API endpoint
+  apptTypes: any[] = [ {value: 4, displayValue: 'Ultrasound'},
+                       {value: 3, displayValue: 'Surgical'},
+                       // {value: 1, displayValue: 'Lam To Complete'}
+                     ];
 
   apptForm = this.fb.group({
-    // TODO: Figure out what is appointmentTypeId
-    // appointmentTypeId: [''],
-    patientIdentifier: [, [Validators.required, Validators.minLength(4),
+    // TODO: Add HTML element for this (dropdown))
+    appointmentTypeId: [3, Validators.required],
+    patientIdentifier: ['', [Validators.required, Validators.minLength(4),
                         Validators.maxLength(6)]],
     dispatcherId: [9876, Validators.required],
     clinicId: ['', Validators.required],
     appointmentDate: ['', Validators.required],
     appointmentTime: ['', Validators.required],
     pickupLocationExact: ['', Validators.required],
-    // TODO: Auto-populate this w/ clinic address
     dropoffLocationExact: ['', Validators.required],
     pickupLocationVague: ['', Validators.required],
     dropoffLocationVague: ['', Validators.required],
-  })
+  });
 
   // convenience getter for easy access to form fields
   get f() { return this.apptForm.controls; }
@@ -57,15 +60,16 @@ export class AppointmentsComponent implements OnInit {
   onSubmit(): void {
     if(!this.apptForm.valid) { return; }
     console.log("--Submitting Appt Form...", this.apptForm);
+    // TODO: Construct appt datetime. UTC
     console.log(this.f.appointmentDate);
     this.saveNewAppt();
   }
 
   setDropoffLocation(): void {
-    const loc = this.clinics.find(c => {
+    const selectedClinic = this.clinics.find(c => {
       return c.id === this.f.clinicId.value;
-    })
-    this.f.dropoffLocationExact.setValue(loc.address);
+    });
+    this.f.dropoffLocationExact.setValue(selectedClinic.address);
   }
 
   /*********************************************************************

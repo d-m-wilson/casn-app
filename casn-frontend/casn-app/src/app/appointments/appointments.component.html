@@ -28,6 +28,17 @@
 
   <div class="patient-form-group">
     <mat-form-field appearance="outline">
+      <mat-label>Appointment Type</mat-label>
+      <mat-select placeholder="Appt Type"
+                  aria-label="Appointment Type"
+                  formControlName="appointmentTypeId">
+        <mat-option *ngFor="let a of apptTypes" [value]="a.value">
+          {{ a.displayValue }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="f.appointmentTypeId.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Clinic</mat-label>
       <mat-select placeholder="Clinic"
                   aria-label="Clinic"
