@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { DispatcherService } from '../api/api/dispatcher.service';
 import { DefaultService } from '../api/api/default.service';
 import { Router, ActivatedRoute } from '@angular/router';
