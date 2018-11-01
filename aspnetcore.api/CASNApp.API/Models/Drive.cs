@@ -33,7 +33,6 @@ namespace CASNApp.API.Models
         /// <summary>
         /// Gets or Sets AppointmentId
         /// </summary>
-        [Required]
         [DataMember(Name="appointmentId")]
         public long? AppointmentId { get; set; }
 
