@@ -284,8 +284,31 @@ namespace CASNApp.API.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetAllAppointmentsForDispatcher")]
         [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "all appointments in date range")]
-        public virtual IActionResult GetAllAppointmentsForDispatcher([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
-        { 
+        public virtual async Task<IActionResult> GetAllAppointmentsForDispatcher([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
+        {
+            var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
+            var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
+
+            var appointmentEntities = await dbContext.Appointment
+                .Include(a => a.Drives)
+                .Where(a => a.AppointmentDate >= start &&
+                            a.AppointmentDate <= end &&
+                            a.IsActive)
+                .ToListAsync();
+
+            var appointmentDTOs = appointmentEntities.Select(a =>
+            {
+                var driveTo = a.Drives.FirstOrDefault(d => d.Direction == Drive.DirectionToClinic);
+                var driveFrom = a.Drives.FirstOrDefault(d => d.Direction == Drive.DirectionFromClinic);
+
+                return new AppointmentDTO
+                {
+                    Appointment = new Models.Appointment(a),
+                    DriveTo = driveTo == null ? null : new Drive(driveTo),
+                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom),
+                };
+            }).ToList();
+
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(AllAppointments));
 
@@ -295,14 +318,9 @@ namespace CASNApp.API.Controllers
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            string exampleJson = null;
-            exampleJson = "null";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AllAppointments>(exampleJson)
-            : default(AllAppointments);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var result = new AllAppointments(appointmentDTOs);
+
+            return new ObjectResult(result);
         }
 
         /// <summary>

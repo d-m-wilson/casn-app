@@ -5,6 +5,26 @@
         public const int DirectionToClinic = 1;
         public const int DirectionFromClinic = 2;
 
+        public Drive() { }
+
+        public Drive(Entities.Drive d)
+        {
+            AppointmentId = d.AppointmentId;
+            Created = d.Created;
+            Direction = d.Direction;
+            DriverId = d.DriverId;
+            EndAddress = d.EndAddress;
+            EndCity = d.EndCity;
+            EndPostalCode = d.EndPostalCode;
+            EndState = d.EndState;
+            Id = d.Id;
+            StartAddress = d.StartAddress;
+            StartCity = d.StartCity;
+            StartPostalCode = d.StartPostalCode;
+            StartState = d.StartState;
+            Updated = d.Updated;
+        }
+
         public bool Validate(int direction)
         {
             if (!Direction.HasValue)

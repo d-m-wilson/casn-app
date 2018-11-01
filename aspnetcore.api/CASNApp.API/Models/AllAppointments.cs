@@ -84,6 +84,13 @@ namespace CASNApp.API.Models
             }
         }
 
+        public AllAppointments() { }
+
+        public AllAppointments(List<AppointmentDTO> listOfAppointments)
+        {
+            AddRange(listOfAppointments);
+        }
+
         #region Operators
         #pragma warning disable 1591
 

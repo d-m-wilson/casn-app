@@ -7,6 +7,22 @@ namespace CASNApp.API.Models
 {
     public partial class Appointment
     {
+        public Appointment() { }
+
+        public Appointment(Entities.Appointment a)
+        {
+            AppointmentDate = a.AppointmentDate;
+            AppointmentTypeId = a.AppointmentTypeId;
+            ClinicId = a.ClinicId;
+            Created = a.Created;
+            DispatcherId = a.DispatcherId;
+            DropoffLocationVague = a.DropoffLocationVague;
+            Id = a.Id;
+            PatientId = a.PatientId;
+            PickupLocationVague = a.PickupLocationVague;
+            Updated = a.Updated;
+        }
+
         public bool Validate()
         {
             if (!PatientId.HasValue)

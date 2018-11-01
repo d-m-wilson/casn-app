@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `casn-app`.`appointment` (
   `pickupLocationVague` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `dropoffLocationVague` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL,
   `appointmentDate` DATETIME NOT NULL COMMENT 'Date and time of the patient\'s clinic appointment',
-  `appointmentTypeId` INT(10) UNSIGNED NOT NULL COMMENT 'Will eventually be a FK reference to an appointmentType table',
+  `appointmentTypeId` INT(10) UNSIGNED NOT NULL,
   `isActive` BIT(1) NOT NULL DEFAULT b'1',
   `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` DATETIME NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
