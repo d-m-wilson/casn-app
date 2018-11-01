@@ -78,16 +78,18 @@ export class AppointmentsComponent implements OnInit {
       this.f.dropoffCity.setValue(this.f.pickupCity.value);
       this.f.dropoffState.setValue(this.f.pickupState.value);
       this.f.dropoffZipCode.setValue(this.f.pickupZipCode.value);
+      this.f.dropoffLocationVague.setValue(this.f.pickupLocationVague.value);
     } else {
       this.showDropoffLocationInputs = true;
       this.f.dropoffAddress.reset();
       this.f.dropoffCity.reset();
       this.f.dropoffState.reset()
       this.f.dropoffZipCode.reset();
+      this.f.dropoffLocationVague.reset();
     }
   }
 
-  // TODO: Refactor this.
+  // TODO: Refactor this eventually.
   constructApptDTO(): void {
     this.apptDTO = {};
     this.apptDTO.appointmentTypeId = this.f.appointmentTypeId.value;
