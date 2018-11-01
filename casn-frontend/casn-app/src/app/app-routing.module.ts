@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [ AuthGuard ] },
   { path: 'patient', component: PatientsComponent, canActivate: [ AuthGuard ] },
   { path: 'appointment', component: AppointmentsComponent, canActivate: [ AuthGuard ] },
+  { path: 'view-schedule', component: RidesComponent, canActivate: [ AuthGuard ] },
   { path: '**', component: DashboardComponent, canActivate: [ AuthGuard ] }
 ];
 
