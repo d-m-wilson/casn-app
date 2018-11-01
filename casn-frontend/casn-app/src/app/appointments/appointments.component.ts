@@ -89,6 +89,7 @@ export class AppointmentsComponent implements OnInit {
 
   // TODO: Refactor this.
   constructApptDTO(): void {
+    this.apptDTO = {};
     this.apptDTO.appointmentTypeId = this.f.appointmentTypeId.value;
     this.apptDTO.patientIdentifier = this.f.patientIdentifier.value;
     this.apptDTO.dispatcherId = this.f.dispatcherId.value;
