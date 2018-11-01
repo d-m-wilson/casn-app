@@ -12,11 +12,12 @@ export class RidesComponent implements OnInit {
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  // TODO: How to handle dispatcher vs. driver? Same endpoint?
+  // TODO: The getAllAppointmentsForDriver (single & array) endpoints
+  // will disappear. The dispatcher appt services should move to the default service module. URL endpoint will be /appointments or /appointment/:id
   constructor( private ds: DispatcherService ) { }
 
   ngOnInit() {
-    this.getRides()
+    this.getRides();
   }
 
   /*********************************************************************
