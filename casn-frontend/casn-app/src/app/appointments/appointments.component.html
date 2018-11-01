@@ -51,13 +51,7 @@
       <mat-error *ngIf="f.clinicId.errors?.required">This field is required.</mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Appointment Date</mat-label>
-      <!-- <input matInput
-             [matDatepicker]="picker"
-             placeholder="Choose a date"
-             formControlName="appointmentDate">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker> -->
+      <mat-label>Appointment Time</mat-label>
       <input [owlDateTimeTrigger]="dt5"
              [owlDateTime]="dt5"
              matInput
@@ -65,51 +59,121 @@
              formControlName="appointmentDate">
       <owl-date-time [pickerMode]="'dialog'" #dt5></owl-date-time>
     </mat-form-field>
+
+    <!-- Pick Up Address -->
+    <h3>Patient Pick-Up Address</h3>
     <mat-form-field appearance="outline">
-      <mat-label>Exact Pickup Location</mat-label>
+      <mat-label>Street Address</mat-label>
       <input matInput
             type="text"
-            formControlName="pickupLocationExact"
-            aria-label="Exact Pickup Location"
+            formControlName="pickupAddress"
+            aria-label="Street Address"
             placeholder="345 Main St, Apt F">
-      <mat-error *ngIf="f.pickupLocationExact.errors?.required">This field is required.</mat-error>
+      <mat-error *ngIf="f.pickupAddress.errors?.required">This field is required.</mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
-      <mat-label>Exact Dropoff Location</mat-label>
+      <mat-label>City</mat-label>
+      <input matInput
+            type="text"
+            formControlName="pickupCity"
+            aria-label="Pickup City"
+            placeholder="Cypress">
+      <mat-error *ngIf="f.pickupCity.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>State</mat-label>
+      <input matInput
+            type="text"
+            formControlName="pickupState"
+            aria-label="Pickup State"
+            placeholder="TX">
+      <mat-error *ngIf="f.pickupState.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Zip Code</mat-label>
+      <input matInput
+            type="text"
+            formControlName="pickupZipCode"
+            aria-label="Pickup Zip Code"
+            placeholder="77777">
+      <mat-error *ngIf="f.pickupZipCode.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Vague Pickup Location</mat-label>
+      <input matInput
+            type="text"
+            formControlName="pickupLocationVague"
+            aria-label="Vague Pickup Location"
+            placeholder="23rd and Main St.">
+      <mat-error *ngIf="f.pickupLocationVague.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+
+    <!-- Drop Off Address -->
+    <h3>Patient Drop-Off Address</h3>
+    <mat-checkbox (change)="setDropoffLocation($event.checked)">
+      Same as pickup address?
+    </mat-checkbox>
+    <mat-form-field appearance="outline"
+                    [class.hide]="!showDropoffLocationInputs">
+      <mat-label>Street Address</mat-label>
       <input matInput
              type="text"
-             formControlName="dropoffLocationExact"
-             aria-label="Exact Dropoff Location"
+             formControlName="dropoffAddress"
+             aria-label="Street Address"
              placeholder="21 Park Dr. Ste 200">
-      <mat-error *ngIf="f.dropoffLocationExact.errors?.required">This field is required.</mat-error>
+      <mat-error *ngIf="f.dropoffAddress.errors?.required">This field is required.</mat-error>
     </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Vague Pickup Location</mat-label>
-        <input matInput
-              type="text"
-              formControlName="pickupLocationVague"
-              aria-label="Vague Pickup Location"
-              placeholder="23rd and Main St.">
-        <mat-error *ngIf="f.pickupLocationVague.errors?.required">This field is required.</mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Vague Dropoff Location</mat-label>
-        <input matInput
-               type="text"
-               formControlName="dropoffLocationVague"
-               aria-label="Vague Dropoff Location"
-               placeholder="Yale St. off I-45">
-        <mat-error *ngIf="f.dropoffLocationVague.errors?.required">This field is required.</mat-error>
-      </mat-form-field>
-      <button class="form-btn"
-              mat-raised-button
-              color="primary"
-              type="submit"
-              [disabled]="!apptForm.valid">Submit</button>
-      <button mat-raised-button
-              color="warn"
-              class="form-btn"
-              (click)="handleCancelClick()">Cancel</button>
+    <mat-form-field appearance="outline"
+                    [class.hide]="!showDropoffLocationInputs">
+      <mat-label>City</mat-label>
+      <input matInput
+            type="text"
+            formControlName="dropoffCity"
+            aria-label="Dropoff City"
+            placeholder="Cypress">
+      <mat-error *ngIf="f.dropoffCity.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline"
+                    [class.hide]="!showDropoffLocationInputs">
+      <mat-label>State</mat-label>
+      <input matInput
+            type="text"
+            formControlName="dropoffState"
+            aria-label="Dropoff State"
+            placeholder="TX">
+      <mat-error *ngIf="f.dropoffState.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline"
+                    [class.hide]="!showDropoffLocationInputs">
+      <mat-label>Zip Code</mat-label>
+      <input matInput
+            type="text"
+            formControlName="dropoffZipCode"
+            aria-label="Dropoff Zip Code"
+            placeholder="77777">
+      <mat-error *ngIf="f.dropoffZipCode.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline"
+                    [class.hide]="!showDropoffLocationInputs">
+      <mat-label>Vague Dropoff Location</mat-label>
+      <input matInput
+             type="text"
+             formControlName="dropoffLocationVague"
+             aria-label="Vague Dropoff Location"
+             placeholder="Yale St. off I-45">
+      <mat-error *ngIf="f.dropoffLocationVague.errors?.required">This field is required.</mat-error>
+    </mat-form-field>
+
+
+    <button class="form-btn"
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!apptForm.valid">Submit</button>
+    <button mat-raised-button
+            color="warn"
+            class="form-btn"
+            (click)="handleCancelClick()">Cancel</button>
     </div>
   </form>
 

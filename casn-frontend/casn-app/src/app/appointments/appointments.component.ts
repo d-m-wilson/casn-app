@@ -13,6 +13,9 @@ import { Location } from '@angular/common';
 })
 export class AppointmentsComponent implements OnInit {
   patientIdentifier: string;
+  apptDTO: any;
+  // Hide dropoff inputs when user checks 'same as pickup location'
+  showDropoffLocationInputs: boolean = true;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -41,13 +44,20 @@ export class AppointmentsComponent implements OnInit {
 
   apptForm = this.fb.group({
     appointmentTypeId: [3, Validators.required],
-    patientIdentifier: ['', [Validators.required, Validators.minLength(4),
-                        Validators.maxLength(6)]],
+    patientIdentifier: ['', [ Validators.required,
+                              Validators.minLength(4),
+                              Validators.maxLength(6) ]],
     dispatcherId: [9876, Validators.required],
     clinicId: ['', Validators.required],
     appointmentDate: ['', Validators.required],
-    pickupLocationExact: ['', Validators.required],
-    dropoffLocationExact: ['', Validators.required],
+    pickupAddress: ['', Validators.required],
+    pickupCity: ['', Validators.required],
+    pickupState: ['TX', Validators.required],
+    pickupZipCode: ['', Validators.required],
+    dropoffAddress: ['', Validators.required],
+    dropoffCity: ['', Validators.required],
+    dropoffState: ['', Validators.required],
+    dropoffZipCode: ['', Validators.required],
     pickupLocationVague: ['', Validators.required],
     dropoffLocationVague: ['', Validators.required],
   });
@@ -58,16 +68,58 @@ export class AppointmentsComponent implements OnInit {
   onSubmit(): void {
     if(!this.apptForm.valid) { return; }
     console.log("--Submitting Appt Form...", this.apptForm.value);
-    // TODO: Construct appt datetime. UTC
-    console.log(this.f.appointmentDate);
-    this.saveNewAppt();
+    console.log('Date is', this.f.appointmentDate.value.toUTCString());
+    this.constructApptDTO();
   }
 
-  setDropoffLocation(): void {
-    const selectedClinic = this.clinics.find(c => {
-      return c.id === this.f.clinicId.value;
-    });
-    this.f.dropoffLocationExact.setValue(selectedClinic.address);
+  setDropoffLocation(sameAsPickup: boolean): void {
+    if(sameAsPickup) {
+      this.showDropoffLocationInputs = false;
+      this.f.dropoffAddress.setValue(this.f.pickupAddress.value);
+      this.f.dropoffCity.setValue(this.f.pickupCity.value);
+      this.f.dropoffState.setValue(this.f.pickupState.value);
+      this.f.dropoffZipCode.setValue(this.f.pickupZipCode.value);
+    } else {
+      this.showDropoffLocationInputs = true;
+      this.f.dropoffAddress.reset();
+      this.f.dropoffCity.reset();
+      this.f.dropoffState.reset()
+      this.f.dropoffZipCode.reset();
+    }
+  }
+
+  constructApptDTO(): void {
+    this.apptDTO.appointmentTypeId = this.f.appointmentTypeId.value;
+    this.apptDTO.patientIdentifier = this.f.patientIdentifier.value;
+    this.apptDTO.dispatcherId = this.f.dispatcherId.value;
+    this.apptDTO.clinicId = this.f.clinicId.value;
+    this.apptDTO.appointmentDate = this.f.appointmentDate.value.toUTCString();
+    this.apptDTO.pickupLocationVague = this.f.pickupLocationVague.value;
+    this.apptDTO.dropoffLocationVague = this.f.dropoffLocationVague.value;
+    this.apptDTO.driveTo = {
+      direction: 1,
+      startAddress: this.f.pickupAddress.value,
+      startCity: this.f.pickupCity.value,
+      startState: this.f.pickupState.value,
+      startPostalCode: this.f.pickupZipCode.value,
+      endAddress: "",
+      endCity: "",
+      endState: "",
+      endPostalCode: "",
+    }
+    this.apptDTO.driveFrom = {
+      direction: 2,
+      endAddress: this.f.dropoffAddress.value,
+      endCity: this.f.dropoffCity.value,
+      endState: this.f.dropoffState.value,
+      endPostalCode: this.f.dropoffZipCode.value,
+      startAddress: "",
+      startCity: "",
+      startState: "",
+      startPostalCode: "",
+    }
+    console.log("Appt DTO is:", this.apptDTO);
+    this.saveNewAppt();
   }
 
   /*********************************************************************
@@ -100,7 +152,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   saveNewAppt(): void {
-    this.ds.addAppointment(this.apptForm.value).subscribe(
+    this.ds.addAppointment(this.apptDTO).subscribe(
     data => {
       console.log("Save appt response is", data);
       alert('Success! Your appointment has been saved.');
