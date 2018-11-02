@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 })
 export class AppointmentsComponent implements OnInit {
   patientIdentifier: string;
+  patientId: any;
   apptDTO: any;
   // Hide dropoff inputs when user checks 'same as pickup location'
   showDropoffLocationInputs: boolean = true;
@@ -43,10 +44,9 @@ export class AppointmentsComponent implements OnInit {
 
   apptForm = this.fb.group({
     appointmentTypeId: [3, Validators.required],
-    patientIdentifier: ['', [ Validators.required,
-                              Validators.minLength(4),
-                              Validators.maxLength(6) ]],
-    dispatcherId: [9876, Validators.required],
+    patientId: [5],
+    patientIdentifier: ['', Validators.required],
+    dispatcherId: [5],
     clinicId: ['', Validators.required],
     appointmentDate: ['', Validators.required],
     pickupAddress: ['', Validators.required],
@@ -67,7 +67,6 @@ export class AppointmentsComponent implements OnInit {
   onSubmit(): void {
     if(!this.apptForm.valid) { return; }
     console.log("--Submitting Appt Form...", this.apptForm.value);
-    console.log('Date is', this.f.appointmentDate.value.toUTCString());
     this.constructApptDTO();
   }
 
@@ -93,7 +92,7 @@ export class AppointmentsComponent implements OnInit {
   constructApptDTO(): void {
     this.apptDTO = {};
     this.apptDTO.appointmentTypeId = this.f.appointmentTypeId.value;
-    this.apptDTO.patientIdentifier = this.f.patientIdentifier.value;
+    this.apptDTO.patientId = this.f.patientId.value;
     this.apptDTO.dispatcherId = this.f.dispatcherId.value;
     this.apptDTO.clinicId = this.f.clinicId.value;
     this.apptDTO.appointmentDate = this.f.appointmentDate.value.toUTCString();
@@ -143,7 +142,9 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getPatient(): void {
+    this.patientId = this.route.snapshot.paramMap.get('patientId');
     this.patientIdentifier = this.route.snapshot.paramMap.get('patientIdentifier');
+    this.f.patientId.setValue(this.patientId);
     this.f.patientIdentifier.setValue(this.patientIdentifier);
   }
 

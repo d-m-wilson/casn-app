@@ -61,7 +61,7 @@ export class PatientsComponent implements OnInit {
       this.saveNewPatient();
     } else {
       // TODO: There should be an update patient endpoint
-      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value }]);
+      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: 5 }]);
     }
   }
 
@@ -130,7 +130,8 @@ export class PatientsComponent implements OnInit {
     this.ds.addPatient(this.patientForm.value).subscribe(data => {
       console.log("Save patient response is", data);
       // alert('Success! Your patient has been saved.');
-      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value }]);
+      // TODO: Retrieve from save response
+      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: 5 }]);
     });
   }
 

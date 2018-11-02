@@ -5,17 +5,19 @@
   <h2>Create Appointment</h2>
   <form [formGroup]="apptForm" (ngSubmit)="onSubmit()">
     <div class="patient-form-group">
-      <mat-form-field class="example-full-width" appearance="outline">
+      <!-- TODO: Disable this form field -->
+      <mat-form-field class="example-full-width"
+                      appearance="outline"
+                      disabled>
         <mat-label>Patient ID</mat-label>
         <input type="text"
         placeholder="1234"
-        aria-label="Patient Identifier"
+        aria-label="Patient ID"
         matInput
         formControlName="patientIdentifier">
         <mat-error *ngIf="f.patientIdentifier.errors?.required">This field is required.</mat-error>
-        <mat-error *ngIf="f.patientIdentifier.errors?.minlength || f.patientIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
       </mat-form-field>
-      <mat-form-field class="example-full-width" appearance="outline">
+      <mat-form-field class="example-full-width hide" appearance="outline">
         <mat-label>Dispatcher ID</mat-label>
         <input type="number"
         placeholder="4321"
@@ -175,6 +177,10 @@
             (click)="handleCancelClick()">Cancel</button>
     </div>
   </form>
+  <!-- TODO: Replace with something less hacky -->
+  <br><br><br><br><br><br><br><Br><br><br><br><br>
+  <br><br><br><br><br><br><br><Br><br><br><br><br>
+  <br><br><br><br><br><br><br><Br><br><br><br><br>
 
   <!--********************************************************************
                               Form Debug
