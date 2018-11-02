@@ -142,7 +142,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getPatient(): void {
-    this.patientId = this.route.snapshot.paramMap.get('patientId');
+    this.patientId = parseInt(this.route.snapshot.paramMap.get('patientId'));
     this.patientIdentifier = this.route.snapshot.paramMap.get('patientIdentifier');
     this.f.patientId.setValue(this.patientId);
     this.f.patientIdentifier.setValue(this.patientIdentifier);
