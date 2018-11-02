@@ -95,7 +95,7 @@ export class AppointmentsComponent implements OnInit {
     this.apptDTO.patientId = this.f.patientId.value;
     this.apptDTO.dispatcherId = this.f.dispatcherId.value;
     this.apptDTO.clinicId = this.f.clinicId.value;
-    this.apptDTO.appointmentDate = this.f.appointmentDate.value.toUTCString();
+    this.apptDTO.appointmentDate = this.f.appointmentDate.value.toISOString();
     this.apptDTO.pickupLocationVague = this.f.pickupLocationVague.value;
     this.apptDTO.dropoffLocationVague = this.f.dropoffLocationVague.value;
     this.apptDTO.driveTo = {
