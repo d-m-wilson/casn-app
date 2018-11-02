@@ -62,7 +62,7 @@ namespace CASNApp.API.Controllers
 
             var dispatcher = await dbContext.Volunteer
                 .AsNoTracking()
-                .Where(v => v.Id == appointment.DispatcherId)
+                .Where(v => v.Id == appointment.DispatcherId) // TODO: Later we'll use the userId from the JWT
                 .FirstOrDefaultAsync();
 
             if (dispatcher == null)
@@ -72,7 +72,7 @@ namespace CASNApp.API.Controllers
 
             var clinic = await dbContext.Clinic
                 .AsNoTracking()
-                .Where(c => c.Id == appointment.ClinicId) // TODO: Later we'll use the userId from the JWT
+                .Where(c => c.Id == appointment.ClinicId)
                 .FirstOrDefaultAsync();
 
             if (clinic == null)

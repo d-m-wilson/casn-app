@@ -9,7 +9,7 @@ namespace CASNApp.API.Models
     {
         public bool Validate()
         {
-            if (Appointment != null && !Appointment.Validate())
+            if (Appointment == null || !Appointment.Validate())
                 return false;
 
             if (DriveTo != null && !DriveTo.Validate(Drive.DirectionToClinic))
