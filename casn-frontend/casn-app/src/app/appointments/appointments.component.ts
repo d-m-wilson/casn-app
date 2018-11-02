@@ -91,13 +91,15 @@ export class AppointmentsComponent implements OnInit {
   // TODO: Refactor this eventually.
   constructApptDTO(): void {
     this.apptDTO = {};
-    this.apptDTO.appointmentTypeId = this.f.appointmentTypeId.value;
-    this.apptDTO.patientId = this.f.patientId.value;
-    this.apptDTO.dispatcherId = this.f.dispatcherId.value;
-    this.apptDTO.clinicId = this.f.clinicId.value;
-    this.apptDTO.appointmentDate = this.f.appointmentDate.value.toISOString();
-    this.apptDTO.pickupLocationVague = this.f.pickupLocationVague.value;
-    this.apptDTO.dropoffLocationVague = this.f.dropoffLocationVague.value;
+    this.apptDTO.appointment = {
+      appointmentTypeId: this.f.appointmentTypeId.value,
+      patientId: this.f.patientId.value,
+      dispatcherId: this.f.dispatcherId.value,
+      clinicId: this.f.clinicId.value,
+      appointmentDate: this.f.appointmentDate.value.toISOString(),
+      pickupLocationVague: this.f.pickupLocationVague.value,
+      dropoffLocationVague: this.f.dropoffLocationVague.value
+    }
     this.apptDTO.driveTo = {
       direction: 1,
       startAddress: this.f.pickupAddress.value,
@@ -150,7 +152,6 @@ export class AppointmentsComponent implements OnInit {
 
   getClinics(): void {
     this.defaultService.getClinics().subscribe(data => {
-      console.log("Clinics are", data);
       this.clinics = data;
     })
   }
