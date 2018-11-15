@@ -44,9 +44,10 @@ export class AppointmentsComponent implements OnInit {
 
   apptForm = this.fb.group({
     appointmentTypeId: [3, Validators.required],
-    patientId: [5],
+    patientId: [0],
     patientIdentifier: ['', Validators.required],
-    dispatcherId: [5],
+    // TODO: Get dispatcherId from localstorage
+    dispatcherId: [0],
     clinicId: ['', Validators.required],
     appointmentDate: ['', Validators.required],
     pickupAddress: ['', Validators.required],
