@@ -110,9 +110,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DefaultService", function() { return DefaultService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _variables__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../variables */ "./src/app/api/variables.ts");
-/* harmony import */ var _configuration__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../configuration */ "./src/app/api/configuration.ts");
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _encoder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../encoder */ "./src/app/api/encoder.ts");
+/* harmony import */ var _variables__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../variables */ "./src/app/api/variables.ts");
+/* harmony import */ var _configuration__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../configuration */ "./src/app/api/configuration.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../environments/environment */ "./src/environments/environment.ts");
 /**
  * CASN API
  * This is a test CASN API
@@ -142,12 +143,13 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 
 
 
+
 var DefaultService = /** @class */ (function () {
     function DefaultService(httpClient, basePath, configuration) {
         this.httpClient = httpClient;
-        this.basePath = _environments_environment__WEBPACK_IMPORTED_MODULE_4__["environment"].apiUrl;
+        this.basePath = _environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].apiUrl;
         this.defaultHeaders = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]();
-        this.configuration = new _configuration__WEBPACK_IMPORTED_MODULE_3__["Configuration"]();
+        this.configuration = new _configuration__WEBPACK_IMPORTED_MODULE_4__["Configuration"]();
         if (configuration) {
             this.configuration = configuration;
             this.configuration.basePath = configuration.basePath || basePath || this.basePath;
@@ -195,12 +197,73 @@ var DefaultService = /** @class */ (function () {
             reportProgress: reportProgress
         });
     };
+    DefaultService.prototype.getAllAppointments = function (startDate, endDate, observe, reportProgress) {
+        if (observe === void 0) { observe = 'body'; }
+        if (reportProgress === void 0) { reportProgress = false; }
+        var queryParameters = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpParams"]({ encoder: new _encoder__WEBPACK_IMPORTED_MODULE_2__["CustomHttpUrlEncodingCodec"]() });
+        if (startDate !== undefined && startDate !== null) {
+            queryParameters = queryParameters.set('startDate', startDate);
+        }
+        if (endDate !== undefined && endDate !== null) {
+            queryParameters = queryParameters.set('endDate', endDate);
+        }
+        var headers = this.defaultHeaders;
+        // authentication (BearerAuth) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+        // to determine the Accept header
+        var httpHeaderAccepts = [
+            'application/json'
+        ];
+        var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        var consumes = [];
+        return this.httpClient.get(this.configuration.basePath + "/appointments", {
+            params: queryParameters,
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    };
+    DefaultService.prototype.getAppointmentByID = function (appointmentID, observe, reportProgress) {
+        if (observe === void 0) { observe = 'body'; }
+        if (reportProgress === void 0) { reportProgress = false; }
+        if (appointmentID === null || appointmentID === undefined) {
+            throw new Error('Required parameter appointmentID was null or undefined when calling getAppointmentForDispatcherByID.');
+        }
+        var headers = this.defaultHeaders;
+        // authentication (BearerAuth) required
+        if (this.configuration.username || this.configuration.password) {
+            headers = headers.set('Authorization', 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password));
+        }
+        // to determine the Accept header
+        var httpHeaderAccepts = [
+            'application/json'
+        ];
+        var httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+        // to determine the Content-Type header
+        var consumes = [];
+        return this.httpClient.get(this.configuration.basePath + "/appointments/" + encodeURIComponent(String(appointmentID)), {
+            withCredentials: this.configuration.withCredentials,
+            headers: headers,
+            observe: observe,
+            reportProgress: reportProgress
+        });
+    };
     DefaultService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: 'root'
         }),
-        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"])()), __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_variables__WEBPACK_IMPORTED_MODULE_2__["BASE_PATH"])), __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"])()),
-        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"], String, _configuration__WEBPACK_IMPORTED_MODULE_3__["Configuration"]])
+        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"])()), __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_variables__WEBPACK_IMPORTED_MODULE_3__["BASE_PATH"])), __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Optional"])()),
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"], String, _configuration__WEBPACK_IMPORTED_MODULE_4__["Configuration"]])
     ], DefaultService);
     return DefaultService;
 }());
@@ -425,7 +488,7 @@ var DispatcherService = /** @class */ (function () {
         }
         // to determine the Content-Type header
         var consumes = [];
-        return this.httpClient.get(this.configuration.basePath + "/dispatcher/appointments", {
+        return this.httpClient.get(this.configuration.basePath + "/appointments", {
             params: queryParameters,
             withCredentials: this.configuration.withCredentials,
             headers: headers,
@@ -454,7 +517,7 @@ var DispatcherService = /** @class */ (function () {
         }
         // to determine the Content-Type header
         var consumes = [];
-        return this.httpClient.get(this.configuration.basePath + "/dispatcher/appointments/" + encodeURIComponent(String(appointmentID)), {
+        return this.httpClient.get(this.configuration.basePath + "/appointments/" + encodeURIComponent(String(appointmentID)), {
             withCredentials: this.configuration.withCredentials,
             headers: headers,
             observe: observe,
@@ -2209,7 +2272,7 @@ module.exports = "<h1>Rides are:</h1>\n<p *ngFor=\"let r of rides\">\n  {{ r | j
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RidesComponent", function() { return RidesComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _api_api_dispatcher_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/api/dispatcher.service */ "./src/app/api/api/dispatcher.service.ts");
+/* harmony import */ var _api_api_default_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/api/default.service */ "./src/app/api/api/default.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2238,7 +2301,7 @@ var RidesComponent = /** @class */ (function () {
     **********************************************************************/
     RidesComponent.prototype.getRides = function () {
         var _this = this;
-        this.ds.getAllAppointmentsForDispatcher().subscribe(function (data) {
+        this.ds.getAllAppointments().subscribe(function (data) {
             console.log("Appts are", data);
             _this.rides = data;
         });
@@ -2249,7 +2312,7 @@ var RidesComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./rides.component.html */ "./src/app/rides/rides.component.html"),
             styles: [__webpack_require__(/*! ./rides.component.css */ "./src/app/rides/rides.component.css")]
         }),
-        __metadata("design:paramtypes", [_api_api_dispatcher_service__WEBPACK_IMPORTED_MODULE_1__["DispatcherService"]])
+        __metadata("design:paramtypes", [_api_api_default_service__WEBPACK_IMPORTED_MODULE_1__["DefaultService"]])
     ], RidesComponent);
     return RidesComponent;
 }());
