@@ -5,8 +5,8 @@
   <h2>Create Appointment</h2>
   <form [formGroup]="apptForm" (ngSubmit)="onSubmit()">
     <div class="patient-form-group">
-      <!-- TODO: Disable this form field -->
-      <mat-form-field class="example-full-width"
+      <h3>Patient Identifier: {{ f.patientIdentifier.value }}</h3>
+      <mat-form-field class="example-full-width hide"
                       appearance="outline"
                       disabled>
         <mat-label>Patient ID</mat-label>
