@@ -13,6 +13,7 @@ import { Location } from '@angular/common';
 })
 export class PatientsComponent implements OnInit {
   existingPatient: any = {};
+  existingPatientId: Number;
   /* Display flags for patient lookup feature */
   displayPatientFoundModal: boolean = false;
   displayPatientForm: boolean = false;
@@ -61,7 +62,7 @@ export class PatientsComponent implements OnInit {
       this.saveNewPatient();
     } else {
       // TODO: There should be an update patient endpoint
-      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: 5 }]);
+      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: this.existingPatientId }]);
     }
   }
 
@@ -94,13 +95,14 @@ export class PatientsComponent implements OnInit {
     this.location.back();
   }
 
-  // TODO: Return something besides 404 when no patient found.
   searchPatientIdentifier(): void {
     const id = this.patientIdentifierSearch.value;
     this.ds.getPatientByPatientIdentifier(id).subscribe(
       p => {
         console.log("Get patient request returned:", p);
         if(p.patientIdentifier) {
+          // TODO: Refactor
+          this.existingPatientId = p.id;
           this.existingPatient = {
             patientIdentifier: p.patientIdentifier,
             firstName: p.firstName,
@@ -127,11 +129,9 @@ export class PatientsComponent implements OnInit {
   }
 
   saveNewPatient(): void {
-    this.ds.addPatient(this.patientForm.value).subscribe(data => {
-      console.log("Save patient response is", data);
-      // alert('Success! Your patient has been saved.');
-      // TODO: Retrieve from save response
-      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: 5 }]);
+    this.ds.addPatient(this.patientForm.value).subscribe(p => {
+      console.log("Saved patient:", p);
+      this.router.navigate(['/appointment', { patientIdentifier: p.patientIdentifier, patientId: p.id }]);
     });
   }
 
