@@ -22,12 +22,27 @@ import { Configuration }                                     from '../configurat
 export interface DefaultServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
-    
+
 
     /**
     * gets list of clinics
-    * 
+    *
     */
     getClinics(extraHttpRequestParams?: any): Observable<Array<Clinic>>;
 
+
+    /**
+    * gets appointments with driver/dispatcher-level details
+    * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers.
+    * @param startDate pass a startDate by which to filter
+    * @param endDate pass an endDate by which to filter
+    */
+    getAllAppointments(startDate?: string, endDate?: string, extraHttpRequestParams?: any): Observable<AllAppointments>;
+
+    /**
+    * gets appointment by appointmentID
+    * Search for existing appointment by appointmentIdentifier, return driver/dispatcher-level details
+    * @param appointmentID pass an appointmentIdentifier
+    */
+    getAppointmentByID(appointmentID: string, extraHttpRequestParams?: any): Observable<AppointmentDTO>;
 }
