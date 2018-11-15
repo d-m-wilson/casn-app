@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DispatcherService } from '../api/api/dispatcher.service';
+import { DefaultService } from '../api/api/default.service';
 
 @Component({
   selector: 'app-rides',
@@ -14,7 +14,7 @@ export class RidesComponent implements OnInit {
   **********************************************************************/
   // TODO: The getAllAppointmentsForDriver (single & array) endpoints
   // will disappear. The dispatcher appt services should move to the default service module. URL endpoint will be /appointments or /appointment/:id
-  constructor( private ds: DispatcherService ) { }
+  constructor( private ds: DefaultService ) { }
 
   ngOnInit() {
     this.getRides();
@@ -24,7 +24,7 @@ export class RidesComponent implements OnInit {
                             Service Calls
   **********************************************************************/
   getRides(): void {
-    this.ds.getAllAppointmentsForDispatcher().subscribe(data => {
+    this.ds.getAllAppointments().subscribe(data => {
       console.log("Appts are", data);
       this.rides = data;
     })
