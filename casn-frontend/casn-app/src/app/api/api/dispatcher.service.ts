@@ -294,7 +294,7 @@ export class DispatcherService implements DispatcherServiceInterface {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<AllAppointments>(`${this.configuration.basePath}/dispatcher/appointments`,
+        return this.httpClient.get<AllAppointments>(`${this.configuration.basePath}/appointments`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
@@ -340,7 +340,7 @@ export class DispatcherService implements DispatcherServiceInterface {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<AppointmentDTO>(`${this.configuration.basePath}/dispatcher/appointments/${encodeURIComponent(String(appointmentID))}`,
+        return this.httpClient.get<AppointmentDTO>(`${this.configuration.basePath}/appointments/${encodeURIComponent(String(appointmentID))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
