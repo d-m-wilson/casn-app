@@ -10,15 +10,14 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CASNApp.API.Controllers
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -33,7 +32,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">Client Error - please check your request format &amp; try again.</response>
         /// <response code="404">Error. The driveId or volunteerId was not found.</response>
         [HttpPost]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/drives/apply")]
+        [Route("api/drives/apply")]
         [ValidateModelState]
         [SwaggerOperation("AddDriveApplicant")]
         public virtual IActionResult AddDriveApplicant([FromBody]Body body)
@@ -52,80 +51,11 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets appointments with driver-level details
-        /// </summary>
-        /// <remarks>Get all appointments within a default date range (possibly adjustable w/ query params). Appointments DO NOT include details, e.g. exact location, available only to dispatchers. </remarks>
-        /// <param name="startDate">pass a startDate by which to filter</param>
-        /// <param name="endDate">pass an endDate by which to filter</param>
-        /// <response code="200">all appointments in date range</response>
-        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
-        /// <response code="404">Error - Not Found</response>
-        [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/driver/appointments")]
-        [ValidateModelState]
-        [SwaggerOperation("GetAllAppointmentsForDriver")]
-        [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "all appointments in date range")]
-        public virtual IActionResult GetAllAppointmentsForDriver([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AllAppointments));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
-            string exampleJson = null;
-            exampleJson = "null";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AllAppointments>(exampleJson)
-            : default(AllAppointments);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
-        }
-
-        /// <summary>
-        /// gets appointment by appointmentID
-        /// </summary>
-        /// <remarks>Search for existing appointment by appointmentIdentifier, return driver-level details </remarks>
-        /// <param name="appointmentID">pass an appointmentIdentifier</param>
-        /// <response code="200">Success. Found appointment.</response>
-        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
-        /// <response code="404">No appointment found.</response>
-        [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/driver/appointments/{appointmentID}")]
-        [ValidateModelState]
-        [SwaggerOperation("GetAppointmentForDriverByID")]
-        [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Found appointment.")]
-        public virtual IActionResult GetAppointmentForDriverByID([FromRoute][Required]string appointmentID)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AppointmentDTO));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"patient\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"patientIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"patientId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)
-            : default(AppointmentDTO);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
-        }
-
-        /// <summary>
         /// gets applied-for and approved drives for the current user
         /// </summary>
         /// <response code="200">Success</response>
         [HttpGet]
-        [Route("/d-m-wilson/CASN_App_OAS3/1.0.0/driver/myDrives")]
+        [Route("api/driver/myDrives")]
         [ValidateModelState]
         [SwaggerOperation("GetMyDrives")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<DriverDrive>), description: "Success")]

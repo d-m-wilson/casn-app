@@ -12,13 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -266,93 +264,6 @@ namespace CASNApp.API.Controllers
             var example = exampleJson != null
             ? JsonConvert.DeserializeObject<DeleteSuccessMessage>(exampleJson)
             : default(DeleteSuccessMessage);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
-        }
-
-        /// <summary>
-        /// gets appointments with dispatcher-level details
-        /// </summary>
-        /// <remarks>Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers. </remarks>
-        /// <param name="startDate">pass a startDate by which to filter</param>
-        /// <param name="endDate">pass an endDate by which to filter</param>
-        /// <response code="200">all appointments in date range</response>
-        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
-        /// <response code="404">Error - Not Found</response>
-        [HttpGet]
-        [Route("api/dispatcher/appointments")]
-        [ValidateModelState]
-        [SwaggerOperation("GetAllAppointmentsForDispatcher")]
-        [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "all appointments in date range")]
-        public virtual async Task<IActionResult> GetAllAppointmentsForDispatcher([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
-        {
-            var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
-            var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
-
-            var appointmentEntities = await dbContext.Appointment
-                .Include(a => a.Drives)
-                .Where(a => a.AppointmentDate >= start &&
-                            a.AppointmentDate <= end &&
-                            a.IsActive)
-                .ToListAsync();
-
-            var appointmentDTOs = appointmentEntities.Select(a =>
-            {
-                var driveTo = a.Drives.FirstOrDefault(d => d.Direction == Drive.DirectionToClinic);
-                var driveFrom = a.Drives.FirstOrDefault(d => d.Direction == Drive.DirectionFromClinic);
-
-                return new AppointmentDTO
-                {
-                    Appointment = new Models.Appointment(a),
-                    DriveTo = driveTo == null ? null : new Drive(driveTo),
-                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom),
-                };
-            }).ToList();
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AllAppointments));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
-            var result = new AllAppointments(appointmentDTOs);
-
-            return new ObjectResult(result);
-        }
-
-        /// <summary>
-        /// gets appointment by appointmentID
-        /// </summary>
-        /// <remarks>Search for existing appointment by appointmentIdentifier, return dispatcher-level details </remarks>
-        /// <param name="appointmentID">pass an appointmentIdentifier</param>
-        /// <response code="200">Success. Found appointment.</response>
-        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
-        /// <response code="404">No appointment found.</response>
-        [HttpGet]
-        [Route("api/dispatcher/appointments/{appointmentID}")]
-        [ValidateModelState]
-        [SwaggerOperation("GetAppointmentForDispatcherByID")]
-        [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Found appointment.")]
-        public virtual IActionResult GetAppointmentForDispatcherByID([FromRoute][Required]string appointmentID)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AppointmentDTO));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"patient\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"patientIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"patientId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)
-            : default(AppointmentDTO);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
