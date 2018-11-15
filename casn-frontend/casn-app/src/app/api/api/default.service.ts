@@ -165,9 +165,9 @@ export class DefaultService implements DefaultServiceInterface {
          * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
          * @param reportProgress flag to report request and response progress.
          */
-        public getAppointmentForDispatcherByID(appointmentID: string, observe?: 'body', reportProgress?: boolean): Observable<AppointmentDTO>;
-        public getAppointmentForDispatcherByID(appointmentID: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<AppointmentDTO>>;
-        public getAppointmentForDispatcherByID(appointmentID: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<AppointmentDTO>>;
+        public getAppointmentByID(appointmentID: string, observe?: 'body', reportProgress?: boolean): Observable<AppointmentDTO>;
+        public getAppointmentByID(appointmentID: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<AppointmentDTO>>;
+        public getAppointmentByID(appointmentID: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<AppointmentDTO>>;
         public getAppointmentByID(appointmentID: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
             if (appointmentID === null || appointmentID === undefined) {
                 throw new Error('Required parameter appointmentID was null or undefined when calling getAppointmentForDispatcherByID.');
