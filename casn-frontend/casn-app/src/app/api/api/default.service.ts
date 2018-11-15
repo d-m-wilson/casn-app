@@ -19,6 +19,8 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { Clinic } from '../model/clinic.model';
+import { AllAppointments } from '../model/allAppointments.model';
+import { AppointmentDTO } from '../model/appointmentDTO.model';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
