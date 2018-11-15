@@ -14,6 +14,8 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { Clinic } from '../model/clinic.model';
+import { AllAppointments } from '../model/allAppointments.model';
+import { AppointmentDTO } from '../model/appointmentDTO.model';
 
 
 import { Configuration }                                     from '../configuration';
