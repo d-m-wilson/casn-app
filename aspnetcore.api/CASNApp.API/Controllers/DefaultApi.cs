@@ -65,9 +65,9 @@ namespace CASNApp.API.Controllers
         [HttpGet]
         [Route("api/appointments")]
         [ValidateModelState]
-        [SwaggerOperation("GetAllAppointmentsForDispatcher")]
+        [SwaggerOperation("GetAppointments")]
         [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "all appointments in date range")]
-        public virtual async Task<IActionResult> GetAllAppointmentsForDispatcher([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
+        public virtual async Task<IActionResult> GetAppointments([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
         {
             var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
             var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
@@ -117,9 +117,9 @@ namespace CASNApp.API.Controllers
         [HttpGet]
         [Route("api/appointments/{appointmentID}")]
         [ValidateModelState]
-        [SwaggerOperation("GetAppointmentForDispatcherByID")]
+        [SwaggerOperation("GetAppointmentByID")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Found appointment.")]
-        public virtual IActionResult GetAppointmentForDispatcherByID([FromRoute][Required]string appointmentID)
+        public virtual IActionResult GetAppointmentByID([FromRoute][Required]string appointmentID)
         {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(AppointmentDTO));
