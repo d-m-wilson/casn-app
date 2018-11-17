@@ -67,7 +67,14 @@ namespace CASNApp.API
                                 mysqlOptions.ServerVersion(new Version(5, 7, 22), ServerType.MySql)
                                     .EnableRetryOnFailure(2);
                             });
-                    }, ServiceLifetime.Scoped, ServiceLifetime.Scoped)
+                    }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
+
+            if (_hostingEnv.IsDevelopment())
+            {
+                services.AddCors();
+            }
+
+            services
                 .AddMvc()
                 .AddJsonOptions(opts =>
                 {
@@ -112,6 +119,17 @@ namespace CASNApp.API
         /// <param name="app"></param>
         public void Configure(IApplicationBuilder app)
         {
+            if (_hostingEnv.IsDevelopment())
+            {
+                app.UseCors(builder =>
+                {
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyOrigin();
+                    builder.SetPreflightMaxAge(TimeSpan.FromMinutes(5));
+                });
+            }
+
             app
                 .UseMvc()
                 .UseDefaultFiles()
