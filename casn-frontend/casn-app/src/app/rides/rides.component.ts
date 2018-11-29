@@ -25,7 +25,8 @@ export class RidesComponent implements OnInit {
     // TODO: Make start/end dates dynamic
     this.ds.getAllAppointments("2017-11-01", "2018-11-28").subscribe(data => {
       console.log("Appts are", data);
-      this.rides = data;
+      // Sort by date asc
+      this.rides = data.sort((a, b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
     })
     console.log("Rides are:", this.rides);
   }
