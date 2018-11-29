@@ -12,8 +12,6 @@ export class RidesComponent implements OnInit {
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  // TODO: The getAllAppointmentsForDriver (single & array) endpoints
-  // will disappear. The dispatcher appt services should move to the default service module. URL endpoint will be /appointments or /appointment/:id
   constructor( private ds: DefaultService ) { }
 
   ngOnInit() {
@@ -24,10 +22,12 @@ export class RidesComponent implements OnInit {
                             Service Calls
   **********************************************************************/
   getRides(): void {
-    this.ds.getAllAppointments().subscribe(data => {
+    // TODO: Make start/end dates dynamic
+    this.ds.getAllAppointments("2017-11-01", "2018-11-28").subscribe(data => {
       console.log("Appts are", data);
       this.rides = data;
     })
+    console.log("Rides are:", this.rides);
   }
 
 }
