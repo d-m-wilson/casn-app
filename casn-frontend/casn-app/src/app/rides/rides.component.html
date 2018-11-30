@@ -1,4 +1,11 @@
 <h1>Rides are:</h1>
+<div *ngFor="let r of rides">
+  <!-- <p>{{ r.appointment?.appointmentDate | date }}</p> -->
+  <p>{{ r.appointment?.appointmentDate | date:'d' }}<br>{{ r.appointment?.appointmentDate | date:'EEE' }}</p>
+  <p>Pick up: {{ r.appointment.pickupLocationVague }}</p>
+  <p>Drop off: {{ r.appointment.dropoffLocationVague }}</p>
+</div>
+
 <p *ngFor="let r of rides">
   {{ r | json }}
 </p>
