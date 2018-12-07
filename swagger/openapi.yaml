@@ -473,6 +473,11 @@ components:
           format: int32
           example: 1
           description: '1 = toClinic, 2 = fromClinic'
+        status:
+          type: integer
+          format: int32
+          example: 0
+          description: '0 = Open, 1 = Pending, 2 = Approved'
         driverId:
           type: integer
           format: int64

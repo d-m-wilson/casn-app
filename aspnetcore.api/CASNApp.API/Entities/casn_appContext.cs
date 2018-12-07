@@ -185,6 +185,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Direction).HasColumnName("direction");
 
+                entity.Property(e => e.Status).HasColumnName("status");
+
                 entity.Property(e => e.DriverId).HasColumnName("driverId");
 
                 entity.Property(e => e.EndAddress)

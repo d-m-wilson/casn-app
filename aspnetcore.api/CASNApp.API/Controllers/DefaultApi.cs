@@ -73,23 +73,44 @@ namespace CASNApp.API.Controllers
             var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
 
             var appointmentEntities = await dbContext.Appointment
+                .AsNoTracking()
                 .Include(a => a.Drives)
                 .Where(a => a.AppointmentDate >= start &&
                             a.AppointmentDate <= end &&
                             a.IsActive)
                 .ToListAsync();
 
+            var driveIds = new List<long>();
+
+            foreach (var appt in appointmentEntities)
+            {
+                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
+                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+
+                if (driveTo?.Id != null)
+                {
+                    driveIds.Add(driveTo.Id);
+                }
+
+                if (driveFrom?.Id != null)
+                {
+                    driveIds.Add(driveFrom.Id);
+                }
+            }
+
             var appointmentDTOs = appointmentEntities.Select(a =>
             {
-                var driveTo = a.Drives.FirstOrDefault(d => d.Direction == Drive.DirectionToClinic);
-                var driveFrom = a.Drives.FirstOrDefault(d => d.Direction == Drive.DirectionFromClinic);
+                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
+                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
 
-                return new AppointmentDTO
+                var apptDto = new AppointmentDTO
                 {
                     Appointment = new Models.Appointment(a),
                     DriveTo = driveTo == null ? null : new Drive(driveTo),
-                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom),
+                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
                 };
+
+                return apptDto;
             }).ToList();
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

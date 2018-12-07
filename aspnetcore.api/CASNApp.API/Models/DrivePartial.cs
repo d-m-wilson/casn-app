@@ -4,6 +4,9 @@
     {
         public const int DirectionToClinic = 1;
         public const int DirectionFromClinic = 2;
+        public const int StatusOpen = 0;
+        public const int StatusPending = 1;
+        public const int StatusApproved = 2;
 
         public Drive() { }
 
@@ -12,6 +15,7 @@
             AppointmentId = d.AppointmentId;
             Created = d.Created;
             Direction = d.Direction;
+            Status = d.Status;
             DriverId = d.DriverId;
             EndAddress = d.EndAddress;
             EndCity = d.EndCity;

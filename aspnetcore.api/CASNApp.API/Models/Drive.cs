@@ -9,15 +9,13 @@
  */
 
 using System;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace CASNApp.API.Models
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -37,12 +35,19 @@ namespace CASNApp.API.Models
         public long? AppointmentId { get; set; }
 
         /// <summary>
-        /// 1 &#x3D; toClinic, 2 &#x3D; fromClinic
+        /// 1 = toClinic, 2 = fromClinic
         /// </summary>
-        /// <value>1 &#x3D; toClinic, 2 &#x3D; fromClinic</value>
+        /// <value>1 = toClinic, 2 = fromClinic</value>
         [Required]
         [DataMember(Name="direction")]
         public int? Direction { get; set; }
+
+        /// <summary>
+        /// 0 = Open, 1 = Pending, 2 = Approved
+        /// </summary>
+        /// <value>0 = Open, 1 = Pending, 2 = Approved</value>
+        [DataMember(Name = "status")]
+        public int Status { get; set; }
 
         /// <summary>
         /// Gets or Sets DriverId

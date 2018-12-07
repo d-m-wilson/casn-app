@@ -13,6 +13,7 @@ namespace CASNApp.API.Entities
         public uint Id { get; set; }
         public uint AppointmentId { get; set; }
         public byte Direction { get; set; }
+        public byte Status { get; set; }
         public uint? DriverId { get; set; }
         public string StartAddress { get; set; }
         public string StartCity { get; set; }

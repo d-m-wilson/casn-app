@@ -112,9 +112,8 @@
         }
       }
     },
-    "/dispatcher/appointments" : {
+    "/appointments" : {
       "get" : {
-        "tags" : [ "dispatcher" ],
         "summary" : "gets appointments with dispatcher-level details",
         "description" : "Get all appointments within a default date range (possibly adjustable w/ query params).\nAppointments include details, e.g. exact location, available only to dispatchers.\n",
         "operationId" : "getAllAppointmentsForDispatcher",
@@ -195,9 +194,8 @@
         }
       }
     },
-    "/dispatcher/appointments/{appointmentID}" : {
+    "/appointments/{appointmentID}" : {
       "get" : {
-        "tags" : [ "dispatcher" ],
         "summary" : "gets appointment by appointmentID",
         "description" : "Search for existing appointment by appointmentIdentifier, return dispatcher-level details\n",
         "operationId" : "getAppointmentForDispatcherByID",
@@ -298,92 +296,6 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/deleteSuccessMessage"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Client Error - please check your request format & try again."
-          },
-          "404" : {
-            "description" : "No appointment found."
-          }
-        }
-      }
-    },
-    "/driver/appointments" : {
-      "get" : {
-        "tags" : [ "driver" ],
-        "summary" : "gets appointments with driver-level details",
-        "description" : "Get all appointments within a default date range (possibly adjustable w/ query params).\nAppointments DO NOT include details, e.g. exact location, available only to dispatchers.\n",
-        "operationId" : "getAllAppointmentsForDriver",
-        "parameters" : [ {
-          "name" : "startDate",
-          "in" : "query",
-          "description" : "pass a startDate by which to filter",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "minLength" : 4,
-            "type" : "string"
-          }
-        }, {
-          "name" : "endDate",
-          "in" : "query",
-          "description" : "pass an endDate by which to filter",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "minLength" : 4,
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "all appointments in date range",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/allAppointments"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Client Error - please check your request format & try again."
-          },
-          "404" : {
-            "description" : "Error - Not Found"
-          }
-        }
-      }
-    },
-    "/driver/appointments/{appointmentID}" : {
-      "get" : {
-        "tags" : [ "driver" ],
-        "summary" : "gets appointment by appointmentID",
-        "description" : "Search for existing appointment by appointmentIdentifier, return driver-level details\n",
-        "operationId" : "getAppointmentForDriverByID",
-        "parameters" : [ {
-          "name" : "appointmentID",
-          "in" : "path",
-          "description" : "pass an appointmentIdentifier",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Success. Found appointment.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/appointmentDTO"
                 }
               }
             }
@@ -583,7 +495,7 @@
             "maxLength" : 45,
             "minLength" : 4,
             "type" : "string",
-            "example" : "JS1234"
+            "example" : "5551"
           },
           "firstName" : {
             "maxLength" : 50,
@@ -630,7 +542,7 @@
           "firstName" : "Jane",
           "lastName" : "Smith",
           "isMinor" : true,
-          "patientIdentifier" : "JS1234",
+          "patientIdentifier" : "5551",
           "preferredLanguage" : "French",
           "preferredContactMethod" : 1,
           "phone" : "5555551234",
@@ -728,6 +640,12 @@
             "format" : "int32",
             "example" : 1
           },
+          "status" : {
+            "type" : "integer",
+            "description" : "0 = Open, 1 = Pending, 2 = Approved",
+            "format" : "int32",
+            "example" : 0
+          },
           "driverId" : {
             "type" : "integer",
             "format" : "int64",
@@ -798,7 +716,8 @@
           "endPostalCode" : "77024",
           "updated" : "2000-01-23T04:56:07.000+00:00",
           "endAddress" : "7373 Old Katy Rd",
-          "direction" : 1
+          "direction" : 1,
+          "status" : 0
         }
       },
       "appointmentDTO" : {
@@ -828,20 +747,8 @@
             "endPostalCode" : "77024",
             "updated" : "2000-01-23T04:56:07.000+00:00",
             "endAddress" : "7373 Old Katy Rd",
-            "direction" : 1
-          },
-          "patient" : {
-            "civiContactId" : 42,
-            "firstName" : "Jane",
-            "lastName" : "Smith",
-            "isMinor" : true,
-            "patientIdentifier" : "JS1234",
-            "preferredLanguage" : "French",
-            "preferredContactMethod" : 1,
-            "phone" : "5555551234",
-            "created" : "2000-01-23T04:56:07.000+00:00",
-            "id" : 42,
-            "updated" : "2000-01-23T04:56:07.000+00:00"
+            "direction" : 1,
+            "status" : 0
           },
           "driveFrom" : {
             "startCity" : "Houston",
@@ -857,7 +764,8 @@
             "endPostalCode" : "77024",
             "updated" : "2000-01-23T04:56:07.000+00:00",
             "endAddress" : "7373 Old Katy Rd",
-            "direction" : 1
+            "direction" : 1,
+            "status" : 0
           },
           "appointment" : {
             "pickupLocationVague" : "US59 S and BW8",
@@ -1002,7 +910,7 @@
             "maxLength" : 45,
             "minLength" : 4,
             "type" : "string",
-            "example" : "JS1234"
+            "example" : "5554"
           },
           "patientName" : {
             "maxLength" : 100,
@@ -1013,7 +921,7 @@
         "example" : {
           "patientName" : "Jane Smith",
           "clinicId" : 42,
-          "patientIdentifier" : "JS1234",
+          "patientIdentifier" : "5554",
           "startLocation" : "US59 S and BW8",
           "appointmentId" : 42,
           "id" : 42,
