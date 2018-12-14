@@ -321,18 +321,21 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("GetVolunteerDrives")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<VolunteerDrive>), description: "successful operation")]
         public virtual IActionResult GetVolunteerDrives([FromQuery][Required()]long? driveId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<VolunteerDrive>));
+        {
+            if (!driveId.HasValue || !dbContext.Drive.Any(d => d.Id == driveId.Value))
+            {
+                return BadRequest();
+            }
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"firstName\" : \"Alice\",\r\n  \"lastName\" : \"Wagner\",\r\n  \"driveId\" : 42,\r\n  \"mobilePhone\" : \"5555554321\",\r\n  \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n  \"id\" : 42,\r\n  \"volunteerId\" : 42,\r\n  \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<VolunteerDrive>>(exampleJson)
-            : default(List<VolunteerDrive>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var results = dbContext.VolunteerDrive
+                .AsNoTracking()
+                .Include(vd => vd.Volunteer)
+                .Where(vd => vd.DriveId == driveId.Value && vd.IsActive)
+                .OrderBy(vd => vd.Created)
+                .Select(vd => new Models.VolunteerDrive(vd))
+                .ToList();
+
+            return Ok(results);
         }
 
         /// <summary>
