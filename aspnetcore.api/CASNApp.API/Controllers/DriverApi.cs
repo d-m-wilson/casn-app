@@ -10,9 +10,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -22,7 +24,14 @@ namespace CASNApp.API.Controllers
     /// 
     /// </summary>
     public class DriverApiController : Controller
-    { 
+    {
+        private readonly Entities.casn_appContext dbContext;
+
+        public DriverApiController(Entities.casn_appContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         /// <summary>
         /// applies a volunteer for a drive
         /// </summary>
@@ -36,7 +45,61 @@ namespace CASNApp.API.Controllers
         [ValidateModelState]
         [SwaggerOperation("AddDriveApplicant")]
         public virtual IActionResult AddDriveApplicant([FromBody]Body body)
-        { 
+        {
+            var driveId = body.DriveId;
+
+            if (!driveId.HasValue)
+            {
+                return BadRequest(body);
+            }
+
+            var drive = dbContext.Drive.Where(d => d.Id == driveId.Value && d.IsActive).SingleOrDefault();
+
+            if (drive == null)
+            {
+                return NotFound(body);
+            }
+
+            // BEGIN: pick a random driver who has not already applied for the specified drive
+            var drivers = dbContext.Volunteer.AsNoTracking().Where(v => v.IsDriver && v.IsActive).ToList();
+            var random = new Random();
+
+            Entities.Volunteer driver = null;
+
+            for (int tries = 0; tries < drivers.Count; tries++)
+            {
+                var randomDriver = drivers[random.Next(drivers.Count)];
+
+                if (!dbContext.VolunteerDrive.Any(vd => vd.VolunteerId == randomDriver.Id && vd.DriveId == driveId.Value && vd.IsActive))
+                {
+                    driver = randomDriver;
+                    break;
+                }
+            }
+            // END
+
+            var volunteerDrive = new Entities.VolunteerDrive
+            {
+                Created = DateTime.UtcNow,
+                DriveId = (uint)driveId.Value,
+                VolunteerId = driver.Id,
+                IsActive = true,
+            };
+
+            dbContext.VolunteerDrive.Add(volunteerDrive);
+            
+            if (drive.Status == Drive.StatusOpen)
+            {
+                drive.Status = Drive.StatusPending;
+                drive.Updated = DateTime.UtcNow;
+            }
+
+            dbContext.SaveChanges();
+
+            var volunteerDriveDTO = new Models.VolunteerDrive(volunteerDrive);
+
+            return Ok(volunteerDriveDTO);
+
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200);
 
@@ -45,9 +108,6 @@ namespace CASNApp.API.Controllers
 
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
-
-
-            throw new NotImplementedException();
         }
 
         /// <summary>
