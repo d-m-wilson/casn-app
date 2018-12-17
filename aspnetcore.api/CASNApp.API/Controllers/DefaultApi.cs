@@ -140,8 +140,47 @@ namespace CASNApp.API.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetAppointmentByID")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Found appointment.")]
-        public virtual IActionResult GetAppointmentByID([FromRoute][Required]string appointmentID)
+        public virtual async Task<IActionResult> GetAppointmentByID([FromRoute][Required]string appointmentID)
         {
+            if (string.IsNullOrWhiteSpace(appointmentID) || !long.TryParse(appointmentID, out long apptId))
+            {
+                return BadRequest();
+            }
+
+            var apptEntity = await dbContext.Appointment
+                .AsNoTracking()
+                .Include(a => a.Drives)
+                .Where(a => a.Id == apptId &&
+                            a.IsActive)
+                .FirstOrDefaultAsync();
+
+            var driveIds = new List<long>();
+
+                var driveToEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
+                var driveFromEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+
+                if (driveToEntity?.Id != null)
+                {
+                    driveIds.Add(driveToEntity.Id);
+                }
+
+                if (driveFromEntity?.Id != null)
+                {
+                    driveIds.Add(driveFromEntity.Id);
+                }
+
+            var driveTo = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
+            var driveFrom = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+
+            var apptDTO = new AppointmentDTO
+            {
+                Appointment = new Models.Appointment(apptEntity),
+                DriveTo = driveTo == null ? null : new Drive(driveTo),
+                DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
+            };
+
+            return Ok(apptDTO);
+
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(AppointmentDTO));
 
@@ -151,14 +190,6 @@ namespace CASNApp.API.Controllers
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"patient\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"patientIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"patientId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
-
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)
-            : default(AppointmentDTO);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
         }
 
     }
