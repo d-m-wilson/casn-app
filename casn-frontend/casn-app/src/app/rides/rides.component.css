@@ -2,3 +2,31 @@
   font-size: 1.5rem;
   font-weight: bold;
 }
+
+.fixed-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 20;
+  background-color: #9575cd;
+  padding: 5px;
+}
+
+.open {
+  /* background-color: #ff8a80; */
+  background-color: #ffebee;
+}
+
+.pending {
+  /* background-color: #ffe57f; */
+  background-color: #fff8e1;
+}
+
+.approved {
+  /* background-color: #b9f6ca; */
+  background-color: #e0f2f1;
+}
