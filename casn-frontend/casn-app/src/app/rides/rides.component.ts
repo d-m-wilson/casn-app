@@ -9,6 +9,8 @@ import { DefaultService } from '../api/api/default.service';
 export class RidesComponent implements OnInit {
   rides: any[];
   clinics: any;
+  // TODO: These should be fetched from API endpoint
+  apptTypes: any = { 4: 'Ultrasound', 3: 'Surgical' };
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
 
@@ -40,5 +42,9 @@ export class RidesComponent implements OnInit {
       this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
+
+/*********************************************************************
+                              Utilities
+**********************************************************************/
 
 }

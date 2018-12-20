@@ -1,35 +1,43 @@
-<!--********************************************************************
-                          Ride Display Toggles
-**********************************************************************-->
-<div class="fixed-footer">
-  <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
-    <mat-button-toggle value="open" [checked]="displayRides[0]" (change)="displayRides[0] = $event.source.checked">Open</mat-button-toggle>
-    <mat-button-toggle value="pending" [checked]="displayRides[1]" (change)="displayRides[1] = $event.source.checked">Pending</mat-button-toggle>
-    <mat-button-toggle value="approved" [checked]="displayRides[2]" (change)="displayRides[2] = $event.source.checked">Approved</mat-button-toggle>
-  </mat-button-toggle-group>
-</div>
-<!--********************************************************************
-                              Ride Cards
-**********************************************************************-->
-<div *ngFor="let r of rides">
-  <div *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
-    {{ r.appointment?.appointmentDate | date:'EEE' }}<br>
-    <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span><br>
-    {{ r.appointment?.appointmentDate | date:'MMM' }}
+<ng-container *ngIf="rides && clinics">
+  <!--********************************************************************
+                            Ride Display Toggles
+  **********************************************************************-->
+  <div class="fixed-footer">
+    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
+      <mat-button-toggle value="open" [checked]="displayRides[0]" (change)="displayRides[0] = $event.source.checked">Open</mat-button-toggle>
+      <mat-button-toggle value="pending" [checked]="displayRides[1]" (change)="displayRides[1] = $event.source.checked">Pending</mat-button-toggle>
+      <mat-button-toggle value="approved" [checked]="displayRides[2]" (change)="displayRides[2] = $event.source.checked">Approved</mat-button-toggle>
+    </mat-button-toggle-group>
   </div>
-  <mat-card *ngIf="displayRides[r.driveTo?.status]"
-            [ngClass]="{ 'open': r.driveTo.status === 0,
-                         'pending': r.driveTo.status === 1,
-                         'approved': r.driveTo.status === 2 }">
-    <p>Drive To: {{ r.driveTo | json }}</p>
-  </mat-card>
-  <mat-card *ngIf="displayRides[r.driveFrom?.status]"
-            [ngClass]="{ 'open': r.driveFrom.status === 0,
-                         'pending': r.driveFrom.status === 1,
-                         'approved': r.driveFrom.status === 2 }">
-    <p>Drive From: {{ r.driveFrom | json }}</p>
-  </mat-card>
-</div>
+  <!--********************************************************************
+                                Ride Cards
+  **********************************************************************-->
+  <div *ngFor="let r of rides">
+    <div *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
+      {{ r.appointment?.appointmentDate | date:'EEE' }}<br>
+      <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span><br>
+      {{ r.appointment?.appointmentDate | date:'MMM' }}
+    </div>
+    <mat-card>
+      {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment <br>
+      {{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}
+    </mat-card>
+    <div class="drive-container">
+      <mat-card *ngIf="displayRides[r.driveTo?.status]"
+                [ngClass]="{ 'open': r.driveTo.status === 0,
+                             'pending': r.driveTo.status === 1,
+                             'approved': r.driveTo.status === 2 }">
+        <p>Drive To: {{ r.driveTo | json }}</p>
+      </mat-card>
+      <mat-card *ngIf="displayRides[r.driveFrom?.status]"
+                [ngClass]="{ 'open': r.driveFrom.status === 0,
+                             'pending': r.driveFrom.status === 1,
+                             'approved': r.driveFrom.status === 2 }">
+        <p>Drive From: {{ r.driveFrom | json }}</p>
+      </mat-card>
+    </div>
+  </div>
+</ng-container>
 
 <pre *ngFor="let r of rides">
   {{ r | json }}
