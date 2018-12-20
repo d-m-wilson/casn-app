@@ -1,11 +1,31 @@
-<h1>Rides are:</h1>
+<!--********************************************************************
+                          Ride Display Toggles
+**********************************************************************-->
+Show Rides:
+<mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
+  <mat-button-toggle value="open" [checked]="displayRides[0]" (change)="displayOpenRides = $event.source.checked">Open</mat-button-toggle>
+  <mat-button-toggle value="pending" [checked]="displayRides[1]" (change)="displayPendingRides = $event.source.checked">Pending</mat-button-toggle>
+  <mat-button-toggle value="approved" [checked]="displayRides[2]" (change)="displayApprovedRides = $event.source.checked">Approved</mat-button-toggle>
+</mat-button-toggle-group>
+
+<!--********************************************************************
+                              Ride Cards
+**********************************************************************-->
 <div *ngFor="let r of rides">
   <!-- <p>{{ r.appointment?.appointmentDate | date }}</p> -->
-  <p>{{ r.appointment?.appointmentDate | date:'d' }}<br>{{ r.appointment?.appointmentDate | date:'EEE' }}</p>
-  <p>Pick up: {{ r.appointment.pickupLocationVague }}</p>
-  <p>Drop off: {{ r.appointment.dropoffLocationVague }}</p>
+  <div>
+    {{ r.appointment?.appointmentDate | date:'EEE' }}<br>
+    <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span><br>
+    {{ r.appointment?.appointmentDate | date:'MMM' }}
+  </div>
+  <mat-card *ngIf="displayRides[r.driveTo?.status]">
+    <p>Drive To: {{ r.driveTo | json }}</p>
+  </mat-card>
+  <mat-card *ngIf="displayRides[r.driveFrom?.status]">
+    <p>Drive From: {{ r.driveFrom | json }}</p>
+  </mat-card>
 </div>
 
-<p *ngFor="let r of rides">
+<pre *ngFor="let r of rides">
   {{ r | json }}
-</p>
+</pre>
