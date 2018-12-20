@@ -18,6 +18,10 @@ body {
   cursor: pointer;
 }
 
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
 /* Comment out to show debug messages for development */
 .debug {
   display: none;
