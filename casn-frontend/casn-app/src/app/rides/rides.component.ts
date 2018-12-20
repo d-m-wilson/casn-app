@@ -46,5 +46,22 @@ export class RidesComponent implements OnInit {
 /*********************************************************************
                               Utilities
 **********************************************************************/
+  getStatusIcon(status: number): string {
+    switch(status) {
+      case 0: return "panorama_fish_eye";
+      case 1: return "timelapse";
+      case 2: return "check_circle";
+      default: return "";
+    }
+  }
+
+  getStatusText(status: number): string {
+    switch(status) {
+      case 0: return "Open - Apply Now";
+      case 1: return "Pending Approval";
+      case 2: return "Approved";
+      default: return "";
+    }
+  }
 
 }

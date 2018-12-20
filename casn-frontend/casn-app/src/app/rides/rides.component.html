@@ -13,31 +13,56 @@
                                 Ride Cards
   **********************************************************************-->
   <div *ngFor="let r of rides">
-    <div *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
-      {{ r.appointment?.appointmentDate | date:'EEE' }}<br>
-      <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span><br>
-      {{ r.appointment?.appointmentDate | date:'MMM' }}
-    </div>
-    <mat-card>
-      {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment <br>
-      {{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}
-    </mat-card>
-    <div class="drive-container">
-      <mat-card *ngIf="displayRides[r.driveTo?.status]"
-                [ngClass]="{ 'open': r.driveTo.status === 0,
-                             'pending': r.driveTo.status === 1,
-                             'approved': r.driveTo.status === 2 }">
-        <p>Drive To: {{ r.driveTo | json }}</p>
+    <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
+      <div>
+        {{ r.appointment?.appointmentDate | date:'EEE' }}<br>
+        <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span><br>
+        {{ r.appointment?.appointmentDate | date:'MMM' }}
+      </div>
+      <mat-card class="appointment-card">
+        <span class="bolder">{{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
+        <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span>
       </mat-card>
-      <mat-card *ngIf="displayRides[r.driveFrom?.status]"
-                [ngClass]="{ 'open': r.driveFrom.status === 0,
-                             'pending': r.driveFrom.status === 1,
-                             'approved': r.driveFrom.status === 2 }">
-        <p>Drive From: {{ r.driveFrom | json }}</p>
-      </mat-card>
-    </div>
+      <div class="drive-container">
+        <mat-card *ngIf="displayRides[r.driveTo?.status]"
+                  class="drive-card"
+                  [ngClass]="{ 'open': r.driveTo.status === 0,
+                               'pending': r.driveTo.status === 1,
+                               'approved': r.driveTo.status === 2 }">
+          <div class="drive-card-header">
+            <mat-icon>{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
+            <span class="fill-remaining-space"></span>
+            <mat-icon class="menu-icon">more_vert</mat-icon>
+          </div>
+          <p class="bold">Drive To Clinic</p>
+          <!-- TODO: Conditional display based on user role -->
+          <!-- <p>Pick up at {{ r.appointment?.pickupLocationVague }}.</p> -->
+          <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
+        </mat-card>
+        <mat-card *ngIf="displayRides[r.driveFrom?.status]"
+                  class="drive-card"
+                  [ngClass]="{ 'open': r.driveFrom.status === 0,
+                               'pending': r.driveFrom.status === 1,
+                               'approved': r.driveFrom.status === 2 }">
+          <div class="drive-card-header">
+            <mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
+            <span class="fill-remaining-space"></span>
+            <mat-icon class="menu-icon">more_vert</mat-icon>
+          </div>
+          <p class="bold">Drive From Clinic</p>
+          <!-- TODO: Conditional display based on user role -->
+          <!-- <p>Drop off at {{ r.appointment?.dropoffLocationVague }}.</p> -->
+          <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
+        </mat-card>
+      </div>
+    </ng-container>
   </div>
 </ng-container>
+
+<!--********************************************************************
+                          Ride Detail Modal
+**********************************************************************-->
+<!-- <span class="status-text"><mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon> {{ getStatusText(r.driveFrom.status) }}</span> -->
 
 <pre *ngFor="let r of rides">
   {{ r | json }}
