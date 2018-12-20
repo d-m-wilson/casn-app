@@ -30,3 +30,7 @@
   /* background-color: #b9f6ca; */
   background-color: #e0f2f1;
 }
+
+.drive-container {
+  display: flex;
+}
