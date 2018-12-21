@@ -9,7 +9,7 @@ import { DefaultService } from '../api/api/default.service';
 export class RidesComponent implements OnInit {
   rides: any[];
   clinics: any;
-  // TODO: These should be fetched from API endpoint
+  // TODO: should be fetched from API or set as app-level constant
   apptTypes: any = { 4: 'Ultrasound', 3: 'Surgical' };
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
