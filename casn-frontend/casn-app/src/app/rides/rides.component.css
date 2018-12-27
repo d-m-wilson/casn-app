@@ -64,3 +64,14 @@ p {
 .bold {
   font-weight: 500;
 }
+
+/* .date-container {
+  background-color: pink;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+  position: fixed;
+  width: 50px;
+  align-items: center;
+} */

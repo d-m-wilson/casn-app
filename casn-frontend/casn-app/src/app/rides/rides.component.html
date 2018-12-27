@@ -3,20 +3,30 @@
                             Ride Display Toggles
   **********************************************************************-->
   <div class="fixed-footer">
-    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
+    <!-- <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
       <mat-button-toggle value="open" [checked]="displayRides[0]" (change)="displayRides[0] = $event.source.checked">Open</mat-button-toggle>
       <mat-button-toggle value="pending" [checked]="displayRides[1]" (change)="displayRides[1] = $event.source.checked">Pending</mat-button-toggle>
       <mat-button-toggle value="approved" [checked]="displayRides[2]" (change)="displayRides[2] = $event.source.checked">Approved</mat-button-toggle>
-    </mat-button-toggle-group>
+    </mat-button-toggle-group> -->
+    <!-- TODO: Switch button toggles to chip-list? -->
+    <!-- <mat-chip-list>
+      <mat-chip>One fish</mat-chip>
+      <mat-chip>Two fish</mat-chip>
+      <mat-chip color="primary" selected>Primary fish</mat-chip>
+      <mat-chip color="accent" selected>Accent fish</mat-chip>
+    </mat-chip-list> -->
+    <!-- TODO: Insert date range switcher -->
+    &lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;
   </div>
   <!--********************************************************************
                                 Ride Cards
   **********************************************************************-->
   <div *ngFor="let r of rides">
     <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
-      <div>
-        {{ r.appointment?.appointmentDate | date:'EEE' }}<br>
-        <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span><br>
+      <div class="date-container">
+        <!-- TODO: Display these on left-hand menu -->
+        {{ r.appointment?.appointmentDate | date:'EEE' }}
+        <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span>
         {{ r.appointment?.appointmentDate | date:'MMM' }}
       </div>
       <mat-card class="appointment-card">
