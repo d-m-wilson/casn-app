@@ -177,7 +177,45 @@ namespace CASNApp.API.Controllers
         [ValidateModelState]
         [SwaggerOperation("AddDriver")]
         public virtual IActionResult AddDriver([FromBody]Body1 body1)
-        { 
+        {
+            var volunteerDriveId = body1.VolunteerDriveId;
+
+            if (!volunteerDriveId.HasValue)
+            {
+                return BadRequest(body1);
+            }
+
+            var volunteerDrive = dbContext.VolunteerDrive
+                .Include(vd => vd.Drive)
+                .Where(vd => vd.Id == volunteerDriveId.Value && vd.IsActive)
+                .SingleOrDefault();
+
+            if (volunteerDrive == null)
+            {
+                return NotFound(body1);
+            }
+
+            if (volunteerDrive.Drive.Status != Drive.StatusPending ||
+                volunteerDrive.Drive.DriverId.HasValue)
+            {
+                return Conflict(body1);
+            }
+
+            // TODO: Remove hard-coded "approver" ID
+            uint approverId = 1;
+
+            var drive = volunteerDrive.Drive;
+
+            drive.DriverId = volunteerDrive.VolunteerId;
+            drive.Status = Drive.StatusApproved;
+            drive.Approved = DateTime.UtcNow;
+            drive.ApprovedBy = approverId;
+            drive.Updated = DateTime.UtcNow;
+
+            dbContext.SaveChanges();
+
+            return Ok();
+
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200);
 
@@ -186,9 +224,6 @@ namespace CASNApp.API.Controllers
 
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
-
-
-            throw new NotImplementedException();
         }
 
         /// <summary>

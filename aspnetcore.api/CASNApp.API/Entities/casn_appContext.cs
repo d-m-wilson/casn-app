@@ -232,6 +232,15 @@ namespace CASNApp.API.Entities
                     .HasColumnName("updated")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.Approved)
+                    .HasColumnName("approved")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.ApprovedBy).HasColumnName("approvedBy");
+
+                entity.HasIndex(e => e.ApprovedBy)
+                    .HasName("fk_drive_ApprovedBy_idx");
+
                 entity.HasOne(d => d.Appointment)
                     .WithMany(p => p.Drives)
                     .HasForeignKey(d => d.AppointmentId)
@@ -242,6 +251,12 @@ namespace CASNApp.API.Entities
                     .HasForeignKey(d => d.DriverId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_drive_DriverId");
+
+                entity.HasOne(d => d.Approver)
+                    .WithMany(p => p.Approvals)
+                    .HasForeignKey(d => d.ApprovedBy)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_drive_ApprovedBy");
             });
 
             modelBuilder.Entity<Patient>(entity =>

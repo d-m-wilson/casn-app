@@ -26,9 +26,12 @@ namespace CASNApp.API.Entities
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
+        public DateTime? Approved { get; set; }
+        public uint? ApprovedBy { get; set; }
 
         public Appointment Appointment { get; set; }
         public Volunteer Driver { get; set; }
+        public Volunteer Approver { get; set; }
         public ICollection<VolunteerDrive> VolunteerDrives { get; set; }
     }
 }

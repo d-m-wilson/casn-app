@@ -27,6 +27,8 @@
             StartPostalCode = d.StartPostalCode;
             StartState = d.StartState;
             Updated = d.Updated;
+            Approved = d.Approved;
+            ApprovedBy = d.ApprovedBy;
         }
 
         public bool Validate(int direction)

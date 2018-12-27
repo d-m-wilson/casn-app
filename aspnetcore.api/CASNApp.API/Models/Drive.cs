@@ -116,6 +116,18 @@ namespace CASNApp.API.Models
         public DateTime? Updated { get; internal set; }
 
         /// <summary>
+        /// Gets or Sets Approved
+        /// </summary>
+        [DataMember(Name ="approved")]
+        public DateTime? Approved { get; internal set; }
+
+        /// <summary>
+        /// Gets or Sets ApprovedBy
+        /// </summary>
+        [DataMember(Name = "approvedBy")]
+        public long? ApprovedBy { get; internal set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
