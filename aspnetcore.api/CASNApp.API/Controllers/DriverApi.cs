@@ -120,18 +120,38 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("GetMyDrives")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<DriverDrive>), description: "Success")]
         public virtual IActionResult GetMyDrives()
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<DriverDrive>));
-
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"patientName\" : \"Jane Smith\",\r\n  \"clinicId\" : 42,\r\n  \"patientIdentifier\" : \"JS1234\",\r\n  \"startLocation\" : \"US59 S and BW8\",\r\n  \"appointmentId\" : 42,\r\n  \"id\" : 42,\r\n  \"appointmentTypeId\" : 1,\r\n  \"isApproved\" : true,\r\n  \"volunteerDriveId\" : 42,\r\n  \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n  \"endLocation\" : \"7373 Old Katy Rd Houston, TX 77008\",\r\n  \"direction\" : 1\r\n}";
+        {
+            // BEGIN: pick quasi-random driver
+            uint driverId;
+            var random = new Random();
+            var drivers = dbContext.Volunteer
+                .AsNoTracking()
+                .Include(v => v.VolunteerDrives)
+                .ThenInclude(vd => vd.Drive)
+                .ThenInclude(d => d.Appointment)
+                .Where(v => v.IsDriver && v.IsActive && v.VolunteerDrives.Count > 0)
+                .OrderBy(v => v.Id)
+                .ToList();
             
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<DriverDrive>>(exampleJson)
-            : default(List<DriverDrive>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            if (drivers.Count == 0)
+            {
+                return Ok(new List<DriverDrive>());
+            }
+            else
+            {
+                int index = random.Next(0, drivers.Count);
+                driverId = drivers[index].Id;
+            }
+            // END
+
+            var results = dbContext.VolunteerDrive
+                .AsNoTracking()
+                .Include(vd => vd.Drive.Appointment.Patient)
+                .Where(vd => vd.VolunteerId == driverId)
+                .Select(vd => new DriverDrive(vd))
+                .ToList();
+
+            return Ok(results);
         }
     }
 }
