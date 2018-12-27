@@ -12,7 +12,7 @@ import { Location } from '@angular/common';
 })
 export class AppointmentsComponent implements OnInit {
   patientIdentifier: string;
-  patientId: any;
+  patientId: number;
   apptDTO: any;
   // Hide dropoff inputs when user checks 'same as pickup location'
   showDropoffLocationInputs: boolean = true;
@@ -36,10 +36,9 @@ export class AppointmentsComponent implements OnInit {
                                 Form
   **********************************************************************/
   clinics: any[] = [];
-  // TODO: These should be fetched from API endpoint
+  // TODO: These should be fetched from API endpoint or set as app-level constants
   apptTypes: any[] = [ {value: 4, displayValue: 'Ultrasound'},
                        {value: 3, displayValue: 'Surgical'},
-                       // {value: 1, displayValue: 'Lam To Complete'}
                      ];
 
   apptForm = this.fb.group({
@@ -66,8 +65,7 @@ export class AppointmentsComponent implements OnInit {
   get f() { return this.apptForm.controls; }
 
   onSubmit(): void {
-    if(!this.apptForm.valid) { return; }
-    console.log("--Submitting Appt Form...", this.apptForm.value);
+    if (!this.apptForm.valid) return;
     this.constructApptDTO();
   }
 
@@ -123,7 +121,6 @@ export class AppointmentsComponent implements OnInit {
       startState: "",
       startPostalCode: "",
     }
-    console.log("Appt DTO is:", this.apptDTO);
     this.saveNewAppt();
   }
 
@@ -152,22 +149,29 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getClinics(): void {
-    this.defaultService.getClinics().subscribe(data => {
-      this.clinics = data;
-    })
+    this.defaultService.getClinics().subscribe(
+      data => {
+        this.clinics = data;
+      },
+      err => {
+        console.error("--Error fetching clinics...", err);
+        alert('An error occurred while fetching clinics. Please refresh & try again.')
+      }
+    );
   }
 
   saveNewAppt(): void {
     this.ds.addAppointment(this.apptDTO).subscribe(
-    data => {
-      console.log("Save appt response is", data);
-      alert('Success! Your appointment has been saved.');
-      this.router.navigate(['']);
-    },
-    err => {
-      console.log("--Error saving appt data...", err);
-      alert('An error occurred, and your appointment was not saved.');
-    });
+      data => {
+        console.log("Save appt response is", data);
+        alert('Success! Your appointment has been saved.');
+        this.router.navigate(['']);
+      },
+      err => {
+        console.error("--Error saving appt data...", err);
+        alert('An error occurred, and your appointment was not saved.');
+      }
+    );
   }
 
 }
