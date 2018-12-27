@@ -147,7 +147,8 @@ namespace CASNApp.API.Controllers
             var results = dbContext.VolunteerDrive
                 .AsNoTracking()
                 .Include(vd => vd.Drive.Appointment.Patient)
-                .Where(vd => vd.VolunteerId == driverId)
+                .Where(vd => vd.VolunteerId == driverId &&
+                    vd.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
                 .Select(vd => new DriverDrive(vd))
                 .ToList();
 
