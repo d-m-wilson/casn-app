@@ -30,17 +30,18 @@
   </div>
   <div *ngFor="let r of rides[activeDate]">
     <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
-      <div class="date-container">
+      <!-- <div class="date-container">
         {{ r.appointment?.appointmentDate | date:'EEE' }}
         <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span>
         {{ r.appointment?.appointmentDate | date:'MMM' }}
-      </div>
+      </div> -->
       <mat-card class="appointment-card">
         <span class="bolder">{{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
         <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span>
       </mat-card>
       <div class="drive-container">
         <mat-card *ngIf="displayRides[r.driveTo?.status]"
+                  (click)="toggleRideModal()"
                   class="drive-card"
                   [ngClass]="{ 'open': r.driveTo.status === 0,
                                'pending': r.driveTo.status === 1,
@@ -48,12 +49,13 @@
           <div class="drive-card-header">
             <mat-icon>{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
             <span class="fill-remaining-space"></span>
-            <mat-icon class="menu-icon">more_vert</mat-icon>
+            <!-- <mat-icon class="menu-icon">more_vert</mat-icon> -->
           </div>
           <p class="bold">Drive To Clinic</p>
           <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
         </mat-card>
         <mat-card *ngIf="displayRides[r.driveFrom?.status]"
+                  (click)="toggleRideModal()"
                   class="drive-card"
                   [ngClass]="{ 'open': r.driveFrom.status === 0,
                                'pending': r.driveFrom.status === 1,
@@ -61,7 +63,7 @@
           <div class="drive-card-header">
             <mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
             <span class="fill-remaining-space"></span>
-            <mat-icon class="menu-icon">more_vert</mat-icon>
+            <!-- <mat-icon class="menu-icon">more_vert</mat-icon> -->
           </div>
           <p class="bold">Drive From Clinic</p>
           <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
@@ -78,6 +80,7 @@
 <div *ngIf="displayRideModal" class="modal">
   <div class="modal-content">
     <h2>Ride details go here.</h2>
+    <button type="button" mat-raised-button (click)="toggleRideModal()" color="accent">Close</button>
   </div>
 </div>
 
