@@ -7,9 +7,12 @@ import { DefaultService } from '../api/api/default.service';
   styleUrls: ['./rides.component.css']
 })
 export class RidesComponent implements OnInit {
+  objectKeys: any = Object.keys;
   startDate: string = "2017-11-01";
   endDate: string = "2018-11-28";
-  rides: any[];
+  datesForDateRange: any[]; // All dates from startDate to endDate
+  // rides: any[];
+  rides: any;
   clinics: any;
   // TODO: should be fetched from API or set as app-level constant
   apptTypes: any = { 4: 'Ultrasound', 3: 'Surgical' };
@@ -31,12 +34,15 @@ export class RidesComponent implements OnInit {
                             Service Calls
   **********************************************************************/
   getRides(): void {
-    // TODO: Make start/end dates dynamic
     this.ds.getAllAppointments(this.startDate, this.endDate).subscribe(appts => {
       console.log("Appts are:", appts);
-      // Sort by date asc
-      this.rides = appts.sort((a, b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
-    })
+      this.rides = {};
+      this.datesForDateRange.forEach(day => this.rides[day] = []);
+      appts.forEach(a => {
+        const day = a.appointment.appointmentDate.toString().slice(0,10);
+        this.rides[day].push(a);
+      });
+    });
   }
 
   getClinics(): void {
@@ -55,11 +61,21 @@ export class RidesComponent implements OnInit {
     const firstDay = currentDate.getDate() - currentDate.getDay();
     // Last day of current week is first day + 6
     const lastDay = firstDay + 6;
-    this.startDate = new Date(currentDate.setDate(firstDay)).toUTCString();
-    this.endDate = new Date(currentDate.setDate(lastDay)).toUTCString();
-    console.log("Current Date:", currentDate);
-    console.log("First Date:", this.startDate);
-    console.log("Last Date:", this.endDate);
+    this.startDate = new Date(currentDate.setDate(firstDay)).toISOString().slice(0,10);
+    this.endDate = new Date(currentDate.setDate(lastDay)).toISOString().slice(0,10);
+    this.getDatesForDateRange();
+  }
+
+  getDatesForDateRange(): void {
+    this.datesForDateRange = [];
+    let dateArray = new Array();
+    let currentDate = new Date(this.startDate.valueOf());
+    console.log("Current date is", currentDate);
+    for(let i = 0; i < 7; i++) {
+      this.datesForDateRange.push((new Date(currentDate)).toISOString().slice(0,10));
+      console.log('Dates', this.datesForDateRange);
+      currentDate.setDate(currentDate.getDate() + 1);;
+    }
   }
 
   getStatusIcon(status: number): string {

@@ -21,10 +21,16 @@
   <!--********************************************************************
                                 Ride Cards
   **********************************************************************-->
-  <div *ngFor="let r of rides">
+  <div class="date-container">
+    <div class="date-card" *ngFor="let r of objectKeys(rides)">
+      {{ r | date:'EEE' }}
+      <span class="day">{{ r | date:'d' }}</span>
+      {{ r | date:'MMM' }}
+    </div>
+  </div>
+  <!-- <div *ngFor="let r of rides">
     <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
       <div class="date-container">
-        <!-- TODO: Display these on left-hand menu -->
         {{ r.appointment?.appointmentDate | date:'EEE' }}
         <span class="day">{{ r.appointment?.appointmentDate | date:'d' }}</span>
         {{ r.appointment?.appointmentDate | date:'MMM' }}
@@ -45,8 +51,6 @@
             <mat-icon class="menu-icon">more_vert</mat-icon>
           </div>
           <p class="bold">Drive To Clinic</p>
-          <!-- TODO: Conditional display based on user role -->
-          <!-- <p>Pick up at {{ r.appointment?.pickupLocationVague }}.</p> -->
           <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
         </mat-card>
         <mat-card *ngIf="displayRides[r.driveFrom?.status]"
@@ -60,20 +64,17 @@
             <mat-icon class="menu-icon">more_vert</mat-icon>
           </div>
           <p class="bold">Drive From Clinic</p>
-          <!-- TODO: Conditional display based on user role -->
-          <!-- <p>Drop off at {{ r.appointment?.dropoffLocationVague }}.</p> -->
           <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
         </mat-card>
       </div>
     </ng-container>
   </div>
-</ng-container>
+</ng-container> -->
 
 <!--********************************************************************
                           Ride Detail Modal
 **********************************************************************-->
 <!-- <span class="status-text"><mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon> {{ getStatusText(r.driveFrom.status) }}</span> -->
-
-<pre *ngFor="let r of rides">
-  {{ r | json }}
+<pre>
+  {{ rides | json }}
 </pre>
