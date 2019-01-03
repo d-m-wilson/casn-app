@@ -8,8 +8,8 @@ import { DefaultService } from '../api/api/default.service';
 })
 export class RidesComponent implements OnInit {
   objectKeys: any = Object.keys;
-  startDate: string = "2017-11-01";
-  endDate: string = "2018-11-28";
+  startDate: string = "2018-11-01";
+  endDate: string = "2018-11-07";
   datesForDateRange: any[]; // All dates from startDate to endDate
   // rides: any[];
   rides: any;
@@ -18,6 +18,7 @@ export class RidesComponent implements OnInit {
   apptTypes: any = { 4: 'Ultrasound', 3: 'Surgical' };
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
+  displayRideModal: boolean = false;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -38,6 +39,7 @@ export class RidesComponent implements OnInit {
       console.log("Appts are:", appts);
       this.rides = {};
       this.datesForDateRange.forEach(day => this.rides[day] = []);
+      console.log("Rides", this.rides)
       appts.forEach(a => {
         const day = a.appointment.appointmentDate.toString().slice(0,10);
         this.rides[day].push(a);
@@ -53,16 +55,24 @@ export class RidesComponent implements OnInit {
   }
 
 /*********************************************************************
+                            Click Handlers
+**********************************************************************/
+  toggleRideModal(): void {
+    this.displayRideModal = !this.displayRideModal;
+  }
+
+/*********************************************************************
                               Utilities
 **********************************************************************/
   setDateRange(): void {
-    const currentDate = new Date();
-    // First day of current week is day of month - day of week
-    const firstDay = currentDate.getDate() - currentDate.getDay();
-    // Last day of current week is first day + 6
-    const lastDay = firstDay + 6;
-    this.startDate = new Date(currentDate.setDate(firstDay)).toISOString().slice(0,10);
-    this.endDate = new Date(currentDate.setDate(lastDay)).toISOString().slice(0,10);
+    // TODO: Uncomment when finished testing.
+    // const currentDate = new Date();
+    // // First day of current week is day of month - day of week
+    // const firstDay = currentDate.getDate() - currentDate.getDay();
+    // // Last day of current week is first day + 6
+    // const lastDay = firstDay + 6;
+    // this.startDate = new Date(currentDate.setDate(firstDay)).toISOString().slice(0,10);
+    // this.endDate = new Date(currentDate.setDate(lastDay)).toISOString().slice(0,10);
     this.getDatesForDateRange();
   }
 

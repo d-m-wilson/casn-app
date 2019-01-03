@@ -16,7 +16,7 @@
       <mat-chip color="accent" selected>Accent fish</mat-chip>
     </mat-chip-list> -->
     <!-- TODO: Insert date range switcher -->
-    &lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;
+    &lt;&lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;&gt;
   </div>
   <!--********************************************************************
                                 Ride Cards
@@ -75,6 +75,12 @@
                           Ride Detail Modal
 **********************************************************************-->
 <!-- <span class="status-text"><mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon> {{ getStatusText(r.driveFrom.status) }}</span> -->
+<div *ngIf="displayRideModal" class="modal">
+  <div class="modal-content">
+    <h2>Ride details go here.</h2>
+  </div>
+</div>
+
 <pre>
   {{ rides | json }}
 </pre>
