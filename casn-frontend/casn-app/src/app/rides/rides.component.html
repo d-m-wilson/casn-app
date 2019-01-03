@@ -22,13 +22,13 @@
                                 Ride Cards
   **********************************************************************-->
   <div class="date-container">
-    <div class="date-card" *ngFor="let r of objectKeys(rides)">
+    <div class="date-card" *ngFor="let r of objectKeys(rides)" (click)="setActiveDate(r)">
       {{ r | date:'EEE' }}
       <span class="day">{{ r | date:'d' }}</span>
       {{ r | date:'MMM' }}
     </div>
   </div>
-  <!-- <div *ngFor="let r of rides">
+  <div *ngFor="let r of rides[activeDate]">
     <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
       <div class="date-container">
         {{ r.appointment?.appointmentDate | date:'EEE' }}
@@ -69,7 +69,7 @@
       </div>
     </ng-container>
   </div>
-</ng-container> -->
+</ng-container>
 
 <!--********************************************************************
                           Ride Detail Modal

@@ -10,6 +10,7 @@ export class RidesComponent implements OnInit {
   objectKeys: any = Object.keys;
   startDate: string = "2018-11-01";
   endDate: string = "2018-11-07";
+  activeDate: string = "2018-11-01"
   datesForDateRange: any[]; // All dates from startDate to endDate
   // rides: any[];
   rides: any;
@@ -59,6 +60,10 @@ export class RidesComponent implements OnInit {
 **********************************************************************/
   toggleRideModal(): void {
     this.displayRideModal = !this.displayRideModal;
+  }
+
+  setActiveDate(date: string): void {
+    this.activeDate = date;
   }
 
 /*********************************************************************
