@@ -20,6 +20,7 @@ export class RidesComponent implements OnInit {
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
   displayRideModal: boolean = false;
+  rideModalContent: any;
   showDisplayFiltersModal: boolean = false;
 
   /*********************************************************************
@@ -59,8 +60,9 @@ export class RidesComponent implements OnInit {
 /*********************************************************************
                             Click Handlers
 **********************************************************************/
-  toggleRideModal(): void {
+  toggleRideModal(ride?: any): void {
     this.displayRideModal = !this.displayRideModal;
+    ride ? this.rideModalContent = ride : this.rideModalContent = null;
   }
 
   toggleDisplayFiltersModal(): void {

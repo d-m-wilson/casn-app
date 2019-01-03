@@ -1,14 +1,12 @@
 <ng-container *ngIf="rides && clinics">
-  <div style="display:flex">
-    <span class="fill-remaining-space"></span>
-    <button mat-mini-fab color="accent" (click)="toggleDisplayFiltersModal()"><mat-icon>filter_list</mat-icon></button>
-  </div>
   <!--********************************************************************
                             Ride Display Toggles
   **********************************************************************-->
   <div class="fixed-footer">
     <!-- TODO: Insert date range switcher -->
     &lt;&lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;&gt;
+    <!-- <span class="fill-remaining-space"></span> -->
+    <button mat-mini-fab color="accent" (click)="toggleDisplayFiltersModal()"><mat-icon>filter_list</mat-icon></button>
   </div>
   <!--********************************************************************
                                 Ride Cards
@@ -19,6 +17,9 @@
       <span class="day">{{ r | date:'d' }}</span>
       {{ r | date:'MMM' }}
     </div>
+  </div>
+  <div *ngIf="rides[activeDate].length < 1">
+    <h2>No rides today :(</h2>
   </div>
   <div *ngFor="let r of rides[activeDate]">
     <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
@@ -33,7 +34,7 @@
       </mat-card>
       <div class="drive-container">
         <mat-card *ngIf="displayRides[r.driveTo?.status]"
-                  (click)="toggleRideModal()"
+                  (click)="toggleRideModal(r)"
                   class="drive-card"
                   [ngClass]="{ 'open': r.driveTo.status === 0,
                                'pending': r.driveTo.status === 1,
@@ -47,7 +48,7 @@
           <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
         </mat-card>
         <mat-card *ngIf="displayRides[r.driveFrom?.status]"
-                  (click)="toggleRideModal()"
+                  (click)="toggleRideModal(r)"
                   class="drive-card"
                   [ngClass]="{ 'open': r.driveFrom.status === 0,
                                'pending': r.driveFrom.status === 1,
@@ -65,13 +66,16 @@
   </div>
 </ng-container>
 
+<!--TODO: Fix hackiness -->
+<br><br><br><br><br><br><br>
+
 <!--********************************************************************
                           Ride Detail Modal
 **********************************************************************-->
-<!-- <span class="status-text"><mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon> {{ getStatusText(r.driveFrom.status) }}</span> -->
 <div *ngIf="displayRideModal" class="modal">
   <div class="modal-content">
     <h2>Ride details go here.</h2>
+    <pre>{{rideModalContent | json}}</pre>
     <button type="button" mat-raised-button (click)="toggleRideModal()" color="accent">Close</button>
   </div>
 </div>
@@ -95,7 +99,3 @@
     </mat-chip-list> -->
   </div>
 </div>
-
-<pre>
-  {{ rides | json }}
-</pre>
