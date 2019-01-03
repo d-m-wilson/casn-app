@@ -20,6 +20,7 @@ export class RidesComponent implements OnInit {
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
   displayRideModal: boolean = false;
+  showDisplayFiltersModal: boolean = false;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -60,6 +61,10 @@ export class RidesComponent implements OnInit {
 **********************************************************************/
   toggleRideModal(): void {
     this.displayRideModal = !this.displayRideModal;
+  }
+
+  toggleDisplayFiltersModal(): void {
+    this.showDisplayFiltersModal = !this.showDisplayFiltersModal;
   }
 
   setActiveDate(date: string): void {
