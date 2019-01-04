@@ -11,6 +11,12 @@ p {
   font-weight: bold;
 }
 
+.fab {
+  position: fixed;
+  bottom: 35px;
+  right: 10px;
+}
+
 .fixed-footer {
   display: flex;
   align-items: center;
