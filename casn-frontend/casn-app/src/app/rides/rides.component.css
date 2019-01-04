@@ -6,30 +6,42 @@ p {
   display: flex;
 }
 
+.bold {
+  font-weight: 500;
+}
+
+.bolder {
+  font-weight: 600;
+}
+
+/********************************************************************
+                        Date Selection Sidebar
+********************************************************************/
+.date-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80vh;
+  width: 65px;
+}
+
+.date-card {
+  background-color: #9575cd;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+  align-items: center;
+}
+
 .day {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.fab {
-  position: fixed;
-  bottom: 35px;
-  right: 10px;
-}
-
-.fixed-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: 20;
-  background-color: #9575cd;
-  padding: 5px;
-}
-
+/********************************************************************
+                  Appointment & Drive Display Cards
+********************************************************************/
 .open {
   /* background-color: #ef5350; */
   /* color: white; */
@@ -67,27 +79,24 @@ p {
   display: flex;
 }
 
-.bolder {
-  font-weight: 600;
+/********************************************************************
+                      Footer - Settings/Controls
+********************************************************************/
+.fab {
+  position: fixed;
+  bottom: 35px;
+  right: 10px;
 }
 
-.bold {
-  font-weight: 500;
-}
-
-.date-container {
+.fixed-footer {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 80vh;
-  width: 65px;
-}
-
-.date-card {
-  background-color: #9575cd;
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  width: 50px;
   align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 20;
+  background-color: #9575cd;
+  padding: 5px;
 }
