@@ -68,7 +68,9 @@
 **********************************************************************-->
 <button class="fab" mat-mini-fab color="accent" (click)="toggleDisplayFiltersModal()"><mat-icon>filter_list</mat-icon></button>
 <footer class="fixed-footer">
-  &lt;&lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;&gt;
+  <span class="clicky bold" (click)="handleChangeWeekClick('prev')">&lt;&lt;</span>
+  {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }}
+  <span class="clicky bold" (click)="handleChangeWeekClick('next')">&gt;&gt;</span>
 </footer>
 
 <!--********************************************************************

@@ -73,29 +73,45 @@ export class RidesComponent implements OnInit {
     this.activeDate = date;
   }
 
+  handleChangeWeekClick(changeType: string): void {
+    if(changeType === 'prev') {
+      console.log("Going to previous week....")
+      this.setDateRange(this.addDays(this.startDate, -6));
+    }
+    if(changeType === 'next') {
+      console.log("Going to next week....")
+      this.setDateRange(this.addDays(this.endDate, 1))
+    }
+    this.getRides();
+  }
+
 /*********************************************************************
                               Utilities
 **********************************************************************/
-  setDateRange(): void {
-    // TODO: Uncomment when finished testing.
-    // const currentDate = new Date();
-    // // First day of current week is day of month - day of week
-    // const firstDay = currentDate.getDate() - currentDate.getDay();
-    // // Last day of current week is first day + 6
-    // const lastDay = firstDay + 6;
-    // this.startDate = new Date(currentDate.setDate(firstDay)).toISOString().slice(0,10);
-    // this.endDate = new Date(currentDate.setDate(lastDay)).toISOString().slice(0,10);
+  setDateRange(date?: any): void {
+    console.log("Date is", date);
+    const currentDate = date || new Date();
+    this.startDate = this.addDays(currentDate, -currentDate.getDay()).toISOString().slice(0,10);
+    this.endDate = this.addDays(this.startDate, 6).toISOString().slice(0,10);
     this.getDatesForDateRange();
+    this.activeDate = this.startDate;
+    console.log("startDate", this.startDate);
+    console.log("endDate", this.endDate);
+  }
+
+  private addDays(date, days) {
+    console.log("Date in addDays is", date);
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
   }
 
   getDatesForDateRange(): void {
     this.datesForDateRange = [];
     let dateArray = new Array();
     let currentDate = new Date(this.startDate.valueOf());
-    console.log("Current date is", currentDate);
     for(let i = 0; i < 7; i++) {
       this.datesForDateRange.push((new Date(currentDate)).toISOString().slice(0,10));
-      console.log('Dates', this.datesForDateRange);
       currentDate.setDate(currentDate.getDate() + 1);;
     }
   }
