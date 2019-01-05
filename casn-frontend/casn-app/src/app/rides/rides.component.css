@@ -52,6 +52,8 @@ p {
 ********************************************************************/
 .ride-container {
   width: 100%;
+  height: calc(100vh - 84px); /* Header: 56px, Footer: 28px */
+  overflow: auto;
 }
 
 .ride-container header {
