@@ -8,9 +8,9 @@ import { DefaultService } from '../api/api/default.service';
 })
 export class RidesComponent implements OnInit {
   objectKeys: any = Object.keys;
-  startDate: string = "2018-11-01";
-  endDate: string = "2018-11-07";
-  activeDate: string = "2018-11-01"
+  startDate: string = "2018-12-24";
+  endDate: string = "2018-12-30";
+  activeDate: string = "2018-12-24"
   datesForDateRange: any[]; // All dates from startDate to endDate
   // rides: any[];
   rides: any;
@@ -40,6 +40,7 @@ export class RidesComponent implements OnInit {
   getRides(): void {
     this.ds.getAllAppointments(this.startDate, this.endDate).subscribe(appts => {
       console.log("Appts are:", appts);
+      appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = {};
       this.datesForDateRange.forEach(day => this.rides[day] = []);
       console.log("Rides", this.rides)
