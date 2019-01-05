@@ -21,17 +21,25 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 80vh;
+  height: calc(100vh - 84px); /* Header: 56px, Footer: 28px */
   width: 65px;
 }
 
 .date-card {
   background-color: #9575cd;
+  color: white;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
-  width: 50px;
+  width: 60px;
+  flex-grow: 1;
   align-items: center;
+  justify-content: center;
+}
+
+.date-card.active {
+  background-color: lightpink;
+  color: black;
 }
 
 .day {
@@ -40,8 +48,21 @@ p {
 }
 
 /********************************************************************
-                  Appointment & Drive Display Cards
+                Appointment/Drive Display Section
 ********************************************************************/
+.ride-container {
+  width: 100%;
+}
+
+.ride-container header {
+  display: flex;
+  border: 1px solid black;
+  background: #9575cd;
+  color: white;
+  justify-content: center;
+  align-content: center;
+}
+
 .open {
   /* background-color: #ef5350; */
   /* color: white; */
@@ -62,6 +83,7 @@ p {
 
 .drive-container {
   display: flex;
+  margin-bottom: 10px;
 }
 
 .appointment-card {
@@ -98,5 +120,6 @@ p {
   bottom: 0;
   z-index: 20;
   background-color: #9575cd;
+  color: white;
   padding: 5px;
 }

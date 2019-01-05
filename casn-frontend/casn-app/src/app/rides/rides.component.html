@@ -1,72 +1,75 @@
 <ng-container *ngIf="rides && clinics">
-  <button class="fab" mat-mini-fab color="accent" (click)="toggleDisplayFiltersModal()"><mat-icon>filter_list</mat-icon></button>
   <!--********************************************************************
-                            Ride Display Toggles
-  **********************************************************************-->
-  <div class="fixed-footer">
-    <!-- TODO: Insert date range switcher -->
-    &lt;&lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;&gt;
-    <!-- <span class="fill-remaining-space"></span> -->
-  </div>
-  <!--********************************************************************
-                                Ride Cards
+                            Date Selection Sidebar
   **********************************************************************-->
   <div class="dates-rides-wrapper">
-  <div class="date-container">
-    <div class="date-card" *ngFor="let r of objectKeys(rides)" (click)="setActiveDate(r)">
-      {{ r | date:'EEE' }}
-      <span class="day">{{ r | date:'d' }}</span>
-      {{ r | date:'MMM' }}
-    </div>
-  </div>
-  <div class="ride-container">
-    <div *ngIf="rides[activeDate].length < 1">
-      <h2>No rides today :(</h2>
-    </div>
-    <div *ngFor="let r of rides[activeDate]">
-      <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
+    <nav class="date-sidebar">
+      <div class="date-card"
+           *ngFor="let r of objectKeys(rides)"
+           (click)="setActiveDate(r)"
+           [ngClass]="{ 'active': r === activeDate }">
+        {{ r | date:'EEE' }} <span class="day">{{ r | date:'d' }}</span> {{ r | date:'MMM' }}
+      </div>
+    </nav>
+    <!--********************************************************************
+                                  Ride Cards
+    **********************************************************************-->
+    <section class="ride-container">
+      <header>
+        <h1>{{ activeDate | date:'mediumDate' }}</h1>
+      </header>
+      <div *ngIf="rides[activeDate].length < 1">
         <mat-card class="appointment-card">
-          <span class="bolder">{{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
-          <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span>
+          <span class="bolder">No Rides today :(</span>)
         </mat-card>
-        <div class="drive-container">
-          <mat-card *ngIf="displayRides[r.driveTo?.status]"
-                    (click)="toggleRideModal(r)"
-                    class="drive-card"
-                    [ngClass]="{ 'open': r.driveTo.status === 0,
-                                 'pending': r.driveTo.status === 1,
-                                 'approved': r.driveTo.status === 2 }">
-            <div class="drive-card-header">
-              <mat-icon>{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
-              <span class="fill-remaining-space"></span>
-              <!-- <mat-icon class="menu-icon">more_vert</mat-icon> -->
-            </div>
-            <p class="bold">Drive To Clinic</p>
-            <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
+      </div>
+      <div *ngFor="let r of rides[activeDate]">
+        <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
+          <mat-card class="appointment-card">
+            <span class="bolder">1234's {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
+            <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
           </mat-card>
-          <mat-card *ngIf="displayRides[r.driveFrom?.status]"
-                    (click)="toggleRideModal(r)"
-                    class="drive-card"
-                    [ngClass]="{ 'open': r.driveFrom.status === 0,
-                                 'pending': r.driveFrom.status === 1,
-                                 'approved': r.driveFrom.status === 2 }">
-            <div class="drive-card-header">
-              <mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
-              <span class="fill-remaining-space"></span>
-              <!-- <mat-icon class="menu-icon">more_vert</mat-icon> -->
-            </div>
-            <p class="bold">Drive From Clinic</p>
-            <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
-          </mat-card>
-        </div>
-      </ng-container>
-    </div>
+          <div class="drive-container">
+            <mat-card *ngIf="displayRides[r.driveTo?.status]"
+                      (click)="toggleRideModal(r)"
+                      class="drive-card"
+                      [ngClass]="{ 'open': r.driveTo.status === 0,
+                                   'pending': r.driveTo.status === 1,
+                                   'approved': r.driveTo.status === 2 }">
+              <div class="drive-card-header">
+                <mat-icon>{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
+                <span class="fill-remaining-space"></span>
+              </div>
+              <p class="bold">Drive To Clinic</p>
+              <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
+            </mat-card>
+            <mat-card *ngIf="displayRides[r.driveFrom?.status]"
+                      (click)="toggleRideModal(r)"
+                      class="drive-card"
+                      [ngClass]="{ 'open': r.driveFrom.status === 0,
+                                   'pending': r.driveFrom.status === 1,
+                                   'approved': r.driveFrom.status === 2 }">
+              <div class="drive-card-header">
+                <mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
+                <span class="fill-remaining-space"></span>
+              </div>
+              <p class="bold">Drive From Clinic</p>
+              <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
+            </mat-card>
+          </div>
+        </ng-container>
+      </div>
+    </section>
   </div>
-</div>
 </ng-container>
 
-<!--TODO: Fix hackiness -->
-<br><br><br><br><br><br><br>
+<!--********************************************************************
+                        Settings FAB, Footer
+**********************************************************************-->
+<button class="fab" mat-mini-fab color="accent" (click)="toggleDisplayFiltersModal()"><mat-icon>filter_list</mat-icon></button>
+<footer class="fixed-footer">
+  &lt;&lt; {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }} &gt;&gt;
+</footer>
 
 <!--********************************************************************
                           Ride Detail Modal
