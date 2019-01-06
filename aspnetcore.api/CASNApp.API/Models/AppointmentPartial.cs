@@ -19,6 +19,7 @@ namespace CASNApp.API.Models
             DropoffLocationVague = a.DropoffLocationVague;
             Id = a.Id;
             PatientId = a.PatientId;
+            PatientIdentifier = a.Patient.PatientIdentifier;
             PickupLocationVague = a.PickupLocationVague;
             Updated = a.Updated;
         }

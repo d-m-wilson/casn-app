@@ -45,6 +45,12 @@ namespace CASNApp.API.Models
         public long? PatientId { get; set; }
 
         /// <summary>
+        /// Gets or Sets PatientIdentifier
+        /// </summary>
+        [DataMember(Name="patientIdentifier")]
+        public string PatientIdentifier { get; set; }
+
+        /// <summary>
         /// Gets or Sets ClinicId
         /// </summary>
         [Required]

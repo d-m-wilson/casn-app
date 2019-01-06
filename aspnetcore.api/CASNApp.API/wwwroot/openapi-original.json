@@ -571,6 +571,12 @@
             "format" : "int64",
             "example" : 42
           },
+          "patientIdentifier" : {
+            "maxLength" : 45,
+            "minLength" : 4,
+            "type" : "string",
+            "example" : "5551"
+          },
           "clinicId" : {
             "type" : "integer",
             "format" : "int64",
@@ -610,7 +616,8 @@
           "pickupLocationVague" : "US59 S and BW8",
           "clinicId" : 42,
           "dropoffLocationVague" : "I10 W and 610",
-          "patientId" : 42,
+          "patientId": 42,
+          "patientIdentifier" :  "5551",
           "created" : "2000-01-23T04:56:07.000+00:00",
           "id" : 42,
           "dispatcherId" : 42,

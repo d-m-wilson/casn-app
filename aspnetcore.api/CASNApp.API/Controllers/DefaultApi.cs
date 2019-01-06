@@ -75,6 +75,7 @@ namespace CASNApp.API.Controllers
             var appointmentEntities = await dbContext.Appointment
                 .AsNoTracking()
                 .Include(a => a.Drives)
+                .Include(a => a.Patient)
                 .Where(a => a.AppointmentDate >= start &&
                             a.AppointmentDate <= end &&
                             a.IsActive)
