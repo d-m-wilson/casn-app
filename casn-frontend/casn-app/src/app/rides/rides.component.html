@@ -16,8 +16,8 @@
     **********************************************************************-->
     <section class="ride-container">
       <header>
-        <!-- TODO: Implement go to today function -->
-        <mat-icon class="clicky">today</mat-icon>
+        <mat-icon class="clicky"
+                  (click)="handleChangeWeekClick('today')">today</mat-icon>
         <h1>{{ activeDate | date:'mediumDate' }}</h1>
         <mat-icon class="clicky"
                   (click)="toggleDisplayFiltersModal()">settings</mat-icon>
@@ -74,12 +74,14 @@
   <button type="button"
           mat-raised-button
           color="accent"
-          class="clicky bold" (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></button>
+          class="clicky bold"
+          (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></button>
   {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }}
   <button type="button"
           mat-raised-button
           color="accent"
-          class="clicky bold" (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></button>
+          class="clicky bold"
+          (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></button>
 </footer>
 
 <!--********************************************************************

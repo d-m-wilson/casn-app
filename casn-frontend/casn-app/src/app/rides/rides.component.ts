@@ -83,6 +83,10 @@ export class RidesComponent implements OnInit {
       console.log("Going to next week....")
       this.setDateRange(this.addDays(this.endDate, 1))
     }
+    if(changeType == 'today') {
+      console.log("Going to today....")
+      this.setDateRange();
+    }
     this.getRides();
   }
 
