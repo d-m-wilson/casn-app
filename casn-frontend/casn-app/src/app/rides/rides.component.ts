@@ -128,7 +128,7 @@ export class RidesComponent implements OnInit {
 
   getStatusText(status: number): string {
     switch(status) {
-      case 0: return "Open - Apply Now";
+      case 0: return "Apply Now!";
       case 1: return "Pending Approval";
       case 2: return "Approved";
       default: return "";

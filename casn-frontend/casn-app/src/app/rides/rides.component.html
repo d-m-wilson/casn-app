@@ -41,7 +41,8 @@
                                    'pending': r.driveTo.status === 1,
                                    'approved': r.driveTo.status === 2 }">
               <div class="drive-card-header">
-                <mat-icon>{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
+                <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
+                <span class="status-text">{{ getStatusText(r.driveTo.status) }}</span>
               </div>
               <p class="bold">Drive To Clinic</p>
               <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
@@ -53,7 +54,8 @@
                                    'pending': r.driveFrom.status === 1,
                                    'approved': r.driveFrom.status === 2 }">
               <div class="drive-card-header">
-                <mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
+                <mat-icon class="status-text">{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
+                <span class="status-text">{{ getStatusText(r.driveFrom.status) }}</span>
               </div>
               <p class="bold">Drive From Clinic</p>
               <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
