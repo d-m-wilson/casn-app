@@ -21,7 +21,7 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100vh - 84px); /* Header: 56px, Footer: 28px */
+  height: calc(100vh - 102px); /* Header: 56px, Footer: 46px */
   width: 65px;
 }
 
@@ -52,7 +52,7 @@ p {
 ********************************************************************/
 .ride-container {
   width: 100%;
-  height: calc(100vh - 84px); /* Header: 56px, Footer: 28px */
+  height: calc(100vh - 102px); /* Header: 56px, Footer: 46px */
   overflow: auto;
 }
 
@@ -61,8 +61,16 @@ p {
   border: 1px solid black;
   background: #9575cd;
   color: white;
-  justify-content: center;
+  justify-content: space-evenly;
   align-content: center;
+  align-items: center;
+  position: fixed;
+  width: calc(100% - 62px);
+  z-index: 1;
+}
+
+.ride-container header + div {
+  margin-top: 70px; /* Clear header */
 }
 
 .open {
@@ -108,7 +116,7 @@ p {
 ********************************************************************/
 .fab {
   position: fixed;
-  bottom: 35px;
+  bottom: 50px;
   right: 10px;
 }
 

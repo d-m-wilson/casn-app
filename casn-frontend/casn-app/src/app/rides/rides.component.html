@@ -16,11 +16,17 @@
     **********************************************************************-->
     <section class="ride-container">
       <header>
+        <!-- TODO: Implement go to today function -->
+        <button mat-mini-fab
+                color="accent"><mat-icon>today</mat-icon></button>
         <h1>{{ activeDate | date:'mediumDate' }}</h1>
+        <button mat-mini-fab
+                color="accent"
+                (click)="toggleDisplayFiltersModal()"><mat-icon>settings</mat-icon></button>
       </header>
       <div *ngIf="rides[activeDate].length < 1">
         <mat-card class="appointment-card">
-          <span class="bolder">No Rides today :(</span>)
+          <span class="bolder">No Rides today :(</span>
         </mat-card>
       </div>
       <div *ngFor="let r of rides[activeDate]">
@@ -66,11 +72,20 @@
 <!--********************************************************************
                         Settings FAB, Footer
 **********************************************************************-->
-<button class="fab" mat-mini-fab color="accent" (click)="toggleDisplayFiltersModal()"><mat-icon>filter_list</mat-icon></button>
+<!-- <button class="fab"
+        mat-mini-fab
+        color="accent"
+        (click)="toggleDisplayFiltersModal()"><mat-icon>settings</mat-icon></button> -->
 <footer class="fixed-footer">
-  <span class="clicky bold" (click)="handleChangeWeekClick('prev')">&lt;&lt;</span>
+  <button type="button"
+          mat-raised-button
+          color="accent"
+          class="clicky bold" (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></button>
   {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }}
-  <span class="clicky bold" (click)="handleChangeWeekClick('next')">&gt;&gt;</span>
+  <button type="button"
+          mat-raised-button
+          color="accent"
+          class="clicky bold" (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></button>
 </footer>
 
 <!--********************************************************************
