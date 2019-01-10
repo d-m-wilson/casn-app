@@ -17,12 +17,10 @@
     <section class="ride-container">
       <header>
         <!-- TODO: Implement go to today function -->
-        <button mat-mini-fab
-                color="accent"><mat-icon>today</mat-icon></button>
+        <mat-icon class="clicky">today</mat-icon>
         <h1>{{ activeDate | date:'mediumDate' }}</h1>
-        <button mat-mini-fab
-                color="accent"
-                (click)="toggleDisplayFiltersModal()"><mat-icon>settings</mat-icon></button>
+        <mat-icon class="clicky"
+                  (click)="toggleDisplayFiltersModal()">settings</mat-icon>
       </header>
       <div *ngIf="rides[activeDate].length < 1">
         <mat-card class="appointment-card">
@@ -44,7 +42,6 @@
                                    'approved': r.driveTo.status === 2 }">
               <div class="drive-card-header">
                 <mat-icon>{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
-                <span class="fill-remaining-space"></span>
               </div>
               <p class="bold">Drive To Clinic</p>
               <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
@@ -57,7 +54,6 @@
                                    'approved': r.driveFrom.status === 2 }">
               <div class="drive-card-header">
                 <mat-icon>{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
-                <span class="fill-remaining-space"></span>
               </div>
               <p class="bold">Drive From Clinic</p>
               <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>

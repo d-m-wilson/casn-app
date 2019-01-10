@@ -14,6 +14,30 @@ p {
   font-weight: 600;
 }
 
+.open {
+  background-color: #ffebee;
+}
+
+.open-text {
+  color: #ef5350;
+}
+
+.pending {
+  background-color: #fff8e1;
+}
+
+.pending-text {
+  color: #ffca28;
+}
+
+.approved {
+  background-color: #e0f2f1;
+}
+
+.approved-text {
+  color: #66bb6a;
+}
+
 /********************************************************************
                         Date Selection Sidebar
 ********************************************************************/
@@ -71,24 +95,6 @@ p {
 
 .ride-container header + div {
   margin-top: 70px; /* Clear header */
-}
-
-.open {
-  /* background-color: #ef5350; */
-  /* color: white; */
-  background-color: #ffebee;
-}
-
-.pending {
-  /* background-color: #ffca28; */
-  /* color: #333; */
-  background-color: #fff8e1;
-}
-
-.approved {
-  /* background-color: #66bb6a; */
-  /* color: white; */
-  background-color: #e0f2f1;
 }
 
 .drive-container {
