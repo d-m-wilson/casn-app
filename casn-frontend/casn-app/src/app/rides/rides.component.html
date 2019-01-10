@@ -26,7 +26,7 @@
       <div *ngFor="let r of rides[activeDate]">
         <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
           <mat-card class="appointment-card">
-            <span class="bolder">1234's {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
+            <span class="bolder">{{ r.appointment.patientIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
             <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
           </mat-card>
           <div class="drive-container">
@@ -86,7 +86,7 @@
 
 <div *ngIf="showDisplayFiltersModal" class="modal">
   <div class="modal-content">
-    <h2>Filters Menu</h2>
+    <h2>Filter Drives</h2>
     <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
       <mat-button-toggle value="open" [checked]="displayRides[0]" (change)="displayRides[0] = $event.source.checked">Open</mat-button-toggle>
       <mat-button-toggle value="pending" [checked]="displayRides[1]" (change)="displayRides[1] = $event.source.checked">Pending</mat-button-toggle>
@@ -94,12 +94,5 @@
     </mat-button-toggle-group>
     <br><br>
     <button type="button" mat-raised-button (click)="toggleDisplayFiltersModal()" color="accent">Close</button>
-    <!-- TODO: Switch button toggles to chip-list? -->
-    <!-- <mat-chip-list>
-      <mat-chip>One fish</mat-chip>
-      <mat-chip>Two fish</mat-chip>
-      <mat-chip color="primary" selected>Primary fish</mat-chip>
-      <mat-chip color="accent" selected>Accent fish</mat-chip>
-    </mat-chip-list> -->
   </div>
 </div>
