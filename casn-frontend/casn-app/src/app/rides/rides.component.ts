@@ -99,7 +99,7 @@ export class RidesComponent implements OnInit {
     this.startDate = this.addDays(currentDate, -currentDate.getDay()).toISOString().slice(0,10);
     this.endDate = this.addDays(this.startDate, 6).toISOString().slice(0,10);
     this.getDatesForDateRange();
-    this.activeDate = this.startDate;
+    this.activeDate = currentDate.toISOString().slice(0,10);
     console.log("startDate", this.startDate);
     console.log("endDate", this.endDate);
   }
