@@ -39,6 +39,7 @@ import { LoginComponent } from './login/login.component';
 import { PatientsComponent } from './patients/patients.component';
 import { RidesComponent } from './rides/rides.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
+import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { AppointmentsComponent } from './appointments/appointments.component';
     PatientsComponent,
     RidesComponent,
     LoginComponent,
-    AppointmentsComponent
+    AppointmentsComponent,
+    RideDetailModalComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),
