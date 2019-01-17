@@ -26,6 +26,7 @@ import {
 /* Routing */
 import { AppRoutingModule } from './app-routing.module';
 /* Custom Services & HTTP Interceptors */
+import { Constants } from './app.constants';
 import { AuthGuard } from './auth-services/auth-guard.service';
 import { AuthenticationService } from './auth-services/auth.service';
 import { fakeBackendProvider } from './auth-services/fake-backend';
@@ -77,6 +78,7 @@ import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.
     MatToolbarModule,
   ],
   providers: [
+    Constants,
     ApiModule,
     AuthGuard,
     AuthenticationService,
