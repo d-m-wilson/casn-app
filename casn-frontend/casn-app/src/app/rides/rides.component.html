@@ -85,7 +85,9 @@
 <!--********************************************************************
                           Ride Detail Modal
 **********************************************************************-->
-<app-ride-detail-modal *ngIf="displayRideModal"></app-ride-detail-modal>
+<app-ride-detail-modal *ngIf="displayRideModal"
+                       [ride]="rideModalContent">
+</app-ride-detail-modal>
 <!--********************************************************************
                         Settings, Display Filters
 **********************************************************************-->
