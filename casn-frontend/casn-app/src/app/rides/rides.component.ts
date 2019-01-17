@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DefaultService } from '../api/api/default.service';
 import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal.component';
 import { Constants } from '../app.constants';
@@ -26,8 +26,7 @@ export class RidesComponent implements OnInit {
   // Ride Modal
   displayRideModal: boolean = false;
   rideModalContent: any;
-  @ViewChild(RideDetailModalComponent)
-  rideModal: RideDetailModalComponent;
+  showRideModalDriveTo: boolean; // Show driveTo or driveFrom details
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -66,9 +65,10 @@ export class RidesComponent implements OnInit {
 /*********************************************************************
                             Click Handlers
 **********************************************************************/
-  toggleRideModal(ride?: any): void {
+  toggleRideModal(ride?: any, isDriveTo?: boolean): void {
     this.displayRideModal = !this.displayRideModal;
     ride ? this.rideModalContent = ride : this.rideModalContent = null;
+    this.showRideModalDriveTo = isDriveTo;
   }
 
   toggleSettingsModal(): void {

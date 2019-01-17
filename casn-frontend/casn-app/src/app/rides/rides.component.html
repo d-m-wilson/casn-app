@@ -35,7 +35,7 @@
           </mat-card>
           <div class="drive-container">
             <mat-card *ngIf="displayRides[r.driveTo?.status]"
-                      (click)="toggleRideModal(r)"
+                      (click)="toggleRideModal(r, true)"
                       class="drive-card"
                       [ngClass]="{ 'open': r.driveTo.status === 0,
                                    'pending': r.driveTo.status === 1,
@@ -87,6 +87,7 @@
 **********************************************************************-->
 <app-ride-detail-modal *ngIf="displayRideModal"
                        [ride]="rideModalContent"
+                       [isDriveTo]="showRideModalDriveTo"
                        (closeModalClick)="toggleRideModal()"></app-ride-detail-modal>
 <!--********************************************************************
                         Settings, Display Filters
