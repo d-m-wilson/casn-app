@@ -4,6 +4,10 @@
 <div class="modal">
   <div class="modal-content">
     <h2>Ride details go here.</h2>
+    <mat-card class="appointment-card">
+      <span class="bolder">{{ ride.appointment.patientIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</span> <br>
+      <span class="bold">{{ ride.appointment?.appointmentDate | date:'shortTime'}}</span> <br>
+    </mat-card>
     <pre>{{ride | json}}</pre>
     <button type="button"
             mat-raised-button
