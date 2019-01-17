@@ -9,9 +9,9 @@ import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal
 })
 export class RidesComponent implements OnInit {
   objectKeys: any = Object.keys;
-  startDate: string = "2018-12-24";
-  endDate: string = "2018-12-30";
-  activeDate: string = "2018-12-24"
+  startDate: string;
+  endDate: string;
+  activeDate: string;
   datesForDateRange: any[]; // All dates from startDate to endDate
   rides: any;
   clinics: any;
@@ -45,11 +45,9 @@ export class RidesComponent implements OnInit {
   **********************************************************************/
   getRides(): void {
     this.ds.getAllAppointments(this.startDate, this.endDate).subscribe(appts => {
-      console.log("Appts are:", appts);
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = {};
       this.datesForDateRange.forEach(day => this.rides[day] = []);
-      console.log("Rides", this.rides)
       appts.forEach(a => {
         const day = a.appointment.appointmentDate.toString().slice(0,10);
         this.rides[day].push(a);
@@ -59,7 +57,6 @@ export class RidesComponent implements OnInit {
 
   getClinics(): void {
     this.ds.getClinics().subscribe(c => {
-      console.table(c);
       this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
@@ -81,18 +78,9 @@ export class RidesComponent implements OnInit {
   }
 
   handleChangeWeekClick(changeType: string): void {
-    if(changeType === 'prev') {
-      console.log("Going to previous week....")
-      this.setDateRange(this.addDays(this.startDate, -6));
-    }
-    if(changeType === 'next') {
-      console.log("Going to next week....")
-      this.setDateRange(this.addDays(this.endDate, 1))
-    }
-    if(changeType == 'today') {
-      console.log("Going to today....")
-      this.setDateRange();
-    }
+    if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -6));
+    if(changeType === 'next') this.setDateRange(this.addDays(this.endDate, 1));
+    if(changeType == 'today') this.setDateRange();
     this.getRides();
   }
 
@@ -100,18 +88,14 @@ export class RidesComponent implements OnInit {
                               Utilities
 **********************************************************************/
   setDateRange(date?: any): void {
-    console.log("Date is", date);
     const currentDate = date || new Date();
     this.startDate = this.addDays(currentDate, -currentDate.getDay()).toISOString().slice(0,10);
     this.endDate = this.addDays(this.startDate, 6).toISOString().slice(0,10);
     this.getDatesForDateRange();
     this.activeDate = currentDate.toISOString().slice(0,10);
-    console.log("startDate", this.startDate);
-    console.log("endDate", this.endDate);
   }
 
   private addDays(date, days) {
-    console.log("Date in addDays is", date);
     var result = new Date(date);
     result.setDate(result.getDate() + days);
     return result;
@@ -123,7 +107,7 @@ export class RidesComponent implements OnInit {
     let currentDate = new Date(this.startDate.valueOf());
     for(let i = 0; i < 7; i++) {
       this.datesForDateRange.push((new Date(currentDate)).toISOString().slice(0,10));
-      currentDate.setDate(currentDate.getDate() + 1);;
+      currentDate.setDate(currentDate.getDate() + 1);
     }
   }
 
@@ -139,7 +123,7 @@ export class RidesComponent implements OnInit {
   getStatusText(status: number): string {
     switch(status) {
       case 0: return "Apply Now!";
-      case 1: return "Pending Approval";
+      case 1: return "Pending Approval"; // TODO: Will be affected by user role
       case 2: return "Approved";
       default: return "";
     }
