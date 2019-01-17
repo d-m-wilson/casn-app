@@ -1,3 +1,13 @@
-<p>
-  ride-detail-modal works!
-</p>
+<!--********************************************************************
+                          Ride Detail Modal
+**********************************************************************-->
+<div class="modal">
+  <div class="modal-content">
+    <h2>Ride details go here.</h2>
+    <pre>{{ride | json}}</pre>
+    <button type="button"
+            mat-raised-button
+            (click)="handleCloseModalClick()"
+            color="accent">Close</button>
+  </div>
+</div>
