@@ -22,7 +22,7 @@
         <mat-icon class="clicky"
                   (click)="toggleDisplayFiltersModal()">settings</mat-icon>
       </header>
-      <div *ngIf="rides[activeDate].length < 1">
+      <div *ngIf="rides[activeDate]?.length < 1">
         <mat-card class="appointment-card">
           <span class="bolder">No Rides today :(</span>
         </mat-card>
