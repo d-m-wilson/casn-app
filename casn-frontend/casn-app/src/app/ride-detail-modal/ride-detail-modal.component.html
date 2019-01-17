@@ -8,9 +8,22 @@
       <span class="bolder">{{ ride.appointment.patientIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</span> <br>
       <span class="bold">{{ ride.appointment?.appointmentDate | date:'shortTime'}}</span> <br>
     </mat-card>
-    <mat-card *ngIf="isDriveTo; else isDriveFrom">
-      drive to
-    </mat-card>
+    <div *ngIf="isDriveTo; else isDriveFrom">
+      <mat-card>
+        <mat-card-subtitle>Pick up patient {{ ride.appointment.patientIdentifier }} at:</mat-card-subtitle>
+        <address>
+          {{ ride.driveTo.startAddress }}<br>
+          {{ ride.driveTo.startCity }}, {{ ride.driveTo.startState }} {{ ride.driveTo.startPostalCode }}
+        </address>
+      </mat-card>
+      <mat-card>
+        <mat-card-subtitle>Drop off at {{ clinics[ride.appointment.clinicId] }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}:</mat-card-subtitle>
+        <address>
+          {{ ride.driveTo.endAddress }}<br>
+          {{ ride.driveTo.endCity }}, {{ ride.driveTo.endState }} {{ ride.driveTo.endPostalCode }}
+        </address>
+      </mat-card>
+    </div>
     <ng-template #isDriveFrom>
       <mat-card>
         drive from

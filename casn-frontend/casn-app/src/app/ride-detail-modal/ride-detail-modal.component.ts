@@ -8,9 +8,8 @@ import { Constants } from '../app.constants';
 })
 export class RideDetailModalComponent implements OnInit {
   @Input() ride: any = {};
-  @Input() isDriveTo: boolean; // Show details for driveTo or driveFrom
+  @Input() isDriveTo: boolean; // show driveTo or driveFrom details
   @Output() closeModalClick = new EventEmitter<boolean>();
-
   apptTypes: any;
 
   constructor( public constants: Constants ) { }
