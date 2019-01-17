@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DefaultService } from '../api/api/default.service';
 import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal.component';
+import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-rides',
@@ -15,8 +16,7 @@ export class RidesComponent implements OnInit {
   datesForDateRange: any[]; // All dates from startDate to endDate
   rides: any;
   clinics: any;
-  // TODO: should be fetched from API or set as app-level constant
-  apptTypes: any = { 4: 'Ultrasound', 3: 'Surgical' };
+  apptTypes: any;
 
   // Settings Modal
   showSettingsModal: boolean = false;
@@ -32,9 +32,11 @@ export class RidesComponent implements OnInit {
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  constructor( private ds: DefaultService ) { }
+  constructor( private ds: DefaultService,
+               public constants: Constants ) { }
 
   ngOnInit() {
+    this.apptTypes = this.constants.APPT_TYPES;
     this.setDateRange();
     this.getClinics();
     this.getRides();
