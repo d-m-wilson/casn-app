@@ -75,7 +75,7 @@
           color="accent"
           class="clicky bold"
           (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></button>
-  {{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }}
+  <span>{{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }}</span>
   <button type="button"
           mat-raised-button
           color="accent"
@@ -86,20 +86,30 @@
                           Ride Detail Modal
 **********************************************************************-->
 <app-ride-detail-modal *ngIf="displayRideModal"
-                       [ride]="rideModalContent">
-</app-ride-detail-modal>
+                       [ride]="rideModalContent"></app-ride-detail-modal>
 <!--********************************************************************
                         Settings, Display Filters
 **********************************************************************-->
 <div *ngIf="showSettingsModal" class="modal">
   <div class="modal-content">
     <h2>Filter Drives</h2>
-    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
-      <mat-button-toggle value="open" [checked]="displayRides[0]" (change)="displayRides[0] = $event.source.checked">Open</mat-button-toggle>
-      <mat-button-toggle value="pending" [checked]="displayRides[1]" (change)="displayRides[1] = $event.source.checked">Pending</mat-button-toggle>
-      <mat-button-toggle value="approved" [checked]="displayRides[2]" (change)="displayRides[2] = $event.source.checked">Approved</mat-button-toggle>
+    <mat-button-toggle-group name="displayFilters"
+                             aria-label="Ride Display Filters"
+                             multiple>
+      <mat-button-toggle value="open"
+                         [checked]="displayRides[0]"
+                         (change)="displayRides[0] = $event.source.checked">Open</mat-button-toggle>
+      <mat-button-toggle value="pending"
+                         [checked]="displayRides[1]"
+                         (change)="displayRides[1] = $event.source.checked">Pending</mat-button-toggle>
+      <mat-button-toggle value="approved"
+                         [checked]="displayRides[2]"
+                         (change)="displayRides[2] = $event.source.checked">Approved</mat-button-toggle>
     </mat-button-toggle-group>
     <br><br>
-    <button type="button" mat-raised-button (click)="toggleSettingsModal()" color="accent">Close</button>
+    <button type="button"
+            mat-raised-button
+            (click)="toggleSettingsModal()"
+            color="accent">Close</button>
   </div>
 </div>
