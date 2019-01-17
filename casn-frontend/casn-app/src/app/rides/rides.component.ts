@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DefaultService } from '../api/api/default.service';
+import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal.component';
 
 @Component({
   selector: 'app-rides',
@@ -12,16 +13,21 @@ export class RidesComponent implements OnInit {
   endDate: string = "2018-12-30";
   activeDate: string = "2018-12-24"
   datesForDateRange: any[]; // All dates from startDate to endDate
-  // rides: any[];
   rides: any;
   clinics: any;
   // TODO: should be fetched from API or set as app-level constant
   apptTypes: any = { 4: 'Ultrasound', 3: 'Surgical' };
+
+  // Settings Modal
+  showSettingsModal: boolean = false;
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
+
+  // Ride Modal
   displayRideModal: boolean = false;
   rideModalContent: any;
-  showDisplayFiltersModal: boolean = false;
+  @ViewChild(RideDetailModalComponent)
+  rideModal: RideDetailModalComponent;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -66,8 +72,8 @@ export class RidesComponent implements OnInit {
     ride ? this.rideModalContent = ride : this.rideModalContent = null;
   }
 
-  toggleDisplayFiltersModal(): void {
-    this.showDisplayFiltersModal = !this.showDisplayFiltersModal;
+  toggleSettingsModal(): void {
+    this.showSettingsModal = !this.showSettingsModal;
   }
 
   setActiveDate(date: string): void {
