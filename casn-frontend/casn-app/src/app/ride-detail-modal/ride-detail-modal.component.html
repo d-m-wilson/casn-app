@@ -1,12 +1,12 @@
 <!--********************************************************************
                           Ride Detail Modal
 **********************************************************************-->
-<div class="modal">
+<div class="modal" *ngIf="ride && clinics">
   <div class="modal-content">
-    <h2>Drive Details</h2>
+    <h1>{{ ride.appointment.patientIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</h1>
     <mat-card class="appointment-card">
-      <span class="bolder">{{ ride.appointment.patientIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</span> <br>
-      <span class="bold">{{ ride.appointment?.appointmentDate | date:'shortTime'}}</span> <br>
+      <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
+      <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
     </mat-card>
     <div *ngIf="isDriveTo; else isDriveFrom">
       <mat-card>
@@ -17,7 +17,7 @@
         </address>
       </mat-card>
       <mat-card>
-        <mat-card-subtitle>Drop off at {{ clinics[ride.appointment.clinicId] }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}:</mat-card-subtitle>
+        <mat-card-subtitle>Drop off at {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}:</mat-card-subtitle>
         <address>
           {{ ride.driveTo.endAddress }}<br>
           {{ ride.driveTo.endCity }}, {{ ride.driveTo.endState }} {{ ride.driveTo.endPostalCode }}
@@ -26,13 +26,30 @@
     </div>
     <ng-template #isDriveFrom>
       <mat-card>
-        drive from
+        <mat-card-subtitle>Pick up patient {{ ride.appointment.patientIdentifier }} at {{ clinics[ride.appointment.clinicId].name }}:</mat-card-subtitle>
+        <address>
+          {{ ride.driveFrom.startAddress }}<br>
+          {{ ride.driveFrom.startCity }}, {{ ride.driveFrom.startState }} {{ ride.driveFrom.startPostalCode }}
+        </address>
+      </mat-card>
+      <mat-card>
+        <mat-card-subtitle>Drop off at:</mat-card-subtitle>
+        <address>
+          {{ ride.driveFrom.endAddress }}<br>
+          {{ ride.driveFrom.endCity }}, {{ ride.driveFrom.endState }} {{ ride.driveFrom.endPostalCode }}
+        </address>
       </mat-card>
     </ng-template>
-    <pre>{{ride | json}}</pre>
-    <button type="button"
-            mat-raised-button
-            (click)="handleCloseModalClick()"
-            color="accent">Close</button>
+    <!-- <pre>{{ride | json}}</pre> -->
+    <div class="modal-actions">
+      <button type="button"
+              mat-raised-button
+              (click)="handleCloseModalClick()"
+              color="primary">Apply Now!</button>
+      <button type="button"
+              mat-raised-button
+              (click)="handleCloseModalClick()"
+              color="accent">Close</button>
+    </div>
   </div>
 </div>

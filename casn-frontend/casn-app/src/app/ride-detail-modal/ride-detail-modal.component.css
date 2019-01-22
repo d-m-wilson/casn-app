@@ -1,0 +1,14 @@
+h1 {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.appointment-card {
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
