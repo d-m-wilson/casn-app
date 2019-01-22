@@ -13,6 +13,7 @@ export class RideDetailModalComponent implements OnInit {
   @Input() ride: any = {};
   @Input() isDriveTo: boolean; // show driveTo or driveFrom details
   @Output() closeModalClick = new EventEmitter<boolean>();
+  @Output() closeModalAndUpdateClick = new EventEmitter<boolean>();
   apptTypes: any;
   clinics: any;
   volunteers: any[];
@@ -63,6 +64,7 @@ export class RideDetailModalComponent implements OnInit {
     this.driverService.addDriveApplicant({"driveId": id}).subscribe(
       res => {
         console.log("SUCCESS. Added drive applicant", res);
+        this.closeModalAndUpdateClick.emit(true);
       },
       err => {
         // TODO: Handle error
@@ -75,6 +77,7 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
       res => {
         console.log("SUCCESS. Approved volunteer", res);
+        this.closeModalAndUpdateClick.emit(true);
       },
       err => {
         // TODO: Handle error

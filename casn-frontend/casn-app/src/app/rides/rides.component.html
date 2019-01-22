@@ -88,7 +88,8 @@
 <app-ride-detail-modal *ngIf="displayRideModal"
                        [ride]="rideModalContent"
                        [isDriveTo]="showRideModalDriveTo"
-                       (closeModalClick)="toggleRideModal()"></app-ride-detail-modal>
+                       (closeModalClick)="toggleRideModal()"
+                       (closeModalAndUpdateClick)="toggleRideModal();getRides()"></app-ride-detail-modal>
 <!--********************************************************************
                         Settings, Display Filters
 **********************************************************************-->
