@@ -125,7 +125,7 @@ export class RidesComponent implements OnInit {
   getStatusText(status: number): string {
     switch(status) {
       case 0: return "Apply Now!";
-      case 1: return "Pending Approval"; // TODO: Will be affected by user role
+      case 1: return "Pending"; // TODO: Will be affected by user role
       case 2: return "Approved";
       default: return "";
     }
