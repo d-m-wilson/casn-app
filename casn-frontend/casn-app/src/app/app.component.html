@@ -6,21 +6,15 @@
                #sidenav
                mode="over"
                [(opened)]="opened">
-    <button mat-raised-button
-            color="primary"
-            routerLink="/"
-            (click)="sidenav.close()">My Dashboard</button>
-    <button mat-raised-button
-            color="primary"
-            routerLink="/patient" (click)="sidenav.close()">Schedule a Ride</button>
-    <button mat-raised-button
-            color="primary"
-            routerLink="/view-schedule"
-            (click)="sidenav.close()">View Schedule</button>
-    <button mat-raised-button
-            color="accent"
-            routerLink="/login"
-            (click)="sidenav.close()">Log Out</button>
+    <mat-list>
+      <h3 mat-subheader>CASN</h3>
+        <mat-list-item *ngFor="let m of menuItems" [routerLink]="m.address" (click)="sidenav.close()">
+          <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
+          <h4 mat-line>{{ m.name }}</h4>
+          <!-- <p mat-line>folderupdated</p> -->
+        </mat-list-item>
+        <!-- <mat-divider></mat-divider> -->
+    </mat-list>
   </mat-sidenav>
 <!--********************************************************************
                           Main App Content
