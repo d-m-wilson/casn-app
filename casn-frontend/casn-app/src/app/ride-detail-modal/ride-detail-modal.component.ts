@@ -42,7 +42,6 @@ export class RideDetailModalComponent implements OnInit {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
-        console.log("SUCCESS", res);
         this.volunteers = res;
       },
       err => {
@@ -72,8 +71,15 @@ export class RideDetailModalComponent implements OnInit {
     );
   }
 
-  handleApproveClick(applicant: any) {
-    console.log("--Approved", applicant);
-    // TODO: Post approval to server
+  handleApproveClick(volunteerId: number) {
+    this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
+      res => {
+        console.log("SUCCESS. Approved volunteer", res);
+      },
+      err => {
+        // TODO: Handle error
+        console.error("ERROR:", err);
+      }
+    );
   }
 }
