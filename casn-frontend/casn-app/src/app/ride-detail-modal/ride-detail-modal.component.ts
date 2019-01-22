@@ -15,6 +15,7 @@ export class RideDetailModalComponent implements OnInit {
   @Output() closeModalClick = new EventEmitter<boolean>();
   apptTypes: any;
   clinics: any;
+  volunteers: any[];
 
   constructor( private ds: DefaultService,
                private driverService: DriverService,
@@ -25,6 +26,7 @@ export class RideDetailModalComponent implements OnInit {
     this.apptTypes = this.constants.APPT_TYPES;
     // TODO: Refactor so we cache this data
     this.getClinics();
+    this.getVolunteers();
   }
 
 /*********************************************************************
@@ -36,6 +38,20 @@ export class RideDetailModalComponent implements OnInit {
     });
   }
 
+  getVolunteers(): void {
+    const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
+    this.dispatcherService.getVolunteerDrives(id).subscribe(
+      res => {
+        console.log("SUCCESS", res);
+        this.volunteers = res;
+      },
+      err => {
+        // TODO: Handle error
+        console.error("ERROR:", err);
+      }
+    );
+  }
+
 /*********************************************************************
                             Click Handlers
 **********************************************************************/
@@ -44,11 +60,16 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleApplyClick() {
-    console.log("--You applied!");
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
-    this.driverService.addDriveApplicant({"driveId": id}).subscribe(res => {
-      console.log("Added drive applicant", res);
-    });
+    this.driverService.addDriveApplicant({"driveId": id}).subscribe(
+      res => {
+        console.log("SUCCESS. Added drive applicant", res);
+      },
+      err => {
+        // TODO: Handle error
+        console.error("ERROR:", err);
+      }
+    );
   }
 
   handleApproveClick(applicant: any) {

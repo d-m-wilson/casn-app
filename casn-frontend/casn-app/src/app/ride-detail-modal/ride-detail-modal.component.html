@@ -40,7 +40,16 @@
         </address>
       </mat-card>
     </ng-template>
-    <pre>{{ride | json}}</pre>
+    <mat-card *ngIf="volunteers" class="mt">
+      <span class="bolder">Volunteers</span>
+      <div *ngFor="let v of volunteers" class="volunteer-container">
+        {{ v.firstName }} {{ v.lastName }}
+        <button type="button"
+                mat-raised-button
+                (click)="handleApproveClick(v.id)"
+                color="primary">Approve</button>
+      </div>
+    </mat-card>
     <div class="modal-actions">
       <button type="button"
               mat-raised-button
