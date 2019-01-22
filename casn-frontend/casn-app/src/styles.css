@@ -22,6 +22,14 @@ body {
   flex: 1 1 auto;
 }
 
+.bold {
+  font-weight: 500;
+}
+
+.bolder {
+  font-weight: 600;
+}
+
 /* Comment out to show debug messages for development */
 .debug {
   display: none;
