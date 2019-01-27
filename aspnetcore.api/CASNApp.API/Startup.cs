@@ -10,6 +10,7 @@
 
 using System;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -62,9 +63,9 @@ namespace CASNApp.API
                 //})
                 .AddDbContext<casn_appContext>(options =>
                     {
-                        options.UseMySql(_configuration["DbConnectionString"], mysqlOptions =>
+                        options.UseMySql(_configuration[Constants.DbConnectionString], mysqlOptions =>
                             {
-                                mysqlOptions.ServerVersion(new Version(5, 7, 22), ServerType.MySql)
+                                mysqlOptions.ServerVersion(Constants.MySQLVersion, ServerType.MySql)
                                     .EnableRetryOnFailure(2);
                             });
                     }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
@@ -83,6 +84,19 @@ namespace CASNApp.API
                     {
                         NamingStrategy = new CamelCaseNamingStrategy(),
                     });
+                });
+
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddJwtBearer(options =>
+                {
+                    options.Authority = _configuration[Constants.JwtBearerAuthority];
+                    options.Audience = _configuration[Constants.JwtBearerAudience];
+                    options.RequireHttpsMetadata = Constants.JwtBearerRequireHttpsMetadata;
+                    options.TokenValidationParameters.RoleClaimType = Constants.JwtBearerRoleClaimType;
                 });
 
             services
@@ -110,6 +124,16 @@ namespace CASNApp.API
                     // Include DataAnnotation attributes on Controller Action parameters as Swagger validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
+
+                    c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                    {
+                        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                        Name = "Authorization",
+                        In = "header",
+                        Type = "apiKey"
+                    });
+
+                    c.AddSecurityRequirement(new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> { { "Bearer", new string[] { } } });
                 });
         }
 
@@ -131,6 +155,7 @@ namespace CASNApp.API
             }
 
             app
+                .UseAuthentication()
                 .UseMvc()
                 .UseDefaultFiles()
                 .UseStaticFiles()

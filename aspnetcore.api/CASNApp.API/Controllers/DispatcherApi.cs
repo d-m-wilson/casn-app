@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -25,6 +26,7 @@ namespace CASNApp.API.Controllers
     /// <summary>
     /// 
     /// </summary>
+    [Authorize(Roles = Constants.Roles.Dispatchers)]
     public class DispatcherApiController : Controller
     {
         private readonly Entities.casn_appContext dbContext;
@@ -239,7 +241,7 @@ namespace CASNApp.API.Controllers
         [ValidateModelState]
         [SwaggerOperation("AddPatient")]
         public virtual async Task<IActionResult> AddPatient([FromBody]Patient patient)
-        { 
+        {
             if (!ModelState.IsValid ||
                 patient == null ||
                 string.IsNullOrWhiteSpace(patient.PatientIdentifier) ||
@@ -283,7 +285,7 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("DeleteAppointment")]
         [SwaggerResponse(statusCode: 200, type: typeof(DeleteSuccessMessage), description: "Success. Appointment with ID {appointmentID} was deleted.")]
         public virtual IActionResult DeleteAppointment([FromRoute][Required]string appointmentID)
-        { 
+        {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(DeleteSuccessMessage));
 
@@ -388,7 +390,7 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("UpdateAppointment")]
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
         public virtual IActionResult UpdateAppointment([FromRoute][Required]string appointmentID, [FromBody]AppointmentDTO appointmentDTO)
-        { 
+        {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(AppointmentDTO));
 

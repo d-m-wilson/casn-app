@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CASNApp.API.Attributes;
 using CASNApp.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -23,6 +24,7 @@ namespace CASNApp.API.Controllers
     /// <summary>
     /// 
     /// </summary>
+    [Authorize(Roles = Constants.Roles.Drivers)]
     public class DriverApiController : Controller
     {
         private readonly Entities.casn_appContext dbContext;
