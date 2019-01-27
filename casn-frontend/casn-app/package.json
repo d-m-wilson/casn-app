@@ -25,6 +25,7 @@
     "core-js": "^2.6.1",
     "ng-pick-datetime": "^7.0.0",
     "ngx-mask": "^6.5.18",
+    "oidc-client": "^1.6.1",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"
   },

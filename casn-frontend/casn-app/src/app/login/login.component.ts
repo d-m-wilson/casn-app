@@ -23,11 +23,16 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-        username: ['', Validators.required],
-        password: ['', Validators.required]
+        // username: ['', Validators.required],
+        // password: ['', Validators.required]
     });
+
     // reset login status
-    this.authenticationService.logout();
+    //this.authenticationService.logout();
+
+    var buttonText = this.isLoggedIn() ? 'Log Out' : 'Log In';
+    document.getElementById('loginSubmitButton').innerText = buttonText;
+
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
@@ -37,21 +42,15 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    // stop here if form is invalid
-    if (this.loginForm.invalid) { return; }
-
-    this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.router.navigate([this.returnUrl]);
-        },
-        error => {
-          // TODO: Add some error handling/user msgs
-          this.errorMsg = "Incorrect username/password. Please try again."
-          this.loading = false;
-        }
-      );
+    if (this.isLoggedIn()) {
+      this.authenticationService.logout();
+    } else {
+      this.authenticationService.login();
+    }
   }
+
+  isLoggedIn() : Boolean {
+    return this.authenticationService.isLoggedIn();
+  }
+
 }

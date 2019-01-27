@@ -17,10 +17,18 @@
             color="primary"
             routerLink="/view-schedule"
             (click)="sidenav.close()">View Schedule</button>
-    <button mat-raised-button
+    <!-- <button mat-raised-button
             color="accent"
             routerLink="/login"
-            (click)="sidenav.close()">Log Out</button>
+            (click)="sidenav.close()">Log Out</button> -->
+    <button *ngIf="!isLoggedIn()"
+            mat-raised-button
+            color="accent"
+            (click)="login()">Login</button>
+    <button *ngIf="isLoggedIn()"
+            mat-raised-button
+            color="accent"
+            (click)="logout()">Logout</button>
   </mat-sidenav>
 <!--********************************************************************
                           Main App Content
