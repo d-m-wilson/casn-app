@@ -264,3 +264,4 @@ __pycache__/
 keys.json
 *.mwb.bak
 Secrets.cs
+.vscode/
