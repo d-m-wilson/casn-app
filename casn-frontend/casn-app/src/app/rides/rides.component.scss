@@ -1,3 +1,5 @@
+@import '../styles/variables';
+
 p {
   margin: 5px;
 }
@@ -128,7 +130,7 @@ p {
   left: 0;
   bottom: 0;
   z-index: 20;
-  background-color: #9575cd;
+  background-color: $test-color;
   color: white;
   padding: 5px;
 }

@@ -26,7 +26,7 @@
               {
                 "input": "src/app/styles/custom-color-theme.scss"
               },
-              "src/app/styles/styles.css"
+              "src/app/styles/styles.scss"
             ],
             "scripts": []
           },
