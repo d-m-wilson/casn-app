@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Pre-built Angular Material themes */
 /* @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; */
 /* @import '~@angular/material/prebuilt-themes/purple-green.css'; */
 /* @import '~@angular/material/prebuilt-themes/pink-bluegrey.css'; */
@@ -6,9 +8,6 @@
 
 /* ng-datetime-picker */
 @import "~ng-pick-datetime/assets/style/picker.min.css";
-
-@import './variables';
-
 
 /********************************************************************
         Comment out to show debug messages for development
@@ -54,22 +53,22 @@ body {
                               Modal
 ********************************************************************/
 .modal {
-    position: fixed; /* Stay in place */
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90%;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
 }
 
 .modal-ctrl-btns {
@@ -78,15 +77,14 @@ body {
 }
 
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.close:hover, .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
