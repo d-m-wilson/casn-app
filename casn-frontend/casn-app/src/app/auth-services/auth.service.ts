@@ -44,7 +44,7 @@ export class AuthenticationService {
       authority: stsAuthority,
       client_id: clientId,
       redirect_uri: `${environment.clientRoot}assets/oidc-login-redirect.html`,
-      scope: `openid profile ${apiScope}`,
+      scope: `openid profile email ${apiScope}`,
       response_type: 'id_token token',
       post_logout_redirect_uri: environment.logoutRedirectUrl,
       userStore: new WebStorageStateStore({ store: window.localStorage }),
