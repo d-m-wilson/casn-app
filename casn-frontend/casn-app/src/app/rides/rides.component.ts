@@ -6,7 +6,7 @@ import { Constants } from '../app.constants';
 @Component({
   selector: 'app-rides',
   templateUrl: './rides.component.html',
-  styleUrls: ['./rides.component.css']
+  styleUrls: ['./rides.component.scss']
 })
 export class RidesComponent implements OnInit {
   objectKeys: any = Object.keys;
