@@ -24,9 +24,9 @@
             ],
             "styles": [
               {
-                "input": "src/app/custom-color-theme.scss"
+                "input": "src/app/styles/custom-color-theme.scss"
               },
-              "src/styles.css"
+              "src/app/styles/styles.css"
             ],
             "scripts": []
           },
