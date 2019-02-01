@@ -16,10 +16,10 @@
     **********************************************************************-->
     <section class="ride-container">
       <header>
-        <mat-icon class="clicky"
+        <mat-icon class="clicky hilight"
                   (click)="handleChangeWeekClick('today')">today</mat-icon>
         <h1>{{ activeDate | date:'mediumDate' }}</h1>
-        <mat-icon class="clicky"
+        <mat-icon class="clicky hilight"
                   (click)="toggleSettingsModal()">settings</mat-icon>
       </header>
       <div *ngIf="rides[activeDate]?.length < 1">

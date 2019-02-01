@@ -7,7 +7,10 @@
                mode="over"
                [(opened)]="opened">
     <mat-list>
-      <h3 mat-subheader>CASN</h3>
+        <img class="sidenav-logo"
+             src="assets/img/casn-logo.png"
+             alt="CASN logo"
+             routerLink="/">
         <mat-list-item *ngFor="let m of menuItems" [routerLink]="m.address" (click)="sidenav.close()">
           <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
           <h4 mat-line>{{ m.name }}</h4>
