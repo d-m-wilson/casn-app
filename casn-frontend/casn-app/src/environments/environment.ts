@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://casnapptest.dmwilson.info/api'
+  apiUrl: 'https://casnapptest.dmwilson.info/api',
+  clientRoot: 'http://localhost:4200/',
+  customConfigUrl: 'https://casnapptest.dmwilson.info/customconfig.json',
+  get logoutRedirectUrl() { return `${this.clientRoot}assets/oidc-login-redirect.html`; },
 };
 
 /*

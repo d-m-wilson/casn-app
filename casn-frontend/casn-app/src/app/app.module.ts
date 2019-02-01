@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,7 +30,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { Constants } from './app.constants';
 import { AuthGuard } from './auth-services/auth-guard.service';
 import { AuthenticationService } from './auth-services/auth.service';
-import { fakeBackendProvider } from './auth-services/fake-backend';
+//import { fakeBackendProvider } from './auth-services/fake-backend';
 import { JwtInterceptor } from './auth-services/jwt.interceptor';
 import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
@@ -42,6 +42,7 @@ import { PatientsComponent } from './patients/patients.component';
 import { RidesComponent } from './rides/rides.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
+import { AppConfigService, appConfigInitializerFn } from './auth-services/appconfig.service';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,8 @@ import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.
     MatToolbarModule,
   ],
   providers: [
+    AppConfigService,
+    { provide: APP_INITIALIZER, useFactory: appConfigInitializerFn, multi: true, deps: [ AppConfigService ] },
     Constants,
     ApiModule,
     AuthGuard,
@@ -87,8 +90,6 @@ import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    // provider used to create fake backend for dev
-    fakeBackendProvider
   ],
   bootstrap: [AppComponent]
 })
