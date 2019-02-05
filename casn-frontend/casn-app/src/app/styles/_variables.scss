@@ -6,12 +6,156 @@ note that some variables, e.g. Material color palette variables,
 may be referenced from the Angular Material library in node_modules.
 */
 
+/*****************************************************************************
+    Simplified Palette -- Used Throughout Application in Custom Components
+******************************************************************************/
+$primary-color: #949ac9;
+$primary-color-dark: #6972b3;
+$accent-color-1: #c182a1;
+$accent-color-2: #7447a3;
 
-$primary-color: #B39DDB;
-$primary-color-light: #7986CB;
-$primary-color-dark: #3F51B5;
+$background-color: #e1e1e1;
+$modal-background-color: #e9eaf4;
+$border-color: #949ac9;
 
-$accent-color: #B2DFDB;
-
-$warn-color: #ef5350;
+$error-color: #ef5350;
+$warn-color: #ffca28;
 $success-color: #66bb6a;
+
+
+// Usage: $button-color: scotch-color('primary'); // #8e3329
+
+/*****************************************************************************
+            Complex Palettes Defined for Angular Material Framework
+******************************************************************************/
+$mat-casnblue: (
+    50 : #e5e7f2,
+    100 : #bfc2df,
+    200 : #949ac9,
+    300 : #6972b3,
+    400 : #4853a3,
+    500 : #283593,
+    600 : #24308b,
+    700 : #1e2880,
+    800 : #182276,
+    900 : #0f1664,
+    A100 : #99a0ff,
+    A200 : #6670ff,
+    A400 : #3340ff,
+    A700 : #1a28ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #ffffff,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$mat-casnpurple: (
+    50 : #ebe5f2,
+    100 : #cebedf,
+    200 : #ae93c9,
+    300 : #8d67b3,
+    400 : #7447a3,
+    500 : #5c2693,
+    600 : #54228b,
+    700 : #4a1c80,
+    800 : #411776,
+    900 : #300d64,
+    A100 : #bd98ff,
+    A200 : #9c65ff,
+    A400 : #7b32ff,
+    A700 : #6a19ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$mat-casnpink: (
+    50 : #f4eaef,
+    100 : #e4cad7,
+    200 : #d3a6bc,
+    300 : #c182a1,
+    400 : #b3688d,
+    500 : #a64d79,
+    600 : #9e4671,
+    700 : #953d66,
+    800 : #8b345c,
+    900 : #7b2549,
+    A100 : #ffbcd7,
+    A200 : #ff89b8,
+    A400 : #ff5699,
+    A700 : #ff3c8a,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+$mat-casngray: (
+    50 : #fbfbfb,
+    100 : #f6f6f6,
+    200 : #f0f0f0,
+    300 : #eaeaea,
+    400 : #e6e6e6,
+    500 : #e1e1e1,
+    600 : #dddddd,
+    700 : #d9d9d9,
+    800 : #d5d5d5,
+    900 : #cdcdcd,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #ffffff,
+    A700 : #ffffff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
