@@ -71,14 +71,12 @@
 **********************************************************************-->
 <footer class="fixed-footer">
   <button type="button"
-          mat-raised-button
-          color="accent"
+          mat-button
           class="clicky bold"
           (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></button>
   <span>{{ this.startDate | date:'MMM d' }} &mdash; {{ this.endDate | date:'MMM d' }}</span>
   <button type="button"
-          mat-raised-button
-          color="accent"
+          mat-button
           class="clicky bold"
           (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></button>
 </footer>
