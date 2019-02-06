@@ -8,6 +8,7 @@
 
 /* ng-datetime-picker */
 @import "~ng-pick-datetime/assets/style/picker.min.css";
+@import './variables';
 
 /********************************************************************
         Comment out to show debug messages for development
@@ -64,7 +65,7 @@ body {
 }
 
 .modal-content {
-  background-color: #fefefe;
+  background-color: $modal-background-color;
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
