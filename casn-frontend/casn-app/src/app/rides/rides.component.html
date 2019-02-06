@@ -15,7 +15,7 @@
                                   Ride Cards
     **********************************************************************-->
     <section class="ride-container">
-      <header>
+      <header class="mat-elevation-z1">
         <mat-icon class="clicky hilight"
                   (click)="handleChangeWeekClick('today')">today</mat-icon>
         <h1>{{ activeDate | date:'mediumDate' }}</h1>
@@ -69,7 +69,7 @@
 <!--********************************************************************
                         Footer + Week Change Controls
 **********************************************************************-->
-<footer class="fixed-footer">
+<footer class="fixed-footer mat-elevation-z3">
   <button type="button"
           mat-button
           class="clicky bold"

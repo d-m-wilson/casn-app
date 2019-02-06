@@ -42,9 +42,9 @@ p {
 .date-sidebar {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: calc(100vh - 102px); /* Header: 56px, Footer: 46px */
+  height: calc(100vh - 155px);
   width: 65px;
+  margin-top: 55px;
 }
 
 .date-card {
@@ -83,17 +83,20 @@ p {
   border: 1px solid $border-color;
   background: $primary-color;
   color: white;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-content: center;
   align-items: center;
+  box-sizing: border-box;
+  padding: 0 20px;
   position: fixed;
-  width: calc(100% - 62px);
+  width: 100%;
+  left: 0;
   z-index: 1;
-  height: 78px;
+  height: 55px;
 }
 
 .ride-container header + div {
-  margin-top: 70px; /* Clear header */
+  margin-top: 55px; /* Clear header */
 }
 
 .drive-container {
