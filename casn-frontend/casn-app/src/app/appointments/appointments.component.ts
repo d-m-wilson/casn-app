@@ -65,6 +65,9 @@ export class AppointmentsComponent implements OnInit {
   get f() { return this.apptForm.controls; }
 
   onSubmit(): void {
+    /* If pickup has been edited since "Same as Pickup" checkbox was first
+    clicked, update dropoff accordingly. */
+    if(!this.showDropoffLocationInputs) this.setDropoffLocation(true);
     if (!this.apptForm.valid) return;
     this.constructApptDTO();
   }
