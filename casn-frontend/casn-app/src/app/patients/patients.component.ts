@@ -43,7 +43,7 @@ export class PatientsComponent implements OnInit {
     patientIdentifier: ['', [Validators.required, Validators.minLength(4),
                         Validators.maxLength(6)]],
     firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
+    lastName: [''],
     phone: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")], // TODO: Require either phone OR email
     // email: [''],
     isMinor: [false, Validators.required],
