@@ -85,4 +85,22 @@ export class RideDetailModalComponent implements OnInit {
       }
     );
   }
+
+/*********************************************************************
+                              Utilities
+**********************************************************************/
+  get startAddressGoogleMapLink() {
+    const drive = this.isDriveTo ? 'driveTo' : 'driveFrom';
+    const query = `${this.ride[drive].startAddress} ${this.ride[drive].startCity} ${this.ride[drive].startPostalCode}`;
+    const urlEncodedQuery = encodeURI(query);
+    return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
+  }
+
+  get endAddressGoogleMapLink() {
+    const drive = this.isDriveTo ? 'driveTo' : 'driveFrom';
+    const query = `${this.ride[drive].endAddress} ${this.ride[drive].endCity} ${this.ride[drive].endPostalCode}`;
+    const urlEncodedQuery = encodeURI(query);
+    return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
+  }
+
 }
