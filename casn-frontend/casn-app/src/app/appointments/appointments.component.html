@@ -5,14 +5,14 @@
   <h2>Create Appointment</h2>
   <form [formGroup]="apptForm" (ngSubmit)="onSubmit()">
     <div class="patient-form-group">
-      <h3>Patient Identifier: {{ f.patientIdentifier.value }}</h3>
+      <h3>Caller #{{ f.patientIdentifier.value }}</h3>
       <mat-form-field class="example-full-width hide"
                       appearance="outline"
                       disabled>
-        <mat-label>Patient ID</mat-label>
+        <mat-label>Caller ID</mat-label>
         <input type="text"
         placeholder="1234"
-        aria-label="Patient ID"
+        aria-label="Caller Identifier"
         matInput
         formControlName="patientIdentifier">
         <mat-error *ngIf="f.patientIdentifier.errors?.required">This field is required.</mat-error>
@@ -61,8 +61,7 @@
       <owl-date-time [pickerMode]="'dialog'" #dt5></owl-date-time>
     </mat-form-field>
 
-    <!-- Pick Up Address -->
-    <h3>Patient Pick-Up Address</h3>
+    <h3>Pick-Up Address</h3>
     <mat-form-field appearance="outline">
       <mat-label>Street Address</mat-label>
       <input matInput
@@ -109,8 +108,7 @@
       <mat-error *ngIf="f.pickupLocationVague.errors?.required">This field is required.</mat-error>
     </mat-form-field>
 
-    <!-- Drop Off Address -->
-    <h3>Patient Drop-Off Address</h3>
+    <h3>Drop-Off Address</h3>
     <mat-checkbox (change)="setDropoffLocation($event.checked)">
       Same as pickup address?
     </mat-checkbox>

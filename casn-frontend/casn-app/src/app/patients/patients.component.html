@@ -3,10 +3,10 @@
                         Patient Search Field
 **********************************************************************-->
   <h2>Schedule A Ride</h2>
-  <h3>Add or Lookup Patient</h3>
-  <div class="patient-form-group" *ngIf="!displayPatientForm">
+  <h3>Add or Lookup Caller Information</h3>
+  <div class="patient-form-group" *ngIf="!displayCallerForm">
     <mat-form-field class="example-full-width" appearance="outline">
-      <mat-label>Patient Identifier</mat-label>
+      <mat-label>Caller ID</mat-label>
       <input type="text"
       placeholder="1234"
       aria-label="Patient Identifier"
@@ -20,19 +20,19 @@
             mat-raised-button
             color="primary"
             [disabled]="patientIdentifierSearch.invalid"
-            *ngIf="!displayPatientForm"
+            *ngIf="!displayCallerForm"
             (click)="searchPatientIdentifier()">Next</button>
   </div>
 
 <!--********************************************************************
                             Patient Detail Form
 **********************************************************************-->
-  <form [formGroup]="patientForm"
+  <form [formGroup]="callerForm"
         (ngSubmit)="onSubmit()"
-        *ngIf="displayPatientForm">
+        *ngIf="displayCallerForm">
     <div class="patient-form-group">
       <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Patient Identifier</mat-label>
+        <mat-label>Caller ID</mat-label>
         <input type="text"
         placeholder="1234"
         aria-label="Patient Identifier"
@@ -100,7 +100,7 @@
               mat-raised-button
               color="primary"
               type="submit"
-              [disabled]="!patientForm.valid">Next</button>
+              [disabled]="!callerForm.valid">Next</button>
       <button mat-raised-button
               color="warn"
               class="form-btn"
@@ -112,18 +112,18 @@
                               Form Debug
   **********************************************************************-->
   <div class="debug">
-    <p>Form Status: {{ patientForm.status }}</p>
-    <p>Form Value: {{ patientForm.value | json }}</p>
+    <p>Form Status: {{ callerForm.status }}</p>
+    <p>Form Value: {{ callerForm.value | json }}</p>
   </div>
 </main>
 
 <!--********************************************************************
-                            Patient Modal
+                            Caller Modal
 **********************************************************************-->
-<div *ngIf="displayPatientFoundModal" class="modal">
+<div *ngIf="displayCallerFoundModal" class="modal">
   <div class="modal-content">
-    <h2>Found Matching Patient: {{ existingPatient.firstName }} {{ existingPatient.lastName }}</h2>
-    <p>Is this your patient?</p>
+    <h2>Found Matching Caller: {{ existingCaller.firstName }} {{ existingCaller.lastName }}</h2>
+    <p>Is this your caller?</p>
     <div class="modal-ctrl-btns">
       <button mat-raised-button
               color="primary"

@@ -12,11 +12,11 @@ import { Location } from '@angular/common';
   styleUrls: ['./patients.component.css']
 })
 export class PatientsComponent implements OnInit {
-  existingPatient: any = {};
-  existingPatientId: Number;
+  existingCaller: any = {};
+  existingCallerId: Number;
   /* Display flags for patient lookup feature */
-  displayPatientFoundModal: boolean = false;
-  displayPatientForm: boolean = false;
+  displayCallerFoundModal: boolean = false;
+  displayCallerForm: boolean = false;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -39,7 +39,7 @@ export class PatientsComponent implements OnInit {
 
   patientIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
 
-  patientForm = this.fb.group({
+  callerForm = this.fb.group({
     patientIdentifier: ['', [Validators.required, Validators.minLength(4),
                         Validators.maxLength(6)]],
     firstName: ['', Validators.required],
@@ -52,17 +52,17 @@ export class PatientsComponent implements OnInit {
   })
 
   // convenience getter for easy access to form fields
-  get f() { return this.patientForm.controls; }
+  get f() { return this.callerForm.controls; }
 
   onSubmit(): void {
-    if(!this.patientForm.valid) { return; }
+    if(!this.callerForm.valid) { return; }
     // Check if patient is new or existing to make appropriate REST call.
-    const isNewPatient = Object.keys(this.existingPatient).length === 0;
+    const isNewPatient = Object.keys(this.existingCaller).length === 0;
     if(isNewPatient) {
       this.saveNewPatient();
     } else {
       // TODO: There should be an update patient endpoint
-      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: this.existingPatientId }]);
+      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: this.existingCallerId }]);
     }
   }
 
@@ -70,20 +70,20 @@ export class PatientsComponent implements OnInit {
                               Click Handlers
   **********************************************************************/
   handleYesClick(): void {
-    this.displayPatientFoundModal = false;
-    this.displayPatientForm = true;
-    this.patientForm.setValue(this.existingPatient);
+    this.displayCallerFoundModal = false;
+    this.displayCallerForm = true;
+    this.callerForm.setValue(this.existingCaller);
   }
 
   handleNoClick(): void {
-    this.displayPatientFoundModal = false;
+    this.displayCallerFoundModal = false;
     this.f.patientIdentifier.setValue(this.patientIdentifierSearch.value);
   }
 
   handleCancelClick(): void {
     if(confirm('Are you sure? Any unsaved changes will be lost.')) {
-      this.patientForm.reset();
-      this.displayPatientForm = false;
+      this.callerForm.reset();
+      this.displayCallerForm = false;
       this.goBack();
     }
   }
@@ -99,11 +99,10 @@ export class PatientsComponent implements OnInit {
     const id = this.patientIdentifierSearch.value;
     this.ds.getPatientByPatientIdentifier(id).subscribe(
       p => {
-        console.log("Get patient request returned:", p);
         if(p.patientIdentifier) {
           // TODO: Refactor
-          this.existingPatientId = p.id;
-          this.existingPatient = {
+          this.existingCallerId = p.id;
+          this.existingCaller = {
             patientIdentifier: p.patientIdentifier,
             firstName: p.firstName,
             lastName: p.lastName,
@@ -112,16 +111,16 @@ export class PatientsComponent implements OnInit {
             preferredLanguage: p.preferredLanguage,
             preferredContactMethod: p.preferredContactMethod,
           };
-          this.displayPatientFoundModal = true;
+          this.displayCallerFoundModal = true;
         } else {
-          this.displayPatientForm = true;
+          this.displayCallerForm = true;
           this.f.patientIdentifier.setValue(this.patientIdentifierSearch.value);
 
         }
       },
       err => {
         console.log("404 - No existing patient was found");
-        this.displayPatientForm = true;
+        this.displayCallerForm = true;
         this.f.patientIdentifier.setValue(this.patientIdentifierSearch.value);
 
       }
@@ -129,8 +128,7 @@ export class PatientsComponent implements OnInit {
   }
 
   saveNewPatient(): void {
-    this.ds.addPatient(this.patientForm.value).subscribe(p => {
-      console.log("Saved patient:", p);
+    this.ds.addPatient(this.callerForm.value).subscribe(p => {
       this.router.navigate(['/appointment', { patientIdentifier: p.patientIdentifier, patientId: p.id }]);
     });
   }
