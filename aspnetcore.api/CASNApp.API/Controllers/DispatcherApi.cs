@@ -14,7 +14,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
+using CASNApp.API.Extensions;
 using CASNApp.API.Models;
+using CASNApp.API.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +53,15 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
         public virtual async Task<IActionResult> AddAppointment([FromBody]AppointmentDTO appointmentDTO)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (!appointmentDTO.Validate())
             {
                 return BadRequest(appointmentDTO);
@@ -59,16 +70,6 @@ namespace CASNApp.API.Controllers
             var appointment = appointmentDTO.Appointment;
             var driveTo = appointmentDTO.DriveTo;
             var driveFrom = appointmentDTO.DriveFrom;
-
-            var dispatcher = await dbContext.Volunteer
-                .AsNoTracking()
-                .Where(v => v.Id == appointment.DispatcherId) // TODO: Later we'll use the userId from the JWT
-                .FirstOrDefaultAsync();
-
-            if (dispatcher == null)
-            {
-                return BadRequest(appointmentDTO);
-            }
 
             var clinic = await dbContext.Clinic
                 .AsNoTracking()
@@ -92,7 +93,7 @@ namespace CASNApp.API.Controllers
 
             var appointmentEntity = new Entities.Appointment
             {
-                DispatcherId = dispatcher.Id,
+                DispatcherId = volunteer.Id,
                 PatientId = patient.Id,
                 ClinicId = clinic.Id,
                 PickupLocationVague = appointment.PickupLocationVague,
@@ -180,6 +181,15 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("AddDriver")]
         public virtual IActionResult AddDriver([FromBody]Body1 body1)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             var volunteerDriveId = body1.VolunteerDriveId;
 
             if (!volunteerDriveId.HasValue)
@@ -203,15 +213,12 @@ namespace CASNApp.API.Controllers
                 return Conflict(body1);
             }
 
-            // TODO: Remove hard-coded "approver" ID
-            uint approverId = 1;
-
             var drive = volunteerDrive.Drive;
 
             drive.DriverId = volunteerDrive.VolunteerId;
             drive.Status = Drive.StatusApproved;
             drive.Approved = DateTime.UtcNow;
-            drive.ApprovedBy = approverId;
+            drive.ApprovedBy = volunteer.Id;
             drive.Updated = DateTime.UtcNow;
 
             dbContext.SaveChanges();
@@ -242,6 +249,15 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("AddPatient")]
         public virtual async Task<IActionResult> AddPatient([FromBody]Patient patient)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid ||
                 patient == null ||
                 string.IsNullOrWhiteSpace(patient.PatientIdentifier) ||
@@ -320,6 +336,15 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(Patient), description: "search results matching criteria")]
         public virtual async Task<IActionResult> GetPatientByPatientIdentifier([FromQuery][Required()] [MinLength(4)]string patientIdentifier)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(Patient));
 
@@ -359,6 +384,15 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(List<VolunteerDrive>), description: "successful operation")]
         public virtual IActionResult GetVolunteerDrives([FromQuery][Required()]long? driveId)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (!driveId.HasValue || !dbContext.Drive.Any(d => d.Id == driveId.Value))
             {
                 return BadRequest();

@@ -14,7 +14,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
+using CASNApp.API.Extensions;
 using CASNApp.API.Models;
+using CASNApp.API.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +49,15 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(List<Models.Clinic>), description: "successful operation")]
         public virtual async Task<IActionResult> GetClinics()
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             var clinics = await dbContext.Clinic
                 .AsNoTracking()
                 .Select(c => new Models.Clinic(c))
@@ -71,6 +82,15 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "all appointments in date range")]
         public virtual async Task<IActionResult> GetAppointments([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
             var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
 
@@ -145,6 +165,15 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Found appointment.")]
         public virtual async Task<IActionResult> GetAppointmentByID([FromRoute][Required]string appointmentID)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (string.IsNullOrWhiteSpace(appointmentID) || !long.TryParse(appointmentID, out long apptId))
             {
                 return BadRequest();

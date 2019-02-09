@@ -10,6 +10,7 @@ namespace CASNApp.API
         internal const string JwtBearerAudience = nameof(JwtBearerAudience);
         internal const bool JwtBearerRequireHttpsMetadata = true;
         internal const string JwtBearerRoleClaimType = "http://example.com/groups";
+        internal const string JwtBearerEmailClaimType = "http://example.com/email";
 
         internal static class Roles
         {

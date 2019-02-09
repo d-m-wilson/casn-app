@@ -12,7 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CASNApp.API.Attributes;
+using CASNApp.API.Extensions;
 using CASNApp.API.Models;
+using CASNApp.API.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +50,15 @@ namespace CASNApp.API.Controllers
         [SwaggerOperation("AddDriveApplicant")]
         public virtual IActionResult AddDriveApplicant([FromBody]Body body)
         {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDriverByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             var driveId = body.DriveId;
 
             if (!driveId.HasValue)
@@ -62,29 +73,21 @@ namespace CASNApp.API.Controllers
                 return NotFound(body);
             }
 
-            // BEGIN: pick a random driver who has not already applied for the specified drive
-            var drivers = dbContext.Volunteer.AsNoTracking().Where(v => v.IsDriver && v.IsActive).ToList();
-            var random = new Random();
+            bool alreadyApplied = dbContext.VolunteerDrive
+                .Include(vd => vd.Drive)
+                .Where(vd => vd.VolunteerId == volunteer.Id && vd.DriveId == drive.Id && vd.IsActive)
+                .Any();
 
-            Entities.Volunteer driver = null;
-
-            for (int tries = 0; tries < drivers.Count; tries++)
+            if (alreadyApplied)
             {
-                var randomDriver = drivers[random.Next(drivers.Count)];
-
-                if (!dbContext.VolunteerDrive.Any(vd => vd.VolunteerId == randomDriver.Id && vd.DriveId == driveId.Value && vd.IsActive))
-                {
-                    driver = randomDriver;
-                    break;
-                }
+                return Conflict(body);
             }
-            // END
 
             var volunteerDrive = new Entities.VolunteerDrive
             {
                 Created = DateTime.UtcNow,
                 DriveId = (uint)driveId.Value,
-                VolunteerId = driver.Id,
+                VolunteerId = volunteer.Id,
                 IsActive = true,
             };
 
@@ -123,33 +126,19 @@ namespace CASNApp.API.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(List<DriverDrive>), description: "Success")]
         public virtual IActionResult GetMyDrives()
         {
-            // BEGIN: pick quasi-random driver
-            uint driverId;
-            var random = new Random();
-            var drivers = dbContext.Volunteer
-                .AsNoTracking()
-                .Include(v => v.VolunteerDrives)
-                .ThenInclude(vd => vd.Drive)
-                .ThenInclude(d => d.Appointment)
-                .Where(v => v.IsDriver && v.IsActive && v.VolunteerDrives.Count > 0)
-                .OrderBy(v => v.Id)
-                .ToList();
-            
-            if (drivers.Count == 0)
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDriverByEmail(userEmail, true);
+
+            if (volunteer == null)
             {
-                return Ok(new List<DriverDrive>());
+                return Forbid();
             }
-            else
-            {
-                int index = random.Next(0, drivers.Count);
-                driverId = drivers[index].Id;
-            }
-            // END
 
             var results = dbContext.VolunteerDrive
                 .AsNoTracking()
                 .Include(vd => vd.Drive.Appointment.Patient)
-                .Where(vd => vd.VolunteerId == driverId &&
+                .Where(vd => vd.VolunteerId == volunteer.Id &&
                     vd.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
                 .Select(vd => new DriverDrive(vd))
                 .ToList();
