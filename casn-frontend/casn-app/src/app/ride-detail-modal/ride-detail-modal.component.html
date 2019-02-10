@@ -52,10 +52,14 @@
       <span class="bolder">Volunteers</span>
       <div *ngFor="let v of volunteers" class="volunteer-container">
         {{ v.firstName }} {{ v.lastName }}
-        <button type="button"
+        <button *ngIf="!driveIsApproved"
+                type="button"
                 mat-raised-button
                 (click)="handleApproveClick(v.id)"
                 color="primary">Approve</button>
+        <!-- <strong *ngIf="!driveIsApproved && v.id === ride[driveType].driverId">
+          <mat-icon>check</mat-icon> Approved
+        </strong> -->
       </div>
     </mat-card>
     <div class="modal-actions">
@@ -68,5 +72,6 @@
               (click)="handleCloseModalClick()"
               color="accent">Close</button>
     </div>
+    <pre class="debug">{{ ride | json }}</pre>
   </div>
 </div>
