@@ -7,13 +7,14 @@ import { Constants } from '../app.constants';
 @Component({
   selector: 'app-ride-detail-modal',
   templateUrl: './ride-detail-modal.component.html',
-  styleUrls: ['./ride-detail-modal.component.css']
+  styleUrls: ['./ride-detail-modal.component.scss']
 })
 export class RideDetailModalComponent implements OnInit {
   @Input() ride: any = {};
   @Input() isDriveTo: boolean; // show driveTo or driveFrom details
   @Output() closeModalClick = new EventEmitter<boolean>();
   @Output() closeModalAndUpdateClick = new EventEmitter<boolean>();
+  driveType: string;
   apptTypes: any;
   clinics: any;
   volunteers: any[];
@@ -28,6 +29,7 @@ export class RideDetailModalComponent implements OnInit {
     // TODO: Refactor so we cache this data
     this.getClinics();
     this.getVolunteers();
+    this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
   }
 
 /*********************************************************************
@@ -45,6 +47,7 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
         this.volunteers = res;
+        console.log("Volunteers are", this.volunteers);
       },
       err => {
         // TODO: Handle error
@@ -105,8 +108,7 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   get driveIsApproved() {
-    const driverId = this.isDriveTo ? this.ride.driveTo.driverId : this.ride.driveFrom.driverId;
+    const driverId = this.ride[this.driveType].driverId
     return !!driverId;
   }
-
 }

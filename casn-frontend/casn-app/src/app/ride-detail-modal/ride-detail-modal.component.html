@@ -8,58 +8,53 @@
       <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
       <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
     </mat-card>
-    <div *ngIf="isDriveTo; else isDriveFrom">
+    <div>
       <mat-card class="mt">
-        <mat-card-subtitle>Pick up patient {{ ride.appointment.patientIdentifier }} at:</mat-card-subtitle>
+        <mat-card-subtitle>
+          Pick up patient {{ ride.appointment.patientIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
+        </mat-card-subtitle>
         <a [href]="startAddressGoogleMapLink" target="_blank">
           <address>
-            {{ ride.driveTo.startAddress }}<br>
-            {{ ride.driveTo.startCity }}, {{ ride.driveTo.startState }} {{ ride.driveTo.startPostalCode }}
+            {{ ride[driveType].startAddress }}<br>
+            {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
           </address>
         </a>
       </mat-card>
       <mat-card class="mt">
-        <mat-card-subtitle>Drop off at {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}:</mat-card-subtitle>
+        <mat-card-subtitle>
+          Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
+        </mat-card-subtitle>
         <a [href]="endAddressGoogleMapLink" target="_blank">
           <address>
-            {{ ride.driveTo.endAddress }}<br>
-            {{ ride.driveTo.endCity }}, {{ ride.driveTo.endState }} {{ ride.driveTo.endPostalCode }}
+            {{ ride[driveType].endAddress }}<br>
+            {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
           </address>
         </a>
       </mat-card>
     </div>
-    <ng-template #isDriveFrom>
-      <mat-card class="mt">
-        <mat-card-subtitle>Pick up patient {{ ride.appointment.patientIdentifier }} at {{ clinics[ride.appointment.clinicId].name }}:</mat-card-subtitle>
-        <a [href]="startAddressGoogleMapLink" target="_blank">
-          <address>
-            {{ ride.driveFrom.startAddress }}<br>
-            {{ ride.driveFrom.startCity }}, {{ ride.driveFrom.startState }} {{ ride.driveFrom.startPostalCode }}
-          </address>
-        </a>
-      </mat-card>
-      <mat-card class="mt">
-        <mat-card-subtitle>Drop off at:</mat-card-subtitle>
-        <a href="endAddressGoogleMapLink" target="_blank">
-          <address>
-            {{ ride.driveFrom.endAddress }}<br>
-            {{ ride.driveFrom.endCity }}, {{ ride.driveFrom.endState }} {{ ride.driveFrom.endPostalCode }}
-          </address>
-        </a>
-      </mat-card>
-    </ng-template>
-    <mat-card *ngIf="volunteers" class="mt">
+    <mat-card *ngIf="volunteers && !driveIsApproved" class="mt">
       <span class="bolder">Volunteers</span>
       <div *ngFor="let v of volunteers" class="volunteer-container">
         {{ v.firstName }} {{ v.lastName }}
-        <button *ngIf="!driveIsApproved"
-                type="button"
+        <button type="button"
                 mat-raised-button
                 (click)="handleApproveClick(v.id)"
                 color="primary">Approve</button>
-        <!-- <strong *ngIf="!driveIsApproved && v.id === ride[driveType].driverId">
-          <mat-icon>check</mat-icon> Approved
-        </strong> -->
+      </div>
+    </mat-card>
+    <mat-card *ngIf="driveIsApproved" class="mt">
+      <span class="bolder">Volunteers</span>
+      <div *ngFor="let v of volunteers"
+           class="volunteer-container"
+           [ngClass]="{ 'approved': v.volunteerId === ride[driveType].driverId,
+                        'applied': v.volunteerId !== ride[driveType].driverId }">
+        {{ v.firstName }} {{ v.lastName }}
+        <span *ngIf="v.volunteerId === ride[driveType].driverId">
+          <mat-icon>done_all</mat-icon> Approved
+        </span>
+        <span  *ngIf="v.volunteerId !== ride[driveType].driverId">
+          <mat-icon>done</mat-icon> Applied
+        </span>
       </div>
     </mat-card>
     <div class="modal-actions">

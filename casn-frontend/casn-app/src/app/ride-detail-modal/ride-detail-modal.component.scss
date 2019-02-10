@@ -1,3 +1,5 @@
+@import '../styles/variables';
+
 h1 {
   font-size: 1rem;
   text-align: center;
@@ -18,4 +20,12 @@ h1 {
   align-items: center;
   justify-content: space-between;
   margin-top: 10px;
+}
+
+.approved {
+  color: $success-color;
+}
+
+.applied {
+  color: #bbb;
 }
