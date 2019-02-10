@@ -46,8 +46,7 @@ export class RideDetailModalComponent implements OnInit {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
-        this.volunteers = res;
-        console.log("Volunteers are", this.volunteers);
+        if(res.length > 0) this.volunteers = res;
       },
       err => {
         // TODO: Handle error
@@ -67,7 +66,6 @@ export class RideDetailModalComponent implements OnInit {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.driverService.addDriveApplicant({"driveId": id}).subscribe(
       res => {
-        console.log("SUCCESS. Added drive applicant", res);
         this.closeModalAndUpdateClick.emit(true);
       },
       err => {
