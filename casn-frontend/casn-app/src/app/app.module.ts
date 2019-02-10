@@ -10,7 +10,6 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import {
   MatAutocompleteModule,
   MatButtonModule,
-  MatButtonToggleModule,
   MatCardModule,
   MatCheckboxModule,
   MatDatepickerModule,
@@ -22,6 +21,7 @@ import {
   MatNativeDateModule,
   MatSelectModule,
   MatSidenavModule,
+  MatSlideToggleModule,
   MatToolbarModule,
 } from '@angular/material';
 /* Routing */
@@ -66,7 +66,6 @@ import { AppConfigService, appConfigInitializerFn } from './auth-services/appcon
     AppRoutingModule,
     MatAutocompleteModule,
     MatButtonModule,
-    MatButtonToggleModule,
     MatCardModule,
     MatCheckboxModule,
     MatDatepickerModule,
@@ -78,6 +77,7 @@ import { AppConfigService, appConfigInitializerFn } from './auth-services/appcon
     MatNativeDateModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatToolbarModule,
   ],
   providers: [
