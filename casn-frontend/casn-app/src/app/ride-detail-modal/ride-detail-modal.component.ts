@@ -35,6 +35,7 @@ export class RideDetailModalComponent implements OnInit {
 **********************************************************************/
   getClinics(): void {
     this.ds.getClinics().subscribe(c => {
+      console.log("--Calling getClinics (TODO: needs to be cached)");
       this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
@@ -101,6 +102,11 @@ export class RideDetailModalComponent implements OnInit {
     const query = `${this.ride[drive].endAddress} ${this.ride[drive].endCity} ${this.ride[drive].endPostalCode}`;
     const urlEncodedQuery = encodeURI(query);
     return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
+  }
+
+  get driveIsApproved() {
+    const driverId = this.isDriveTo ? this.ride.driveTo.driverId : this.ride.driveFrom.driverId;
+    return !!driverId;
   }
 
 }
