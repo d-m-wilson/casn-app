@@ -33,7 +33,9 @@
            alt="CASN logo"
            routerLink="/">
       <span class="fill-remaining-space"></span>
-      <mat-icon class="clicky" (click)="sidenav.toggle()">menu</mat-icon>
+      <mat-icon *ngIf="isLoggedIn()"
+                class="clicky"
+                (click)="sidenav.toggle()">menu</mat-icon>
     </mat-toolbar>
     <main>
       <router-outlet></router-outlet>
