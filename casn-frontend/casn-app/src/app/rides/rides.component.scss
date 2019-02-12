@@ -106,7 +106,20 @@ p {
 }
 
 .appointment-card {
-  text-align: center;
+  // text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-badge {
+  font-weight: bold;
+  font-size: 0.75rem;
+  border: 2px solid #555;
+  border-top: 5px solid #555;
+  box-sizing: border-box;
+  padding: 3px 4px;
+  margin-right: 10px;
 }
 
 .drive-card {

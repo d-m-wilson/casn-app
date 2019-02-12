@@ -30,8 +30,13 @@
       <div *ngFor="let r of ridesToDisplay">
         <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
           <mat-card class="appointment-card">
-            <span class="bolder">{{ r.appointment.patientIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
-            <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
+            <div class="date-badge">
+              {{ r.appointment.appointmentDate | date:'d' }}
+            </div>
+            <div>
+              <span class="bolder">{{ r.appointment.patientIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
+              <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
+            </div>
           </mat-card>
           <div class="drive-container">
             <mat-card *ngIf="displayRides[r.driveTo?.status]"
