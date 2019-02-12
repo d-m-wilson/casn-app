@@ -22,7 +22,7 @@
     <section class="ride-container">
       <header class="mat-elevation-z1">
         <mat-icon class="clicky hilight"
-                  (click)="toggleDateFilters()">today</mat-icon>
+                  (click)="toggleDateFilters()">view_day</mat-icon>
         <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1>
         <mat-icon class="clicky hilight"
                   (click)="toggleSettingsModal()">settings</mat-icon>
