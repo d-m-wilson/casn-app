@@ -6,7 +6,7 @@
     <nav class="date-sidebar">
       <div class="date-card"
            *ngFor="let r of objectKeys(rides)"
-           (click)="toggleeActiveDate(r)"
+           (click)="toggleActiveDate(r)"
            [ngClass]="{ 'active': r === activeDate }">
         {{ r | date:'EEE' }} <span class="day">{{ r | date:'d' }}</span> {{ r | date:'MMM' }}
       </div>
