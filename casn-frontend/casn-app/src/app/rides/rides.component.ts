@@ -146,10 +146,6 @@ export class RidesComponent implements OnInit {
     }
   }
 
-  showDateBadge(date: string): boolean {
-    return !this.rides.find(r => r.appointment.appointmentDate.slice(0,10) === date);
-  }
-
   updateDateFilterProperties(): void {
     this.datesToDisplay.forEach(d => {
       this.dateFilterProperties[d] = {};
