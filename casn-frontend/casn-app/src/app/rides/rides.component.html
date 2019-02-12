@@ -53,7 +53,7 @@
                 <span class="status-text">{{ getStatusText(r.driveTo.status) }} <span *ngIf="r.driveTo.status === 2">#{{ r.driveTo.driverId }}</span></span>
               </div>
               <p class="bold">Drive To Clinic</p>
-              <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}.</p>
+              <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}</p>
             </mat-card>
             <mat-card *ngIf="displayRides[r.driveFrom?.status]"
                       (click)="toggleRideModal(r)"
@@ -66,7 +66,7 @@
                 <span class="status-text">{{ getStatusText(r.driveFrom.status) }} <span *ngIf="r.driveFrom.status === 2">#{{ r.driveFrom.driverId }}</span></span>
               </div>
               <p class="bold">Drive From Clinic</p>
-              <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}.</p>
+              <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}</p>
             </mat-card>
           </div>
         </ng-container>
