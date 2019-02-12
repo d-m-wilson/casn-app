@@ -22,6 +22,7 @@ export class RidesComponent implements OnInit {
   /**** Settings Menus ****/
   showSettingsModal: boolean = false;
   showDateFilters: boolean = false;
+  dateFilterProperties: any = {}; // For showing badges on date filter cards
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
 
@@ -51,6 +52,7 @@ export class RidesComponent implements OnInit {
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = appts;
       this.ridesToDisplay = appts;
+      this.updateDateFilterProperties();
     });
   }
 
@@ -95,7 +97,7 @@ export class RidesComponent implements OnInit {
   handleChangeWeekClick(changeType: string): void {
     if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -6));
     if(changeType === 'next') this.setDateRange(this.addDays(this.endDate, 1));
-    if(changeType == 'today') this.setDateRange();
+    // if(changeType == 'today') this.setDateRange();
     this.getRides();
   }
 
@@ -142,6 +144,20 @@ export class RidesComponent implements OnInit {
       case 2: return "Approved";
       default: return "";
     }
+  }
+
+  showDateBadge(date: string): boolean {
+    return !this.rides.find(r => r.appointment.appointmentDate.slice(0,10) === date);
+  }
+
+  updateDateFilterProperties(): void {
+    this.datesToDisplay.forEach(d => {
+      this.dateFilterProperties[d] = {};
+      /* Find number of appts per day. This isn't very efficient,
+      so we may need to optimize if the number of appts in the rides array
+      becomes large. Not a concern for the foreseeable future. */
+      this.dateFilterProperties[d].numApptsThisDay = this.rides.filter(r => r.appointment.appointmentDate.slice(0,10) === d).length;
+    })
   }
 
 }

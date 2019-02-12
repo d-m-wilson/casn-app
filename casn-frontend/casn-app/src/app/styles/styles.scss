@@ -27,6 +27,10 @@ body {
   padding: 0;
 }
 
+.mat-badge-content {
+  z-index: 10;
+}
+
 .clicky {
   cursor: pointer;
 }
