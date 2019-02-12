@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../auth-services/auth.service';
 
 @Component({
@@ -15,29 +14,22 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   errorMsg: string;
+  loginButtonText: string;
 
   constructor( private formBuilder: FormBuilder,
-               private route: ActivatedRoute,
                private router: Router,
                private authenticationService: AuthenticationService ) {}
 
   ngOnInit() {
+    console.log("--Login component Init")
+    if(this.isLoggedIn()) this.router.navigate(['/dashboard']);
+
     this.loginForm = this.formBuilder.group({});
-
-    var buttonText = this.isLoggedIn() ? 'Log Out' : 'Log In';
-    document.getElementById('loginSubmitButton').innerText = buttonText;
-
-    // get return url from route parameters or default to '/'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   onSubmit() {
     this.submitted = true;
-    if (this.isLoggedIn()) {
-      this.authenticationService.logout();
-    } else {
-      this.authenticationService.login();
-    }
+    this.authenticationService.login();
   }
 
   isLoggedIn() : Boolean {
