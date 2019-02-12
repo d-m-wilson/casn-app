@@ -18,7 +18,7 @@
       <header class="mat-elevation-z1">
         <mat-icon class="clicky hilight"
                   (click)="handleChangeWeekClick('today')">today</mat-icon>
-        <h1>{{ activeDate | date:'mediumDate' }}</h1>
+        <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1>
         <mat-icon class="clicky hilight"
                   (click)="toggleSettingsModal()">settings</mat-icon>
       </header>
