@@ -105,6 +105,13 @@ p {
   margin-bottom: 10px;
 }
 
+.no-rides-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vw;
+}
+
 .appointment-card {
   // text-align: center;
   display: flex;
