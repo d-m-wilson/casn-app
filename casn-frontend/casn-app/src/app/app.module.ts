@@ -39,7 +39,7 @@ import { ApiModule } from './api/api.module';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
-import { PatientsComponent } from './patients/patients.component';
+import { CallersComponent } from './callers/callers.component';
 import { RidesComponent } from './rides/rides.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
@@ -49,7 +49,7 @@ import { AppConfigService, appConfigInitializerFn } from './auth-services/appcon
   declarations: [
     AppComponent,
     DashboardComponent,
-    PatientsComponent,
+    CallersComponent,
     RidesComponent,
     LoginComponent,
     AppointmentsComponent,

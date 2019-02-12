@@ -4,7 +4,7 @@ export class Constants {
 
     public readonly MENU_ITEMS = [
       {name: "My Dashboard", address: "/", icon: "dashboard"},
-      {name: "Schedule a Ride", address: "/patient", icon: "departure_board"},
+      {name: "Schedule a Ride", address: "/caller", icon: "departure_board"},
       {name: "View Schedule", address: "/view-schedule", icon: "event_note"},
       {name: "Log Out", address: "/login", icon: "cancel"},
     ];
