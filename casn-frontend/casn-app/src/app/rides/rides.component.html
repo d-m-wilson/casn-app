@@ -3,31 +3,31 @@
                             Date Selection Sidebar
   **********************************************************************-->
   <div class="dates-rides-wrapper">
-    <nav class="date-sidebar">
+    <nav *ngIf="showDateFilters" class="date-sidebar">
       <div class="date-card"
-           *ngFor="let r of objectKeys(rides)"
-           (click)="toggleActiveDate(r)"
-           [ngClass]="{ 'active': r === activeDate }">
-        {{ r | date:'EEE' }} <span class="day">{{ r | date:'d' }}</span> {{ r | date:'MMM' }}
+           *ngFor="let d of datesToDisplay"
+           (click)="toggleActiveDate(d)"
+           [ngClass]="{ 'active': d === activeDate }">
+        {{ d | date:'EEE' }} <span class="day">{{ d | date:'d' }}</span> {{ d | date:'MMM' }}
       </div>
     </nav>
     <!--********************************************************************
-                                  Ride Cards
+                                    Ride Cards
     **********************************************************************-->
     <section class="ride-container">
       <header class="mat-elevation-z1">
         <mat-icon class="clicky hilight"
-                  (click)="handleChangeWeekClick('today')">today</mat-icon>
+                  (click)="toggleDateFilters()">today</mat-icon>
         <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1>
         <mat-icon class="clicky hilight"
                   (click)="toggleSettingsModal()">settings</mat-icon>
       </header>
-      <div *ngIf="rides[activeDate]?.length < 1">
+      <div *ngIf="ridesToDisplay.length < 1">
         <mat-card class="appointment-card">
           <span class="bolder">No Rides today :(</span>
         </mat-card>
       </div>
-      <div *ngFor="let r of rides[activeDate]">
+      <div *ngFor="let r of ridesToDisplay">
         <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
           <mat-card class="appointment-card">
             <span class="bolder">{{ r.appointment.patientIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>

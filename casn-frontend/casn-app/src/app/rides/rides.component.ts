@@ -13,17 +13,19 @@ export class RidesComponent implements OnInit {
   startDate: string;
   endDate: string;
   activeDate: string;
-  datesForDateRange: any[]; // All dates from startDate to endDate
-  rides: any;
+  datesToDisplay: any[]; // All dates from startDate to endDate
+  rides: any[];
+  ridesToDisplay: any[]; // Subset of rides, may have filters applied
   clinics: any;
   apptTypes: any;
 
-  // Settings Modal
+  /**** Settings Menus ****/
   showSettingsModal: boolean = false;
+  showDateFilters: boolean = false;
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
 
-  // Ride Modal
+  /**** Ride Modal ****/
   displayRideModal: boolean = false;
   rideModalContent: any;
   showRideModalDriveTo: boolean; // Show driveTo or driveFrom details
@@ -47,12 +49,8 @@ export class RidesComponent implements OnInit {
   getRides(): void {
     this.ds.getAllAppointments(this.startDate, this.endDate).subscribe(appts => {
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
-      this.rides = {};
-      this.datesForDateRange.forEach(day => this.rides[day] = []);
-      appts.forEach(a => {
-        const day = a.appointment.appointmentDate.toString().slice(0,10);
-        this.rides[day].push(a);
-      });
+      this.rides = appts;
+      this.ridesToDisplay = appts;
     });
   }
 
@@ -62,9 +60,9 @@ export class RidesComponent implements OnInit {
     });
   }
 
-/*********************************************************************
-                            Click Handlers
-**********************************************************************/
+  /*********************************************************************
+                              Click Handlers
+  **********************************************************************/
   toggleRideModal(ride?: any, isDriveTo?: boolean): void {
     this.displayRideModal = !this.displayRideModal;
     ride ? this.rideModalContent = ride : this.rideModalContent = null;
@@ -78,12 +76,20 @@ export class RidesComponent implements OnInit {
   toggleActiveDate(date: string): void {
     if(this.activeDate === date) {
       /* This means the user tapped the currently selected activeDate, so
-      we toggle off the activeDate 'filter' and just show the full week of
-      rides. */
+      we toggle off the activeDate'filter and show the full week of rides. */
       this.activeDate = null;
+      this.ridesToDisplay = this.rides;
     } else {
       this.activeDate = date;
+      this.ridesToDisplay = this.rides.filter(r => r.appointment.appointmentDate.slice(0,10) === this.activeDate);
     }
+  }
+
+  toggleDateFilters(): void {
+    this.showDateFilters = !this.showDateFilters;
+    // If a date fitler was applied, remove it.
+    this.activeDate = null;
+    this.ridesToDisplay = this.rides;
   }
 
   handleChangeWeekClick(changeType: string): void {
@@ -93,15 +99,16 @@ export class RidesComponent implements OnInit {
     this.getRides();
   }
 
-/*********************************************************************
-                              Utilities
-**********************************************************************/
+  /*********************************************************************
+                                Utilities
+  **********************************************************************/
   setDateRange(date?: any): void {
     const currentDate = date || new Date();
     this.startDate = this.addDays(currentDate, -currentDate.getDay()).toISOString().slice(0,10);
     this.endDate = this.addDays(this.startDate, 6).toISOString().slice(0,10);
     this.getDatesForDateRange();
-    this.activeDate = currentDate.toISOString().slice(0,10);
+    // this.activeDate = currentDate.toISOString().slice(0,10);
+    this.activeDate = null;
   }
 
   private addDays(date, days) {
@@ -111,10 +118,10 @@ export class RidesComponent implements OnInit {
   }
 
   private getDatesForDateRange(): void {
-    this.datesForDateRange = [];
+    this.datesToDisplay = [];
     let currentDate = new Date(this.startDate.valueOf());
     for(let i = 0; i < 7; i++) {
-      this.datesForDateRange.push((new Date(currentDate)).toISOString().slice(0,10));
+      this.datesToDisplay.push((new Date(currentDate)).toISOString().slice(0,10));
       currentDate.setDate(currentDate.getDate() + 1);
     }
   }
