@@ -112,7 +112,6 @@ export class RidesComponent implements OnInit {
 
   private getDatesForDateRange(): void {
     this.datesForDateRange = [];
-    let dateArray = new Array();
     let currentDate = new Date(this.startDate.valueOf());
     for(let i = 0; i < 7; i++) {
       this.datesForDateRange.push((new Date(currentDate)).toISOString().slice(0,10));
