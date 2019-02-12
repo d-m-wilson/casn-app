@@ -57,8 +57,8 @@ export class CallersComponent implements OnInit {
   onSubmit(): void {
     if(!this.callerForm.valid) { return; }
     // Check if caller is new or existing to make appropriate REST call.
-    const isNewPatient = Object.keys(this.existingCaller).length === 0;
-    if(isNewPatient) {
+    const isNewCaller = Object.keys(this.existingCaller).length === 0;
+    if(isNewCaller) {
       this.saveNewCaller();
     } else {
       // TODO: There should be an update caller endpoint
