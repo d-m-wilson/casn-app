@@ -75,8 +75,15 @@ export class RidesComponent implements OnInit {
     this.showSettingsModal = !this.showSettingsModal;
   }
 
-  setActiveDate(date: string): void {
-    this.activeDate = date;
+  toggleActiveDate(date: string): void {
+    if(this.activeDate === date) {
+      /* This means the user tapped the currently selected activeDate, so
+      we toggle off the activeDate 'filter' and just show the full week of
+      rides. */
+      this.activeDate = null;
+    } else {
+      this.activeDate = date;
+    }
   }
 
   handleChangeWeekClick(changeType: string): void {
