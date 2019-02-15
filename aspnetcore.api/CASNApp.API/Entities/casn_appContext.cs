@@ -1,4 +1,5 @@
 ﻿using System;
+using CASNApp.API.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -52,7 +53,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.AppointmentDate)
                     .HasColumnName("appointmentDate")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.AppointmentTypeId)
                     .HasColumnName("appointmentTypeId")
@@ -63,7 +65,8 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.DispatcherId).HasColumnName("dispatcherId");
 
@@ -86,7 +89,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.HasOne(d => d.Clinic)
                     .WithMany(p => p.Appointments)
@@ -128,7 +132,8 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -159,7 +164,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<Drive>(entity =>
@@ -181,7 +187,8 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.Direction).HasColumnName("direction");
 
@@ -230,11 +237,13 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.Approved)
                     .HasColumnName("approved")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.ApprovedBy).HasColumnName("approvedBy");
 
@@ -272,7 +281,8 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -316,7 +326,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<Volunteer>(entity =>
@@ -332,7 +343,8 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -375,7 +387,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<VolunteerDrive>(entity =>
@@ -395,7 +408,8 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'");
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.DriveId).HasColumnName("driveId");
 
@@ -408,7 +422,8 @@ namespace CASNApp.API.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.VolunteerId).HasColumnName("volunteerId");
 
