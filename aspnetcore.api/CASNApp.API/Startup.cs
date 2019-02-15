@@ -23,6 +23,7 @@ using CASNApp.API.Filters;
 using CASNApp.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CASNApp.API
 {
@@ -86,7 +87,46 @@ namespace CASNApp.API
                     });
                 });
 
+            var dispatchersRole = _configuration[Constants.DispatchersRoleName];
+            var driversRole = _configuration[Constants.DriversRoleName];
+
+            if (string.IsNullOrWhiteSpace(dispatchersRole))
+            {
+                throw new Exception($"{nameof(Constants.DispatchersRoleName)} is not configured.");
+            }
+
+            if (string.IsNullOrWhiteSpace(driversRole))
+            {
+                throw new Exception($"{nameof(Constants.DriversRoleName)} is not configured.");
+            }
+
+            var isDispatcherPolicy = new AuthorizationPolicyBuilder()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .RequireRole(dispatchersRole)
+                .Build();
+
+            var isDriverPolicy = new AuthorizationPolicyBuilder()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .RequireRole(driversRole)
+                .Build();
+
+            var isDispatcherOrDriverPolicy = new AuthorizationPolicyBuilder()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .RequireAssertion(ctx => 
+                    ctx.User.IsInRole(dispatchersRole) ||
+                    ctx.User.IsInRole(driversRole))
+                .Build();
+
             services
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy(Constants.IsDispatcherPolicy, isDispatcherPolicy);
+                    options.AddPolicy(Constants.IsDriverPolicy, isDriverPolicy);
+                    options.AddPolicy(Constants.IsDispatcherOrDriverPolicy, isDispatcherOrDriverPolicy);
+                })
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

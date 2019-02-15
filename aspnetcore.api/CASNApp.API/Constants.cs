@@ -11,13 +11,11 @@ namespace CASNApp.API
         internal const bool JwtBearerRequireHttpsMetadata = true;
         internal const string JwtBearerRoleClaimType = "http://example.com/groups";
         internal const string JwtBearerEmailClaimType = "http://example.com/email";
-
-        internal static class Roles
-        {
-            internal const string Dispatchers = "dispatchers";
-            internal const string Drivers = "drivers";
-            internal const string Any = Dispatchers + "," + Drivers;
-        }
+        internal const string DispatchersRoleName = nameof(DispatchersRoleName);
+        internal const string DriversRoleName = nameof(DriversRoleName);
+        internal const string IsDispatcherPolicy = nameof(IsDispatcherPolicy);
+        internal const string IsDriverPolicy = nameof(IsDriverPolicy);
+        internal const string IsDispatcherOrDriverPolicy = nameof(IsDispatcherOrDriverPolicy);
 
         // Sort-of-constants
         internal static readonly Version MySQLVersion = new Version(5, 7, 22);

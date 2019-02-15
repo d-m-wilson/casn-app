@@ -18,7 +18,6 @@ using CASNApp.API.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CASNApp.API.Controllers
@@ -26,7 +25,7 @@ namespace CASNApp.API.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Roles = Constants.Roles.Drivers)]
+    [Authorize(Policy = Constants.IsDriverPolicy)]
     public class DriverApiController : Controller
     {
         private readonly Entities.casn_appContext dbContext;
