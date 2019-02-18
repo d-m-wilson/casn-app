@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace CASNApp.API.Entities
 {
-    public partial class Patient
+    public partial class Caller
     {
-        public Patient()
+        public Caller()
         {
             Appointments = new HashSet<Appointment>();
         }
 
         public uint Id { get; set; }
         public uint CiviContactId { get; set; }
-        public string PatientIdentifier { get; set; }
+        public string CallerIdentifier { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Phone { get; set; }

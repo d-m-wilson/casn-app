@@ -22,7 +22,7 @@ namespace CASNApp.API.Models
     /// 
     /// </summary>
     [DataContract]
-    public partial class Patient : IEquatable<Patient>
+    public partial class Caller : IEquatable<Caller>
     { 
         /// <summary>
         /// Gets or Sets Id
@@ -37,11 +37,11 @@ namespace CASNApp.API.Models
         public long? CiviContactId { get; private set; }
 
         /// <summary>
-        /// Gets or Sets PatientIdentifier
+        /// Gets or Sets CallerIdentifier
         /// </summary>
         [Required]
-        [DataMember(Name="patientIdentifier")]
-        public string PatientIdentifier { get; set; }
+        [DataMember(Name="callerIdentifier")]
+        public string CallerIdentifier { get; set; }
 
         /// <summary>
         /// Gets or Sets FirstName
@@ -104,10 +104,10 @@ namespace CASNApp.API.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Patient {\n");
+            sb.Append("class Caller {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  CiviContactId: ").Append(CiviContactId).Append("\n");
-            sb.Append("  PatientIdentifier: ").Append(PatientIdentifier).Append("\n");
+            sb.Append("  CallerIdentifier: ").Append(CallerIdentifier).Append("\n");
             sb.Append("  FirstName: ").Append(FirstName).Append("\n");
             sb.Append("  LastName: ").Append(LastName).Append("\n");
             sb.Append("  Phone: ").Append(Phone).Append("\n");
@@ -138,15 +138,15 @@ namespace CASNApp.API.Models
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((Patient)obj);
+            return obj.GetType() == GetType() && Equals((Caller)obj);
         }
 
         /// <summary>
-        /// Returns true if Patient instances are equal
+        /// Returns true if Caller instances are equal
         /// </summary>
-        /// <param name="other">Instance of Patient to be compared</param>
+        /// <param name="other">Instance of Caller to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(Patient other)
+        public bool Equals(Caller other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -163,9 +163,9 @@ namespace CASNApp.API.Models
                     CiviContactId.Equals(other.CiviContactId)
                 ) && 
                 (
-                    PatientIdentifier == other.PatientIdentifier ||
-                    PatientIdentifier != null &&
-                    PatientIdentifier.Equals(other.PatientIdentifier)
+                    CallerIdentifier == other.CallerIdentifier ||
+                    CallerIdentifier != null &&
+                    CallerIdentifier.Equals(other.CallerIdentifier)
                 ) && 
                 (
                     FirstName == other.FirstName ||
@@ -223,8 +223,8 @@ namespace CASNApp.API.Models
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (CiviContactId != null)
                     hashCode = hashCode * 59 + CiviContactId.GetHashCode();
-                    if (PatientIdentifier != null)
-                    hashCode = hashCode * 59 + PatientIdentifier.GetHashCode();
+                    if (CallerIdentifier != null)
+                    hashCode = hashCode * 59 + CallerIdentifier.GetHashCode();
                     if (FirstName != null)
                     hashCode = hashCode * 59 + FirstName.GetHashCode();
                     if (LastName != null)
@@ -248,12 +248,12 @@ namespace CASNApp.API.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(Patient left, Patient right)
+        public static bool operator ==(Caller left, Caller right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(Patient left, Patient right)
+        public static bool operator !=(Caller left, Caller right)
         {
             return !Equals(left, right);
         }

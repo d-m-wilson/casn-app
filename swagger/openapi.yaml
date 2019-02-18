@@ -31,19 +31,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/clinic'
-  /patient:
+  /caller:
     get:
       tags:
         - dispatcher
-      summary: gets patient by patientIdentifier
-      operationId: getPatientByPatientIdentifier
+      summary: gets caller by callerIdentifier
+      operationId: getCallerByCallerIdentifier
       description: >
-        Search for existing patients by the dispatcher created patientIdentifier
-        (patient ID)
+        Search for existing callers by the dispatcher created callerIdentifier
+        (caller ID)
       parameters:
         - in: query
-          name: patientIdentifier
-          description: pass a search string for looking up patientIdentifier
+          name: callerIdentifier
+          description: pass a search string for looking up callerIdentifier
           required: true
           schema:
             type: string
@@ -54,17 +54,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/patient'
+                $ref: '#/components/schemas/caller'
         '400':
           description: GAH IT IS SO BROKEN
         '404':
-          description: patient not found frownies
+          description: caller not found frownies
     post:
       tags:
         - dispatcher
-      summary: adds a patient
-      operationId: addPatient
-      description: Adds patient to the system
+      summary: adds a caller
+      operationId: addCaller
+      description: Adds caller to the system
       responses:
         '201':
           description: item created
@@ -76,8 +76,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/patient'
-        description: patientData to add
+              $ref: '#/components/schemas/caller'
+        description: callerData to add
   /appointments:
     get:
       summary: gets appointments with dispatcher-level details
@@ -337,10 +337,10 @@ components:
         postalCode:
           type: string
           maxLength: 10
-    patient:
+    caller:
       type: object
       required:
-        - patientIdentifier
+        - callerIdentifier
         - firstName
         - lastName
         - phone
@@ -358,7 +358,7 @@ components:
           format: int64
           readOnly: true
           example: 42
-        patientIdentifier:
+        callerIdentifier:
           type: string
           minLength: 4
           maxLength: 45
@@ -399,7 +399,7 @@ components:
       type: object
       required:
         - dispatcherId
-        - patientId
+        - callerId
         - clinicId
         - appointmentDate
         - appointmentTypeId
@@ -413,11 +413,11 @@ components:
           type: integer
           format: int64
           example: 42
-        patientId:
+        callerId:
           type: integer
           format: int64
           example: 42
-        patientIdentifier:
+        callerIdentifier:
           type: string
           minLength: 4
           maxLength: 45
@@ -602,7 +602,7 @@ components:
         - appointmentDate
         - direction
         - isApproved
-        - patientIdentifier
+        - callerIdentifier
       properties:
         id:
           type: integer
@@ -644,12 +644,12 @@ components:
           type: string
           maxLength: 255
           example: '7373 Old Katy Rd Houston, TX 77008'
-        patientIdentifier:
+        callerIdentifier:
           type: string
           minLength: 4
           maxLength: 45
           example: '5554'
-        patientName:
+        callerName:
           type: string
           maxLength: 100
           example: 'Jane Smith'

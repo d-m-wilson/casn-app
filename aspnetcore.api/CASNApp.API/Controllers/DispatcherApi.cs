@@ -81,12 +81,12 @@ namespace CASNApp.API.Controllers
                 return BadRequest(appointmentDTO);
             }
 
-            var patient = await dbContext.Patient
+            var caller = await dbContext.Caller
                 .AsNoTracking()
-                .Where(p => p.Id == appointment.PatientId)
+                .Where(p => p.Id == appointment.CallerId)
                 .FirstOrDefaultAsync();
 
-            if (patient == null)
+            if (caller == null)
             {
                 return BadRequest(appointmentDTO);
             }
@@ -94,7 +94,7 @@ namespace CASNApp.API.Controllers
             var appointmentEntity = new Entities.Appointment
             {
                 DispatcherId = volunteer.Id,
-                PatientId = patient.Id,
+                CallerId = caller.Id,
                 ClinicId = clinic.Id,
                 PickupLocationVague = appointment.PickupLocationVague,
                 DropoffLocationVague = appointment.DropoffLocationVague,
@@ -236,18 +236,18 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// adds a patient
+        /// adds a caller
         /// </summary>
-        /// <remarks>Adds patient to the system</remarks>
-        /// <param name="patient">patientData to add</param>
+        /// <remarks>Adds caller to the system</remarks>
+        /// <param name="caller">callerData to add</param>
         /// <response code="201">item created</response>
         /// <response code="400">invalid input, object invalid</response>
         /// <response code="409">the item already exists</response>
         [HttpPost]
-        [Route("api/patient")]
+        [Route("api/caller")]
         [ValidateModelState]
-        [SwaggerOperation("AddPatient")]
-        public virtual async Task<IActionResult> AddPatient([FromBody]Patient patient)
+        [SwaggerOperation("AddCaller")]
+        public virtual async Task<IActionResult> AddCaller([FromBody]Caller caller)
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);
@@ -259,16 +259,16 @@ namespace CASNApp.API.Controllers
             }
 
             if (!ModelState.IsValid ||
-                patient == null ||
-                string.IsNullOrWhiteSpace(patient.PatientIdentifier) ||
-                (string.IsNullOrWhiteSpace(patient.FirstName) && string.IsNullOrWhiteSpace(patient.LastName)) ||
-                string.IsNullOrWhiteSpace(patient.Phone))
+                caller == null ||
+                string.IsNullOrWhiteSpace(caller.CallerIdentifier) ||
+                (string.IsNullOrWhiteSpace(caller.FirstName) && string.IsNullOrWhiteSpace(caller.LastName)) ||
+                string.IsNullOrWhiteSpace(caller.Phone))
             {
                 return BadRequest();
             }
 
-            var exists = await dbContext.Patient
-                .Where(p => p.PatientIdentifier == patient.PatientIdentifier)
+            var exists = await dbContext.Caller
+                .Where(p => p.CallerIdentifier == caller.CallerIdentifier)
                 .AnyAsync();
 
             if (exists)
@@ -276,16 +276,16 @@ namespace CASNApp.API.Controllers
                 return Conflict();
             }
 
-            var patientEntity = new Entities.Patient(patient);
+            var callerEntity = new Entities.Caller(caller);
 
-            dbContext.Patient.Add(patientEntity);
+            dbContext.Caller.Add(callerEntity);
             await dbContext.SaveChangesAsync();
 
-            patient.Id = patientEntity.Id;
-            patient.Created = patientEntity.Created;
-            patient.Updated = patientEntity.Updated;
+            caller.Id = callerEntity.Id;
+            caller.Created = callerEntity.Created;
+            caller.Updated = callerEntity.Updated;
 
-            return CreatedAtAction(nameof(AddPatient), patient);
+            return CreatedAtAction(nameof(AddCaller), caller);
         }
 
         /// <summary>
@@ -322,19 +322,19 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets patient by patientIdentifier
+        /// gets caller by callerIdentifier
         /// </summary>
-        /// <remarks>Search for existing patients by the dispatcher created patientIdentifier (patient ID) </remarks>
-        /// <param name="patientIdentifier">pass a search string for looking up patientIdentifier</param>
+        /// <remarks>Search for existing callers by the dispatcher created callerIdentifier (caller ID) </remarks>
+        /// <param name="callerIdentifier">pass a search string for looking up callerIdentifier</param>
         /// <response code="200">search results matching criteria</response>
         /// <response code="400">GAH IT IS SO BROKEN</response>
-        /// <response code="404">patient not found frownies</response>
+        /// <response code="404">caller not found frownies</response>
         [HttpGet]
-        [Route("api/patient")]
+        [Route("api/caller")]
         [ValidateModelState]
-        [SwaggerOperation("GetPatientByPatientIdentifier")]
-        [SwaggerResponse(statusCode: 200, type: typeof(Patient), description: "search results matching criteria")]
-        public virtual async Task<IActionResult> GetPatientByPatientIdentifier([FromQuery][Required()] [MinLength(4)]string patientIdentifier)
+        [SwaggerOperation("GetCallerByCallerIdentifier")]
+        [SwaggerResponse(statusCode: 200, type: typeof(Caller), description: "search results matching criteria")]
+        public virtual async Task<IActionResult> GetCallerByCallerIdentifier([FromQuery][Required()] [MinLength(4)]string callerIdentifier)
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);
@@ -346,24 +346,24 @@ namespace CASNApp.API.Controllers
             }
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Patient));
+            // return StatusCode(200, default(Caller));
 
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            var patients = await dbContext.Patient
+            var callers = await dbContext.Caller
                 .AsNoTracking()
-                .Where(p => p.PatientIdentifier == patientIdentifier)
-                .Select(p => new Models.Patient(p))
+                .Where(p => p.CallerIdentifier == callerIdentifier)
+                .Select(p => new Models.Caller(p))
                 .ToListAsync();
 
-            if (patients.Count == 0)
+            if (callers.Count == 0)
             {
                 return NotFound();
             }
-            else if (patients.Count == 1)
+            else if (callers.Count == 1)
             {
-                return new ObjectResult(patients.First());
+                return new ObjectResult(callers.First());
             }
             else
             {
@@ -435,7 +435,7 @@ namespace CASNApp.API.Controllers
             // return StatusCode(404);
 
             string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"patient\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"patientIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"patientId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
+            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"caller\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"callerIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"callerId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
             
             var example = exampleJson != null
             ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)

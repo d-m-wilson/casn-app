@@ -12,7 +12,7 @@ namespace CASNApp.API.Entities
 
         public uint Id { get; set; }
         public uint DispatcherId { get; set; }
-        public uint PatientId { get; set; }
+        public uint CallerId { get; set; }
         public uint ClinicId { get; set; }
         public string PickupLocationVague { get; set; }
         public string DropoffLocationVague { get; set; }
@@ -24,7 +24,7 @@ namespace CASNApp.API.Entities
 
         public Clinic Clinic { get; set; }
         public Volunteer Dispatcher { get; set; }
-        public Patient Patient { get; set; }
+        public Caller Caller { get; set; }
         public ICollection<Drive> Drives { get; set; }
     }
 }

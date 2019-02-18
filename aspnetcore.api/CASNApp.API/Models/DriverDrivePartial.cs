@@ -21,8 +21,8 @@ namespace CASNApp.API.Models
             EndLocation = vd.Drive.Appointment.DropoffLocationVague;
             Id = vd.Id;
             IsApproved = vd.Drive.Status == Drive.StatusApproved;
-            PatientIdentifier = vd.Drive.Appointment.Patient.PatientIdentifier;
-            PatientName = vd.Drive.Appointment.Patient.FirstName + " " + vd.Drive.Appointment.Patient.LastName;
+            CallerIdentifier = vd.Drive.Appointment.Caller.CallerIdentifier;
+            CallerName = vd.Drive.Appointment.Caller.FirstName + " " + vd.Drive.Appointment.Caller.LastName;
             StartLocation = vd.Drive.Appointment.PickupLocationVague;
             VolunteerDriveId = vd.Id;
         }

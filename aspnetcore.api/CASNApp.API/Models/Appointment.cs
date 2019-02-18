@@ -38,17 +38,17 @@ namespace CASNApp.API.Models
         public long? DispatcherId { get; set; }
 
         /// <summary>
-        /// Gets or Sets PatientId
+        /// Gets or Sets CallerId
         /// </summary>
         [Required]
-        [DataMember(Name="patientId")]
-        public long? PatientId { get; set; }
+        [DataMember(Name="callerId")]
+        public long? CallerId { get; set; }
 
         /// <summary>
-        /// Gets or Sets PatientIdentifier
+        /// Gets or Sets CallerIdentifier
         /// </summary>
-        [DataMember(Name="patientIdentifier")]
-        public string PatientIdentifier { get; set; }
+        [DataMember(Name= "callerIdentifier")]
+        public string CallerIdentifier { get; set; }
 
         /// <summary>
         /// Gets or Sets ClinicId
@@ -105,7 +105,7 @@ namespace CASNApp.API.Models
             sb.Append("class Appointment {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  DispatcherId: ").Append(DispatcherId).Append("\n");
-            sb.Append("  PatientId: ").Append(PatientId).Append("\n");
+            sb.Append("  CallerId: ").Append(CallerId).Append("\n");
             sb.Append("  ClinicId: ").Append(ClinicId).Append("\n");
             sb.Append("  PickupLocationVague: ").Append(PickupLocationVague).Append("\n");
             sb.Append("  DropoffLocationVague: ").Append(DropoffLocationVague).Append("\n");
@@ -160,9 +160,9 @@ namespace CASNApp.API.Models
                     DispatcherId.Equals(other.DispatcherId)
                 ) && 
                 (
-                    PatientId == other.PatientId ||
-                    PatientId != null &&
-                    PatientId.Equals(other.PatientId)
+                    CallerId == other.CallerId ||
+                    CallerId != null &&
+                    CallerId.Equals(other.CallerId)
                 ) && 
                 (
                     ClinicId == other.ClinicId ||
@@ -215,8 +215,8 @@ namespace CASNApp.API.Models
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (DispatcherId != null)
                     hashCode = hashCode * 59 + DispatcherId.GetHashCode();
-                    if (PatientId != null)
-                    hashCode = hashCode * 59 + PatientId.GetHashCode();
+                    if (CallerId != null)
+                    hashCode = hashCode * 59 + CallerId.GetHashCode();
                     if (ClinicId != null)
                     hashCode = hashCode * 59 + ClinicId.GetHashCode();
                     if (PickupLocationVague != null)

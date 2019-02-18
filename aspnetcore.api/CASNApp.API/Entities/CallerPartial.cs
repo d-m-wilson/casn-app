@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace CASNApp.API.Entities
 {
-    public partial class Patient
+    public partial class Caller
     {
-        public Patient(Models.Patient e)
+        public Caller(Models.Caller e)
         {
             if (e.Id.HasValue)
             {
@@ -15,7 +15,7 @@ namespace CASNApp.API.Entities
             }
 
             CiviContactId = e.CiviContactId.HasValue ? (uint)e.CiviContactId.Value : 0;
-            PatientIdentifier = e.PatientIdentifier;
+            CallerIdentifier = e.CallerIdentifier;
             FirstName = e.FirstName;
             LastName = e.LastName;
             Phone = e.Phone;

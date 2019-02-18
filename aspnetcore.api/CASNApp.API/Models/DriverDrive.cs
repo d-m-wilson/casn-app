@@ -92,17 +92,17 @@ namespace CASNApp.API.Models
         public string EndLocation { get; set; }
 
         /// <summary>
-        /// Gets or Sets PatientIdentifier
+        /// Gets or Sets CallerIdentifier
         /// </summary>
         [Required]
-        [DataMember(Name="patientIdentifier")]
-        public string PatientIdentifier { get; set; }
+        [DataMember(Name="callerIdentifier")]
+        public string CallerIdentifier { get; set; }
 
         /// <summary>
-        /// Gets or Sets PatientName
+        /// Gets or Sets CallerName
         /// </summary>
-        [DataMember(Name="patientName")]
-        public string PatientName { get; set; }
+        [DataMember(Name="callerName")]
+        public string CallerName { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -122,8 +122,8 @@ namespace CASNApp.API.Models
             sb.Append("  IsApproved: ").Append(IsApproved).Append("\n");
             sb.Append("  StartLocation: ").Append(StartLocation).Append("\n");
             sb.Append("  EndLocation: ").Append(EndLocation).Append("\n");
-            sb.Append("  PatientIdentifier: ").Append(PatientIdentifier).Append("\n");
-            sb.Append("  PatientName: ").Append(PatientName).Append("\n");
+            sb.Append("  CallerIdentifier: ").Append(CallerIdentifier).Append("\n");
+            sb.Append("  CallerName: ").Append(CallerName).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -211,14 +211,14 @@ namespace CASNApp.API.Models
                     EndLocation.Equals(other.EndLocation)
                 ) && 
                 (
-                    PatientIdentifier == other.PatientIdentifier ||
-                    PatientIdentifier != null &&
-                    PatientIdentifier.Equals(other.PatientIdentifier)
+                    CallerIdentifier == other.CallerIdentifier ||
+                    CallerIdentifier != null &&
+                    CallerIdentifier.Equals(other.CallerIdentifier)
                 ) && 
                 (
-                    PatientName == other.PatientName ||
-                    PatientName != null &&
-                    PatientName.Equals(other.PatientName)
+                    CallerName == other.CallerName ||
+                    CallerName != null &&
+                    CallerName.Equals(other.CallerName)
                 );
         }
 
@@ -252,10 +252,10 @@ namespace CASNApp.API.Models
                     hashCode = hashCode * 59 + StartLocation.GetHashCode();
                     if (EndLocation != null)
                     hashCode = hashCode * 59 + EndLocation.GetHashCode();
-                    if (PatientIdentifier != null)
-                    hashCode = hashCode * 59 + PatientIdentifier.GetHashCode();
-                    if (PatientName != null)
-                    hashCode = hashCode * 59 + PatientName.GetHashCode();
+                    if (CallerIdentifier != null)
+                    hashCode = hashCode * 59 + CallerIdentifier.GetHashCode();
+                    if (CallerName != null)
+                    hashCode = hashCode * 59 + CallerName.GetHashCode();
                 return hashCode;
             }
         }

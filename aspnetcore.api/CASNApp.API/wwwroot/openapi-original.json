@@ -47,16 +47,16 @@
         }
       }
     },
-    "/patient" : {
+    "/caller" : {
       "get" : {
         "tags" : [ "dispatcher" ],
-        "summary" : "gets patient by patientIdentifier",
-        "description" : "Search for existing patients by the dispatcher created patientIdentifier (patient ID)\n",
-        "operationId" : "getPatientByPatientIdentifier",
+        "summary" : "gets caller by callerIdentifier",
+        "description" : "Search for existing callers by the dispatcher created callerIdentifier (caller ID)\n",
+        "operationId" : "getCallerByCallerIdentifier",
         "parameters" : [ {
-          "name" : "patientIdentifier",
+          "name" : "callerIdentifier",
           "in" : "query",
-          "description" : "pass a search string for looking up patientIdentifier",
+          "description" : "pass a search string for looking up callerIdentifier",
           "required" : true,
           "style" : "form",
           "explode" : true,
@@ -71,7 +71,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/patient"
+                  "$ref" : "#/components/schemas/caller"
                 }
               }
             }
@@ -80,21 +80,21 @@
             "description" : "GAH IT IS SO BROKEN"
           },
           "404" : {
-            "description" : "patient not found frownies"
+            "description" : "caller not found frownies"
           }
         }
       },
       "post" : {
         "tags" : [ "dispatcher" ],
-        "summary" : "adds a patient",
-        "description" : "Adds patient to the system",
-        "operationId" : "addPatient",
+        "summary" : "adds a caller",
+        "description" : "Adds caller to the system",
+        "operationId" : "addCaller",
         "requestBody" : {
-          "description" : "patientData to add",
+          "description" : "callerData to add",
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/patient"
+                "$ref" : "#/components/schemas/caller"
               }
             }
           }
@@ -475,8 +475,8 @@
           "state" : "state"
         }
       },
-      "patient" : {
-        "required" : [ "firstName", "isMinor", "lastName", "patientIdentifier", "phone", "preferredContactMethod", "preferredLanguage" ],
+      "caller" : {
+        "required" : [ "firstName", "isMinor", "lastName", "callerIdentifier", "phone", "preferredContactMethod", "preferredLanguage" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -491,7 +491,7 @@
             "readOnly" : true,
             "example" : 42
           },
-          "patientIdentifier" : {
+          "callerIdentifier" : {
             "maxLength" : 45,
             "minLength" : 4,
             "type" : "string",
@@ -542,7 +542,7 @@
           "firstName" : "Jane",
           "lastName" : "Smith",
           "isMinor" : true,
-          "patientIdentifier" : "5551",
+          "callerIdentifier" : "5551",
           "preferredLanguage" : "French",
           "preferredContactMethod" : 1,
           "phone" : "5555551234",
@@ -552,7 +552,7 @@
         }
       },
       "appointment" : {
-        "required" : [ "appointmentDate", "appointmentTypeId", "clinicId", "dispatcherId", "patientId" ],
+        "required" : [ "appointmentDate", "appointmentTypeId", "clinicId", "dispatcherId", "callerId" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -566,12 +566,12 @@
             "format" : "int64",
             "example" : 42
           },
-          "patientId" : {
+          "callerId" : {
             "type" : "integer",
             "format" : "int64",
             "example" : 42
           },
-          "patientIdentifier" : {
+          "callerIdentifier" : {
             "maxLength" : 45,
             "minLength" : 4,
             "type" : "string",
@@ -616,8 +616,8 @@
           "pickupLocationVague" : "US59 S and BW8",
           "clinicId" : 42,
           "dropoffLocationVague" : "I10 W and 610",
-          "patientId": 42,
-          "patientIdentifier" :  "5551",
+          "callerId": 42,
+          "callerIdentifier" :  "5551",
           "created" : "2000-01-23T04:56:07.000+00:00",
           "id" : 42,
           "dispatcherId" : 42,
@@ -778,7 +778,7 @@
             "pickupLocationVague" : "US59 S and BW8",
             "clinicId" : 42,
             "dropoffLocationVague" : "I10 W and 610",
-            "patientId" : 42,
+            "callerId" : 42,
             "created" : "2000-01-23T04:56:07.000+00:00",
             "id" : 42,
             "dispatcherId" : 42,
@@ -862,7 +862,7 @@
         }
       },
       "driverDrive" : {
-        "required" : [ "appointmentDate", "appointmentId", "appointmentTypeId", "clinicId", "direction", "id", "isApproved", "patientIdentifier", "volunteerDriveId" ],
+        "required" : [ "appointmentDate", "appointmentId", "appointmentTypeId", "clinicId", "direction", "id", "isApproved", "callerIdentifier", "volunteerDriveId" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -913,22 +913,22 @@
             "type" : "string",
             "example" : "7373 Old Katy Rd Houston, TX 77008"
           },
-          "patientIdentifier" : {
+          "callerIdentifier" : {
             "maxLength" : 45,
             "minLength" : 4,
             "type" : "string",
             "example" : "5554"
           },
-          "patientName" : {
+          "callerName" : {
             "maxLength" : 100,
             "type" : "string",
             "example" : "Jane Smith"
           }
         },
         "example" : {
-          "patientName" : "Jane Smith",
+          "callerName" : "Jane Smith",
           "clinicId" : 42,
-          "patientIdentifier" : "5554",
+          "callerIdentifier" : "5554",
           "startLocation" : "US59 S and BW8",
           "appointmentId" : 42,
           "id" : 42,

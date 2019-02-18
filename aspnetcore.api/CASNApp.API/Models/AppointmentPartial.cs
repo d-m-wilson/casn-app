@@ -18,15 +18,15 @@ namespace CASNApp.API.Models
             DispatcherId = a.DispatcherId;
             DropoffLocationVague = a.DropoffLocationVague;
             Id = a.Id;
-            PatientId = a.PatientId;
-            PatientIdentifier = a.Patient.PatientIdentifier;
+            CallerId = a.CallerId;
+            CallerIdentifier = a.Caller.CallerIdentifier;
             PickupLocationVague = a.PickupLocationVague;
             Updated = a.Updated;
         }
 
         public bool Validate()
         {
-            if (!PatientId.HasValue)
+            if (!CallerId.HasValue)
                 return false;
 
             if (!ClinicId.HasValue)

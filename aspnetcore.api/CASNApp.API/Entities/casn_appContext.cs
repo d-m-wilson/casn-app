@@ -21,7 +21,7 @@ namespace CASNApp.API.Entities
         public virtual DbSet<Appointment> Appointment { get; set; }
         public virtual DbSet<Clinic> Clinic { get; set; }
         public virtual DbSet<Drive> Drive { get; set; }
-        public virtual DbSet<Patient> Patient { get; set; }
+        public virtual DbSet<Caller> Caller { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
         public virtual DbSet<VolunteerDrive> VolunteerDrive { get; set; }
 
@@ -44,8 +44,8 @@ namespace CASNApp.API.Entities
                 entity.HasIndex(e => e.DispatcherId)
                     .HasName("fk_appointment_DispatcherId_idx");
 
-                entity.HasIndex(e => e.PatientId)
-                    .HasName("fk_appointment_PatientId_idx");
+                entity.HasIndex(e => e.CallerId)
+                    .HasName("fk_appointment_CallerId_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -81,7 +81,7 @@ namespace CASNApp.API.Entities
                     .HasDefaultValueSql("'b\\'1\\''")
                     .HasDefaultValue(true);
 
-                entity.Property(e => e.PatientId).HasColumnName("patientId");
+                entity.Property(e => e.CallerId).HasColumnName("callerId");
 
                 entity.Property(e => e.PickupLocationVague)
                     .HasColumnName("pickupLocationVague")
@@ -103,10 +103,10 @@ namespace CASNApp.API.Entities
                     .HasForeignKey(d => d.DispatcherId)
                     .HasConstraintName("fk_appointment_DispatcherId");
 
-                entity.HasOne(d => d.Patient)
+                entity.HasOne(d => d.Caller)
                     .WithMany(p => p.Appointments)
-                    .HasForeignKey(d => d.PatientId)
-                    .HasConstraintName("fk_appointment_PatientId");
+                    .HasForeignKey(d => d.CallerId)
+                    .HasConstraintName("fk_appointment_CallerId");
             });
 
             modelBuilder.Entity<Clinic>(entity =>
@@ -268,9 +268,9 @@ namespace CASNApp.API.Entities
                     .HasConstraintName("fk_drive_ApprovedBy");
             });
 
-            modelBuilder.Entity<Patient>(entity =>
+            modelBuilder.Entity<Caller>(entity =>
             {
-                entity.ToTable("patient");
+                entity.ToTable("caller");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -305,9 +305,9 @@ namespace CASNApp.API.Entities
                     .HasColumnName("lastName")
                     .HasColumnType("varchar(50)");
 
-                entity.Property(e => e.PatientIdentifier)
+                entity.Property(e => e.CallerIdentifier)
                     .IsRequired()
-                    .HasColumnName("patientIdentifier")
+                    .HasColumnName("callerIdentifier")
                     .HasColumnType("varchar(45)");
 
                 entity.Property(e => e.Phone)

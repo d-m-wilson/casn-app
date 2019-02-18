@@ -1,16 +1,16 @@
 ﻿namespace CASNApp.API.Models
 {
-    public partial class Patient
+    public partial class Caller
     {
-        public Patient()
+        public Caller()
         {
         }
 
-        public Patient(Entities.Patient e)
+        public Caller(Entities.Caller e)
         {
             Id = e.Id;
             CiviContactId = e.CiviContactId;
-            PatientIdentifier = e.PatientIdentifier;
+            CallerIdentifier = e.CallerIdentifier;
             FirstName = e.FirstName;
             LastName = e.LastName;
             Phone = e.Phone;
