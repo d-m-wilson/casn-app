@@ -86,6 +86,12 @@ namespace CASNApp.API.Models
         public int? PreferredContactMethod { get; set; }
 
         /// <summary>
+        /// Gets or Sets Note
+        /// </summary>
+        [DataMember(Name="note")]
+        public string Note { get; set; }
+
+        /// <summary>
         /// Gets or Sets Created
         /// </summary>
         [DataMember(Name="created")]
@@ -114,6 +120,7 @@ namespace CASNApp.API.Models
             sb.Append("  IsMinor: ").Append(IsMinor).Append("\n");
             sb.Append("  PreferredLanguage: ").Append(PreferredLanguage).Append("\n");
             sb.Append("  PreferredContactMethod: ").Append(PreferredContactMethod).Append("\n");
+            sb.Append("  Note: ").Append(Note).Append("\n");
             sb.Append("  Created: ").Append(Created).Append("\n");
             sb.Append("  Updated: ").Append(Updated).Append("\n");
             sb.Append("}\n");
@@ -196,7 +203,12 @@ namespace CASNApp.API.Models
                     PreferredContactMethod == other.PreferredContactMethod ||
                     PreferredContactMethod != null &&
                     PreferredContactMethod.Equals(other.PreferredContactMethod)
-                ) && 
+                ) &&
+                (
+                    Note == other.Note ||
+                    Note != null &&
+                    Note.Equals(other.Note)
+                ) &&
                 (
                     Created == other.Created ||
                     Created != null &&
@@ -237,6 +249,8 @@ namespace CASNApp.API.Models
                     hashCode = hashCode * 59 + PreferredLanguage.GetHashCode();
                     if (PreferredContactMethod != null)
                     hashCode = hashCode * 59 + PreferredContactMethod.GetHashCode();
+                    if (Note != null)
+                    hashCode = hashCode * 59 + Note.GetHashCode();
                     if (Created != null)
                     hashCode = hashCode * 59 + Created.GetHashCode();
                     if (Updated != null)

@@ -27,6 +27,7 @@ namespace CASNApp.API.Entities
 
             PreferredLanguage = e.PreferredLanguage;
             PreferredContactMethod = e.PreferredContactMethod.HasValue ? (sbyte)e.PreferredContactMethod.Value : (sbyte)0;
+            Note = e.Note;
 
             if (e.Created.HasValue)
             {

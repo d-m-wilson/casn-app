@@ -19,6 +19,7 @@ namespace CASNApp.API.Entities
         public bool IsMinor { get; set; }
         public string PreferredLanguage { get; set; }
         public sbyte PreferredContactMethod { get; set; }
+        public string Note { get; set; }
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }

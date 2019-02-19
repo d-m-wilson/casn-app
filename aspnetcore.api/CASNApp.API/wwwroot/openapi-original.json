@@ -526,6 +526,11 @@
             "format" : "int32",
             "example" : 1
           },
+          "note" : {
+            "maxLength" : 500,
+            "type" : "string",
+            "example" : "Free-form text goes here."
+          },
           "created" : {
             "type" : "string",
             "format" : "date-time",

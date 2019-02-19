@@ -315,6 +315,10 @@ namespace CASNApp.API.Entities
                     .HasColumnName("phone")
                     .HasColumnType("varchar(20)");
 
+                entity.Property(e => e.Note)
+                    .HasColumnName("note")
+                    .HasColumnType("varchar(500)");
+
                 entity.Property(e => e.PreferredContactMethod)
                     .HasColumnName("preferredContactMethod")
                     .HasColumnType("tinyint(1)");

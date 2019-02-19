@@ -17,6 +17,7 @@
             IsMinor = e.IsMinor;
             PreferredLanguage = e.PreferredLanguage;
             PreferredContactMethod = e.PreferredContactMethod;
+            Note = e.Note;
             Created = e.Created;
             Updated = e.Updated;
         }

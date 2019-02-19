@@ -387,6 +387,10 @@ components:
           type: integer
           format: int32
           example: 1
+        note:
+          type: string
+          maxLength: 500
+          example: 'Free-form text goes here.'
         created:
           type: string
           format: date-time
