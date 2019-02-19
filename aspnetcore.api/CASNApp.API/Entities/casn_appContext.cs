@@ -301,7 +301,6 @@ namespace CASNApp.API.Entities
                     .HasColumnType("bit(1)");
 
                 entity.Property(e => e.LastName)
-                    .IsRequired()
                     .HasColumnName("lastName")
                     .HasColumnType("varchar(50)");
 

@@ -53,7 +53,6 @@ namespace CASNApp.API.Models
         /// <summary>
         /// Gets or Sets LastName
         /// </summary>
-        [Required]
         [DataMember(Name="lastName")]
         public string LastName { get; set; }
 
