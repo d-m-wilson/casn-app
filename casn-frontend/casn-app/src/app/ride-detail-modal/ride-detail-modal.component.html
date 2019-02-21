@@ -9,32 +9,30 @@
       <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
       <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
     </mat-card>
-    <div>
-      <!--=========== Pick Up Info ============-->
-      <mat-card class="mt">
-        <mat-card-subtitle>
-          Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
-        </mat-card-subtitle>
-        <a [href]="startAddressGoogleMapLink" target="_blank">
-          <address>
-            {{ ride[driveType].startAddress }}<br>
-            {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
-          </address>
-        </a>
-      </mat-card>
-      <!--=========== Drop Off Info ============-->
-      <mat-card class="mt">
-        <mat-card-subtitle>
-          Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
-        </mat-card-subtitle>
-        <a [href]="endAddressGoogleMapLink" target="_blank">
-          <address>
-            {{ ride[driveType].endAddress }}<br>
-            {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
-          </address>
-        </a>
-      </mat-card>
-    </div>
+    <!--=========== Pick Up Info ============-->
+    <mat-card class="mt">
+      <mat-card-subtitle>
+        Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
+      </mat-card-subtitle>
+      <a [href]="startAddressGoogleMapLink" target="_blank">
+        <address>
+          {{ ride[driveType].startAddress }}<br>
+          {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+        </address>
+      </a>
+    </mat-card>
+    <!--=========== Drop Off Info ============-->
+    <mat-card class="mt">
+      <mat-card-subtitle>
+        Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
+      </mat-card-subtitle>
+      <a [href]="endAddressGoogleMapLink" target="_blank">
+        <address>
+          {{ ride[driveType].endAddress }}<br>
+          {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+        </address>
+      </a>
+    </mat-card>
     <!--=========== Volunteers ============-->
     <mat-card *ngIf="volunteers && !driveIsApproved" class="mt">
       <span class="bolder">Volunteers</span>
