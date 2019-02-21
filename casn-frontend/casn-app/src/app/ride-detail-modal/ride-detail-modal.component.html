@@ -9,6 +9,14 @@
       <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
       <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
     </mat-card>
+    <!--=========== Caller Notes ============-->
+    <!-- TODO: Conditionally display if note exists. -->
+    <mat-expansion-panel class="mt">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Notes from Dispatcher</mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
+    </mat-expansion-panel>
     <!--=========== Pick Up Info ============-->
     <mat-card class="mt">
       <mat-card-subtitle>
@@ -54,12 +62,6 @@
           <span class="approved"><mat-icon>done</mat-icon> Approved</span>
         </div>
       </ng-container>
-    </mat-card>
-    <!--=========== Caller Notes ============-->
-    <!-- TODO: Conditionally display if note exists. -->
-    <mat-card class="mt">
-      <mat-card-subtitle>Notes from Dispatcher:</mat-card-subtitle>
-      <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
     </mat-card>
     <!--=========== Modal Actions ============-->
     <div class="modal-actions">
