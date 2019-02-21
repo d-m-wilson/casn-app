@@ -24,6 +24,7 @@ import {
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
+  MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
 /* Routing */
@@ -82,6 +83,7 @@ import { AppConfigService, appConfigInitializerFn } from './auth-services/appcon
     MatSelectModule,
     MatSidenavModule,
     MatSlideToggleModule,
+    MatTabsModule,
     MatToolbarModule,
   ],
   providers: [
