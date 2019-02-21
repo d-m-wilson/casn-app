@@ -95,6 +95,14 @@
         </mat-select>
         <mat-error *ngIf="f.preferredContactMethod.errors?.required">This field is required.</mat-error>
       </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Notes</mat-label>
+        <textarea matInput
+               type="text"
+               formControlName="note"
+               aria-label="Caller Notes"
+               placeholder="Optional, please include any notes here."></textarea>
+      </mat-form-field>
       <button class="form-btn"
               mat-raised-button
               color="primary"

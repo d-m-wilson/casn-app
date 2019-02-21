@@ -48,6 +48,7 @@ export class CallersComponent implements OnInit {
     isMinor: [false, Validators.required],
     preferredLanguage: ['English', Validators.required],
     preferredContactMethod: [1, Validators.required],
+    note: ['']
   })
 
   // convenience getter for easy access to form fields
@@ -109,6 +110,7 @@ export class CallersComponent implements OnInit {
             isMinor: p.isMinor,
             preferredLanguage: p.preferredLanguage,
             preferredContactMethod: p.preferredContactMethod,
+            note: p.note,
           };
           this.displayCallerFoundModal = true;
         } else {
