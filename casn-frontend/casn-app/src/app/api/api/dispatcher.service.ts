@@ -22,7 +22,7 @@ import { AllAppointments } from '../model/allAppointments.model';
 import { AppointmentDTO } from '../model/appointmentDTO.model';
 import { Body1 } from '../model/body1.model';
 import { DeleteSuccessMessage } from '../model/deleteSuccessMessage.model';
-import { Patient } from '../model/patient.model';
+import { Caller } from '../model/caller.model';
 import { VolunteerDrive } from '../model/volunteerDrive.model';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -162,16 +162,16 @@ export class DispatcherService implements DispatcherServiceInterface {
     }
 
     /**
-     * adds a patient
-     * Adds patient to the system
-     * @param patient patientData to add
+     * adds a caller
+     * Adds caller to the system
+     * @param caller callerData to add
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addPatient(patient?: Patient, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public addPatient(patient?: Patient, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public addPatient(patient?: Patient, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public addPatient(patient?: Patient, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public addCaller(caller?: Caller, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public addCaller(caller?: Caller, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public addCaller(caller?: Caller, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public addCaller(caller?: Caller, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -197,8 +197,8 @@ export class DispatcherService implements DispatcherServiceInterface {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.post<any>(`${this.configuration.basePath}/patient`,
-            patient,
+        return this.httpClient.post<any>(`${this.configuration.basePath}/caller`,
+            caller,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -351,23 +351,23 @@ export class DispatcherService implements DispatcherServiceInterface {
     }
 
     /**
-     * gets patient by patientIdentifier
-     * Search for existing patients by the dispatcher created patientIdentifier (patient ID)
-     * @param patientIdentifier pass a search string for looking up patientIdentifier
+     * gets caller by callerIdentifier
+     * Search for existing callers by the dispatcher created callerIdentifier (caller ID)
+     * @param callerIdentifier pass a search string for looking up callerIdentifier
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPatientByPatientIdentifier(patientIdentifier: string, observe?: 'body', reportProgress?: boolean): Observable<Patient>;
-    public getPatientByPatientIdentifier(patientIdentifier: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Patient>>;
-    public getPatientByPatientIdentifier(patientIdentifier: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Patient>>;
-    public getPatientByPatientIdentifier(patientIdentifier: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-        if (patientIdentifier === null || patientIdentifier === undefined) {
-            throw new Error('Required parameter patientIdentifier was null or undefined when calling getPatientByPatientIdentifier.');
+    public getCallerByCallerIdentifier(callerIdentifier: string, observe?: 'body', reportProgress?: boolean): Observable<Caller>;
+    public getCallerByCallerIdentifier(callerIdentifier: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Caller>>;
+    public getCallerByCallerIdentifier(callerIdentifier: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Caller>>;
+    public getCallerByCallerIdentifier(callerIdentifier: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+        if (callerIdentifier === null || callerIdentifier === undefined) {
+            throw new Error('Required parameter callerIdentifier was null or undefined when calling getCallerByCallerIdentifier.');
         }
 
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
-        if (patientIdentifier !== undefined && patientIdentifier !== null) {
-            queryParameters = queryParameters.set('patientIdentifier', <any>patientIdentifier);
+        if (callerIdentifier !== undefined && callerIdentifier !== null) {
+            queryParameters = queryParameters.set('callerIdentifier', <any>callerIdentifier);
         }
 
         let headers = this.defaultHeaders;
@@ -390,7 +390,7 @@ export class DispatcherService implements DispatcherServiceInterface {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<Patient>(`${this.configuration.basePath}/patient`,
+        return this.httpClient.get<Caller>(`${this.configuration.basePath}/caller`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,

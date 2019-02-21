@@ -3,7 +3,7 @@
 **********************************************************************-->
 <div class="modal" *ngIf="ride && clinics">
   <div class="modal-content">
-    <h1>{{ ride.appointment.patientIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</h1>
+    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</h1>
     <mat-card class="appointment-card">
       <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
       <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
@@ -11,7 +11,7 @@
     <div>
       <mat-card class="mt">
         <mat-card-subtitle>
-          Pick up patient {{ ride.appointment.patientIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
+          Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
         </mat-card-subtitle>
         <a [href]="startAddressGoogleMapLink" target="_blank">
           <address>

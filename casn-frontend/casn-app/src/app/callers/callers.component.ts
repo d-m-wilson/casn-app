@@ -39,7 +39,7 @@ export class CallersComponent implements OnInit {
   callerIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
 
   callerForm = this.fb.group({
-    patientIdentifier: ['', [Validators.required, Validators.minLength(4),
+    callerIdentifier: ['', [Validators.required, Validators.minLength(4),
                         Validators.maxLength(6)]],
     firstName: ['', Validators.required],
     lastName: [''],
@@ -61,7 +61,7 @@ export class CallersComponent implements OnInit {
       this.saveNewCaller();
     } else {
       // TODO: There should be an update caller endpoint
-      this.router.navigate(['/appointment', { patientIdentifier: this.f.patientIdentifier.value, patientId: this.existingCallerId }]);
+      this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
     }
   }
 
@@ -76,7 +76,7 @@ export class CallersComponent implements OnInit {
 
   handleNoClick(): void {
     this.displayCallerFoundModal = false;
-    this.f.patientIdentifier.setValue(this.callerIdentifierSearch.value);
+    this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
   }
 
   handleCancelClick(): void {
@@ -96,13 +96,13 @@ export class CallersComponent implements OnInit {
 
   searchCallerIdentifier(): void {
     const id = this.callerIdentifierSearch.value;
-    this.ds.getPatientByPatientIdentifier(id).subscribe(
+    this.ds.getCallerByCallerIdentifier(id).subscribe(
       p => {
-        if(p.patientIdentifier) {
+        if(p.callerIdentifier) {
           // TODO: Refactor
           this.existingCallerId = p.id;
           this.existingCaller = {
-            patientIdentifier: p.patientIdentifier,
+            callerIdentifier: p.callerIdentifier,
             firstName: p.firstName,
             lastName: p.lastName,
             phone: p.phone,
@@ -113,22 +113,22 @@ export class CallersComponent implements OnInit {
           this.displayCallerFoundModal = true;
         } else {
           this.displayCallerForm = true;
-          this.f.patientIdentifier.setValue(this.callerIdentifierSearch.value);
+          this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
 
         }
       },
       err => {
         console.log("404 - No existing caller was found");
         this.displayCallerForm = true;
-        this.f.patientIdentifier.setValue(this.callerIdentifierSearch.value);
+        this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
 
       }
     );
   }
 
   saveNewCaller(): void {
-    this.ds.addPatient(this.callerForm.value).subscribe(p => {
-      this.router.navigate(['/appointment', { patientIdentifier: p.patientIdentifier, patientId: p.id }]);
+    this.ds.addCaller(this.callerForm.value).subscribe(p => {
+      this.router.navigate(['/appointment', { callerIdentifier: p.callerIdentifier, callerId: p.id }]);
     });
   }
 

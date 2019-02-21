@@ -11,10 +11,10 @@
  */
 
 
-export interface Appointment { 
+export interface Appointment {
     readonly id?: number;
     dispatcherId: number;
-    patientId: number;
+    callerId: number;
     clinicId: number;
     pickupLocationVague?: string;
     dropoffLocationVague?: string;

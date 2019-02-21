@@ -17,7 +17,7 @@ import { AllAppointments } from '../model/allAppointments.model';
 import { AppointmentDTO } from '../model/appointmentDTO.model';
 import { Body1 } from '../model/body1.model';
 import { DeleteSuccessMessage } from '../model/deleteSuccessMessage.model';
-import { Patient } from '../model/patient.model';
+import { Caller } from '../model/caller.model';
 import { VolunteerDrive } from '../model/volunteerDrive.model';
 
 
@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 export interface DispatcherServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
-    
+
 
     /**
     * adds a new appointment
@@ -39,27 +39,27 @@ export interface DispatcherServiceInterface {
     /**
     * approves a volunteer for a drive
     * Adds driverId to a drive
-    * @param body1 
+    * @param body1
     */
     addDriver(body1?: Body1, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-    * adds a patient
-    * Adds patient to the system
-    * @param patient patientData to add
+    * adds a caller
+    * Adds caller to the system
+    * @param caller callerData to add
     */
-    addPatient(patient?: Patient, extraHttpRequestParams?: any): Observable<{}>;
+    addCaller(caller?: Caller, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-    * 
-    * 
+    *
+    *
     * @param appointmentID pass an appointmentIdentifier
     */
     dispatcherAppointmentsAppointmentIDDelete(appointmentID: string, extraHttpRequestParams?: any): Observable<DeleteSuccessMessage>;
 
     /**
     * gets appointments with dispatcher-level details
-    * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers. 
+    * Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers.
     * @param startDate pass a startDate by which to filter
     * @param endDate pass an endDate by which to filter
     */
@@ -67,21 +67,21 @@ export interface DispatcherServiceInterface {
 
     /**
     * gets appointment by appointmentID
-    * Search for existing appointment by appointmentIdentifier, return dispatcher-level details 
+    * Search for existing appointment by appointmentIdentifier, return dispatcher-level details
     * @param appointmentID pass an appointmentIdentifier
     */
     getAppointmentForDispatcherByID(appointmentID: string, extraHttpRequestParams?: any): Observable<AppointmentDTO>;
 
     /**
-    * gets patient by patientIdentifier
-    * Search for existing patients by the dispatcher created patientIdentifier (patient ID) 
-    * @param patientIdentifier pass a search string for looking up patientIdentifier
+    * gets caller by callerIdentifier
+    * Search for existing callers by the dispatcher created callerIdentifier (caller ID)
+    * @param callerIdentifier pass a search string for looking up callerIdentifier
     */
-    getPatientByPatientIdentifier(patientIdentifier: string, extraHttpRequestParams?: any): Observable<Patient>;
+    getCallerByCallerIdentifier(callerIdentifier: string, extraHttpRequestParams?: any): Observable<Caller>;
 
     /**
     * get list of applicants for a drive
-    * 
+    *
     * @param driveId id of drive
     */
     getVolunteerDrives(driveId: number, extraHttpRequestParams?: any): Observable<Array<VolunteerDrive>>;

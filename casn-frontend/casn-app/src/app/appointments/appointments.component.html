@@ -5,7 +5,7 @@
   <h2>Create Appointment</h2>
   <form [formGroup]="apptForm" (ngSubmit)="onSubmit()">
     <div class="appt-form-group">
-      <h3>Caller #{{ f.patientIdentifier.value }}</h3>
+      <h3>Caller #{{ f.callerIdentifier.value }}</h3>
       <mat-form-field class="example-full-width hide"
                       appearance="outline"
                       disabled>
@@ -14,8 +14,8 @@
         placeholder="1234"
         aria-label="Caller Identifier"
         matInput
-        formControlName="patientIdentifier">
-        <mat-error *ngIf="f.patientIdentifier.errors?.required">This field is required.</mat-error>
+        formControlName="callerIdentifier">
+        <mat-error *ngIf="f.callerIdentifier.errors?.required">This field is required.</mat-error>
       </mat-form-field>
       <mat-form-field class="example-full-width hide" appearance="outline">
         <mat-label>Dispatcher ID</mat-label>

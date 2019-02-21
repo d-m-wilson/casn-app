@@ -11,10 +11,10 @@
  */
 
 
-export interface Patient { 
+export interface Caller {
     readonly id?: number;
     readonly civiContactId?: number;
-    patientIdentifier: string;
+    callerIdentifier: string;
     firstName: string;
     lastName: string;
     phone: string;

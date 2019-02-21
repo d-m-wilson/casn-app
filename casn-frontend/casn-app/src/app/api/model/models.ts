@@ -7,5 +7,5 @@ export * from './clinic.model';
 export * from './deleteSuccessMessage.model';
 export * from './drive.model';
 export * from './driverDrive.model';
-export * from './patient.model';
+export * from './caller.model';
 export * from './volunteerDrive.model';

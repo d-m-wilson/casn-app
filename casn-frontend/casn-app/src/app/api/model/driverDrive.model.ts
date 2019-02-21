@@ -25,6 +25,6 @@ export interface DriverDrive {
     isApproved: boolean;
     startLocation?: string;
     endLocation?: string;
-    patientIdentifier: string;
-    patientName?: string;
+    callerIdentifier: string;
+    callerName?: string;
 }

@@ -11,8 +11,8 @@ import { Location } from '@angular/common';
   styleUrls: ['./appointments.component.css']
 })
 export class AppointmentsComponent implements OnInit {
-  patientIdentifier: string;
-  patientId: number;
+  callerIdentifier: string;
+  callerId: number;
   apptDTO: any;
   // Hide dropoff inputs when user checks 'same as pickup location'
   showDropoffLocationInputs: boolean = true;
@@ -28,7 +28,7 @@ export class AppointmentsComponent implements OnInit {
                private router: Router ) { }
 
   ngOnInit() {
-    this.getPatient();
+    this.getCaller();
     this.getClinics();
   }
 
@@ -43,8 +43,8 @@ export class AppointmentsComponent implements OnInit {
 
   apptForm = this.fb.group({
     appointmentTypeId: [3, Validators.required],
-    patientId: [0],
-    patientIdentifier: ['', Validators.required],
+    callerId: [0],
+    callerIdentifier: ['', Validators.required],
     // TODO: Get dispatcherId from localstorage
     dispatcherId: [5],
     clinicId: ['', Validators.required],
@@ -95,7 +95,7 @@ export class AppointmentsComponent implements OnInit {
     this.apptDTO = {};
     this.apptDTO.appointment = {
       appointmentTypeId: this.f.appointmentTypeId.value,
-      patientId: this.f.patientId.value,
+      callerId: this.f.callerId.value,
       dispatcherId: this.f.dispatcherId.value,
       clinicId: this.f.clinicId.value,
       appointmentDate: this.f.appointmentDate.value.toISOString(),
@@ -144,11 +144,11 @@ export class AppointmentsComponent implements OnInit {
     this.location.back();
   }
 
-  getPatient(): void {
-    this.patientId = parseInt(this.route.snapshot.paramMap.get('patientId'));
-    this.patientIdentifier = this.route.snapshot.paramMap.get('patientIdentifier');
-    this.f.patientId.setValue(this.patientId);
-    this.f.patientIdentifier.setValue(this.patientIdentifier);
+  getCaller(): void {
+    this.callerId = parseInt(this.route.snapshot.paramMap.get('callerId'));
+    this.callerIdentifier = this.route.snapshot.paramMap.get('callerIdentifier');
+    this.f.callerId.setValue(this.callerId);
+    this.f.callerIdentifier.setValue(this.callerIdentifier);
   }
 
   getClinics(): void {
