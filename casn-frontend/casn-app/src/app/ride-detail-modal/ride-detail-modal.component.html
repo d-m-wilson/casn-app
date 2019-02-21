@@ -4,11 +4,13 @@
 <div class="modal" *ngIf="ride && clinics">
   <div class="modal-content">
     <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</h1>
+    <!--=========== Appt Card ============-->
     <mat-card class="appointment-card">
       <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
       <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
     </mat-card>
     <div>
+      <!--=========== Pick Up Info ============-->
       <mat-card class="mt">
         <mat-card-subtitle>
           Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
@@ -20,6 +22,7 @@
           </address>
         </a>
       </mat-card>
+      <!--=========== Drop Off Info ============-->
       <mat-card class="mt">
         <mat-card-subtitle>
           Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
@@ -32,6 +35,7 @@
         </a>
       </mat-card>
     </div>
+    <!--=========== Volunteers ============-->
     <mat-card *ngIf="volunteers && !driveIsApproved" class="mt">
       <span class="bolder">Volunteers</span>
       <div *ngFor="let v of volunteers" class="volunteer-container">
@@ -53,6 +57,13 @@
         </div>
       </ng-container>
     </mat-card>
+    <!--=========== Caller Notes ============-->
+    <!-- TODO: Conditionally display if note exists. -->
+    <mat-card class="mt">
+      <mat-card-subtitle>Notes from Dispatcher:</mat-card-subtitle>
+      <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
+    </mat-card>
+    <!--=========== Modal Actions ============-->
     <div class="modal-actions">
       <button type="button"
               mat-raised-button
