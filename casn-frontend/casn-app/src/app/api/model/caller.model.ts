@@ -21,6 +21,7 @@ export interface Caller {
     isMinor: boolean;
     preferredLanguage: string;
     preferredContactMethod: number;
+    note: string;
     readonly created?: Date;
     readonly updated?: Date;
 }
