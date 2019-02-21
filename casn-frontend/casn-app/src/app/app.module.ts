@@ -46,6 +46,7 @@ import { RidesComponent } from './rides/rides.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
 import { AppConfigService, appConfigInitializerFn } from './auth-services/appconfig.service';
+import { MapComponent } from './map/map.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { AppConfigService, appConfigInitializerFn } from './auth-services/appcon
     RidesComponent,
     LoginComponent,
     AppointmentsComponent,
-    RideDetailModalComponent
+    RideDetailModalComponent,
+    MapComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),

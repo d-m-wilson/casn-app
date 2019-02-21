@@ -4,65 +4,80 @@
 <div class="modal" *ngIf="ride && clinics">
   <div class="modal-content">
     <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }} Appointment</h1>
-    <!--=========== Appt Card ============-->
-    <mat-card class="appointment-card">
-      <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
-      <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
-    </mat-card>
-    <!--=========== Caller Notes ============-->
-    <!-- TODO: Conditionally display if note exists. -->
-    <mat-expansion-panel class="mt">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Notes from Dispatcher</mat-panel-title>
-      </mat-expansion-panel-header>
-      <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
-    </mat-expansion-panel>
-    <!--=========== Pick Up Info ============-->
-    <mat-card class="mt">
-      <mat-card-subtitle>
-        Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
-      </mat-card-subtitle>
-      <a [href]="startAddressGoogleMapLink" target="_blank">
-        <address>
-          {{ ride[driveType].startAddress }}<br>
-          {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
-        </address>
-      </a>
-    </mat-card>
-    <!--=========== Drop Off Info ============-->
-    <mat-card class="mt">
-      <mat-card-subtitle>
-        Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
-      </mat-card-subtitle>
-      <a [href]="endAddressGoogleMapLink" target="_blank">
-        <address>
-          {{ ride[driveType].endAddress }}<br>
-          {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
-        </address>
-      </a>
-    </mat-card>
-    <!--=========== Volunteers ============-->
-    <mat-card *ngIf="volunteers && !driveIsApproved" class="mt">
-      <span class="bolder">Volunteers</span>
-      <div *ngFor="let v of volunteers" class="volunteer-container">
-        {{ v.firstName }} {{ v.lastName }}
-        <button *ngIf="!driveIsApproved"
-                type="button"
-                mat-raised-button
-                (click)="handleApproveClick(v.id)"
-                color="primary">Approve</button>
-      </div>
-    </mat-card>
-    <mat-card *ngIf="driveIsApproved" class="mt">
-      <span class="bolder">Volunteers</span>
-      <ng-container *ngFor="let v of volunteers">
-        <div *ngIf="v.volunteerId === ride[driveType].driverId"
-             class="volunteer-container">
-          {{ v.firstName }} {{ v.lastName }}
-          <span class="approved"><mat-icon>done</mat-icon> Approved</span>
-        </div>
-      </ng-container>
-    </mat-card>
+    <mat-tab-group mat-align-tabs="center">
+      <mat-tab label="Details">
+        <!--=========== Appt Card ============-->
+        <mat-card class="appointment-card">
+          <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
+          <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
+        </mat-card>
+        <!--=========== Caller Notes ============-->
+        <!-- TODO: Conditionally display if note exists. -->
+        <!-- <mat-expansion-panel class="mt">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Notes from Dispatcher</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
+        </mat-expansion-panel> -->
+        <!--=========== Pick Up Info ============-->
+        <mat-card class="mt">
+          <mat-card-subtitle>
+            Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
+          </mat-card-subtitle>
+          <a [href]="startAddressGoogleMapLink" target="_blank">
+            <address>
+              {{ ride[driveType].startAddress }}<br>
+              {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+            </address>
+          </a>
+        </mat-card>
+        <!--=========== Drop Off Info ============-->
+        <mat-card class="mt">
+          <mat-card-subtitle>
+            Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
+          </mat-card-subtitle>
+          <a [href]="endAddressGoogleMapLink" target="_blank">
+            <address>
+              {{ ride[driveType].endAddress }}<br>
+              {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+            </address>
+          </a>
+        </mat-card>
+        <!--=========== Volunteers ============-->
+        <mat-card *ngIf="volunteers && !driveIsApproved" class="mt">
+          <span class="bolder">Volunteers</span>
+          <div *ngFor="let v of volunteers" class="volunteer-container">
+            {{ v.firstName }} {{ v.lastName }}
+            <button *ngIf="!driveIsApproved"
+                    type="button"
+                    mat-raised-button
+                    (click)="handleApproveClick(v.id)"
+                    color="primary">Approve</button>
+          </div>
+        </mat-card>
+        <mat-card *ngIf="driveIsApproved" class="mt">
+          <span class="bolder">Volunteers</span>
+          <ng-container *ngFor="let v of volunteers">
+            <div *ngIf="v.volunteerId === ride[driveType].driverId"
+                 class="volunteer-container">
+              {{ v.firstName }} {{ v.lastName }}
+              <span class="approved"><mat-icon>done</mat-icon> Approved</span>
+            </div>
+          </ng-container>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Map View">
+        <mat-card style="height:400px">
+          <p>Map will go here!</p>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Notes">
+        <mat-card style="height:400px">
+          <mat-card-subtitle>Notes from Dispatcher:</mat-card-subtitle>
+          <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
     <!--=========== Modal Actions ============-->
     <div class="modal-actions">
       <button type="button"
