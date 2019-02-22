@@ -48,7 +48,7 @@ export class CallersComponent implements OnInit {
     isMinor: [false, Validators.required],
     preferredLanguage: ['English', Validators.required],
     preferredContactMethod: [1, Validators.required],
-    note: ['']
+    note: ['', Validators.maxLength(500)]
   })
 
   // convenience getter for easy access to form fields
