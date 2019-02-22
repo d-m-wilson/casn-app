@@ -52,8 +52,10 @@
                 <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
                 <span class="status-text">{{ getStatusText(r.driveTo.status) }} <span *ngIf="r.driveTo.status === 2">#{{ r.driveTo.driverId }}</span></span>
               </div>
-              <p class="bold">Drive To Clinic</p>
-              <p>Pick up at {{ r.driveTo.startAddress }}, {{ r.driveTo.startCity }}, {{ r.driveTo.startState }} {{ r.driveTo.startPostalCode }}</p>
+              <div class="drive-card-content">
+                <mat-icon svgIcon="drive_to" style="min-width:35px"></mat-icon>
+                <p>{{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}</p>
+              </div>
             </mat-card>
             <mat-card *ngIf="displayRides[r.driveFrom?.status]"
                       (click)="toggleRideModal(r)"
@@ -65,8 +67,10 @@
                 <mat-icon class="status-text">{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
                 <span class="status-text">{{ getStatusText(r.driveFrom.status) }} <span *ngIf="r.driveFrom.status === 2">#{{ r.driveFrom.driverId }}</span></span>
               </div>
-              <p class="bold">Drive From Clinic</p>
-              <p>Drop off at {{ r.driveFrom.endAddress }}, {{ r.driveFrom.endCity }}, {{ r.driveFrom.endState }} {{ r.driveFrom.endPostalCode }}</p>
+              <div class="drive-card-content">
+                <mat-icon svgIcon="drive_from" style="min-width:35px"></mat-icon>
+                <p>{{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}</p>
+              </div>
             </mat-card>
           </div>
         </ng-container>

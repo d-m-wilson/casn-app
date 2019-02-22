@@ -113,7 +113,6 @@ p {
 }
 
 .appointment-card {
-  // text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,6 +136,11 @@ p {
 }
 
 .drive-card-header {
+  display: flex;
+  align-items: center;
+}
+
+.drive-card-content {
   display: flex;
   align-items: center;
 }
