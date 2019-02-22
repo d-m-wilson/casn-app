@@ -12,13 +12,12 @@
           <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
         </mat-card>
         <!--=========== Caller Notes ============-->
-        <!-- TODO: Conditionally display if note exists. -->
-        <!-- <mat-expansion-panel class="mt">
+        <mat-expansion-panel expanded class="mt" *ngIf="ride.appointment.callerNote">
           <mat-expansion-panel-header>
             <mat-panel-title>Notes from Dispatcher</mat-panel-title>
           </mat-expansion-panel-header>
-          <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
-        </mat-expansion-panel> -->
+          <p>{{ ride.appointment.callerNote || 'This caller requires special accommodation xyz.' }}</p>
+        </mat-expansion-panel>
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt">
           <mat-card-subtitle>
@@ -68,13 +67,7 @@
       </mat-tab>
       <mat-tab label="Map View">
         <mat-card style="height:400px">
-          <p>Map will go here!</p>
-        </mat-card>
-      </mat-tab>
-      <mat-tab label="Notes">
-        <mat-card style="height:400px">
-          <mat-card-subtitle>Notes from Dispatcher:</mat-card-subtitle>
-          <p>{{ ride.appointment.note || 'This caller requires special accommodation xyz.' }}</p>
+          <app-map></app-map>
         </mat-card>
       </mat-tab>
     </mat-tab-group>
