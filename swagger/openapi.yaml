@@ -426,6 +426,10 @@ components:
           minLength: 4
           maxLength: 45
           example: '5551'
+        callerNote:
+          type: string
+          maxLength: 500
+          example: 'Free-form text goes here.'
         clinicId:
           type: integer
           format: int64
@@ -657,6 +661,10 @@ components:
           type: string
           maxLength: 100
           example: 'Jane Smith'
+        callerNote:
+          type: string
+          maxLength: 500
+          example: 'Free-form text goes here.'
   securitySchemes:
     BearerAuth:
       type: http

@@ -105,6 +105,12 @@ namespace CASNApp.API.Models
         public string CallerName { get; set; }
 
         /// <summary>
+        /// Gets or Sets CallerNote
+        /// </summary>
+        [DataMember(Name="callerNote")]
+        public string CallerNote { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>

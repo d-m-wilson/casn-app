@@ -23,6 +23,7 @@ namespace CASNApp.API.Models
             IsApproved = vd.Drive.Status == Drive.StatusApproved;
             CallerIdentifier = vd.Drive.Appointment.Caller.CallerIdentifier;
             CallerName = vd.Drive.Appointment.Caller.FirstName + " " + vd.Drive.Appointment.Caller.LastName;
+            CallerNote = vd.Drive.Appointment.Caller.Note;
             StartLocation = vd.Drive.Appointment.PickupLocationVague;
             VolunteerDriveId = vd.Id;
         }

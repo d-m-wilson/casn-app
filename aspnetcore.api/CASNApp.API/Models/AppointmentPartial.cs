@@ -20,6 +20,7 @@ namespace CASNApp.API.Models
             Id = a.Id;
             CallerId = a.CallerId;
             CallerIdentifier = a.Caller.CallerIdentifier;
+            CallerNote = a.Caller.Note;
             PickupLocationVague = a.PickupLocationVague;
             Updated = a.Updated;
         }

@@ -51,6 +51,12 @@ namespace CASNApp.API.Models
         public string CallerIdentifier { get; set; }
 
         /// <summary>
+        /// Gets or Sets CallerNote
+        /// </summary>
+        [DataMember(Name= "callerNote")]
+        public string CallerNote { get; set; }
+
+        /// <summary>
         /// Gets or Sets ClinicId
         /// </summary>
         [Required]

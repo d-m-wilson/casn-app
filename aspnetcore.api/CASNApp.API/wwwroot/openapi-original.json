@@ -550,6 +550,7 @@
           "callerIdentifier" : "5551",
           "preferredLanguage" : "French",
           "preferredContactMethod" : 1,
+		  "note" : "Free-form text goes here.",
           "phone" : "5555551234",
           "created" : "2000-01-23T04:56:07.000+00:00",
           "id" : 42,
@@ -928,6 +929,11 @@
             "maxLength" : 100,
             "type" : "string",
             "example" : "Jane Smith"
+          },
+          "callerNote" : {
+            "maxLength" : 500,
+            "type" : "string",
+            "example" : "Free-form text goes here."
           }
         },
         "example" : {
@@ -942,6 +948,7 @@
           "volunteerDriveId" : 42,
           "appointmentDate" : "2000-01-23T04:56:07.000+00:00",
           "endLocation" : "7373 Old Katy Rd Houston, TX 77008",
+		  "callerNote" : "Free-form text goes here.",
           "direction" : 1
         }
       },
