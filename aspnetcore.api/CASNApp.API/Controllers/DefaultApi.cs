@@ -182,6 +182,7 @@ namespace CASNApp.API.Controllers
             var apptEntity = await dbContext.Appointment
                 .AsNoTracking()
                 .Include(a => a.Drives)
+                .Include(a => a.Caller)
                 .Where(a => a.Id == apptId &&
                             a.IsActive)
                 .FirstOrDefaultAsync();
