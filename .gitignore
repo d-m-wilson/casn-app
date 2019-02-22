@@ -265,3 +265,6 @@ keys.json
 *.mwb.bak
 Secrets.cs
 .vscode/
+
+# MacOS Finder
+.DS_Store
