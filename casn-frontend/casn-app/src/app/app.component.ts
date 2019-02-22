@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Constants } from './app.constants';
 import { AuthenticationService } from './auth-services/auth.service';
 import { Router } from '@angular/router';
+import { MatIconRegistry } from "@angular/material/icon";
+import { DomSanitizer } from "@angular/platform-browser";
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,9 @@ export class AppComponent implements OnInit {
   constructor(
     private _authService: AuthenticationService,
     private _router: Router,
-    private constants: Constants
+    private constants: Constants,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -29,6 +33,7 @@ export class AppComponent implements OnInit {
       });
     }
     this.menuItems = this.constants.MENU_ITEMS;
+    this.registerCustomMaterialIcons();
   }
 
   login() {
@@ -42,5 +47,16 @@ export class AppComponent implements OnInit {
   isLoggedIn() {
     var boolExpr = this._authService.isLoggedIn();
     return boolExpr;
+  }
+
+  registerCustomMaterialIcons(): void {
+    this.matIconRegistry.addSvgIcon(
+      `drive_to`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/drive-to.svg")
+    );
+    this.matIconRegistry.addSvgIcon(
+      `drive_from`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/drive-from.svg")
+    );
   }
 }
