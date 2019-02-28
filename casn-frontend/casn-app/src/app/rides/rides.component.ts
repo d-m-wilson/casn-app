@@ -19,17 +19,21 @@ export class RidesComponent implements OnInit {
   clinics: any;
   apptTypes: any;
 
-  /**** Settings Menus ****/
+  /************** Settings Modal **************/
   showSettingsModal: boolean = false;
   showDateFilters: boolean = false;
-  dateFilterProperties: any = {}; // For showing badges on date filter cards
+  // For showing badges on date filter cards
+  dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
 
-  /**** Ride Modal ****/
+  /************** Ride Modal **************/
   displayRideModal: boolean = false;
   rideModalContent: any;
   showRideModalDriveTo: boolean; // Show driveTo or driveFrom details
+
+  /*************** Map Modal *************/
+  displayMapModal: boolean = false;
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
@@ -73,6 +77,10 @@ export class RidesComponent implements OnInit {
 
   toggleSettingsModal(): void {
     this.showSettingsModal = !this.showSettingsModal;
+  }
+
+  toggleMapModal(): void {
+    this.displayMapModal = !this.displayMapModal;
   }
 
   toggleActiveDate(date: string): void {
