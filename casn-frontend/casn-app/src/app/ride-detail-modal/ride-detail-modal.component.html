@@ -66,8 +66,26 @@
         </mat-card>
       </mat-tab>
       <mat-tab label="Map View">
-        <mat-card style="height:400px">
-          <app-map></app-map>
+        <mat-card>
+          <!-- TODO: Fetch lat/lng from backend -->
+          <agm-map [latitude]="ride[driveType].latitude || lat" [longitude]=" ride[driveType].longitude || lng">
+            <agm-marker [latitude]="ride[driveType].latitude || lat" [longitude]="ride[driveType].longitude || lng" label="S">
+              <agm-info-window [disableAutoPan]="true">
+                Start Address:
+                <a [href]="startAddressGoogleMapLink" target="_blank">
+                  <address>{{ ride[driveType].startAddress }}</address>
+                </a>
+              </agm-info-window>
+            </agm-marker>
+            <agm-marker [latitude]="ride[driveType].latitude || lat2" [longitude]="ride[driveType].longitude || lng2" label="E">
+              <agm-info-window [disableAutoPan]="true">
+                End Address:
+                <a [href]="endAddressGoogleMapLink" target="_blank">
+                  <address>{{ ride[driveType].endAddress }}</address>
+                </a>
+              </agm-info-window>
+            </agm-marker>
+          </agm-map>
         </mat-card>
       </mat-tab>
     </mat-tab-group>
