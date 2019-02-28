@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
 /* Angular Material Components */
 import {
   MatAutocompleteModule,
@@ -33,7 +34,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { Constants } from './app.constants';
 import { AuthGuard } from './auth-services/auth-guard.service';
 import { AuthenticationService } from './auth-services/auth.service';
-//import { fakeBackendProvider } from './auth-services/fake-backend';
+import { AppConfigService, appConfigInitializerFn } from './auth-services/appconfig.service';
+import { GoogleMapConfigService } from './auth-services/google-map-config.service';
 import { JwtInterceptor } from './auth-services/jwt.interceptor';
 import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
@@ -45,7 +47,6 @@ import { CallersComponent } from './callers/callers.component';
 import { RidesComponent } from './rides/rides.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
-import { AppConfigService, appConfigInitializerFn } from './auth-services/appconfig.service';
 import { MapComponent } from './map/map.component';
 
 @NgModule({
@@ -63,6 +64,8 @@ import { MapComponent } from './map/map.component';
     NgxMaskModule.forRoot(),
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    // TODO: Move to lazy loader
+    AgmCoreModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
@@ -98,6 +101,8 @@ import { MapComponent } from './map/map.component';
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    // { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapConfigService },
+    { provide: MapsAPILoader, useClass: GoogleMapConfigService }
   ],
   bootstrap: [AppComponent]
 })
