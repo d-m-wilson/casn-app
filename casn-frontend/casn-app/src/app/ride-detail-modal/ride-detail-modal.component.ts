@@ -18,10 +18,10 @@ export class RideDetailModalComponent implements OnInit {
   apptTypes: any;
   clinics: any;
   volunteers: any[];
-  lat: number = 51.678418;
-  lng: number = 7.809007;
-  lat2: number = 51.970418;
-  lng2: number = 7.400007;
+  lat: number = 29.3604;
+  lng: number = -95.8698;
+  lat2: number = 29.6604;
+  lng2: number = -95.4698;
 
   constructor( private ds: DefaultService,
                private driverService: DriverService,

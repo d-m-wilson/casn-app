@@ -68,8 +68,10 @@
       <mat-tab label="Map View">
         <mat-card>
           <!-- TODO: Fetch lat/lng from backend -->
-          <agm-map [latitude]="ride[driveType].latitude || lat" [longitude]=" ride[driveType].longitude || lng">
-            <agm-marker [latitude]="ride[driveType].latitude || lat" [longitude]="ride[driveType].longitude || lng" label="S">
+          <agm-map [latitude]="ride[driveType].latitude || lat2" [longitude]=" ride[driveType].longitude || lng2">
+            <agm-marker [latitude]="ride[driveType].latitude || lat"
+                        [longitude]="ride[driveType].longitude || lng"
+                        iconUrl="http://maps.google.com/mapfiles/ms/micons/homegardenbusiness.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
                 <a [href]="startAddressGoogleMapLink" target="_blank">
@@ -77,7 +79,9 @@
                 </a>
               </agm-info-window>
             </agm-marker>
-            <agm-marker [latitude]="ride[driveType].latitude || lat2" [longitude]="ride[driveType].longitude || lng2" label="E">
+            <agm-marker [latitude]="ride[driveType].latitude || lat2"
+                        [longitude]="ride[driveType].longitude || lng2"
+                        iconUrl="http://maps.google.com/mapfiles/ms/micons/hospitals.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:
                 <a [href]="endAddressGoogleMapLink" target="_blank">
