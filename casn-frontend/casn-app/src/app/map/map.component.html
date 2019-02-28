@@ -1,3 +1,29 @@
-<p>
-  map will go here!
-</p>
+<div class="modal">
+  <div class="modal-content">
+    <agm-map [latitude]="mapCenter.latitude"
+             [longitude]="mapCenter.longitude"
+             [zoom]="mapCenter.zoom">
+      <agm-marker *ngFor="let c of coords"
+                  iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
+                  [latitude]="c[0]"
+                  [longitude]="c[1]">
+        <agm-info-window [disableAutoPan]="true">
+          Start Address: <address>123 Main St</address>
+          <br>
+          End Address: <address>456 Blah Ln, Apt D</address>
+          <br>
+          <button type="button"
+                  mat-raised-button
+                  color="primary">See Drive Details</button>
+        </agm-info-window>
+      </agm-marker>
+    </agm-map>
+    <!--=========== Modal Actions ============-->
+    <div class="modal-actions">
+      <button type="button"
+              mat-raised-button
+              (click)="handleCloseModalClick()"
+              color="accent">Return to Calendar</button>
+    </div>
+  </div>
+</div>
