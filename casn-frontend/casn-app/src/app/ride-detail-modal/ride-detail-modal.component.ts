@@ -12,8 +12,8 @@ import { Constants } from '../app.constants';
 export class RideDetailModalComponent implements OnInit {
   @Input() ride: any = {};
   @Input() isDriveTo: boolean; // show driveTo or driveFrom details
-  @Output() closeModalClick = new EventEmitter<boolean>();
-  @Output() closeModalAndUpdateClick = new EventEmitter<boolean>();
+  @Output() closeRideModalClick = new EventEmitter<boolean>();
+  @Output() closeRideModalAndUpdateClick = new EventEmitter<boolean>();
   driveType: string;
   apptTypes: any;
   clinics: any;
@@ -64,14 +64,14 @@ export class RideDetailModalComponent implements OnInit {
                             Click Handlers
 **********************************************************************/
   handleCloseModalClick() {
-    this.closeModalClick.emit(true);
+    this.closeRideModalClick.emit(true);
   }
 
   handleApplyClick() {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.driverService.addDriveApplicant({"driveId": id}).subscribe(
       res => {
-        this.closeModalAndUpdateClick.emit(true);
+        this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {
         // TODO: Handle error
@@ -84,7 +84,7 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
       res => {
         console.log("SUCCESS. Approved volunteer", res);
-        this.closeModalAndUpdateClick.emit(true);
+        this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {
         // TODO: Handle error

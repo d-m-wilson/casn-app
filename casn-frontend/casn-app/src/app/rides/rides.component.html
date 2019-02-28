@@ -102,14 +102,14 @@
 <app-ride-detail-modal *ngIf="displayRideModal"
                        [ride]="rideModalContent"
                        [isDriveTo]="showRideModalDriveTo"
-                       (closeModalClick)="toggleRideModal()"
-                       (closeModalAndUpdateClick)="toggleRideModal();getRides()"></app-ride-detail-modal>
+                       (closeRideModalClick)="toggleRideModal()"
+                       (closeRideModalAndUpdateClick)="toggleRideModal();getRides()"></app-ride-detail-modal>
  <!--********************************************************************
                            Map Modal
  **********************************************************************-->
  <app-map *ngIf="displayMapModal"
           [rides]="rides"
-          (closeModalClick)="toggleMapModal()"></app-map>
+          (closeMapModalClick)="toggleMapModal()"></app-map>
 <!--********************************************************************
                         Settings, Display Filters
 **********************************************************************-->
