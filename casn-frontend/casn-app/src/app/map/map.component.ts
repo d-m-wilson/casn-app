@@ -8,6 +8,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class MapComponent implements OnInit {
   @Input() rides: any = {};
   @Output() closeMapModalClick = new EventEmitter<boolean>();
+  @Output() seeDriveDetailsClick = new EventEmitter();
   mapCenter: any = { latitude: 29.7604, longitude: -95.3698, zoom: 11 };
   coords: any[];
 
@@ -45,6 +46,11 @@ export class MapComponent implements OnInit {
 **********************************************************************/
   handleCloseModalClick() {
     this.closeMapModalClick.emit(true);
+  }
+
+  handleSeeDriveDetailsClick(ride: any, driveType: string) {
+    const msg = { ride: ride, driveType: driveType };
+    this.seeDriveDetailsClick.emit(msg);
   }
 
 /*********************************************************************

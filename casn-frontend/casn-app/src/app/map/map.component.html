@@ -25,6 +25,8 @@
           <br>
           <button type="button"
                   mat-raised-button
+                  (click)="handleCloseModalClick();
+                           handleSeeDriveDetailsClick(r, 'driveTo')"
                   color="primary">See Drive Details</button>
         </agm-info-window>
       </agm-marker>
@@ -50,6 +52,8 @@
           <br>
           <button type="button"
                   mat-raised-button
+                  (click)="handleCloseModalClick();
+                           handleSeeDriveDetailsClick(r, 'driveFrom')"
                   color="primary">See Drive Details</button>
         </agm-info-window>
       </agm-marker>

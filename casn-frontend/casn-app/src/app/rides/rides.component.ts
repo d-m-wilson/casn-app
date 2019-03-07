@@ -86,7 +86,7 @@ export class RidesComponent implements OnInit {
   toggleActiveDate(date: string): void {
     if(this.activeDate === date) {
       /* This means the user tapped the currently selected activeDate, so
-      we toggle off the activeDate'filter and show the full week of rides. */
+      we toggle off the activeDate filter and show the full week of rides. */
       this.activeDate = null;
       this.ridesToDisplay = this.rides;
     } else {
@@ -97,7 +97,7 @@ export class RidesComponent implements OnInit {
 
   toggleDateFilters(): void {
     this.showDateFilters = !this.showDateFilters;
-    // If a date fitler was applied, remove it.
+    // If a date filter was applied, remove it.
     this.activeDate = null;
     this.ridesToDisplay = this.rides;
   }
@@ -105,8 +105,12 @@ export class RidesComponent implements OnInit {
   handleChangeWeekClick(changeType: string): void {
     if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -6));
     if(changeType === 'next') this.setDateRange(this.addDays(this.endDate, 1));
-    // if(changeType == 'today') this.setDateRange();
     this.getRides();
+  }
+
+  onMapDriveDetailsClick(event: any): void {
+    const isDriveTo = event.driveType === 'driveTo';
+    this.toggleRideModal(event.ride, isDriveTo);
   }
 
   /*********************************************************************
@@ -117,7 +121,6 @@ export class RidesComponent implements OnInit {
     this.startDate = this.addDays(currentDate, -currentDate.getDay()).toISOString().slice(0,10);
     this.endDate = this.addDays(this.startDate, 6).toISOString().slice(0,10);
     this.getDatesForDateRange();
-    // this.activeDate = currentDate.toISOString().slice(0,10);
     this.activeDate = null;
   }
 
