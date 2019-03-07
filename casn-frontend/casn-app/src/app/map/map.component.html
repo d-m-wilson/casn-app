@@ -3,14 +3,50 @@
     <agm-map [latitude]="mapCenter.latitude"
              [longitude]="mapCenter.longitude"
              [zoom]="mapCenter.zoom">
-      <agm-marker *ngFor="let c of coords"
+      <!--====== Map Markers for driveTo ========-->
+      <agm-marker *ngFor="let r of rides"
                   iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
-                  [latitude]="c[0]"
-                  [longitude]="c[1]">
+                  [latitude]="r.driveTo.startLatitude"
+                  [longitude]="r.driveTo.startLongitude">
         <agm-info-window [disableAutoPan]="true">
-          Start Address: <address>123 Main St</address>
+          Start Address:
+          <address>
+            <a [href]="getGoogleMapLink(r, 'driveTo', 'start')" target="_blank">
+              {{ r.driveTo.startAddress }}
+            </a>
+          </address>
           <br>
-          End Address: <address>456 Blah Ln, Apt D</address>
+          End Address:
+          <address>
+            <a [href]="getGoogleMapLink(r, 'driveTo', 'end')" target="_blank">
+              {{ r.driveTo.endAddress }}
+            </a>
+          </address>
+          <br>
+          <button type="button"
+                  mat-raised-button
+                  color="primary">See Drive Details</button>
+        </agm-info-window>
+      </agm-marker>
+      <!--====== Map Markers for driveTo ========-->
+      <agm-marker *ngFor="let r of rides"
+                  iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
+                  [latitude]="r.driveFrom.endLatitude"
+                  [longitude]="r.driveFrom.endLongitude">
+        <agm-info-window [disableAutoPan]="true">
+          Start Address:
+          <address>
+            <a [href]="getGoogleMapLink(r, 'driveFrom', 'start')" target="_blank">
+              {{ r.driveFrom.startAddress }}
+            </a>
+          </address>
+          <br>
+          End Address:
+          <address>
+            <a [href]="getGoogleMapLink(r, 'driveFrom', 'end')" target="_blank">
+              {{ r.driveFrom.endAddress }}
+            </a>
+          </address>
           <br>
           <button type="button"
                   mat-raised-button
