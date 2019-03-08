@@ -35,7 +35,7 @@
           <h2>No rides on this day :(</h2>
       </div>
       <div *ngFor="let r of ridesToDisplay">
-        <ng-container *ngIf="displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]">
+        <ng-container *ngIf="(displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]) && displayClinics[r.appointment.clinicId]">
           <mat-card class="appointment-card">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
@@ -116,25 +116,43 @@
 **********************************************************************-->
 <div *ngIf="showSettingsModal" class="modal">
   <div class="modal-content">
-    <h2>Filter Drives</h2>
-    <mat-slide-toggle value="open"
-                      [checked]="displayRides[0]"
-                      (change)="displayRides[0] = $event.source.checked"
-                      color="primary">Show Open</mat-slide-toggle>
-    <br><br>
-    <mat-slide-toggle value="pending"
-                      [checked]="displayRides[1]"
-                      (change)="displayRides[1] = $event.source.checked"
-                      color="primary">Show Pending</mat-slide-toggle>
-    <br><br>
-    <mat-slide-toggle value="approved"
-                      [checked]="displayRides[2]"
-                      (change)="displayRides[2] = $event.source.checked"
-                      color="primary">Show Approved</mat-slide-toggle>
-    <br><br>
-    <button type="button"
-            mat-raised-button
-            (click)="toggleSettingsModal()"
-            color="accent">Close</button>
+    <mat-card>
+      <h2>Filter Drives</h2>
+    </mat-card>
+    <mat-card class="mt">
+      <mat-card-subtitle>By Drive Status</mat-card-subtitle>
+      <mat-slide-toggle value="open"
+                        [checked]="displayRides[0]"
+                        (change)="displayRides[0] = $event.source.checked"
+                        color="primary">Show Open</mat-slide-toggle>
+      <br><br>
+      <mat-slide-toggle value="pending"
+                        [checked]="displayRides[1]"
+                        (change)="displayRides[1] = $event.source.checked"
+                        color="primary">Show Pending</mat-slide-toggle>
+      <br><br>
+      <mat-slide-toggle value="approved"
+                        [checked]="displayRides[2]"
+                        (change)="displayRides[2] = $event.source.checked"
+                        color="primary">Show Approved</mat-slide-toggle>
+    </mat-card>
+    <mat-card class="mt">
+      <mat-card-subtitle>By Clinic</mat-card-subtitle>
+      <mat-slide-toggle value="houstonwomens"
+                        [checked]="displayClinics[1]"
+                        (change)="displayClinics[1] = $event.source.checked"
+                        color="primary">Show Houston Women's Clinic</mat-slide-toggle>
+      <br><br>
+      <mat-slide-toggle value="plannedparenthood"
+                        [checked]="displayClinics[2]"
+                        (change)="displayClinics[2] = $event.source.checked"
+                        color="primary">Show Planned Parenthood</mat-slide-toggle>
+    </mat-card>
+    <div class="modal-actions">
+      <button type="button"
+              mat-raised-button
+              (click)="toggleSettingsModal()"
+              color="accent">Close</button>
+    </div>
   </div>
 </div>

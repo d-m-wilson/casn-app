@@ -26,6 +26,8 @@ export class RidesComponent implements OnInit {
   dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved
   displayRides: boolean[] = [true, true, true];
+  // Display flags for clinics
+  displayClinics: any = {};
 
   /************** Ride Modal **************/
   displayRideModal: boolean = false;
@@ -63,6 +65,7 @@ export class RidesComponent implements OnInit {
   getClinics(): void {
     this.ds.getClinics().subscribe(c => {
       this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
+      this.objectKeys(this.clinics).forEach(c => this.displayClinics[c] = true);
     });
   }
 

@@ -167,3 +167,9 @@ p {
   color: white;
   padding: 5px;
 }
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
