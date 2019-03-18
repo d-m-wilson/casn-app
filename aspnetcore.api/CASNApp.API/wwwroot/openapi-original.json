@@ -462,6 +462,14 @@
           "postalCode" : {
             "maxLength" : 10,
             "type" : "string"
+          },
+          "latitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "float"
           }
         },
         "example" : {
@@ -472,7 +480,9 @@
           "postalCode" : "postalCode",
           "name" : "name",
           "id" : 42,
-          "state" : "state"
+          "state" : "state",
+		  "latitude" : "12.345678",
+		  "longitude" : "123.456789"
         }
       },
       "caller" : {
@@ -593,10 +603,26 @@
             "type" : "string",
             "example" : "US59 S and BW8"
           },
+          "pickupVagueLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "pickupVagueLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
           "dropoffLocationVague" : {
             "maxLength" : 255,
             "type" : "string",
             "example" : "I10 W and 610"
+          },
+          "dropoffVagueLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "dropoffVagueLongitude" : {
+            "type" : "number",
+            "format" : "float"
           },
           "appointmentDate" : {
             "type" : "string",
@@ -629,7 +655,11 @@
           "dispatcherId" : 42,
           "appointmentTypeId" : 1,
           "appointmentDate" : "2000-01-23T04:56:07.000+00:00",
-          "updated" : "2000-01-23T04:56:07.000+00:00"
+          "updated" : "2000-01-23T04:56:07.000+00:00",
+		  "pickupVagueLatitude" : "12.345678",
+		  "pickupVagueLongitude" : "123.456789",
+		  "dropoffVagueLatitude" : "12.345678",
+		  "dropoffVagueLongitude" : "123.456789"
         }
       },
       "drive" : {
@@ -684,6 +714,14 @@
             "type" : "string",
             "example" : "77031"
           },
+          "startLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "startLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
           "endAddress" : {
             "maxLength" : 100,
             "type" : "string",
@@ -703,6 +741,14 @@
             "maxLength" : 10,
             "type" : "string",
             "example" : "77024"
+          },
+          "endLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "endLongitude" : {
+            "type" : "number",
+            "format" : "float"
           },
           "created" : {
             "type" : "string",
@@ -730,7 +776,11 @@
           "updated" : "2000-01-23T04:56:07.000+00:00",
           "endAddress" : "7373 Old Katy Rd",
           "direction" : 1,
-          "status" : 0
+          "status" : 0,
+		  "startLatitude" : "12.345678",
+		  "startLongitude" : "123.456789",
+		  "endLatitude" : "12.345678",
+		  "endLongitude" : "123.456789"
         }
       },
       "appointmentDTO" : {
@@ -914,10 +964,26 @@
             "type" : "string",
             "example" : "US59 S and BW8"
           },
+          "startLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "startLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
           "endLocation" : {
             "maxLength" : 255,
             "type" : "string",
             "example" : "7373 Old Katy Rd Houston, TX 77008"
+          },
+          "endLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "endLongitude" : {
+            "type" : "number",
+            "format" : "float"
           },
           "callerIdentifier" : {
             "maxLength" : 45,
@@ -949,7 +1015,11 @@
           "appointmentDate" : "2000-01-23T04:56:07.000+00:00",
           "endLocation" : "7373 Old Katy Rd Houston, TX 77008",
 		  "callerNote" : "Free-form text goes here.",
-          "direction" : 1
+          "direction" : 1,
+		  "startLatitude" : "12.345678",
+		  "startLongitude" : "123.456789",
+		  "endLatitude" : "12.345678",
+		  "endLongitude" : "123.456789"
         }
       },
       "body" : {

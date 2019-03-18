@@ -74,6 +74,18 @@ namespace CASNApp.API.Entities
                     .HasColumnName("dropoffLocationVague")
                     .HasColumnType("varchar(255)");
 
+                entity.Property(e => e.DropoffVagueLatitude)
+                    .HasColumnName("dropoffVagueLatitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.DropoffVagueLongitude)
+                    .HasColumnName("dropoffVagueLongitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.DropoffVagueGeocoded)
+                    .HasColumnName("dropoffVagueGeocoded")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasColumnName("isActive")
@@ -86,6 +98,18 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.PickupLocationVague)
                     .HasColumnName("pickupLocationVague")
                     .HasColumnType("varchar(255)");
+
+                entity.Property(e => e.PickupVagueLatitude)
+                    .HasColumnName("pickupVagueLatitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.PickupVagueLongitude)
+                    .HasColumnName("pickupVagueLongitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.PickupVagueGeocoded)
+                    .HasColumnName("pickupVagueGeocoded")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
@@ -162,6 +186,18 @@ namespace CASNApp.API.Entities
                     .HasColumnName("state")
                     .HasColumnType("varchar(30)");
 
+                entity.Property(e => e.Latitude)
+                    .HasColumnName("latitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.Longitude)
+                    .HasColumnName("longitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.Geocoded)
+                    .HasColumnName("geocoded")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
                     .HasColumnType("datetime")
@@ -212,6 +248,18 @@ namespace CASNApp.API.Entities
                     .HasColumnName("endState")
                     .HasColumnType("varchar(30)");
 
+                entity.Property(e => e.EndLatitude)
+                    .HasColumnName("endLatitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.EndLongitude)
+                    .HasColumnName("endLongitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.EndGeocoded)
+                    .HasColumnName("endGeocoded")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasColumnName("isActive")
@@ -234,6 +282,18 @@ namespace CASNApp.API.Entities
                 entity.Property(e => e.StartState)
                     .HasColumnName("startState")
                     .HasColumnType("varchar(30)");
+
+                entity.Property(e => e.StartLatitude)
+                    .HasColumnName("startLatitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.StartLongitude)
+                    .HasColumnName("startLongitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.EndGeocoded)
+                    .HasColumnName("endGeocoded")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")

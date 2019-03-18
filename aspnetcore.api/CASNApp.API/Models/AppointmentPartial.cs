@@ -17,11 +17,14 @@ namespace CASNApp.API.Models
             Created = a.Created;
             DispatcherId = a.DispatcherId;
             DropoffLocationVague = a.DropoffLocationVague;
+            DropoffVagueLatitude = a.DropoffVagueLatitude;
             Id = a.Id;
             CallerId = a.CallerId;
             CallerIdentifier = a.Caller.CallerIdentifier;
             CallerNote = a.Caller.Note;
             PickupLocationVague = a.PickupLocationVague;
+            PickupVagueLatitude = a.PickupVagueLatitude;
+            PickupVagueLongitude = a.PickupVagueLongitude;
             Updated = a.Updated;
         }
 

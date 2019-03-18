@@ -18,6 +18,9 @@ namespace CASNApp.API.Entities
         public string City { get; set; }
         public string State { get; set; }
         public string PostalCode { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
+        public DateTime? Geocoded { get; set; }
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }

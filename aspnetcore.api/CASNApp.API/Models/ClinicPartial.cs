@@ -16,6 +16,8 @@
             City = e.City;
             State = e.State;
             PostalCode = e.PostalCode;
+            Latitude = e.Latitude;
+            Longitude = e.Longitude;
         }
 
     }

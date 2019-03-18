@@ -20,6 +20,8 @@ using CASNApp.API.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -32,10 +34,18 @@ namespace CASNApp.API.Controllers
     public class DispatcherApiController : Controller
     {
         private readonly Entities.casn_appContext dbContext;
+        private readonly ILoggerFactory loggerFactory;
+        private readonly string googleApiKey;
+        private readonly double vagueLocationMinOffset;
+        private readonly double vagueLocationMaxOffset;
 
-        public DispatcherApiController(Entities.casn_appContext dbContext)
+        public DispatcherApiController(Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
+            googleApiKey = configuration[Constants.GoogleApiKey];
+            vagueLocationMinOffset = double.Parse(configuration[Constants.VagueLocationMinOffset]);
+            vagueLocationMaxOffset = double.Parse(configuration[Constants.VagueLocationMaxOffset]);
+            this.loggerFactory = loggerFactory;
         }
 
         /// <summary>
@@ -118,6 +128,8 @@ namespace CASNApp.API.Controllers
                 EndCity = clinic.City,
                 EndState = clinic.State,
                 EndPostalCode = clinic.PostalCode,
+                EndLatitude = clinic.Latitude,
+                EndGeocoded = clinic.Geocoded,
                 IsActive = true,
                 Created = DateTime.UtcNow,
                 Updated = null,
@@ -132,6 +144,9 @@ namespace CASNApp.API.Controllers
                 StartCity = clinic.City,
                 StartState = clinic.State,
                 StartPostalCode = clinic.PostalCode,
+                StartLatitude = clinic.Latitude,
+                StartLongitude = clinic.Longitude,
+                StartGeocoded = clinic.Geocoded,
                 EndAddress = driveTo.StartAddress,
                 EndCity = driveTo.StartCity,
                 EndState = driveTo.StartState,
@@ -141,6 +156,40 @@ namespace CASNApp.API.Controllers
                 Updated = null,
             };
 
+            var geocoder = new GeocoderQuery(googleApiKey, loggerFactory);
+
+            var driveToAddress = driveToEntity.GetCallerAddress();
+            var driveToLocation = await geocoder.ForwardLookupAsync(driveToAddress);
+
+            if (driveToLocation == null)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Pickup Address.");
+            }
+
+            driveToEntity.SetCallerLocation(driveToLocation);
+            driveTo.SetCallerLocation(driveToLocation);
+
+            var driveFromAddress = driveFromEntity.GetCallerAddress();
+            var driveFromLocation = await geocoder.ForwardLookupAsync(driveFromAddress);
+
+            if (driveFromLocation == null)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Dropoff Address.");
+            }
+
+            driveFromEntity.SetCallerLocation(driveFromLocation);
+            driveFrom.SetCallerLocation(driveFromLocation);
+
+            var random = new Random();
+
+            var pickupVagueLocation = driveToLocation.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+            appointmentEntity.PickupVagueLatitude = pickupVagueLocation.Latitude;
+            appointmentEntity.PickupVagueLongitude = pickupVagueLocation.Longitude;
+
+            var dropoffVagueLocation = driveFromLocation.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+            appointmentEntity.DropoffVagueLatitude = dropoffVagueLocation.Latitude;
+            appointmentEntity.DropoffVagueLongitude = dropoffVagueLocation.Longitude;
+
             dbContext.Appointment.Add(appointmentEntity);
             dbContext.Drive.Add(driveToEntity);
             dbContext.Drive.Add(driveFromEntity);
@@ -149,6 +198,11 @@ namespace CASNApp.API.Controllers
 
             appointment.Id = appointmentEntity.Id;
             appointment.Created = appointmentEntity.Created;
+
+            appointment.PickupVagueLatitude = appointmentEntity.PickupVagueLatitude;
+            appointment.PickupVagueLongitude = appointmentEntity.PickupVagueLongitude;
+            appointment.DropoffVagueLatitude = appointmentEntity.DropoffVagueLatitude;
+            appointment.DropoffVagueLongitude = appointmentEntity.DropoffVagueLongitude;
 
             driveTo.Id = driveToEntity.Id;
             driveTo.EndAddress = driveToEntity.EndAddress;

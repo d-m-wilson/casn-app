@@ -337,6 +337,12 @@ components:
         postalCode:
           type: string
           maxLength: 10
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
     caller:
       type: object
       required:
@@ -438,10 +444,22 @@ components:
           type: string
           maxLength: 255
           example: 'US59 S and BW8'
+        pickupVagueLatitude:
+          type: number
+          format: float
+        pickupVagueLongitude:
+          type: number
+          format: float
         dropoffLocationVague:
           type: string
           maxLength: 255
           example: 'I10 W and 610'
+        dropoffVagueLatitude:
+          type: number
+          format: float
+        dropoffVagueLongitude:
+          type: number
+          format: float
         appointmentDate:
           type: string
           format: date-time
@@ -511,6 +529,12 @@ components:
           type: string
           maxLength: 10
           example: '77031'
+        startLatitude:
+          type: number
+          format: float
+        startLongitude:
+          type: number
+          format: float
         endAddress:
           type: string
           maxLength: 100
@@ -527,6 +551,12 @@ components:
           type: string
           maxLength: 10
           example: '77024'
+        endLatitude:
+          type: number
+          format: float
+        endLongitude:
+          type: number
+          format: float
         created:
           type: string
           format: date-time
@@ -648,10 +678,22 @@ components:
           type: string
           maxLength: 255
           example: 'US59 S and BW8'
+        startLatitude:
+          type: number
+          format: float
+        startLongitude:
+          type: number
+          format: float
         endLocation:
           type: string
           maxLength: 255
           example: '7373 Old Katy Rd Houston, TX 77008'
+        endLatitude:
+          type: number
+          format: float
+        endLongitude:
+          type: number
+          format: float
         callerIdentifier:
           type: string
           minLength: 4

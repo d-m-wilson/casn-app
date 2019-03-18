@@ -70,10 +70,34 @@ namespace CASNApp.API.Models
         public string PickupLocationVague { get; set; }
 
         /// <summary>
+        /// Gets or Sets PickupVagueLatitude
+        /// </summary>
+        [DataMember(Name = "pickupVagueLatitude")]
+        public decimal? PickupVagueLatitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets PickupVagueLongitude
+        /// </summary>
+        [DataMember(Name = "pickupVagueLongitude")]
+        public decimal? PickupVagueLongitude { get; set; }
+
+        /// <summary>
         /// Gets or Sets DropoffLocationVague
         /// </summary>
         [DataMember(Name="dropoffLocationVague")]
         public string DropoffLocationVague { get; set; }
+
+        /// <summary>
+        /// Gets or Sets DropoffVagueLatitude
+        /// </summary>
+        [DataMember(Name = "dropoffVagueLatitude")]
+        public decimal? DropoffVagueLatitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets DropoffVagueLongitude
+        /// </summary>
+        [DataMember(Name = "dropoffVagueLongitude")]
+        public decimal? DropoffVagueLongitude { get; set; }
 
         /// <summary>
         /// Gets or Sets AppointmentDate

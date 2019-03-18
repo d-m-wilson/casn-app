@@ -6,6 +6,10 @@ namespace CASNApp.API
     {
         // Actual constants
         internal const string DbConnectionString = nameof(DbConnectionString);
+        internal const string GoogleApiKey = nameof(GoogleApiKey);
+        internal const string VagueLocationMinOffset = nameof(VagueLocationMinOffset);
+        internal const string VagueLocationMaxOffset = nameof(VagueLocationMaxOffset);
+        internal const string NLogConfigFile = "nlog.config";
         internal const string JwtBearerAuthority = nameof(JwtBearerAuthority);
         internal const string JwtBearerAudience = nameof(JwtBearerAudience);
         internal const bool JwtBearerRequireHttpsMetadata = true;

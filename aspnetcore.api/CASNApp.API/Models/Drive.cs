@@ -80,6 +80,18 @@ namespace CASNApp.API.Models
         public string StartPostalCode { get; set; }
 
         /// <summary>
+        /// Gets or Sets StartLatitude
+        /// </summary>
+        [DataMember(Name = "startLatitude")]
+        public decimal? StartLatitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets StartLongitude
+        /// </summary>
+        [DataMember(Name = "startLongitude")]
+        public decimal? StartLongitude { get; set; }
+
+        /// <summary>
         /// Gets or Sets EndAddress
         /// </summary>
         [DataMember(Name="endAddress")]
@@ -102,6 +114,18 @@ namespace CASNApp.API.Models
         /// </summary>
         [DataMember(Name="endPostalCode")]
         public string EndPostalCode { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EndLatitude
+        /// </summary>
+        [DataMember(Name = "endLatitude")]
+        public decimal? EndLatitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EndLongitude
+        /// </summary>
+        [DataMember(Name = "endLongitude")]
+        public decimal? EndLongitude { get; set; }
 
         /// <summary>
         /// Gets or Sets Created

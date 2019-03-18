@@ -73,6 +73,18 @@ namespace CASNApp.API.Models
         public string PostalCode { get; set; }
 
         /// <summary>
+        /// Gets or Sets StartLatitude
+        /// </summary>
+        [DataMember(Name = "latitude")]
+        public decimal? Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets StartLongitude
+        /// </summary>
+        [DataMember(Name = "longitude")]
+        public decimal? Longitude { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>

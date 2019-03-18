@@ -86,10 +86,34 @@ namespace CASNApp.API.Models
         public string StartLocation { get; set; }
 
         /// <summary>
+        /// Gets or Sets StartLatitude
+        /// </summary>
+        [DataMember(Name="startLatitude")]
+        public decimal? StartLatitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets StartLongitude
+        /// </summary>
+        [DataMember(Name = "startLongitude")]
+        public decimal? StartLongitude { get; set; }
+
+        /// <summary>
         /// Gets or Sets EndLocation
         /// </summary>
         [DataMember(Name="endLocation")]
         public string EndLocation { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EndLatitude
+        /// </summary>
+        [DataMember(Name = "endLatitude")]
+        public decimal? EndLatitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EndLongitude
+        /// </summary>
+        [DataMember(Name = "endLongitude")]
+        public decimal? EndLongitude { get; set; }
 
         /// <summary>
         /// Gets or Sets CallerIdentifier

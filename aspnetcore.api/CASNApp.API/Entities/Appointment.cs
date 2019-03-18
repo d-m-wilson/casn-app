@@ -15,7 +15,13 @@ namespace CASNApp.API.Entities
         public uint CallerId { get; set; }
         public uint ClinicId { get; set; }
         public string PickupLocationVague { get; set; }
+        public decimal? PickupVagueLatitude { get; set; }
+        public decimal? PickupVagueLongitude { get; set; }
+        public DateTime? PickupVagueGeocoded { get; set; }
         public string DropoffLocationVague { get; set; }
+        public decimal? DropoffVagueLatitude { get; set; }
+        public decimal? DropoffVagueLongitude { get; set; }
+        public DateTime? DropoffVagueGeocoded { get; set; }
         public DateTime AppointmentDate { get; set; }
         public int AppointmentTypeId { get; set; }
         public bool IsActive { get; set; }

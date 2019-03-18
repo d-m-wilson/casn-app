@@ -1,4 +1,6 @@
-﻿namespace CASNApp.API.Models
+﻿using System;
+
+namespace CASNApp.API.Models
 {
     public partial class Drive
     {
@@ -21,11 +23,15 @@
             EndCity = d.EndCity;
             EndPostalCode = d.EndPostalCode;
             EndState = d.EndState;
+            EndLatitude = d.EndLatitude;
+            EndLongitude = d.EndLongitude;
             Id = d.Id;
             StartAddress = d.StartAddress;
             StartCity = d.StartCity;
             StartPostalCode = d.StartPostalCode;
             StartState = d.StartState;
+            StartLatitude = d.StartLatitude;
+            StartLongitude = d.StartLongitude;
             Updated = d.Updated;
             Approved = d.Approved;
             ApprovedBy = d.ApprovedBy;
@@ -72,6 +78,25 @@
             }
 
             return true;
+        }
+
+        public void SetCallerLocation(Queries.GeocoderQuery.LatLng point)
+        {
+            if (Direction == DirectionToClinic)
+            {
+                StartLatitude = point.Latitude;
+                StartLongitude = point.Longitude;
+            }
+            else if (Direction == DirectionFromClinic)
+            {
+                EndLatitude = point.Latitude;
+                EndLongitude = point.Longitude;
+            }
+            else
+            {
+                string errorMessage = $"Invalid value for {nameof(Drive)}.{nameof(Direction)}: {Direction}";
+                throw new InvalidOperationException(errorMessage);
+            }
         }
 
     }
