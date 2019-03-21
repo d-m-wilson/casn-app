@@ -9,7 +9,7 @@
       "urls": [
         "/app/favicon.ico",
         "/app/index.html",
-        "/app/main.48c71a6605c9afab7826.js",
+        "/app/main.cf0d3ca20a697f42077d.js",
         "/app/polyfills.f93b59d8d93231b0ef35.js",
         "/app/runtime.a5dd35324ddfd942bef1.js",
         "/app/styles.2ded4d586bfe74f0e6f6.css"
@@ -29,15 +29,37 @@
       "patterns": []
     }
   ],
-  "dataGroups": [],
+  "dataGroups": [
+    {
+      "name": "api-freshness",
+      "patterns": [
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/appointments\\/.*"
+      ],
+      "strategy": "freshness",
+      "maxSize": 3,
+      "maxAge": 86400000,
+      "version": 1
+    },
+    {
+      "name": "api-performance",
+      "patterns": [
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/clinic\\/.*",
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/appconfig\\.json"
+      ],
+      "strategy": "performance",
+      "maxSize": 3,
+      "maxAge": 86400000,
+      "version": 1
+    }
+  ],
   "hashTable": {
     "/app/assets/icons/drive-from.svg": "a5badd08a6f407d799910489edd036e0cd27fc5b",
     "/app/assets/icons/drive-to.svg": "3416a4c111261a4d38ae3b97f37921bf30da67e0",
     "/app/assets/img/casn-logo.png": "74890ca349e599726c2da4c436361562ddd64040",
     "/app/assets/oidc-login-redirect.html": "235fbe5d0ab7453c6a24a2275ff36cde4654c0b0",
     "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/app/index.html": "120208b6f980e8cbb9ebdb2ce1f4802a41e232da",
-    "/app/main.48c71a6605c9afab7826.js": "e8dd2761f0b6c0225133e1afd75b3350ca6f039b",
+    "/app/index.html": "582a7dcc5f80428aa7b73cbcc6d156b556a5652a",
+    "/app/main.cf0d3ca20a697f42077d.js": "b57a635b7b1de69f52eb561a506a29858cceee30",
     "/app/polyfills.f93b59d8d93231b0ef35.js": "0ebd83e28f1e5c59c621cf2dbd0cc014a2afae59",
     "/app/runtime.a5dd35324ddfd942bef1.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
     "/app/styles.2ded4d586bfe74f0e6f6.css": "54c5f4cbbd3eb7488808fbb93897048bd6dc55c7"
