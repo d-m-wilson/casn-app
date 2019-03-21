@@ -4,6 +4,7 @@ import { AuthenticationService } from './auth-services/auth.service';
 import { Router } from '@angular/router';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -52,11 +53,11 @@ export class AppComponent implements OnInit {
   registerCustomMaterialIcons(): void {
     this.matIconRegistry.addSvgIcon(
       `drive_to`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/drive-to.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/drive-to.svg`)
     );
     this.matIconRegistry.addSvgIcon(
       `drive_from`,
-      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/drive-from.svg")
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/drive-to.svg`)
     );
   }
 }
