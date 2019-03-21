@@ -12,7 +12,8 @@
           "/*.js"
         ]
       }
-    }, {
+    },
+    {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
@@ -20,6 +21,29 @@
         "files": [
           "/assets/**"
         ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-freshness",
+      "urls": ["https://casnapptest.dmwilson.info/api/appointments/**"],
+      "cacheConfig": {
+        "maxSize": 3,
+        "maxAge": "1d",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "api-performance",
+      "urls": [
+        "https://casnapptest.dmwilson.info/api/clinic/**",
+        "https://casnapptest.dmwilson.info/appconfig.json"
+      ],
+      "cacheConfig": {
+        "maxSize": 3,
+        "maxAge": "1d",
+        "strategy": "performance"
       }
     }
   ]
