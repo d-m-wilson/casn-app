@@ -48,6 +48,8 @@ import { RidesComponent } from './rides/rides.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
 import { MapComponent } from './map/map.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -90,6 +92,7 @@ import { MapComponent } from './map/map.component';
     MatSlideToggleModule,
     MatTabsModule,
     MatToolbarModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     AppConfigService,
