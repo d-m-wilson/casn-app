@@ -1,7 +1,7 @@
 {
-  "name": "casn-app",
-  "short_name": "casn-app",
-  "theme_color": "#1976d2",
+  "name": "Clinic Access Support Network",
+  "short_name": "CASN",
+  "theme_color": "#6972b3",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/",
