@@ -65,12 +65,12 @@
           </ng-container>
         </mat-card>
       </mat-tab>
+      <!--================ Map ===============-->
       <mat-tab label="Map View">
         <mat-card>
-          <!-- TODO: Fetch lat/lng from backend -->
-          <agm-map [latitude]="ride[driveType].latitude || lat2" [longitude]=" ride[driveType].longitude || lng2">
-            <agm-marker [latitude]="ride[driveType].latitude || lat"
-                        [longitude]="ride[driveType].longitude || lng"
+          <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
+            <agm-marker [latitude]="ride[driveType].startLatitude"
+                        [longitude]="ride[driveType].startLongitude"
                         iconUrl="http://maps.google.com/mapfiles/ms/micons/homegardenbusiness.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
@@ -79,8 +79,8 @@
                 </a>
               </agm-info-window>
             </agm-marker>
-            <agm-marker [latitude]="ride[driveType].latitude || lat2"
-                        [longitude]="ride[driveType].longitude || lng2"
+            <agm-marker [latitude]="ride[driveType].endLatitude"
+                        [longitude]="ride[driveType].endLongitude"
                         iconUrl="http://maps.google.com/mapfiles/ms/micons/hospitals.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:

@@ -18,10 +18,6 @@ export class RideDetailModalComponent implements OnInit {
   apptTypes: any;
   clinics: any;
   volunteers: any[];
-  lat: number = 29.3604;
-  lng: number = -95.8698;
-  lat2: number = 29.6604;
-  lng2: number = -95.4698;
 
   constructor( private ds: DefaultService,
                private driverService: DriverService,
@@ -30,11 +26,9 @@ export class RideDetailModalComponent implements OnInit {
 
   ngOnInit() {
     this.apptTypes = this.constants.APPT_TYPES;
-    // TODO: Refactor so we cache this data
     this.getClinics();
     this.getVolunteers();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
-    console.log(this.ride);
   }
 
 /*********************************************************************
@@ -42,7 +36,6 @@ export class RideDetailModalComponent implements OnInit {
 **********************************************************************/
   getClinics(): void {
     this.ds.getClinics().subscribe(c => {
-      console.log("--Calling getClinics (TODO: needs to be cached)");
       this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
@@ -83,7 +76,6 @@ export class RideDetailModalComponent implements OnInit {
   handleApproveClick(volunteerId: number) {
     this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
       res => {
-        console.log("SUCCESS. Approved volunteer", res);
         this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {

@@ -14,8 +14,7 @@ export class MapComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 /*********************************************************************
                             Click Handlers
