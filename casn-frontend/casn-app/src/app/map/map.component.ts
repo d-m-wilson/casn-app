@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { DefaultService } from '../api/api/default.service';
 
 @Component({
   selector: 'app-map',
@@ -10,11 +11,23 @@ export class MapComponent implements OnInit {
   @Output() closeMapModalClick = new EventEmitter<boolean>();
   @Output() seeDriveDetailsClick = new EventEmitter();
   mapCenter: any = { latitude: 29.7604, longitude: -95.3698, zoom: 9 };
-  coords: any[];
+  clinics: any;
 
-  constructor() { }
+  constructor( private ds: DefaultService ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.getClinics()
+  }
+
+  /*********************************************************************
+                          Service Calls
+  **********************************************************************/
+  getClinics(): void {
+    this.ds.getClinics().subscribe(c => {
+      this.clinics = c;
+      console.log("Clinics", this.clinics);
+    });
+  }
 
 /*********************************************************************
                             Click Handlers
@@ -33,6 +46,12 @@ export class MapComponent implements OnInit {
 **********************************************************************/
   getGoogleMapLink(ride: any, driveType: string, addressType: string) {
     const query = `${ride[driveType][addressType + 'Address']} ${ride[driveType][addressType + 'City']} ${ride[driveType][addressType + 'PostalCode']}`;
+    const urlEncodedQuery = encodeURI(query);
+    return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
+  }
+
+  getClinicGoogleMapLink(clinic: any): string {
+    const query = `${clinic.address} ${clinic.city} ${clinic.postalCode}`;
     const urlEncodedQuery = encodeURI(query);
     return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
   }

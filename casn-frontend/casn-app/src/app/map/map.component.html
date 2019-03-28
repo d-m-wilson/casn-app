@@ -38,7 +38,7 @@
                   color="primary">See Drive Details</button>
         </agm-info-window>
       </agm-marker>
-      <!--====== Map Markers for driveTo ========-->
+      <!--====== Map Markers for driveFrom ========-->
       <agm-marker *ngFor="let r of rides"
                   iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
                   [latitude]="r.driveFrom.endLatitude"
@@ -63,6 +63,20 @@
                   (click)="handleCloseModalClick();
                            handleSeeDriveDetailsClick(r, 'driveFrom')"
                   color="primary">See Drive Details</button>
+        </agm-info-window>
+      </agm-marker>
+      <!--====== Map Markers for Clinics ========-->
+      <agm-marker *ngFor="let c of clinics"
+                  iconUrl="http://maps.google.com/mapfiles/ms/micons/hospitals.png"
+                  [latitude]="c.latitude"
+                  [longitude]="c.longitude">
+        <agm-info-window [disableAutoPan]="true">
+          <strong>{{ c.name }}</strong>
+          <br/>
+          <address>
+            <a [href]="getClinicGoogleMapLink(c)"
+               target="_blank">{{ c.address }}</a>
+          </address>
         </agm-info-window>
       </agm-marker>
     </agm-map>
