@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Constants } from './app.constants';
 import { AuthenticationService } from './auth-services/auth.service';
 import { Router } from '@angular/router';
@@ -14,6 +14,9 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   opened: boolean;
   menuItems: any[];
+  // A2HS
+  deferredPrompt: any;
+  showButton: boolean = false;
 
   constructor(
     private _authService: AuthenticationService,
@@ -36,7 +39,9 @@ export class AppComponent implements OnInit {
     this.menuItems = this.constants.MENU_ITEMS;
     this.registerCustomMaterialIcons();
   }
-
+  /*********************************************************************
+                              User Login
+  **********************************************************************/
   login() {
     this._authService.login();
   }
@@ -50,6 +55,9 @@ export class AppComponent implements OnInit {
     return boolExpr;
   }
 
+  /*********************************************************************
+                              Custom Icons
+  **********************************************************************/
   registerCustomMaterialIcons(): void {
     this.matIconRegistry.addSvgIcon(
       `drive_to`,
@@ -59,5 +67,35 @@ export class AppComponent implements OnInit {
       `drive_from`,
       this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/drive-to.svg`)
     );
+  }
+
+  /*********************************************************************
+                                    A2HS
+  **********************************************************************/
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  onbeforeinstallprompt(e) {
+    console.log(e);
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    this.deferredPrompt = e;
+    this.showButton = true;
+  }
+
+  addToHomeScreen() {
+  // Hide our user interface that shows our A2HS button
+  this.showButton = false;
+  // Show the prompt
+  this.deferredPrompt.prompt();
+  // Wait for the user to respond to the prompt
+  this.deferredPrompt.userChoice
+    .then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the A2HS prompt');
+      } else {
+        console.log('User dismissed the A2HS prompt');
+      }
+      this.deferredPrompt = null;
+    });
   }
 }
