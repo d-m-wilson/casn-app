@@ -13,7 +13,7 @@
              [zoom]="mapCenter.zoom">
       <!--====== Map Markers for driveTo ========-->
       <ng-container *ngFor="let r of rides">
-        <agm-marker iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
+        <agm-marker iconUrl="assets/img/blue-pushpin.png"
                     [latitude]="r.driveTo.startLatitude"
                     [longitude]="r.driveTo.startLongitude">
           <agm-info-window [disableAutoPan]="true">
@@ -47,7 +47,7 @@
       </ng-container>
       <!--====== Map Markers for driveFrom ========-->
       <ng-container *ngFor="let r of rides">
-        <agm-marker iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
+        <agm-marker iconUrl="assets/img/blue-pushpin.png"
                     [latitude]="r.driveFrom.endLatitude"
                     [longitude]="r.driveFrom.endLongitude">
           <agm-info-window [disableAutoPan]="true">
@@ -81,7 +81,7 @@
       </ng-container>
       <!--====== Map Markers for Clinics ========-->
       <agm-marker *ngFor="let c of clinics"
-                  iconUrl="http://maps.google.com/mapfiles/ms/micons/hospitals.png"
+                  iconUrl="assets/img/hospitals.png"
                   [latitude]="c.latitude"
                   [longitude]="c.longitude">
         <agm-info-window [disableAutoPan]="true">

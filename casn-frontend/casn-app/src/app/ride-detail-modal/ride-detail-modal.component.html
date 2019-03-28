@@ -71,7 +71,7 @@
           <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
-                        iconUrl="http://maps.google.com/mapfiles/ms/micons/homegardenbusiness.png">
+                        iconUrl="assets/img/homegardenbusiness.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
                 <a [href]="startAddressGoogleMapLink" target="_blank">
@@ -81,7 +81,7 @@
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
-                        iconUrl="http://maps.google.com/mapfiles/ms/micons/hospitals.png">
+                        iconUrl="assets/img/hospitals.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:
                 <a [href]="endAddressGoogleMapLink" target="_blank">
