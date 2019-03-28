@@ -17,16 +17,14 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.getClinics()
+    console.log("Rides", this.rides);
   }
 
   /*********************************************************************
                           Service Calls
   **********************************************************************/
   getClinics(): void {
-    this.ds.getClinics().subscribe(c => {
-      this.clinics = c;
-      console.log("Clinics", this.clinics);
-    });
+    this.ds.getClinics().subscribe(c => this.clinics = c);
   }
 
 /*********************************************************************

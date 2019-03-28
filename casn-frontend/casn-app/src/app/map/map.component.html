@@ -38,6 +38,14 @@
                   color="primary">See Drive Details</button>
         </agm-info-window>
       </agm-marker>
+      <agm-polyline *ngFor="let r of rides">
+        <agm-polyline-point [latitude]="r.driveFrom.startLatitude"
+                            [longitude]="r.driveFrom.startLongitude">
+        </agm-polyline-point>
+        <agm-polyline-point [latitude]="r.driveFrom.endLatitude"
+                            [longitude]="r.driveFrom.endLongitude">
+        </agm-polyline-point>
+      </agm-polyline>
       <!--====== Map Markers for driveFrom ========-->
       <agm-marker *ngFor="let r of rides"
                   iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
