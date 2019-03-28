@@ -12,67 +12,73 @@
              [longitude]="mapCenter.longitude"
              [zoom]="mapCenter.zoom">
       <!--====== Map Markers for driveTo ========-->
-      <agm-marker *ngFor="let r of rides"
-                  iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
-                  [latitude]="r.driveTo.startLatitude"
-                  [longitude]="r.driveTo.startLongitude">
-        <agm-info-window [disableAutoPan]="true">
-          Start Address:
-          <address>
-            <a [href]="getGoogleMapLink(r, 'driveTo', 'start')" target="_blank">
-              {{ r.driveTo.startAddress }}
-            </a>
-          </address>
-          <br>
-          End Address:
-          <address>
-            <a [href]="getGoogleMapLink(r, 'driveTo', 'end')" target="_blank">
-              {{ r.driveTo.endAddress }}
-            </a>
-          </address>
-          <br>
-          <button type="button"
-                  mat-raised-button
-                  (click)="handleCloseModalClick();
-                           handleSeeDriveDetailsClick(r, 'driveTo')"
-                  color="primary">See Drive Details</button>
-        </agm-info-window>
-      </agm-marker>
-      <agm-polyline *ngFor="let r of rides">
-        <agm-polyline-point [latitude]="r.driveFrom.startLatitude"
-                            [longitude]="r.driveFrom.startLongitude">
-        </agm-polyline-point>
-        <agm-polyline-point [latitude]="r.driveFrom.endLatitude"
-                            [longitude]="r.driveFrom.endLongitude">
-        </agm-polyline-point>
-      </agm-polyline>
+      <ng-container *ngFor="let r of rides">
+        <agm-marker iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
+                    [latitude]="r.driveTo.startLatitude"
+                    [longitude]="r.driveTo.startLongitude">
+          <agm-info-window [disableAutoPan]="true">
+            Start Address:
+            <address>
+              <a [href]="getGoogleMapLink(r, 'driveTo', 'start')"
+                 target="_blank">{{ r.driveTo.startAddress }}</a>
+            </address>
+            <br>
+            End Address:
+            <address>
+              <a [href]="getGoogleMapLink(r, 'driveTo', 'end')"
+                 target="_blank">{{ r.driveTo.endAddress }}</a>
+            </address>
+            <br>
+            <button type="button"
+                    mat-raised-button
+                    (click)="handleCloseModalClick();
+                             handleSeeDriveDetailsClick(r, 'driveTo')"
+                    color="primary">See Drive Details</button>
+          </agm-info-window>
+        </agm-marker>
+        <agm-polyline>
+          <agm-polyline-point [latitude]="r.driveTo.startLatitude"
+                              [longitude]="r.driveTo.startLongitude">
+          </agm-polyline-point>
+          <agm-polyline-point [latitude]="r.driveTo.endLatitude"
+                              [longitude]="r.driveTo.endLongitude">
+          </agm-polyline-point>
+        </agm-polyline>
+      </ng-container>
       <!--====== Map Markers for driveFrom ========-->
-      <agm-marker *ngFor="let r of rides"
-                  iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
-                  [latitude]="r.driveFrom.endLatitude"
-                  [longitude]="r.driveFrom.endLongitude">
-        <agm-info-window [disableAutoPan]="true">
-          Start Address:
-          <address>
-            <a [href]="getGoogleMapLink(r, 'driveFrom', 'start')" target="_blank">
-              {{ r.driveFrom.startAddress }}
-            </a>
-          </address>
-          <br>
-          End Address:
-          <address>
-            <a [href]="getGoogleMapLink(r, 'driveFrom', 'end')" target="_blank">
-              {{ r.driveFrom.endAddress }}
-            </a>
-          </address>
-          <br>
-          <button type="button"
-                  mat-raised-button
-                  (click)="handleCloseModalClick();
-                           handleSeeDriveDetailsClick(r, 'driveFrom')"
-                  color="primary">See Drive Details</button>
-        </agm-info-window>
-      </agm-marker>
+      <ng-container *ngFor="let r of rides">
+        <agm-marker iconUrl="http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png"
+                    [latitude]="r.driveFrom.endLatitude"
+                    [longitude]="r.driveFrom.endLongitude">
+          <agm-info-window [disableAutoPan]="true">
+            Start Address:
+            <address>
+              <a [href]="getGoogleMapLink(r, 'driveFrom', 'start')"
+                 target="_blank">{{ r.driveFrom.startAddress }}</a>
+            </address>
+            <br>
+            End Address:
+            <address>
+              <a [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
+                 target="_blank">{{ r.driveFrom.endAddress }}</a>
+            </address>
+            <br>
+            <button type="button"
+                    mat-raised-button
+                    (click)="handleCloseModalClick();
+                             handleSeeDriveDetailsClick(r, 'driveFrom')"
+                    color="primary">See Drive Details</button>
+          </agm-info-window>
+        </agm-marker>
+        <agm-polyline>
+          <agm-polyline-point [latitude]="r.driveFrom.startLatitude"
+                              [longitude]="r.driveFrom.startLongitude">
+          </agm-polyline-point>
+          <agm-polyline-point [latitude]="r.driveFrom.endLatitude"
+                              [longitude]="r.driveFrom.endLongitude">
+          </agm-polyline-point>
+        </agm-polyline>
+      </ng-container>
       <!--====== Map Markers for Clinics ========-->
       <agm-marker *ngFor="let c of clinics"
                   iconUrl="http://maps.google.com/mapfiles/ms/micons/hospitals.png"
