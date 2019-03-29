@@ -129,6 +129,7 @@ namespace CASNApp.API.Controllers
                 EndState = clinic.State,
                 EndPostalCode = clinic.PostalCode,
                 EndLatitude = clinic.Latitude,
+                EndLongitude = clinic.Longitude,
                 EndGeocoded = clinic.Geocoded,
                 IsActive = true,
                 Created = DateTime.UtcNow,
