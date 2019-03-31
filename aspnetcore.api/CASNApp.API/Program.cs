@@ -17,7 +17,7 @@ namespace CASNApp.API
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            var logger = NLogBuilder.ConfigureNLog(Constants.NLogConfigFile).GetCurrentClassLogger();
+            var logger = NLogBuilder.ConfigureNLog(Core.Constants.NLogConfigFile).GetCurrentClassLogger();
 
             try
             {

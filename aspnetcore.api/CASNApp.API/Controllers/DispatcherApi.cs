@@ -42,9 +42,9 @@ namespace CASNApp.API.Controllers
         public DispatcherApiController(Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
-            googleApiKey = configuration[Constants.GoogleApiKey];
-            vagueLocationMinOffset = double.Parse(configuration[Constants.VagueLocationMinOffset]);
-            vagueLocationMaxOffset = double.Parse(configuration[Constants.VagueLocationMaxOffset]);
+            googleApiKey = configuration[Core.Constants.GoogleApiKey];
+            vagueLocationMinOffset = double.Parse(configuration[Core.Constants.VagueLocationMinOffset]);
+            vagueLocationMaxOffset = double.Parse(configuration[Core.Constants.VagueLocationMaxOffset]);
             this.loggerFactory = loggerFactory;
         }
 

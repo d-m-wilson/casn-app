@@ -26,7 +26,7 @@ namespace CASNApp.API.Models
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id")]
-        public long? Id { get; internal set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// Gets or Sets AppointmentId
@@ -131,7 +131,7 @@ namespace CASNApp.API.Models
         /// Gets or Sets Created
         /// </summary>
         [DataMember(Name="created")]
-        public DateTime? Created { get; internal set; }
+        public DateTime? Created { get; set; }
 
         /// <summary>
         /// Gets or Sets Updated
