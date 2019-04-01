@@ -1,9 +1,9 @@
 ﻿using System;
-using CASNApp.API.Extensions;
+using CASNApp.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace CASNApp.API.Entities
+namespace CASNApp.Core.Entities
 {
     public partial class casn_appContext : DbContext
     {

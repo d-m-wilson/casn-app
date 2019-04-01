@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using CASNApp.API.Entities;
+using CASNApp.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CASNApp.API.Queries
+namespace CASNApp.Core.Queries
 {
     public class VolunteerQuery
     {

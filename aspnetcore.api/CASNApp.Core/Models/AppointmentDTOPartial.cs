@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CASNApp.API.Models
+namespace CASNApp.Core.Models
 {
     public partial class AppointmentDTO
     {

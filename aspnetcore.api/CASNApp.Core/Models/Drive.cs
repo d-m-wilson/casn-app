@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace CASNApp.API.Models
+namespace CASNApp.Core.Models
 {
     /// <summary>
     /// 

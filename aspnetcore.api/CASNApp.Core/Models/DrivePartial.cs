@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CASNApp.API.Models
+namespace CASNApp.Core.Models
 {
     public partial class Drive
     {

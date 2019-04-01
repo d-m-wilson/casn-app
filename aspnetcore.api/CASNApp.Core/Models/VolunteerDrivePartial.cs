@@ -1,4 +1,4 @@
-﻿namespace CASNApp.API.Models
+﻿namespace CASNApp.Core.Models
 {
     public partial class VolunteerDrive
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CASNApp.API.Entities
+namespace CASNApp.Core.Entities
 {
     public partial class Caller
     {

@@ -15,8 +15,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
-using CASNApp.API.Models;
-using CASNApp.API.Queries;
+using CASNApp.Core.Models;
+using CASNApp.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,13 +33,13 @@ namespace CASNApp.API.Controllers
     [Authorize(Policy = Constants.IsDispatcherPolicy)]
     public class DispatcherApiController : Controller
     {
-        private readonly Entities.casn_appContext dbContext;
+        private readonly Core.Entities.casn_appContext dbContext;
         private readonly ILoggerFactory loggerFactory;
         private readonly string googleApiKey;
         private readonly double vagueLocationMinOffset;
         private readonly double vagueLocationMaxOffset;
 
-        public DispatcherApiController(Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
+        public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
             googleApiKey = configuration[Core.Constants.GoogleApiKey];
@@ -101,7 +101,7 @@ namespace CASNApp.API.Controllers
                 return BadRequest(appointmentDTO);
             }
 
-            var appointmentEntity = new Entities.Appointment
+            var appointmentEntity = new Core.Entities.Appointment
             {
                 DispatcherId = volunteer.Id,
                 CallerId = caller.Id,
@@ -115,7 +115,7 @@ namespace CASNApp.API.Controllers
                 Updated = null,
             };
 
-            var driveToEntity = new Entities.Drive
+            var driveToEntity = new Core.Entities.Drive
             {
                 Appointment = appointmentEntity,
                 Direction = Drive.DirectionToClinic,
@@ -136,7 +136,7 @@ namespace CASNApp.API.Controllers
                 Updated = null,
             };
 
-            var driveFromEntity = new Entities.Drive
+            var driveFromEntity = new Core.Entities.Drive
             {
                 Appointment = appointmentEntity,
                 Direction = Drive.DirectionFromClinic,
@@ -331,7 +331,7 @@ namespace CASNApp.API.Controllers
                 return Conflict();
             }
 
-            var callerEntity = new Entities.Caller(caller);
+            var callerEntity = new Core.Entities.Caller(caller);
 
             dbContext.Caller.Add(callerEntity);
             await dbContext.SaveChangesAsync();
@@ -409,7 +409,7 @@ namespace CASNApp.API.Controllers
             var callers = await dbContext.Caller
                 .AsNoTracking()
                 .Where(p => p.CallerIdentifier == callerIdentifier)
-                .Select(p => new Models.Caller(p))
+                .Select(p => new Core.Models.Caller(p))
                 .ToListAsync();
 
             if (callers.Count == 0)
@@ -458,7 +458,7 @@ namespace CASNApp.API.Controllers
                 .Include(vd => vd.Volunteer)
                 .Where(vd => vd.DriveId == driveId.Value && vd.IsActive)
                 .OrderBy(vd => vd.Created)
-                .Select(vd => new Models.VolunteerDrive(vd))
+                .Select(vd => new Core.Models.VolunteerDrive(vd))
                 .ToList();
 
             return Ok(results);

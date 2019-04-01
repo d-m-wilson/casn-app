@@ -2,11 +2,11 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
-using CASNApp.API.Extensions;
+using CASNApp.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
-namespace CASNApp.API.Queries
+namespace CASNApp.Core.Queries
 {
     public class GeocoderQuery
     {

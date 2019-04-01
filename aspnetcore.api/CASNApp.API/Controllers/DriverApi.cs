@@ -13,8 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
-using CASNApp.API.Models;
-using CASNApp.API.Queries;
+using CASNApp.Core.Models;
+using CASNApp.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +28,9 @@ namespace CASNApp.API.Controllers
     [Authorize(Policy = Constants.IsDriverPolicy)]
     public class DriverApiController : Controller
     {
-        private readonly Entities.casn_appContext dbContext;
+        private readonly Core.Entities.casn_appContext dbContext;
 
-        public DriverApiController(Entities.casn_appContext dbContext)
+        public DriverApiController(Core.Entities.casn_appContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -82,7 +82,7 @@ namespace CASNApp.API.Controllers
                 return Conflict(body);
             }
 
-            var volunteerDrive = new Entities.VolunteerDrive
+            var volunteerDrive = new Core.Entities.VolunteerDrive
             {
                 Created = DateTime.UtcNow,
                 DriveId = (uint)driveId.Value,
@@ -100,7 +100,7 @@ namespace CASNApp.API.Controllers
 
             dbContext.SaveChanges();
 
-            var volunteerDriveDTO = new Models.VolunteerDrive(volunteerDrive);
+            var volunteerDriveDTO = new Core.Models.VolunteerDrive(volunteerDrive);
 
             return Ok(volunteerDriveDTO);
 

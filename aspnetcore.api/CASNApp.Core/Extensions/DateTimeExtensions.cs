@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CASNApp.API.Extensions
+namespace CASNApp.Core.Extensions
 {
     public static class DateTimeExtensions
     {

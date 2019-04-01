@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CASNApp.API.Entities
+namespace CASNApp.Core.Entities
 {
     public partial class Drive
     {

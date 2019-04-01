@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CASNApp.API.Entities
+namespace CASNApp.Core.Entities
 {
     public partial class Volunteer
     {

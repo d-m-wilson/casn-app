@@ -10,7 +10,7 @@
 
 using System;
 using System.IO;
-using CASNApp.API.Entities;
+using CASNApp.Core.Entities;
 using CASNApp.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
