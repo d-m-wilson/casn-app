@@ -11,12 +11,12 @@ namespace CASNApp.API.Queries
     public class GeocoderQuery
     {
         private readonly string apiKey;
-        private readonly ILogger logger;
+        private readonly ILogger<GeocoderQuery> logger;
 
-        public GeocoderQuery(string apiKey, ILoggerFactory loggerFactory)
+        public GeocoderQuery(string apiKey, ILogger<GeocoderQuery> logger)
         {
             this.apiKey = apiKey;
-            logger = loggerFactory.CreateLogger<GeocoderQuery>();
+            this.logger = logger;
         }
 
         public async Task<LatLng> ForwardLookupAsync(string address)

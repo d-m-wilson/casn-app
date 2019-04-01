@@ -157,7 +157,7 @@ namespace CASNApp.API.Controllers
                 Updated = null,
             };
 
-            var geocoder = new GeocoderQuery(googleApiKey, loggerFactory);
+            var geocoder = new GeocoderQuery(googleApiKey, loggerFactory.CreateLogger<GeocoderQuery>());
 
             var driveToAddress = driveToEntity.GetCallerAddress();
             var driveToLocation = await geocoder.ForwardLookupAsync(driveToAddress);
