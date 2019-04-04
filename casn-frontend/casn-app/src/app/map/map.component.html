@@ -15,8 +15,12 @@
       <ng-container *ngFor="let r of rides">
         <agm-marker iconUrl="assets/img/blue-pushpin.png"
                     [latitude]="r.driveTo.startLatitude"
-                    [longitude]="r.driveTo.startLongitude">
-          <agm-info-window [disableAutoPan]="true">
+                    [longitude]="r.driveTo.startLongitude"
+                    (markerClick)="markerClick(infoWindow);
+                                   showPolylinesForMarker(r)">
+          <agm-info-window [disableAutoPan]="true"
+                           (infoWindowClose)="hidePolylinesForMarker(r)"
+                           #infoWindow>
             Start Address:
             <address>
               <a [href]="getGoogleMapLink(r, 'driveTo', 'start')"
@@ -36,7 +40,9 @@
                     color="primary">See Drive Details</button>
           </agm-info-window>
         </agm-marker>
-        <agm-polyline>
+        <agm-polyline strokeWeight="2"
+                      strokeColor="#00f"
+                      [visible]="r.showPolylines || false">
           <agm-polyline-point [latitude]="r.driveTo.startLatitude"
                               [longitude]="r.driveTo.startLongitude">
           </agm-polyline-point>
@@ -47,10 +53,14 @@
       </ng-container>
       <!--====== Map Markers for driveFrom ========-->
       <ng-container *ngFor="let r of rides">
-        <agm-marker iconUrl="assets/img/blue-pushpin.png"
+        <agm-marker
                     [latitude]="r.driveFrom.endLatitude"
-                    [longitude]="r.driveFrom.endLongitude">
-          <agm-info-window [disableAutoPan]="true">
+                    [longitude]="r.driveFrom.endLongitude"
+                    (markerClick)="markerClick(infoWindow);
+                                   showPolylinesForMarker(r)">
+          <agm-info-window [disableAutoPan]="true"
+                           (infoWindowClose)="hidePolylinesForMarker(r)"
+                           #infoWindow>
             Start Address:
             <address>
               <a [href]="getGoogleMapLink(r, 'driveFrom', 'start')"
@@ -70,7 +80,9 @@
                     color="primary">See Drive Details</button>
           </agm-info-window>
         </agm-marker>
-        <agm-polyline>
+        <agm-polyline strokeWeight="2"
+                      strokeColor="#00f"
+                      [visible]="r.showPolylines || false">
           <agm-polyline-point [latitude]="r.driveFrom.startLatitude"
                               [longitude]="r.driveFrom.startLongitude">
           </agm-polyline-point>

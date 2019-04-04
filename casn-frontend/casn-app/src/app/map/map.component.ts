@@ -17,7 +17,6 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.getClinics()
-    console.log("Rides", this.rides);
   }
 
   /*********************************************************************
@@ -37,6 +36,25 @@ export class MapComponent implements OnInit {
   handleSeeDriveDetailsClick(ride: any, driveType: string) {
     const msg = { ride: ride, driveType: driveType };
     this.seeDriveDetailsClick.emit(msg);
+  }
+
+  showPolylinesForMarker(ride: any) {
+    ride.showPolylines = true;
+  }
+
+  hidePolylinesForMarker(ride: any) {
+    ride.showPolylines = false;
+  }
+
+  lastSelectedInfoWindow: any;
+  markerClick(infoWindow: any) {
+    if (infoWindow == this.lastSelectedInfoWindow) return;
+    if (this.lastSelectedInfoWindow != null) {
+      try{
+        this.lastSelectedInfoWindow.close();
+      } catch {} //in case if you reload your markers
+    }
+    this.lastSelectedInfoWindow = infoWindow;
   }
 
 /*********************************************************************
