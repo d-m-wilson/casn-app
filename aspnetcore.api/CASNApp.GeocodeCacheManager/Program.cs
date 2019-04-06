@@ -22,6 +22,8 @@ namespace CASNApp.GeocodeCacheManager
             configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, false)
+                .AddUserSecrets<Program>(true)
+                .AddEnvironmentVariables()
                 .Build();
 
             maxDays = int.Parse(configuration["GeocodeCacheMaxDays"]);
@@ -52,8 +54,12 @@ namespace CASNApp.GeocodeCacheManager
         static void Main(string[] args)
         {
             var servicesProvider = BuildDi();
+            var logger = servicesProvider.GetRequiredService<ILogger<Program>>();
 
-            Console.WriteLine($"Cleaning {nameof(Drive)} records...");
+            var logMessage = $"Cleaning {nameof(Drive)} records...";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
+
             var driveCount = 0;
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
@@ -63,12 +69,15 @@ namespace CASNApp.GeocodeCacheManager
 
                 foreach (var drive in drives)
                 {
+                    bool updated = false;
+
                     if (drive.StartGeocoded.HasValue &&
                         drive.StartGeocoded.Value.AddDays(maxDays) < DateTime.UtcNow)
                     {
                         drive.StartLatitude = null;
                         drive.StartLongitude = null;
                         drive.StartGeocoded = null;
+                        updated = true;
                     }
 
                     if (drive.EndGeocoded.HasValue &&
@@ -77,17 +86,26 @@ namespace CASNApp.GeocodeCacheManager
                         drive.EndLatitude = null;
                         drive.EndLongitude = null;
                         drive.EndGeocoded = null;
+                        updated = true;
                     }
 
-                    driveCount++;
+                    if (updated)
+                    {
+                        driveCount++;
+                    }
                 }
 
                 dbContext.SaveChanges();
             }
 
-            Console.WriteLine($"{driveCount} {nameof(Drive)} records cleaned.");
+            logMessage = $"{driveCount} {nameof(Drive)} records cleaned.";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
 
-            Console.WriteLine($"Cleaning {nameof(Appointment)} records...");
+            logMessage = $"Cleaning {nameof(Appointment)} records...";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
+
             var appointmentCount = 0;
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
@@ -97,12 +115,15 @@ namespace CASNApp.GeocodeCacheManager
 
                 foreach (var appointment in appointments)
                 {
+                    bool updated = false;
+
                     if (appointment.PickupVagueGeocoded.HasValue &&
                         appointment.PickupVagueGeocoded.Value.AddDays(maxDays) < DateTime.UtcNow)
                     {
                         appointment.PickupVagueLatitude = null;
                         appointment.PickupVagueLongitude = null;
                         appointment.PickupVagueGeocoded = null;
+                        updated = true;
                     }
 
                     if (appointment.DropoffVagueGeocoded.HasValue &&
@@ -111,17 +132,26 @@ namespace CASNApp.GeocodeCacheManager
                         appointment.DropoffVagueLatitude = null;
                         appointment.DropoffVagueLongitude = null;
                         appointment.DropoffVagueGeocoded = null;
+                        updated = true;
                     }
 
-                    appointmentCount++;
+                    if (updated)
+                    {
+                        appointmentCount++;
+                    }
                 }
 
                 dbContext.SaveChanges();
             }
 
-            Console.WriteLine($"{appointmentCount} {nameof(Appointment)} records cleaned.");
+            logMessage = $"{appointmentCount} {nameof(Appointment)} records cleaned.";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
 
-            Console.WriteLine($"Refreshing {nameof(Clinic)} records...");
+            logMessage = $"Refreshing {nameof(Clinic)} records...";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
+
             var clinicCount = 0;
 
             var googleApiKey = configuration["GoogleApiKey"];
@@ -144,6 +174,15 @@ namespace CASNApp.GeocodeCacheManager
 
                     var clinicAddress = clinic.GetAddress();
                     var clinicLocation = geocoder.ForwardLookupAsync(clinicAddress).Result;
+
+                    if (clinicLocation == null)
+                    {
+                        logMessage = "The geocoder returned null. Please check the log for details.";
+                        Console.WriteLine(logMessage);
+                        logger.LogError(logMessage);
+                        throw new Exception(logMessage);
+                    }
+
                     clinic.SetLocation(clinicLocation);
 
                     clinicCount++;
@@ -152,7 +191,9 @@ namespace CASNApp.GeocodeCacheManager
                 dbContext.SaveChanges();
             }
 
-            Console.WriteLine($"{clinicCount} {nameof(Clinic)} records refreshed.");
+            logMessage = $"{clinicCount} {nameof(Clinic)} records refreshed.";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
 
         }
 
