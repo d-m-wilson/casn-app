@@ -13,7 +13,7 @@ namespace CASNApp.Core.Entities
         public uint Id { get; set; }
         public uint AppointmentId { get; set; }
         public byte Direction { get; set; }
-        public byte Status { get; set; }
+        public uint StatusId { get; set; }
         public uint? DriverId { get; set; }
         public string StartAddress { get; set; }
         public string StartCity { get; set; }
@@ -33,11 +33,14 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
         public DateTime? Approved { get; set; }
-        public uint? ApprovedBy { get; set; }
+        public uint? ApprovedById { get; set; }
+        public uint? CancelReasonId { get; set; }
 
         public Appointment Appointment { get; set; }
         public Volunteer Driver { get; set; }
         public Volunteer Approver { get; set; }
+        public DriveCancelReason CancelReason { get; set; }
+        public DriveStatus Status { get; set; }
         public ICollection<VolunteerDrive> VolunteerDrives { get; set; }
     }
 }

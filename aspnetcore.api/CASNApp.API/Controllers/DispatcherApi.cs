@@ -262,7 +262,7 @@ namespace CASNApp.API.Controllers
                 return NotFound(body1);
             }
 
-            if (volunteerDrive.Drive.Status != Drive.StatusPending ||
+            if (volunteerDrive.Drive.StatusId != Drive.StatusPending ||
                 volunteerDrive.Drive.DriverId.HasValue)
             {
                 return Conflict(body1);
@@ -271,9 +271,9 @@ namespace CASNApp.API.Controllers
             var drive = volunteerDrive.Drive;
 
             drive.DriverId = volunteerDrive.VolunteerId;
-            drive.Status = Drive.StatusApproved;
+            drive.StatusId = Drive.StatusApproved;
             drive.Approved = DateTime.UtcNow;
-            drive.ApprovedBy = volunteer.Id;
+            drive.ApprovedById = volunteer.Id;
             drive.Updated = DateTime.UtcNow;
 
             dbContext.SaveChanges();

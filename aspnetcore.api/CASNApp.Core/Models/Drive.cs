@@ -47,7 +47,7 @@ namespace CASNApp.Core.Models
         /// </summary>
         /// <value>0 = Open, 1 = Pending, 2 = Approved</value>
         [DataMember(Name = "status")]
-        public int Status { get; set; }
+        public uint Status { get; set; }
 
         /// <summary>
         /// Gets or Sets DriverId

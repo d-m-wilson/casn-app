@@ -23,11 +23,12 @@ namespace CASNApp.Core.Entities
         public decimal? DropoffVagueLongitude { get; set; }
         public DateTime? DropoffVagueGeocoded { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public int AppointmentTypeId { get; set; }
+        public uint AppointmentTypeId { get; set; }
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
+        public AppointmentType AppointmentType { get; set; }
         public Clinic Clinic { get; set; }
         public Volunteer Dispatcher { get; set; }
         public Caller Caller { get; set; }

@@ -19,8 +19,11 @@ namespace CASNApp.Core.Entities
         }
 
         public virtual DbSet<Appointment> Appointment { get; set; }
+        public virtual DbSet<AppointmentType> AppointmentType { get; set; }
         public virtual DbSet<Clinic> Clinic { get; set; }
         public virtual DbSet<Drive> Drive { get; set; }
+        public virtual DbSet<DriveStatus> DriveStatus { get; set; }
+        public virtual DbSet<DriveCancelReason> DriveCancelReason { get; set; }
         public virtual DbSet<Caller> Caller { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
         public virtual DbSet<VolunteerDrive> VolunteerDrive { get; set; }
@@ -37,6 +40,9 @@ namespace CASNApp.Core.Entities
             modelBuilder.Entity<Appointment>(entity =>
             {
                 entity.ToTable("appointment");
+
+                entity.HasIndex(e => e.AppointmentTypeId)
+                    .HasName("fk_appointment_appointmentTypeId_idx");
 
                 entity.HasIndex(e => e.ClinicId)
                     .HasName("fk_appointment_clinicId_idx");
@@ -116,6 +122,12 @@ namespace CASNApp.Core.Entities
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
+                entity.HasOne(d => d.AppointmentType)
+                    .WithMany()
+                    .HasForeignKey(d => d.AppointmentTypeId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_appointment_appointmentTypeId");
+
                 entity.HasOne(d => d.Clinic)
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.ClinicId)
@@ -131,6 +143,48 @@ namespace CASNApp.Core.Entities
                     .WithMany(p => p.Appointments)
                     .HasForeignKey(d => d.CallerId)
                     .HasConstraintName("fk_appointment_CallerId");
+            });
+
+            modelBuilder.Entity<AppointmentType>(entity =>
+            {
+                entity.ToTable("appointmenttype");
+
+                entity.Property(e => e.Id)
+                    .IsRequired()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(64)");
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasColumnName("title")
+                    .HasColumnType("varchar(64)");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasColumnType("varchar(255)");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("isActive")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'1\\''")
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Updated)
+                    .HasColumnName("updated")
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
             });
 
             modelBuilder.Entity<Clinic>(entity =>
@@ -214,11 +268,15 @@ namespace CASNApp.Core.Entities
                 entity.HasIndex(e => e.DriverId)
                     .HasName("fk_drive_DriverId_idx");
 
+                entity.HasIndex(e => e.StatusId)
+                    .HasName("fk_drive_statusId_idx");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .UseMySqlIdentityColumn();
 
-                entity.Property(e => e.AppointmentId).HasColumnName("appointmentId");
+                entity.Property(e => e.AppointmentId)
+                    .HasColumnName("appointmentId");
 
                 entity.Property(e => e.Created)
                     .HasColumnName("created")
@@ -226,9 +284,11 @@ namespace CASNApp.Core.Entities
                     .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
-                entity.Property(e => e.Direction).HasColumnName("direction");
+                entity.Property(e => e.Direction)
+                    .HasColumnName("direction");
 
-                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.StatusId)
+                    .HasColumnName("statusId");
 
                 entity.Property(e => e.DriverId).HasColumnName("driverId");
 
@@ -305,10 +365,14 @@ namespace CASNApp.Core.Entities
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
-                entity.Property(e => e.ApprovedBy).HasColumnName("approvedBy");
+                entity.Property(e => e.ApprovedById)
+                    .HasColumnName("approvedById");
 
-                entity.HasIndex(e => e.ApprovedBy)
-                    .HasName("fk_drive_ApprovedBy_idx");
+                entity.HasIndex(e => e.ApprovedById)
+                    .HasName("fk_drive_ApprovedById_idx");
+
+                entity.Property(e => e.CancelReasonId)
+                    .HasColumnName("cancelReasonId");
 
                 entity.HasOne(d => d.Appointment)
                     .WithMany(p => p.Drives)
@@ -323,9 +387,91 @@ namespace CASNApp.Core.Entities
 
                 entity.HasOne(d => d.Approver)
                     .WithMany(p => p.Approvals)
-                    .HasForeignKey(d => d.ApprovedBy)
+                    .HasForeignKey(d => d.ApprovedById)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_drive_ApprovedBy");
+
+                entity.HasOne(d => d.CancelReason)
+                    .WithMany()
+                    .HasForeignKey(d => d.CancelReasonId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_drive_cancelReasonId");
+
+                entity.HasOne(d => d.Status)
+                    .WithMany()
+                    .HasForeignKey(d => d.StatusId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_drive_statusId");
+            });
+
+            modelBuilder.Entity<DriveCancelReason>(entity =>
+            {
+                entity.ToTable("drivecancelreason");
+
+                entity.Property(e => e.Id)
+                    .IsRequired()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasColumnType("varchar(255)");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("isActive")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'1\\''")
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Updated)
+                    .HasColumnName("updated")
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+            });
+
+            modelBuilder.Entity<DriveStatus>(entity =>
+            {
+                entity.ToTable("drivestatus");
+
+                entity.Property(e => e.Id)
+                    .IsRequired()
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("isActive")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'1\\''")
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Updated)
+                    .HasColumnName("updated")
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
             });
 
             modelBuilder.Entity<Caller>(entity =>

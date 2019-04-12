@@ -6,9 +6,9 @@ namespace CASNApp.Core.Models
     {
         public const int DirectionToClinic = 1;
         public const int DirectionFromClinic = 2;
-        public const int StatusOpen = 0;
-        public const int StatusPending = 1;
-        public const int StatusApproved = 2;
+        public const uint StatusOpen = 0;
+        public const uint StatusPending = 1;
+        public const uint StatusApproved = 2;
 
         public Drive() { }
 
@@ -17,7 +17,7 @@ namespace CASNApp.Core.Models
             AppointmentId = d.AppointmentId;
             Created = d.Created;
             Direction = d.Direction;
-            Status = d.Status;
+            Status = d.StatusId;
             DriverId = d.DriverId;
             EndAddress = d.EndAddress;
             EndCity = d.EndCity;
@@ -34,7 +34,7 @@ namespace CASNApp.Core.Models
             StartLongitude = d.StartLongitude;
             Updated = d.Updated;
             Approved = d.Approved;
-            ApprovedBy = d.ApprovedBy;
+            ApprovedBy = d.ApprovedById;
         }
 
         public bool Validate(int direction)

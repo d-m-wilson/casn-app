@@ -92,9 +92,9 @@ namespace CASNApp.API.Controllers
 
             dbContext.VolunteerDrive.Add(volunteerDrive);
             
-            if (drive.Status == Drive.StatusOpen)
+            if (drive.StatusId == Drive.StatusOpen)
             {
-                drive.Status = Drive.StatusPending;
+                drive.StatusId = Drive.StatusPending;
                 drive.Updated = DateTime.UtcNow;
             }
 
