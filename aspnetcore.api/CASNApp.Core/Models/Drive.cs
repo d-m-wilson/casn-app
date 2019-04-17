@@ -43,11 +43,16 @@ namespace CASNApp.Core.Models
         public int? Direction { get; set; }
 
         /// <summary>
-        /// 0 = Open, 1 = Pending, 2 = Approved
+        /// Gets or Sets Status
         /// </summary>
-        /// <value>0 = Open, 1 = Pending, 2 = Approved</value>
+        [DataMember(Name = "statusId")]
+        public uint StatusId { get; set; }
+
+        /// <summary>
+        /// Gets or Sets StatusName
+        /// </summary>
         [DataMember(Name = "status")]
-        public uint Status { get; set; }
+        public string Status { get; set; }
 
         /// <summary>
         /// Gets or Sets DriverId
@@ -148,8 +153,20 @@ namespace CASNApp.Core.Models
         /// <summary>
         /// Gets or Sets ApprovedBy
         /// </summary>
-        [DataMember(Name = "approvedBy")]
-        public long? ApprovedBy { get; internal set; }
+        [DataMember(Name = "approvedById")]
+        public long? ApprovedById { get; internal set; }
+
+        /// <summary>
+        /// Gets or Sets CancelReasonId
+        /// </summary>
+        [DataMember(Name = "cancelReasonId")]
+        public uint? CancelReasonId { get; internal set; }
+
+        /// <summary>
+        /// Gets or Sets CancelReason
+        /// </summary>
+        [DataMember(Name = "cancelReason")]
+        public string CancelReason { get; internal set; }
 
         /// <summary>
         /// Returns the string presentation of the object

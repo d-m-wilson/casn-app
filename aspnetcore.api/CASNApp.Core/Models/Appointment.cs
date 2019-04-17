@@ -9,15 +9,13 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace CASNApp.Core.Models
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -112,6 +110,12 @@ namespace CASNApp.Core.Models
         [Required]
         [DataMember(Name="appointmentTypeId")]
         public uint? AppointmentTypeId { get; set; }
+
+        /// <summary>
+        /// Gets or Sets AppointmentType
+        /// </summary>
+        [DataMember(Name = "appointmentType")]
+        public string AppointmentType { get; set; }
 
         /// <summary>
         /// Gets or Sets Created

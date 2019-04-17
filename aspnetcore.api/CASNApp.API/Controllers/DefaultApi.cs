@@ -226,5 +226,83 @@ namespace CASNApp.API.Controllers
 
         }
 
+        /// <summary>
+        /// gets list of appointment types
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/appointmentType")]
+        [ValidateModelState]
+        [SwaggerOperation("GetAppointmentTypes")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.AppointmentType>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetAppointmentTypes()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new AppointmentTypeQuery(dbContext);
+            var results = await query.GetActiveAppointmentTypesAsync(true);
+
+            return new ObjectResult(results);
+        }
+
+        /// <summary>
+        /// gets list of drive statuses
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/driveStatus")]
+        [ValidateModelState]
+        [SwaggerOperation("GetDriveStatuses")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.DriveStatus>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetDriveStatuses()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new DriveStatusQuery(dbContext);
+            var results = await query.GetActiveDriveStatusesAsync(true);
+
+            return new ObjectResult(results);
+        }
+
+        /// <summary>
+        /// gets list of drive cancel reasons
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/driveCancelReason")]
+        [ValidateModelState]
+        [SwaggerOperation("GetDriveCancelReasons")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.DriveCancelReason>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetDriveCancelReasons()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new DriveCancelReasonQuery(dbContext);
+            var results = await query.GetActiveCancelReasonsAsync(true);
+
+            return new ObjectResult(results);
+        }
+
     }
 }

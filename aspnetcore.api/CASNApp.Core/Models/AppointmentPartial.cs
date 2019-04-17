@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CASNApp.Core.Models
+﻿namespace CASNApp.Core.Models
 {
     public partial class Appointment
     {
@@ -13,6 +8,7 @@ namespace CASNApp.Core.Models
         {
             AppointmentDate = a.AppointmentDate;
             AppointmentTypeId = a.AppointmentTypeId;
+            AppointmentType = a.AppointmentType?.Name;
             ClinicId = a.ClinicId;
             Created = a.Created;
             DispatcherId = a.DispatcherId;
@@ -45,11 +41,11 @@ namespace CASNApp.Core.Models
             if (!AppointmentDate.HasValue)
                 return false;
 
-            if (string.IsNullOrWhiteSpace(PickupLocationVague))
+            if (string.IsNullOrWhiteSpace(PickupLocationVague) &&
+                string.IsNullOrWhiteSpace(DropoffLocationVague))
+            {
                 return false;
-
-            if (string.IsNullOrWhiteSpace(DropoffLocationVague))
-                return false;
+            }
 
             return true;
         }

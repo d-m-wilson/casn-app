@@ -17,7 +17,8 @@ namespace CASNApp.Core.Models
             AppointmentId = d.AppointmentId;
             Created = d.Created;
             Direction = d.Direction;
-            Status = d.StatusId;
+            StatusId = d.StatusId;
+            Status = d.Status?.Name;
             DriverId = d.DriverId;
             EndAddress = d.EndAddress;
             EndCity = d.EndCity;
@@ -34,7 +35,9 @@ namespace CASNApp.Core.Models
             StartLongitude = d.StartLongitude;
             Updated = d.Updated;
             Approved = d.Approved;
-            ApprovedBy = d.ApprovedById;
+            ApprovedById = d.ApprovedById;
+            CancelReasonId = d.CancelReasonId;
+            CancelReason = d.CancelReason?.Name;
         }
 
         public bool Validate(int direction)
