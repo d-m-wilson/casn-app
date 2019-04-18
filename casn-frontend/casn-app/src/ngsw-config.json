@@ -40,6 +40,7 @@
           "https://casnapptest.dmwilson.info/api/clinic/**",
           "https://casnapptest.dmwilson.info/api/appointmentType/**",
           "https://casnapptest.dmwilson.info/api/driveCancelReason/**",
+          "https://casnapptest.dmwilson.info/api/driveStatus/**",
           "https://casnapptest.dmwilson.info/appconfig.json"
         ],
         "cacheConfig": {
