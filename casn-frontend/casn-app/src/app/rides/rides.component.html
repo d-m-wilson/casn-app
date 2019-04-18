@@ -146,15 +146,13 @@
     </mat-card>
     <mat-card class="mt">
       <mat-card-subtitle>By Clinic</mat-card-subtitle>
-      <mat-slide-toggle value="houstonwomens"
-                        [checked]="displayClinics[1]"
-                        (change)="displayClinics[1] = $event.source.checked"
-                        color="primary">Show Houston Women's Clinic</mat-slide-toggle>
-      <br><br>
-      <mat-slide-toggle value="plannedparenthood"
-                        [checked]="displayClinics[2]"
-                        (change)="displayClinics[2] = $event.source.checked"
-                        color="primary">Show Planned Parenthood</mat-slide-toggle>
+      <ng-container *ngFor="let c of objectKeys(clinics)">
+        <mat-slide-toggle [checked]="displayClinics[c]"
+                          (change)="displayClinics[c] = $event.source.checked"
+                          color="primary">Show {{ clinics[c].name }}
+        </mat-slide-toggle>
+        <br><br>
+      </ng-container>
     </mat-card>
     <div class="modal-actions">
       <button type="button"
