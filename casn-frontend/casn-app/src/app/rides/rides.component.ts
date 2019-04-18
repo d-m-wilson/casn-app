@@ -18,14 +18,15 @@ export class RidesComponent implements OnInit {
   ridesToDisplay: any[]; // Subset of rides, may have filters applied
   clinics: any;
   apptTypes: any;
+  driveStatuses: any;
 
   /************** Settings Modal **************/
   showSettingsModal: boolean = false;
   showDateFilters: boolean = false;
   // For showing badges on date filter cards
   dateFilterProperties: any = {};
-  // Display flags for rides. 0=open, 1=pending, 2=approved
-  displayRides: boolean[] = [true, true, true];
+  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
+  displayRides: boolean[] = [true, true, true, true];
   // Display flags for clinics
   displayClinics: any = {};
 
@@ -48,17 +49,25 @@ export class RidesComponent implements OnInit {
     this.setDateRange();
     this.getClinics();
     this.getRides();
+    this.getDriveStatuses();
   }
 
   /*********************************************************************
                             Service Calls
   **********************************************************************/
+  getDriveStatuses(): void {
+    this.ds.getDriveStatuses().subscribe(s => {
+      this.driveStatuses = s.map(i => i.name);
+    });
+  }
+
   getRides(): void {
     this.ds.getAppointments(this.startDate, this.endDate).subscribe(appts => {
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = appts;
       this.ridesToDisplay = appts;
       this.updateDateFilterProperties();
+      console.log("Rides:", this.rides);
     });
   }
 
@@ -147,6 +156,7 @@ export class RidesComponent implements OnInit {
       case 0: return "panorama_fish_eye";
       case 1: return "timelapse";
       case 2: return "check_circle";
+      case 3: return "block"
       default: return "";
     }
   }
@@ -156,6 +166,7 @@ export class RidesComponent implements OnInit {
       case 0: return "Apply Now!";
       case 1: return "Pending"; // TODO: Will be affected by user role
       case 2: return "Approved";
+      case 3: return "Canceled"
       default: return "";
     }
   }

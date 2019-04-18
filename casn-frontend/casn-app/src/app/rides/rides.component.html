@@ -35,7 +35,7 @@
           <h2>No rides on this day :(</h2>
       </div>
       <div *ngFor="let r of ridesToDisplay">
-        <ng-container *ngIf="(displayRides[r.driveTo?.status] || displayRides[r.driveFrom?.status]) && displayClinics[r.appointment.clinicId]">
+        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayClinics[r.appointment.clinicId]">
           <mat-card class="appointment-card">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
@@ -46,30 +46,32 @@
             </div>
           </mat-card>
           <div class="drive-container">
-            <mat-card *ngIf="displayRides[r.driveTo?.status]"
+            <mat-card *ngIf="displayRides[r.driveTo?.statusId]"
                       (click)="toggleRideModal(r, true)"
                       class="drive-card"
-                      [ngClass]="{ 'open': r.driveTo.status === 0,
-                                   'pending': r.driveTo.status === 1,
-                                   'approved': r.driveTo.status === 2 }">
+                      [ngClass]="{ 'open': r.driveTo.statusId === 0,
+                                   'pending': r.driveTo.statusId === 1,
+                                   'approved': r.driveTo.statusId === 2,
+                                   'canceled': r.driveFrom.statusId === 3 }">
               <div class="drive-card-header">
-                <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.status) }}</mat-icon>
-                <span class="status-text">{{ getStatusText(r.driveTo.status) }} <span *ngIf="r.driveTo.status === 2">#{{ r.driveTo.driverId }}</span></span>
+                <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
+                <span class="status-text">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
                 <mat-icon svgIcon="drive_to" style="min-width:35px"></mat-icon>
                 <p>{{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}</p>
               </div>
             </mat-card>
-            <mat-card *ngIf="displayRides[r.driveFrom?.status]"
+            <mat-card *ngIf="displayRides[r.driveFrom?.statusId]"
                       (click)="toggleRideModal(r)"
                       class="drive-card"
-                      [ngClass]="{ 'open': r.driveFrom.status === 0,
-                                   'pending': r.driveFrom.status === 1,
-                                   'approved': r.driveFrom.status === 2 }">
+                      [ngClass]="{ 'open': r.driveFrom.statusId === 0,
+                                   'pending': r.driveFrom.statusId === 1,
+                                   'approved': r.driveFrom.statusId === 2,
+                                   'canceled': r.driveFrom.statusId === 3 }">
               <div class="drive-card-header">
-                <mat-icon class="status-text">{{ getStatusIcon(r.driveFrom.status) }}</mat-icon>
-                <span class="status-text">{{ getStatusText(r.driveFrom.status) }} <span *ngIf="r.driveFrom.status === 2">#{{ r.driveFrom.driverId }}</span></span>
+                <mat-icon class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
+                <span class="status-text">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
                 <mat-icon svgIcon="drive_from" style="min-width:35px"></mat-icon>
@@ -135,6 +137,12 @@
                         [checked]="displayRides[2]"
                         (change)="displayRides[2] = $event.source.checked"
                         color="primary">Show Approved</mat-slide-toggle>
+      <br><br>
+      <mat-slide-toggle value="canceled"
+                        [checked]="displayRides[3]"
+                        (change)="displayRides[3] = $event.source.checked"
+                        color="primary">Show Canceled</mat-slide-toggle>
+
     </mat-card>
     <mat-card class="mt">
       <mat-card-subtitle>By Clinic</mat-card-subtitle>
