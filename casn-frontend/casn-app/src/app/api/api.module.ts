@@ -1,12 +1,11 @@
 import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
 import { Configuration } from './configuration';
-import { HttpClient } from '@angular/common/http';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-
-import { DefaultService } from './api/default.service';
-import { DispatcherService } from './api/dispatcher.service';
-import { DriverService } from './api/driver.service';
+import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from '../auth-services/jwt.interceptor';
+
+import { DefaultApiService } from './api/defaultApi.service';
+import { DispatcherApiService } from './api/dispatcherApi.service';
+import { DriverApiService } from './api/driverApi.service';
 
 @NgModule({
   imports:      [],
@@ -14,9 +13,9 @@ import { JwtInterceptor } from '../auth-services/jwt.interceptor';
   exports:      [],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    DefaultService,
-    DispatcherService,
-    DriverService ]
+    DefaultApiService,
+    DispatcherApiService,
+    DriverApiService ]
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DefaultService } from '../api/api/default.service';
+import { DefaultApiService } from '../api/api/defaultApi.service';
 
 @Component({
   selector: 'app-map',
@@ -13,7 +13,7 @@ export class MapComponent implements OnInit {
   mapCenter: any = { latitude: 29.7604, longitude: -95.3698, zoom: 9 };
   clinics: any;
 
-  constructor( private ds: DefaultService ) { }
+  constructor( private ds: DefaultApiService ) { }
 
   ngOnInit() {
     this.getClinics()

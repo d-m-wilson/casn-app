@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { DispatcherService } from '../api/api/dispatcher.service';
+import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -20,7 +20,7 @@ export class CallersComponent implements OnInit {
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  constructor( private ds: DispatcherService,
+  constructor( private ds: DispatcherApiService,
                private fb: FormBuilder,
                private location: Location,
                private router: Router ) { }

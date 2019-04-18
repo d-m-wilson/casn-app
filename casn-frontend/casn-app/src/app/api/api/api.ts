@@ -1,10 +1,10 @@
-export * from './default.service';
-import { DefaultService } from './default.service';
-export * from './default.serviceInterface'
-export * from './dispatcher.service';
-import { DispatcherService } from './dispatcher.service';
-export * from './dispatcher.serviceInterface'
-export * from './driver.service';
-import { DriverService } from './driver.service';
-export * from './driver.serviceInterface'
-export const APIS = [DefaultService, DispatcherService, DriverService];
+export * from './defaultApi.service';
+import { DefaultApiService } from './defaultApi.service';
+export * from './defaultApi.serviceInterface'
+export * from './dispatcherApi.service';
+import { DispatcherApiService } from './dispatcherApi.service';
+export * from './dispatcherApi.serviceInterface'
+export * from './driverApi.service';
+import { DriverApiService } from './driverApi.service';
+export * from './driverApi.serviceInterface'
+export const APIS = [DefaultApiService, DispatcherApiService, DriverApiService];

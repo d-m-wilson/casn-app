@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DefaultService } from '../api/api/default.service';
+import { DefaultApiService } from '../api/api/defaultApi.service';
 import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal.component';
 import { Constants } from '../app.constants';
 
@@ -40,7 +40,7 @@ export class RidesComponent implements OnInit {
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  constructor( private ds: DefaultService,
+  constructor( private ds: DefaultApiService,
                public constants: Constants ) { }
 
   ngOnInit() {
@@ -54,7 +54,7 @@ export class RidesComponent implements OnInit {
                             Service Calls
   **********************************************************************/
   getRides(): void {
-    this.ds.getAllAppointments(this.startDate, this.endDate).subscribe(appts => {
+    this.ds.getAppointments(this.startDate, this.endDate).subscribe(appts => {
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = appts;
       this.ridesToDisplay = appts;

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DefaultService } from '../api/api/default.service';
-import { DriverService } from '../api/api/driver.service';
-import { DispatcherService } from '../api/api/dispatcher.service';
+import { DefaultApiService } from '../api/api/defaultApi.service';
+import { DriverApiService } from '../api/api/driverApi.service';
+import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 import { Constants } from '../app.constants';
 
 @Component({
@@ -19,9 +19,9 @@ export class RideDetailModalComponent implements OnInit {
   clinics: any;
   volunteers: any[];
 
-  constructor( private ds: DefaultService,
-               private driverService: DriverService,
-               private dispatcherService: DispatcherService,
+  constructor( private ds: DefaultApiService,
+               private DriverApiService: DriverApiService,
+               private DispatcherApiService: DispatcherApiService,
                public constants: Constants ) { }
 
   ngOnInit() {
@@ -42,7 +42,7 @@ export class RideDetailModalComponent implements OnInit {
 
   getVolunteers(): void {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
-    this.dispatcherService.getVolunteerDrives(id).subscribe(
+    this.DispatcherApiService.getVolunteerDrives(id).subscribe(
       res => {
         if(res.length > 0) this.volunteers = res;
       },
@@ -62,7 +62,7 @@ export class RideDetailModalComponent implements OnInit {
 
   handleApplyClick() {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
-    this.driverService.addDriveApplicant({"driveId": id}).subscribe(
+    this.DriverApiService.addDriveApplicant({"driveId": id}).subscribe(
       res => {
         this.closeRideModalAndUpdateClick.emit(true);
       },
@@ -74,7 +74,7 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleApproveClick(volunteerId: number) {
-    this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
+    this.DispatcherApiService.addDriver({volunteerDriveId: volunteerId}).subscribe(
       res => {
         this.closeRideModalAndUpdateClick.emit(true);
       },

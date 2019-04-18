@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { DispatcherService } from '../api/api/dispatcher.service';
-import { DefaultService } from '../api/api/default.service';
+import { DispatcherApiService } from '../api/api/dispatcherApi.service';
+import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Constants } from '../app.constants';
@@ -23,8 +23,8 @@ export class AppointmentsComponent implements OnInit {
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
-  constructor( private ds: DispatcherService,
-               private defaultService: DefaultService,
+  constructor( private ds: DispatcherApiService,
+               private DefaultApiService: DefaultApiService,
                private fb: FormBuilder,
                private route: ActivatedRoute,
                private location: Location,
@@ -157,7 +157,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getClinics(): void {
-    this.defaultService.getClinics().subscribe(
+    this.DefaultApiService.getClinics().subscribe(
       data => {
         this.clinics = data;
       },
