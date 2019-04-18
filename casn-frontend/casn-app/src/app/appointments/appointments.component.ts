@@ -4,6 +4,7 @@ import { DispatcherService } from '../api/api/dispatcher.service';
 import { DefaultService } from '../api/api/default.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-appointments',
@@ -14,6 +15,8 @@ export class AppointmentsComponent implements OnInit {
   callerIdentifier: string;
   callerId: number;
   apptDTO: any;
+  appointmentTypes: any[];
+  clinics: any[] = [];
   // Hide dropoff inputs when user checks 'same as pickup location'
   showDropoffLocationInputs: boolean = true;
 
@@ -25,9 +28,11 @@ export class AppointmentsComponent implements OnInit {
                private fb: FormBuilder,
                private route: ActivatedRoute,
                private location: Location,
-               private router: Router ) { }
+               private router: Router,
+               private constants: Constants ) { }
 
   ngOnInit() {
+    this.getAppointmentTypes();
     this.getCaller();
     this.getClinics();
   }
@@ -35,12 +40,6 @@ export class AppointmentsComponent implements OnInit {
   /*********************************************************************
                                 Form
   **********************************************************************/
-  clinics: any[] = [];
-  // TODO: These should be fetched from API endpoint or set as app-level constants
-  apptTypes: any[] = [ {value: 4, displayValue: 'Ultrasound'},
-                       {value: 3, displayValue: 'Surgical'},
-                     ];
-
   apptForm = this.fb.group({
     appointmentTypeId: [3, Validators.required],
     callerId: [0],
@@ -142,6 +141,12 @@ export class AppointmentsComponent implements OnInit {
   **********************************************************************/
   goBack(): void {
     this.location.back();
+  }
+
+  getAppointmentTypes(): void {
+    this.appointmentTypes = Object.keys(this.constants.APPT_TYPES).map(a => {
+      return { value: a, displayValue: this.constants.APPT_TYPES[a] }
+    })
   }
 
   getCaller(): void {

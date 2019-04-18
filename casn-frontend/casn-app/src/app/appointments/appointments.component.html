@@ -34,7 +34,7 @@
       <mat-select placeholder="Appt Type"
                   aria-label="Appointment Type"
                   formControlName="appointmentTypeId">
-        <mat-option *ngFor="let a of apptTypes" [value]="a.value">
+        <mat-option *ngFor="let a of appointmentTypes" [value]="a.value">
           {{ a.displayValue }}
         </mat-option>
       </mat-select>
