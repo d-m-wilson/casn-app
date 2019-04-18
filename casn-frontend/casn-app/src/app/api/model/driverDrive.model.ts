@@ -11,7 +11,7 @@
  */
 
 
-export interface DriverDrive { 
+export interface DriverDrive {
     id: number;
     volunteerDriveId: number;
     appointmentId: number;
@@ -24,7 +24,12 @@ export interface DriverDrive {
     direction: number;
     isApproved: boolean;
     startLocation?: string;
+    startLatitude?: number;
+    startLongitude?: number;
     endLocation?: string;
+    endLatitude?: number;
+    endLongitude?: number;
     callerIdentifier: string;
     callerName?: string;
+    callerNote?: string;
 }

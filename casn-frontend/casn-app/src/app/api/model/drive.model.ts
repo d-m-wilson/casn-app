@@ -11,7 +11,7 @@
  */
 
 
-export interface Drive { 
+export interface Drive {
     readonly id?: number;
     appointmentId: number;
     /**
@@ -29,4 +29,8 @@ export interface Drive {
     endPostalCode: string;
     readonly created?: Date;
     readonly updated?: Date;
+    readonly approved?:	Date;
+    approvedById?: number;
+    cancelReasonId?: number;
+    cancelReason?: string;
 }

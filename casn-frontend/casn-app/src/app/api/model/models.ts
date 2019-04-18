@@ -9,3 +9,4 @@ export * from './drive.model';
 export * from './driverDrive.model';
 export * from './caller.model';
 export * from './volunteerDrive.model';
+export * from './driveCancelReason.model';

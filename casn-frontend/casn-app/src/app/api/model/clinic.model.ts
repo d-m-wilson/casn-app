@@ -11,7 +11,7 @@
  */
 
 
-export interface Clinic { 
+export interface Clinic {
     readonly id?: number;
     readonly civiContactId?: number;
     name?: string;
@@ -20,4 +20,6 @@ export interface Clinic {
     city?: string;
     state?: string;
     postalCode?: string;
+    latitude?: number;
+    longitude?: number;
 }

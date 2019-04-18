@@ -17,9 +17,14 @@ export interface Appointment {
     callerId: number;
     clinicId: number;
     pickupLocationVague?: string;
+    pickupVagueLatitude?: number;
+    pickupVagueLongitude?: number;
     dropoffLocationVague?: string;
+    dropoffVagueLatitude?: number;
+    dropoffVagueLongitude?: number;
     appointmentDate: Date;
     appointmentTypeId: number;
+    appointmentType?: string;
     readonly created?: Date;
     readonly updated?: Date;
 }
