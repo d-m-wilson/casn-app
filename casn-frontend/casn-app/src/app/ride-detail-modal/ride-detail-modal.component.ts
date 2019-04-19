@@ -23,7 +23,7 @@ export class RideDetailModalComponent implements OnInit {
                private DispatcherApiService: DispatcherApiService ) { }
 
   ngOnInit() {
-    this.apptTypes = this.constants.APPT_TYPES;
+    this.getAppointmentTypes();
     this.getClinics();
     this.getVolunteers();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
@@ -36,6 +36,16 @@ export class RideDetailModalComponent implements OnInit {
     this.ds.getClinics().subscribe(c => {
       this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
+  }
+
+  getAppointmentTypes(): void {
+    this.ds.getAppointmentTypes().subscribe(a => {
+      this.apptTypes = a.reduce((acc, cur) => {
+        acc[cur.id] = cur.title;
+        return acc;
+      }, {})
+      console.log("Rides Appts are", a);
+    })
   }
 
   getVolunteers(): void {

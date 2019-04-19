@@ -45,8 +45,8 @@ export class RidesComponent implements OnInit {
                public constants: Constants ) { }
 
   ngOnInit() {
-    this.apptTypes = this.constants.APPT_TYPES;
     this.setDateRange();
+    this.getAppointmentTypes();
     this.getClinics();
     this.getRides();
     this.getDriveStatuses();
@@ -59,6 +59,16 @@ export class RidesComponent implements OnInit {
     this.ds.getDriveStatuses().subscribe(s => {
       this.driveStatuses = s.map(i => i.name);
     });
+  }
+
+  getAppointmentTypes(): void {
+    this.ds.getAppointmentTypes().subscribe(a => {
+      this.apptTypes = a.reduce((acc, cur) => {
+        acc[cur.id] = cur.title;
+        return acc;
+      }, {})
+      console.log("Rides Appts are", a);
+    })
   }
 
   getRides(): void {
