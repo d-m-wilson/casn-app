@@ -66,9 +66,8 @@ export class RidesComponent implements OnInit {
       this.apptTypes = a.reduce((acc, cur) => {
         acc[cur.id] = cur.title;
         return acc;
-      }, {})
-      console.log("Rides Appts are", a);
-    })
+      }, {});
+    });
   }
 
   getRides(): void {
