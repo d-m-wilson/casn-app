@@ -92,6 +92,12 @@ export class RideDetailModalComponent implements OnInit {
     );
   }
 
+  handleCancelDriveClick() {
+    if(confirm("Cancel drive--are you sure?")) {
+      console.log("Waiting for drive cancel endpoint....")
+    }
+  }
+
 /*********************************************************************
                               Utilities
 **********************************************************************/
