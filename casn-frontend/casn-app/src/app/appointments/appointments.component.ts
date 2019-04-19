@@ -24,7 +24,7 @@ export class AppointmentsComponent implements OnInit {
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DispatcherApiService,
-               private DefaultApiService: DefaultApiService,
+               private defaultService: DefaultApiService,
                private fb: FormBuilder,
                private route: ActivatedRoute,
                private location: Location,
@@ -144,8 +144,11 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getAppointmentTypes(): void {
-    this.appointmentTypes = Object.keys(this.constants.APPT_TYPES).map(a => {
-      return { value: a, displayValue: this.constants.APPT_TYPES[a] }
+    this.defaultService.getAppointmentTypes().subscribe(a => {
+      this.appointmentTypes = a.map(i => {
+        return { value: i.id, displayValue: i.title };
+      })
+      console.log("Appts are", a);
     })
   }
 
@@ -157,7 +160,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getClinics(): void {
-    this.DefaultApiService.getClinics().subscribe(
+    this.defaultService.getClinics().subscribe(
       data => {
         this.clinics = data;
       },
