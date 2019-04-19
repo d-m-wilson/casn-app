@@ -4,7 +4,6 @@ import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-appointments',
@@ -28,8 +27,7 @@ export class AppointmentsComponent implements OnInit {
                private fb: FormBuilder,
                private route: ActivatedRoute,
                private location: Location,
-               private router: Router,
-               private constants: Constants ) { }
+               private router: Router ) { }
 
   ngOnInit() {
     this.getAppointmentTypes();
@@ -54,7 +52,7 @@ export class AppointmentsComponent implements OnInit {
     pickupZipCode: ['', Validators.required],
     dropoffAddress: ['', Validators.required],
     dropoffCity: ['', Validators.required],
-    dropoffState: ['', Validators.required],
+    dropoffState: ['TX', Validators.required],
     dropoffZipCode: ['', Validators.required],
     pickupLocationVague: ['', Validators.required],
     dropoffLocationVague: ['', Validators.required],
