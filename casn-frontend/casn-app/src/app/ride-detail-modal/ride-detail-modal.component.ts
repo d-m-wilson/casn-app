@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { DriverApiService } from '../api/api/driverApi.service';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
-import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-ride-detail-modal',
@@ -21,8 +20,7 @@ export class RideDetailModalComponent implements OnInit {
 
   constructor( private ds: DefaultApiService,
                private DriverApiService: DriverApiService,
-               private DispatcherApiService: DispatcherApiService,
-               public constants: Constants ) { }
+               private DispatcherApiService: DispatcherApiService ) { }
 
   ngOnInit() {
     this.apptTypes = this.constants.APPT_TYPES;
