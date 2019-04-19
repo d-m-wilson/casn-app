@@ -146,7 +146,6 @@ export class AppointmentsComponent implements OnInit {
       this.appointmentTypes = a.map(i => {
         return { value: i.id, displayValue: i.title };
       })
-      console.log("Appts are", a);
     })
   }
 
