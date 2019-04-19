@@ -19,8 +19,8 @@ export class RideDetailModalComponent implements OnInit {
   volunteers: any[];
 
   constructor( private ds: DefaultApiService,
-               private DriverApiService: DriverApiService,
-               private DispatcherApiService: DispatcherApiService ) { }
+               private driverService: DriverApiService,
+               private dispatcherService: DispatcherApiService ) { }
 
   ngOnInit() {
     this.getAppointmentTypes();
@@ -43,14 +43,13 @@ export class RideDetailModalComponent implements OnInit {
       this.apptTypes = a.reduce((acc, cur) => {
         acc[cur.id] = cur.title;
         return acc;
-      }, {})
-      console.log("Rides Appts are", a);
-    })
+      }, {});
+    });
   }
 
   getVolunteers(): void {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
-    this.DispatcherApiService.getVolunteerDrives(id).subscribe(
+    this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
         if(res.length > 0) this.volunteers = res;
       },
@@ -70,7 +69,7 @@ export class RideDetailModalComponent implements OnInit {
 
   handleApplyClick() {
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
-    this.DriverApiService.addDriveApplicant({"driveId": id}).subscribe(
+    this.driverService.addDriveApplicant({"driveId": id}).subscribe(
       res => {
         this.closeRideModalAndUpdateClick.emit(true);
       },
@@ -82,7 +81,7 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleApproveClick(volunteerId: number) {
-    this.DispatcherApiService.addDriver({volunteerDriveId: volunteerId}).subscribe(
+    this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
       res => {
         this.closeRideModalAndUpdateClick.emit(true);
       },
