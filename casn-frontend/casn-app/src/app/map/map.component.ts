@@ -10,6 +10,7 @@ export class MapComponent implements OnInit {
   @Input() rides: any = {};
   @Input() startDate: any;
   @Input() endDate: any;
+  @Input() activeDate: any;
   @Output() closeMapModalClick = new EventEmitter<boolean>();
   @Output() seeDriveDetailsClick = new EventEmitter();
   houstonLatitude: number = 29.7604;
