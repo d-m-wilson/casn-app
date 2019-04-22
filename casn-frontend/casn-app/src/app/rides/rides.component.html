@@ -120,9 +120,11 @@
 **********************************************************************-->
 <div *ngIf="showSettingsModal" class="modal">
   <div class="modal-content">
-    <mat-card>
+    <span class="close"
+          (click)="toggleSettingsModal()">x</span>
+    <div class="modal-title">
       <h2>Filter Drives</h2>
-    </mat-card>
+    </div>
     <mat-card class="mt">
       <mat-card-subtitle>By Drive Status</mat-card-subtitle>
       <mat-slide-toggle value="open"
@@ -160,7 +162,7 @@
       <button type="button"
               mat-raised-button
               (click)="toggleSettingsModal()"
-              color="accent">Close</button>
+              color="primary">Return to Schedule</button>
     </div>
   </div>
 </div>
