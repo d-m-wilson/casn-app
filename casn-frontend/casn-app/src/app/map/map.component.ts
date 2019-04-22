@@ -52,6 +52,7 @@ export class MapComponent implements OnInit {
   markerClick(infoWindow: any, event?: any) {
     this.mapCenter.latitude = event.latitude;
     this.mapCenter.longitude = event.longitude;
+    this.mapCenter.zoom = 9;
     if (infoWindow == this.lastSelectedInfoWindow) return;
     if (this.lastSelectedInfoWindow != null) {
       try{
