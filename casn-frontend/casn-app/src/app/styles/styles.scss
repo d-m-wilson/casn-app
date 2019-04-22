@@ -67,12 +67,15 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   background-color: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
   background-color: $modal-background-color;
   margin: 0 auto;
-  padding: 5px;
+  padding: 10px;
   border: 1px solid #888;
   width: 95%;
 }

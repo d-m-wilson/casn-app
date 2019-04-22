@@ -111,6 +111,8 @@
  **********************************************************************-->
  <app-map *ngIf="displayMapModal"
           [rides]="rides"
+          [startDate]="startDate"
+          [endDate]="endDate"
           (seeDriveDetailsClick)="onMapDriveDetailsClick($event)"
           (closeMapModalClick)="toggleMapModal()"></app-map>
 <!--********************************************************************

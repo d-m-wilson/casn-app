@@ -1,11 +1,10 @@
 <div class="modal">
   <div class="map-modal-content">
     <!--=========== Modal Actions ============-->
-    <div class="modal-actions">
-      <button type="button"
-              mat-raised-button
-              (click)="handleCloseModalClick()"
-              color="accent"><mat-icon>clear</mat-icon></button>
+      <span class="close"
+            (click)="handleCloseModalClick()">x</span>
+      <div class="modal-title">
+        <h2>Rides {{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h2>
     </div>
     <!--========== Map =========-->
     <agm-map [latitude]="mapCenter.latitude"

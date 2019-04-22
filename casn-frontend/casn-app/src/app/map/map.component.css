@@ -7,12 +7,9 @@ agm-map {
   margin: 0 auto;
   padding: 5px;
   border: 1px solid #888;
+  width: 100%;
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding-bottom: 10px;
-  height: 90%;
-  margin: 5px auto;
+.modal-title {
+  text-align: center;
 }
