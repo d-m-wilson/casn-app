@@ -16,7 +16,7 @@
         <agm-marker iconUrl="assets/img/blue-pushpin.png"
                     [latitude]="r.driveTo.startLatitude"
                     [longitude]="r.driveTo.startLongitude"
-                    (markerClick)="markerClick(infoWindow);
+                    (markerClick)="markerClick(infoWindow, $event);
                                    showPolylinesForMarker(r)">
           <agm-info-window [disableAutoPan]="true"
                            (infoWindowClose)="hidePolylinesForMarker(r)"

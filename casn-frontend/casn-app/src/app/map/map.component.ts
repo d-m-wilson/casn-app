@@ -10,6 +10,8 @@ export class MapComponent implements OnInit {
   @Input() rides: any = {};
   @Output() closeMapModalClick = new EventEmitter<boolean>();
   @Output() seeDriveDetailsClick = new EventEmitter();
+  houstonLatitude: number = 29.7604;
+  houstonLongitude: number = -95.3698;
   mapCenter: any = { latitude: 29.7604, longitude: -95.3698, zoom: 9 };
   clinics: any;
 
@@ -47,12 +49,14 @@ export class MapComponent implements OnInit {
   }
 
   lastSelectedInfoWindow: any;
-  markerClick(infoWindow: any) {
+  markerClick(infoWindow: any, event?: any) {
+    this.mapCenter.latitude = event.latitude;
+    this.mapCenter.longitude = event.longitude;
     if (infoWindow == this.lastSelectedInfoWindow) return;
     if (this.lastSelectedInfoWindow != null) {
       try{
         this.lastSelectedInfoWindow.close();
-      } catch {} //in case if you reload your markers
+      } catch {} //in case you reload your markers
     }
     this.lastSelectedInfoWindow = infoWindow;
   }
