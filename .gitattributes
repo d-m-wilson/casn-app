@@ -67,3 +67,4 @@
 *.tar.gz binary
 *.mwb binary
 *.yaml -crlf
+*.sh eol=lf

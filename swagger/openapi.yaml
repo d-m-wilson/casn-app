@@ -9,7 +9,7 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
-  - url: 'https://virtserver.swaggerhub.com/d-m-wilson/CASN_App_OAS3/1.0.0'
+  - url: 'https://casn-app-server/api'
 tags:
   - name: dispatcher
     description: dispatcher only calls
@@ -31,19 +31,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/clinic'
-  /patient:
+  /caller:
     get:
       tags:
         - dispatcher
-      summary: gets patient by patientIdentifier
-      operationId: getPatientByPatientIdentifier
+      summary: gets caller by callerIdentifier
+      operationId: getCallerByCallerIdentifier
       description: >
-        Search for existing patients by the dispatcher created patientIdentifier
-        (patient ID)
+        Search for existing callers by the dispatcher created callerIdentifier
+        (caller ID)
       parameters:
         - in: query
-          name: patientIdentifier
-          description: pass a search string for looking up patientIdentifier
+          name: callerIdentifier
+          description: pass a search string for looking up callerIdentifier
           required: true
           schema:
             type: string
@@ -54,17 +54,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/patient'
+                $ref: '#/components/schemas/caller'
         '400':
           description: GAH IT IS SO BROKEN
         '404':
-          description: patient not found frownies
+          description: caller not found frownies
     post:
       tags:
         - dispatcher
-      summary: adds a patient
-      operationId: addPatient
-      description: Adds patient to the system
+      summary: adds a caller
+      operationId: addCaller
+      description: Adds caller to the system
       responses:
         '201':
           description: item created
@@ -76,12 +76,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/patient'
-        description: patientData to add
-  /dispatcher/appointments:
+              $ref: '#/components/schemas/caller'
+        description: callerData to add
+  /appointments:
     get:
-      tags:
-        - dispatcher
       summary: gets appointments with dispatcher-level details
       operationId: getAllAppointmentsForDispatcher
       description: >
@@ -139,10 +137,8 @@ paths:
             schema:
               $ref: '#/components/schemas/appointmentDTO'
         description: appointmentData to add
-  /dispatcher/appointments/{appointmentID}:
+  /appointments/{appointmentID}:
     get:
-      tags:
-        - dispatcher
       summary: gets appointment by appointmentID
       operationId: getAppointmentForDispatcherByID
       description: >
@@ -215,71 +211,6 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/deleteSuccessMessage'
-        '400':
-          description: Client Error - please check your request format & try again.
-        '404':
-          description: No appointment found.
-  /driver/appointments:
-    get:
-      tags:
-        - driver
-      summary: gets appointments with driver-level details
-      operationId: getAllAppointmentsForDriver
-      description: >
-        Get all appointments within a default date range (possibly adjustable w/
-        query params).
-
-        Appointments DO NOT include details, e.g. exact location, available only
-        to dispatchers.
-      parameters:
-        - in: query
-          name: startDate
-          description: pass a startDate by which to filter
-          required: false
-          schema:
-            type: string
-            minLength: 4
-        - in: query
-          name: endDate
-          description: pass an endDate by which to filter
-          required: false
-          schema:
-            type: string
-            minLength: 4
-      responses:
-        '200':
-          description: all appointments in date range
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/allAppointments'
-        '400':
-          description: Client Error - please check your request format & try again.
-        '404':
-          description: Error - Not Found
-  /driver/appointments/{appointmentID}:
-    get:
-      tags:
-        - driver
-      summary: gets appointment by appointmentID
-      operationId: getAppointmentForDriverByID
-      description: >
-        Search for existing appointment by appointmentIdentifier, return
-        driver-level details
-      parameters:
-        - in: path
-          name: appointmentID
-          description: pass an appointmentIdentifier
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success. Found appointment.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/appointmentDTO'
         '400':
           description: Client Error - please check your request format & try again.
         '404':
@@ -406,10 +337,16 @@ components:
         postalCode:
           type: string
           maxLength: 10
-    patient:
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
+    caller:
       type: object
       required:
-        - patientIdentifier
+        - callerIdentifier
         - firstName
         - lastName
         - phone
@@ -427,11 +364,11 @@ components:
           format: int64
           readOnly: true
           example: 42
-        patientIdentifier:
+        callerIdentifier:
           type: string
           minLength: 4
           maxLength: 45
-          example: 'JS1234'
+          example: '5551'
         firstName:
           type: string
           maxLength: 50
@@ -456,6 +393,10 @@ components:
           type: integer
           format: int32
           example: 1
+        note:
+          type: string
+          maxLength: 500
+          example: 'Free-form text goes here.'
         created:
           type: string
           format: date-time
@@ -468,7 +409,7 @@ components:
       type: object
       required:
         - dispatcherId
-        - patientId
+        - callerId
         - clinicId
         - appointmentDate
         - appointmentTypeId
@@ -482,10 +423,19 @@ components:
           type: integer
           format: int64
           example: 42
-        patientId:
+        callerId:
           type: integer
           format: int64
           example: 42
+        callerIdentifier:
+          type: string
+          minLength: 4
+          maxLength: 45
+          example: '5551'
+        callerNote:
+          type: string
+          maxLength: 500
+          example: 'Free-form text goes here.'
         clinicId:
           type: integer
           format: int64
@@ -494,10 +444,22 @@ components:
           type: string
           maxLength: 255
           example: 'US59 S and BW8'
+        pickupVagueLatitude:
+          type: number
+          format: float
+        pickupVagueLongitude:
+          type: number
+          format: float
         dropoffLocationVague:
           type: string
           maxLength: 255
           example: 'I10 W and 610'
+        dropoffVagueLatitude:
+          type: number
+          format: float
+        dropoffVagueLongitude:
+          type: number
+          format: float
         appointmentDate:
           type: string
           format: date-time
@@ -542,6 +504,11 @@ components:
           format: int32
           example: 1
           description: '1 = toClinic, 2 = fromClinic'
+        status:
+          type: integer
+          format: int32
+          example: 0
+          description: '0 = Open, 1 = Pending, 2 = Approved'
         driverId:
           type: integer
           format: int64
@@ -562,6 +529,12 @@ components:
           type: string
           maxLength: 10
           example: '77031'
+        startLatitude:
+          type: number
+          format: float
+        startLongitude:
+          type: number
+          format: float
         endAddress:
           type: string
           maxLength: 100
@@ -578,6 +551,12 @@ components:
           type: string
           maxLength: 10
           example: '77024'
+        endLatitude:
+          type: number
+          format: float
+        endLongitude:
+          type: number
+          format: float
         created:
           type: string
           format: date-time
@@ -586,6 +565,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        approved:
+          type: string
+          format: date-time
+          readOnly: true
+        approvedBy:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 42
     appointmentDTO:
       properties:
         appointment:
@@ -594,8 +582,6 @@ components:
           $ref: '#/components/schemas/drive'
         driveFrom:
           $ref: '#/components/schemas/drive'
-        patient:
-          $ref: '#/components/schemas/patient'
     allAppointments:
       type: array
       items:
@@ -654,7 +640,7 @@ components:
         - appointmentDate
         - direction
         - isApproved
-        - patientIdentifier
+        - callerIdentifier
       properties:
         id:
           type: integer
@@ -692,19 +678,35 @@ components:
           type: string
           maxLength: 255
           example: 'US59 S and BW8'
+        startLatitude:
+          type: number
+          format: float
+        startLongitude:
+          type: number
+          format: float
         endLocation:
           type: string
           maxLength: 255
           example: '7373 Old Katy Rd Houston, TX 77008'
-        patientIdentifier:
+        endLatitude:
+          type: number
+          format: float
+        endLongitude:
+          type: number
+          format: float
+        callerIdentifier:
           type: string
           minLength: 4
           maxLength: 45
-          example: 'JS1234'
-        patientName:
+          example: '5554'
+        callerName:
           type: string
           maxLength: 100
           example: 'Jane Smith'
+        callerNote:
+          type: string
+          maxLength: 500
+          example: 'Free-form text goes here.'
   securitySchemes:
     BearerAuth:
       type: http
