@@ -9,6 +9,7 @@ namespace CASNApp.Core.Models
         public const uint StatusOpen = 0;
         public const uint StatusPending = 1;
         public const uint StatusApproved = 2;
+        public const uint StatusCanceled = 3;
 
         public Drive() { }
 

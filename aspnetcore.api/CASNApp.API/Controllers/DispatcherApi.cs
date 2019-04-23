@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
+using CASNApp.Core.Commands;
 using CASNApp.Core.Models;
 using CASNApp.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -288,6 +289,50 @@ namespace CASNApp.API.Controllers
 
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
+        }
+
+        /// <summary>
+        /// cancels a drive
+        /// </summary>
+        /// <remarks>Updates statusId to canceled and applies the given cancelReasonId</remarks>
+        /// <param name="driveId">Id of the drive to cancel</param>
+        /// <param name="cancelReasonId">Id of the DriveCancelReason to apply</param>
+        /// <response code="200">Success. Drive canceled.</response>
+        /// <response code="400">Client Error - please check your request format and try again.</response>
+        /// <response code="404">Error. The driveId was not found.</response>
+        /// <response code="409">Error. The drive cannot be canceled in its current state.</response>
+        [HttpPost]
+        [Route("api/drives/{driveId}/cancel")]
+        [ValidateModelState]
+        [SwaggerOperation("CancelDrive")]
+        public virtual async Task<IActionResult> CancelDrive([FromRoute]uint driveId, [FromQuery]uint cancelReasonId)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var driveCommand = new DriveCommand(dbContext);
+
+            var result = await driveCommand.CancelDriveAsync(driveId, cancelReasonId);
+
+            await dbContext.SaveChangesAsync();
+
+            switch (result.ErrorCode)
+            {
+                case Core.Misc.ErrorCode.None:
+                    return Ok(result.Data);
+                case Core.Misc.ErrorCode.NotFound:
+                    return NotFound();
+                case Core.Misc.ErrorCode.InvalidOperation:
+                    return Conflict();
+                default:
+                    return BadRequest();
+            }
         }
 
         /// <summary>
