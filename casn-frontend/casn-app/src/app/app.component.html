@@ -1,0 +1,50 @@
+<mat-sidenav-container class="app-container">
+<!--********************************************************************
+                          Sidenav Menu
+**********************************************************************-->
+  <mat-sidenav class="side-menu"
+               #sidenav
+               mode="over"
+               [(opened)]="opened">
+    <mat-list>
+        <img class="sidenav-logo"
+             src="assets/img/casn-logo.png"
+             alt="CASN logo"
+             routerLink="/">
+        <mat-list-item *ngFor="let m of menuItems" [routerLink]="m.address" (click)="sidenav.close()">
+          <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
+          <h4 mat-line>{{ m.name }}</h4>
+          <!-- <p mat-line>folderupdated</p> -->
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <mat-icon mat-list-icon>cancel</mat-icon>
+          <h4 mat-line (click)="logout()">Log Out</h4>
+        </mat-list-item>
+    </mat-list>
+  </mat-sidenav>
+<!--********************************************************************
+                          Main App Content
+**********************************************************************-->
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="app-navbar mat-elevation-z3">
+      <img class="logo"
+           src="assets/img/casn-logo.png"
+           alt="CASN logo"
+           routerLink="/">
+      <span class="fill-remaining-space"></span>
+      <mat-icon *ngIf="isLoggedIn()"
+                class="clicky"
+                (click)="sidenav.toggle()">menu</mat-icon>
+    </mat-toolbar>
+    <main>
+      <button *ngIf="showButton"
+              class="mat-elevation-z4"
+              style="width:100%"
+              mat-button
+              color="primary"
+              (click)="addToHomeScreen()"><mat-icon>home</mat-icon> Click to Install CASN App on Your Home Screen</button>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

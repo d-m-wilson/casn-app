@@ -1,0 +1,31 @@
+@import '../styles/variables';
+
+h1 {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.appointment-card {
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
+
+.volunteer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.approved {
+  color: $success-color;
+}
+
+agm-map {
+  height: 400px;
+}

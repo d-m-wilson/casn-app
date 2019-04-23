@@ -1,0 +1,130 @@
+{
+  "configVersion": 1,
+  "index": "/app/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/app/favicon.ico",
+        "/app/index.html",
+        "/app/main.1346d4a36d34bfce3b97.js",
+        "/app/polyfills.a21e38849c7906fd6205.js",
+        "/app/runtime.26209474bfa8dc87a77c.js",
+        "/app/styles.7a8ef7e776913cfc5d3d.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/app/assets/icons/drive-from.svg",
+        "/app/assets/icons/drive-to.svg",
+        "/app/assets/icons/icon-128x128.png",
+        "/app/assets/icons/icon-144x144.png",
+        "/app/assets/icons/icon-152x152.png",
+        "/app/assets/icons/icon-192x192.png",
+        "/app/assets/icons/icon-384x384.png",
+        "/app/assets/icons/icon-512x512.png",
+        "/app/assets/icons/icon-72x72.png",
+        "/app/assets/icons/icon-96x96.png",
+        "/app/assets/img/blue-pushpin.png",
+        "/app/assets/img/casn-logo.png",
+        "/app/assets/img/homegardenbusiness.png",
+        "/app/assets/img/hospitals.png",
+        "/app/assets/oidc-login-redirect.html",
+        "/app/assets/splashscreens/ipad_splash.png",
+        "/app/assets/splashscreens/ipadpro1_splash.png",
+        "/app/assets/splashscreens/ipadpro2_splash.png",
+        "/app/assets/splashscreens/ipadpro3_splash.png",
+        "/app/assets/splashscreens/iphone5_splash.png",
+        "/app/assets/splashscreens/iphone6_splash.png",
+        "/app/assets/splashscreens/iphoneplus_splash.png",
+        "/app/assets/splashscreens/iphonex_splash.png",
+        "/app/assets/splashscreens/iphonexr_splash.png",
+        "/app/assets/splashscreens/iphonexsmax_splash.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-freshness",
+      "patterns": [
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/appointments\\/.*"
+      ],
+      "strategy": "freshness",
+      "maxSize": 3,
+      "maxAge": 86400000,
+      "version": 1
+    },
+    {
+      "name": "api-performance",
+      "patterns": [
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/clinic\\/.*",
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/appointmentType\\/.*",
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/driveCancelReason\\/.*",
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/driveStatus\\/.*",
+        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/appconfig\\.json"
+      ],
+      "strategy": "performance",
+      "maxSize": 3,
+      "maxAge": 86400000,
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/app/assets/icons/drive-from.svg": "a5badd08a6f407d799910489edd036e0cd27fc5b",
+    "/app/assets/icons/drive-to.svg": "3416a4c111261a4d38ae3b97f37921bf30da67e0",
+    "/app/assets/icons/icon-128x128.png": "569435cbcfb6f7a5ed4cfb5f528c6a858a0a88cb",
+    "/app/assets/icons/icon-144x144.png": "88a846c31e4fc65f359e752203635d03b3f87d47",
+    "/app/assets/icons/icon-152x152.png": "4002614b0cc7e144dca4d102155fb88e611fdb4e",
+    "/app/assets/icons/icon-192x192.png": "d966e1cf19548d54e0de65a3ca2d4d4c5cb95d04",
+    "/app/assets/icons/icon-384x384.png": "aab24d3b8e65b26433a479707f8407b433813093",
+    "/app/assets/icons/icon-512x512.png": "ef181205294d1df7491236132cc41a86b0ca7aa4",
+    "/app/assets/icons/icon-72x72.png": "f734285852079baeaedc3fbb62cd7682b3bc0ae1",
+    "/app/assets/icons/icon-96x96.png": "b13b3831e348b287b0b35a5e2b5b926b9b2f63ba",
+    "/app/assets/img/blue-pushpin.png": "19653c3b13b48d3ed569cf131d8b0491acb79152",
+    "/app/assets/img/casn-logo.png": "74890ca349e599726c2da4c436361562ddd64040",
+    "/app/assets/img/homegardenbusiness.png": "ec9c0ef8f57ee5d67ef5c86f3c3a221c3d64a51a",
+    "/app/assets/img/hospitals.png": "2e880de0bdfdb505b99a7fe993837189de6ee39a",
+    "/app/assets/oidc-login-redirect.html": "235fbe5d0ab7453c6a24a2275ff36cde4654c0b0",
+    "/app/assets/splashscreens/ipad_splash.png": "412538e42b68ddf8f7c13a9c876d5ff460cea63f",
+    "/app/assets/splashscreens/ipadpro1_splash.png": "894bca4ebb573ad033b78b1636280df733028197",
+    "/app/assets/splashscreens/ipadpro2_splash.png": "19598739f4d389bd13e1c9abb77abb9a1064a8d7",
+    "/app/assets/splashscreens/ipadpro3_splash.png": "0d7bb64075894678dca46699221367b7bc29d1b7",
+    "/app/assets/splashscreens/iphone5_splash.png": "05cf041c528ce1dda04b4b78d6dcd9a1ae909a3c",
+    "/app/assets/splashscreens/iphone6_splash.png": "34f360dd0e6c8c1d6e671813af1bcb4a68ccadb0",
+    "/app/assets/splashscreens/iphoneplus_splash.png": "dadf9d4131346801e709830cd6bd03f0e20d64de",
+    "/app/assets/splashscreens/iphonex_splash.png": "38438071570963eaaf70e8158a95e70f0407a678",
+    "/app/assets/splashscreens/iphonexr_splash.png": "5052f6dfdbf6d478be935be9bd3a89687ce8b65a",
+    "/app/assets/splashscreens/iphonexsmax_splash.png": "74530dd676947fc76838265720d9599dd664c44a",
+    "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
+    "/app/index.html": "773d4843c1b1f444c67e26f6d182e88fa8270c3f",
+    "/app/main.1346d4a36d34bfce3b97.js": "5126c36963eb4df96aaa488bbbde9d9d4d36ad6c",
+    "/app/polyfills.a21e38849c7906fd6205.js": "7e170aa631a1cb668b4ce9854675523d0bcb8c93",
+    "/app/runtime.26209474bfa8dc87a77c.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
+    "/app/styles.7a8ef7e776913cfc5d3d.css": "be3db779891ee6ac60e50101104b473edd806992"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}

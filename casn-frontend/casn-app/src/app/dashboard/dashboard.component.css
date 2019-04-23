@@ -1,0 +1,13 @@
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.btn-dash {
+  width: 250px;
+  height: 75px;
+  border-radius: 50px;
+}

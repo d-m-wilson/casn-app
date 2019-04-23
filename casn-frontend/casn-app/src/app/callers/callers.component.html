@@ -1,0 +1,145 @@
+<main>
+<!--********************************************************************
+                        Caller Search Field
+**********************************************************************-->
+  <h2>Schedule A Ride</h2>
+  <h3>Add or Lookup Caller Information</h3>
+  <div class="caller-form-group" *ngIf="!displayCallerForm">
+    <mat-form-field class="example-full-width" appearance="outline">
+      <mat-label>Caller ID</mat-label>
+      <input type="text"
+      placeholder="1234"
+      aria-label="Caller Identifier"
+      matInput
+      [formControl]="callerIdentifierSearch">
+      <mat-error *ngIf="callerIdentifierSearch.errors?.required">This field is required.</mat-error>
+      <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
+    </mat-form-field>
+
+    <button class="form-btn"
+            mat-raised-button
+            color="primary"
+            [disabled]="callerIdentifierSearch.invalid"
+            *ngIf="!displayCallerForm"
+            (click)="searchCallerIdentifier()">Next</button>
+  </div>
+
+<!--********************************************************************
+                            Caller Detail Form
+**********************************************************************-->
+  <form [formGroup]="callerForm"
+        (ngSubmit)="onSubmit()"
+        *ngIf="displayCallerForm">
+    <div class="caller-form-group">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Caller ID</mat-label>
+        <input type="text"
+        placeholder="1234"
+        aria-label="Caller Identifier"
+        matInput
+        formControlName="callerIdentifier">
+        <mat-error *ngIf="f.callerIdentifier.errors?.required">This field is required.</mat-error>
+        <mat-error *ngIf="f.callerIdentifier.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
+      </mat-form-field>
+    </div>
+
+  <div class="caller-form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput
+              type="text"
+              formControlName="firstName"
+              aria-label="First Name"
+              placeholder="Jane">
+        <mat-error *ngIf="submitted && f.firstName.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput
+               type="text"
+               formControlName="lastName"
+               aria-label="Last Name"
+               placeholder="Doe">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <input matInput
+               type="text"
+               formControlName="phone"
+               mask="000-000-0000"
+               aria-label="Phone Number"
+               placeholder="Phone Number">
+        <mat-error *ngIf="f.phone.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+      <mat-checkbox formControlName="isMinor"
+                    aria-label="Minor">Minor?</mat-checkbox>
+      <mat-form-field appearance="outline">
+        <mat-label>Preferred Language</mat-label>
+        <mat-select placeholder="Language"
+                    aria-label="Preferred Language"
+                    formControlName="preferredLanguage">
+          <mat-option *ngFor="let l of languages" [value]="l">
+            {{ l }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="f.preferredLanguage.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Preferred Contact Method</mat-label>
+        <mat-select placeholder="Contact Method"
+                    aria-label="Preferred Contact Method"
+                    formControlName="preferredContactMethod">
+          <mat-option *ngFor="let c of contactMethods" [value]="c.value">
+            {{ c.displayValue }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="f.preferredContactMethod.errors?.required">This field is required.</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Notes</mat-label>
+        <textarea matInput
+                  maxlength="500"
+                  #callerNotes
+                  formControlName="note"
+                  aria-label="Caller Notes"
+                  placeholder="Optional, please include any notes here."></textarea>
+        <mat-hint align="end">{{ callerNotes.value.length }} / 500</mat-hint>
+      </mat-form-field>
+      <button class="form-btn"
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!callerForm.valid">Next</button>
+      <button mat-raised-button
+              color="warn"
+              class="form-btn"
+              (click)="handleCancelClick()">Cancel</button>
+    </div>
+  </form>
+
+  <!--********************************************************************
+                              Form Debug
+  **********************************************************************-->
+  <div class="debug">
+    <p>Form Status: {{ callerForm.status }}</p>
+    <p>Form Value: {{ callerForm.value | json }}</p>
+  </div>
+</main>
+
+<!--********************************************************************
+                            Caller Modal
+**********************************************************************-->
+<div *ngIf="displayCallerFoundModal" class="modal">
+  <div class="modal-content">
+    <h2>Found Matching Caller: {{ existingCaller.firstName }} {{ existingCaller.lastName }}</h2>
+    <p>Is this your caller?</p>
+    <div class="modal-ctrl-btns">
+      <button mat-raised-button
+              color="primary"
+              (click)="handleYesClick()">Yes</button>
+      <button mat-raised-button
+              color="accent"
+              (click)="handleNoClick()">No, I'll create a different ID.</button>
+    </div>
+  </div>
+</div>

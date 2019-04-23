@@ -1,0 +1,103 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Pre-built Angular Material themes */
+/* @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; */
+/* @import '~@angular/material/prebuilt-themes/purple-green.css'; */
+/* @import '~@angular/material/prebuilt-themes/pink-bluegrey.css'; */
+/* @import '~@angular/material/prebuilt-themes/indigo-pink.css'; */
+
+/* ng-datetime-picker */
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import './variables';
+
+/********************************************************************
+        Comment out to show debug messages for development
+*********************************************************************/
+.debug {
+  display: none;
+}
+
+/********************************************************************
+                Global Styles, Frequently Used Classes
+*********************************************************************/
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #555;
+  margin: 0;
+  padding: 0;
+}
+
+.mat-badge-content {
+  z-index: 10;
+}
+
+.clicky {
+  cursor: pointer;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.bold {
+  font-weight: 500;
+}
+
+.bolder {
+  font-weight: 600;
+}
+
+/*******************************************************************
+                    Atomic Classes Margin/Padding
+********************************************************************/
+.mt {
+  margin-top: 0.25rem;
+}
+
+/*******************************************************************
+                              Modal
+********************************************************************/
+.modal {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.modal-content {
+  background-color: $modal-background-color;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #888;
+  width: 95%;
+}
+
+.modal-ctrl-btns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover, .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

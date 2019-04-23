@@ -1,0 +1,183 @@
+@import '../styles/variables';
+
+p {
+  margin: 5px;
+}
+
+.dates-rides-wrapper {
+  display: flex;
+}
+
+.open {
+  background-color: $error-color-faded;
+}
+
+.open .status-text {
+  color: $error-color;
+}
+
+.pending {
+  background-color: $warn-color-faded;
+}
+
+.pending .status-text {
+  color: $warn-color;
+}
+
+.approved {
+  background-color: $success-color-faded;
+}
+
+.approved .status-text {
+  color: $success-color;
+}
+
+.canceled {
+  background-color: #ccc;
+}
+
+.canceled .status-text {
+  color: #555;
+}
+
+.hilight {
+  color: $accent-color-2;
+}
+
+/********************************************************************
+                        Date Selection Sidebar
+********************************************************************/
+.date-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 155px);
+  width: 65px;
+  margin-top: 55px;
+}
+
+.date-card {
+  background-color: $primary-color-dark;
+  color: white;
+  border: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+  width: 60px;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.date-card.active {
+  background-color: $accent-color-1;
+  color: white;
+}
+
+.day {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/********************************************************************
+                Appointment/Drive Display Section
+********************************************************************/
+.ride-container {
+  width: 100%;
+  height: calc(100vh - 102px); /* Header: 56px, Footer: 46px */
+  overflow: auto;
+}
+
+.ride-container header {
+  display: flex;
+  border: 1px solid $border-color;
+  background: $primary-color;
+  color: white;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 20px;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  z-index: 1;
+  height: 55px;
+}
+
+.ride-container header + div {
+  margin-top: 55px; /* Clear header */
+}
+
+.drive-container {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.no-rides-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vw;
+}
+
+.appointment-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-badge {
+  font-weight: bold;
+  font-size: 0.75rem;
+  border: 2px solid #555;
+  border-top: 5px solid #555;
+  box-sizing: border-box;
+  padding: 3px 4px;
+  margin-right: 10px;
+}
+
+.drive-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0px 8px 5px;
+}
+
+.drive-card-header {
+  display: flex;
+  align-items: center;
+}
+
+.drive-card-content {
+  display: flex;
+  align-items: center;
+}
+
+/********************************************************************
+                      Footer - Settings/Controls
+********************************************************************/
+.fab {
+  position: fixed;
+  bottom: 50px;
+  right: 10px;
+}
+
+.fixed-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 20;
+  background-color: $primary-color;
+  color: white;
+  padding: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
