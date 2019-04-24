@@ -94,7 +94,11 @@ export class RideDetailModalComponent implements OnInit {
 
   handleCancelDriveClick() {
     if(confirm("Cancel drive--are you sure?")) {
+      const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
       console.log("Waiting for drive cancel endpoint....")
+      this.dispatcherService.cancelDrive(id).subscribe(res => {
+        console.log("Cancelled drive!", res)
+      })
     }
   }
 
