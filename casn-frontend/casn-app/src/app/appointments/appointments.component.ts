@@ -43,6 +43,7 @@ export class AppointmentsComponent implements OnInit {
     callerId: [0],
     callerIdentifier: ['', Validators.required],
     // TODO: Get dispatcherId from localstorage
+    // Need to talk to David about this -- handle on backend?
     dispatcherId: [5],
     clinicId: ['', Validators.required],
     appointmentDate: ['', Validators.required],
