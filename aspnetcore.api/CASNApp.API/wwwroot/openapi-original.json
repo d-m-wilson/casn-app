@@ -1,0 +1,1056 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "CASN API",
+    "description" : "This is a test CASN API",
+    "contact" : {
+      "email" : "katie@clinicaccess.org"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://casn-app-server/api"
+  } ],
+  "security" : [ {
+    "BearerAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "dispatcher",
+    "description" : "dispatcher only calls"
+  }, {
+    "name" : "driver",
+    "description" : "driver only calls"
+  } ],
+  "paths" : {
+    "/clinic" : {
+      "get" : {
+        "summary" : "gets list of clinics",
+        "operationId" : "getClinics",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/clinic"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/caller" : {
+      "get" : {
+        "tags" : [ "dispatcher" ],
+        "summary" : "gets caller by callerIdentifier",
+        "description" : "Search for existing callers by the dispatcher created callerIdentifier (caller ID)\n",
+        "operationId" : "getCallerByCallerIdentifier",
+        "parameters" : [ {
+          "name" : "callerIdentifier",
+          "in" : "query",
+          "description" : "pass a search string for looking up callerIdentifier",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minLength" : 4,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/caller"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "GAH IT IS SO BROKEN"
+          },
+          "404" : {
+            "description" : "caller not found frownies"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "dispatcher" ],
+        "summary" : "adds a caller",
+        "description" : "Adds caller to the system",
+        "operationId" : "addCaller",
+        "requestBody" : {
+          "description" : "callerData to add",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/caller"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "the item already exists"
+          }
+        }
+      }
+    },
+    "/appointments" : {
+      "get" : {
+        "summary" : "gets appointments with dispatcher-level details",
+        "description" : "Get all appointments within a default date range (possibly adjustable w/ query params).\nAppointments include details, e.g. exact location, available only to dispatchers.\n",
+        "operationId" : "getAllAppointmentsForDispatcher",
+        "parameters" : [ {
+          "name" : "startDate",
+          "in" : "query",
+          "description" : "pass a startDate by which to filter",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minLength" : 4,
+            "type" : "string"
+          }
+        }, {
+          "name" : "endDate",
+          "in" : "query",
+          "description" : "pass an endDate by which to filter",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "minLength" : 4,
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "all appointments in date range",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/allAppointments"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "404" : {
+            "description" : "Error - Not Found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "dispatcher" ],
+        "summary" : "adds a new appointment",
+        "description" : "Adds appointment (and drives) to the system",
+        "operationId" : "addAppointment",
+        "requestBody" : {
+          "description" : "appointmentData to add",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/appointmentDTO"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success. Created appointment.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/appointmentDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "409" : {
+            "description" : "Error. That appointment already exists."
+          }
+        }
+      }
+    },
+    "/appointments/{appointmentID}" : {
+      "get" : {
+        "summary" : "gets appointment by appointmentID",
+        "description" : "Search for existing appointment by appointmentIdentifier, return dispatcher-level details\n",
+        "operationId" : "getAppointmentForDispatcherByID",
+        "parameters" : [ {
+          "name" : "appointmentID",
+          "in" : "path",
+          "description" : "pass an appointmentIdentifier",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success. Found appointment.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/appointmentDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "404" : {
+            "description" : "No appointment found."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "dispatcher" ],
+        "summary" : "updates an existing appointment",
+        "description" : "Updates appointment (and corresponding drive) information",
+        "operationId" : "updateAppointment",
+        "parameters" : [ {
+          "name" : "appointmentID",
+          "in" : "path",
+          "description" : "pass an appointmentIdentifier",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "appointmentData with updated fields",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/appointmentDTO"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success. Created appointment.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/appointmentDTO"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "404" : {
+            "description" : "Error. The appointment ID you requested does not exist."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "dispatcher" ],
+        "operationId" : "deleteAppointment",
+        "parameters" : [ {
+          "name" : "appointmentID",
+          "in" : "path",
+          "description" : "pass an appointmentIdentifier",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success. Appointment with ID {appointmentID} was deleted.",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/deleteSuccessMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "404" : {
+            "description" : "No appointment found."
+          }
+        }
+      }
+    },
+    "/driver/myDrives" : {
+      "get" : {
+        "tags" : [ "driver" ],
+        "summary" : "gets applied-for and approved drives for the current user",
+        "operationId" : "getMyDrives",
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/driverDrive"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/drives/apply" : {
+      "post" : {
+        "tags" : [ "driver" ],
+        "summary" : "applies a volunteer for a drive",
+        "description" : "Adds a volunteer drive application",
+        "operationId" : "addDriveApplicant",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success. Added applicant record."
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "404" : {
+            "description" : "Error. The driveId or volunteerId was not found."
+          }
+        }
+      }
+    },
+    "/drives/approve" : {
+      "post" : {
+        "tags" : [ "dispatcher" ],
+        "summary" : "approves a volunteer for a drive",
+        "description" : "Adds driverId to a drive",
+        "operationId" : "addDriver",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_1"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Success. Added driver to drive."
+          },
+          "400" : {
+            "description" : "Client Error - please check your request format & try again."
+          },
+          "404" : {
+            "description" : "Error. The driveId or volunteerId was not found."
+          }
+        }
+      }
+    },
+    "/volunteerDrive" : {
+      "get" : {
+        "tags" : [ "dispatcher" ],
+        "summary" : "get list of applicants for a drive",
+        "operationId" : "getVolunteerDrives",
+        "parameters" : [ {
+          "name" : "driveId",
+          "in" : "query",
+          "description" : "id of drive",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/volunteerDrive"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "clinic" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true,
+            "example" : 42
+          },
+          "civiContactId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true,
+            "example" : 42
+          },
+          "name" : {
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "phone" : {
+            "maxLength" : 20,
+            "type" : "string"
+          },
+          "address" : {
+            "maxLength" : 100,
+            "type" : "string"
+          },
+          "city" : {
+            "maxLength" : 50,
+            "type" : "string"
+          },
+          "state" : {
+            "maxLength" : 30,
+            "type" : "string"
+          },
+          "postalCode" : {
+            "maxLength" : 10,
+            "type" : "string"
+          },
+          "latitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "longitude" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        },
+        "example" : {
+          "civiContactId" : 42,
+          "address" : "address",
+          "phone" : "phone",
+          "city" : "city",
+          "postalCode" : "postalCode",
+          "name" : "name",
+          "id" : 42,
+          "state" : "state",
+		  "latitude" : "12.345678",
+		  "longitude" : "123.456789"
+        }
+      },
+      "caller" : {
+        "required" : [ "firstName", "isMinor", "lastName", "callerIdentifier", "phone", "preferredContactMethod", "preferredLanguage" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true,
+            "example" : 42
+          },
+          "civiContactId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true,
+            "example" : 42
+          },
+          "callerIdentifier" : {
+            "maxLength" : 45,
+            "minLength" : 4,
+            "type" : "string",
+            "example" : "5551"
+          },
+          "firstName" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "example" : "Jane"
+          },
+          "lastName" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "example" : "Smith"
+          },
+          "phone" : {
+            "maxLength" : 20,
+            "minLength" : 10,
+            "type" : "string",
+            "example" : "5555551234"
+          },
+          "isMinor" : {
+            "type" : "boolean"
+          },
+          "preferredLanguage" : {
+            "maxLength" : 25,
+            "type" : "string",
+            "example" : "French"
+          },
+          "preferredContactMethod" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 1
+          },
+          "note" : {
+            "maxLength" : 500,
+            "type" : "string",
+            "example" : "Free-form text goes here."
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          },
+          "updated" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          }
+        },
+        "example" : {
+          "civiContactId" : 42,
+          "firstName" : "Jane",
+          "lastName" : "Smith",
+          "isMinor" : true,
+          "callerIdentifier" : "5551",
+          "preferredLanguage" : "French",
+          "preferredContactMethod" : 1,
+		  "note" : "Free-form text goes here.",
+          "phone" : "5555551234",
+          "created" : "2000-01-23T04:56:07.000+00:00",
+          "id" : 42,
+          "updated" : "2000-01-23T04:56:07.000+00:00"
+        }
+      },
+      "appointment" : {
+        "required" : [ "appointmentDate", "appointmentTypeId", "clinicId", "dispatcherId", "callerId" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true,
+            "example" : 42
+          },
+          "dispatcherId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "callerId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "callerIdentifier" : {
+            "maxLength" : 45,
+            "minLength" : 4,
+            "type" : "string",
+            "example" : "5551"
+          },
+          "clinicId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "pickupLocationVague" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "example" : "US59 S and BW8"
+          },
+          "pickupVagueLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "pickupVagueLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "dropoffLocationVague" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "example" : "I10 W and 610"
+          },
+          "dropoffVagueLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "dropoffVagueLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "appointmentDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "appointmentTypeId" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 1
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          },
+          "updated" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          }
+        },
+        "example" : {
+          "pickupLocationVague" : "US59 S and BW8",
+          "clinicId" : 42,
+          "dropoffLocationVague" : "I10 W and 610",
+          "callerId": 42,
+          "callerIdentifier" :  "5551",
+          "created" : "2000-01-23T04:56:07.000+00:00",
+          "id" : 42,
+          "dispatcherId" : 42,
+          "appointmentTypeId" : 1,
+          "appointmentDate" : "2000-01-23T04:56:07.000+00:00",
+          "updated" : "2000-01-23T04:56:07.000+00:00",
+		  "pickupVagueLatitude" : "12.345678",
+		  "pickupVagueLongitude" : "123.456789",
+		  "dropoffVagueLatitude" : "12.345678",
+		  "dropoffVagueLongitude" : "123.456789"
+        }
+      },
+      "drive" : {
+        "required" : [ "appointmentId", "direction", "endAddress", "endCity", "endPostalCode", "endState", "startAddress", "startCity", "startPostalCode", "startState" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "readOnly" : true,
+            "example" : 42
+          },
+          "appointmentId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "direction" : {
+            "type" : "integer",
+            "description" : "1 = toClinic, 2 = fromClinic",
+            "format" : "int32",
+            "example" : 1
+          },
+          "status" : {
+            "type" : "integer",
+            "description" : "0 = Open, 1 = Pending, 2 = Approved",
+            "format" : "int32",
+            "example" : 0
+          },
+          "driverId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "startAddress" : {
+            "maxLength" : 100,
+            "type" : "string",
+            "example" : "11415 Roark Rd"
+          },
+          "startCity" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "example" : "Houston"
+          },
+          "startState" : {
+            "maxLength" : 30,
+            "type" : "string",
+            "example" : "TX"
+          },
+          "startPostalCode" : {
+            "maxLength" : 10,
+            "type" : "string",
+            "example" : "77031"
+          },
+          "startLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "startLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "endAddress" : {
+            "maxLength" : 100,
+            "type" : "string",
+            "example" : "7373 Old Katy Rd"
+          },
+          "endCity" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "example" : "Houston"
+          },
+          "endState" : {
+            "maxLength" : 30,
+            "type" : "string",
+            "example" : "TX"
+          },
+          "endPostalCode" : {
+            "maxLength" : 10,
+            "type" : "string",
+            "example" : "77024"
+          },
+          "endLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "endLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          },
+          "updated" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          }
+        },
+        "example" : {
+          "startCity" : "Houston",
+          "startAddress" : "11415 Roark Rd",
+          "endState" : "TX",
+          "created" : "2000-01-23T04:56:07.000+00:00",
+          "endCity" : "Houston",
+          "driverId" : 42,
+          "appointmentId" : 42,
+          "startPostalCode" : "77031",
+          "id" : 42,
+          "startState" : "TX",
+          "endPostalCode" : "77024",
+          "updated" : "2000-01-23T04:56:07.000+00:00",
+          "endAddress" : "7373 Old Katy Rd",
+          "direction" : 1,
+          "status" : 0,
+		  "startLatitude" : "12.345678",
+		  "startLongitude" : "123.456789",
+		  "endLatitude" : "12.345678",
+		  "endLongitude" : "123.456789"
+        }
+      },
+      "appointmentDTO" : {
+        "properties" : {
+          "appointment" : {
+            "$ref" : "#/components/schemas/appointment"
+          },
+          "driveTo" : {
+            "$ref" : "#/components/schemas/drive"
+          },
+          "driveFrom" : {
+            "$ref" : "#/components/schemas/drive"
+          }
+        },
+        "example" : {
+          "driveTo" : {
+            "startCity" : "Houston",
+            "startAddress" : "11415 Roark Rd",
+            "endState" : "TX",
+            "created" : "2000-01-23T04:56:07.000+00:00",
+            "endCity" : "Houston",
+            "driverId" : 42,
+            "appointmentId" : 42,
+            "startPostalCode" : "77031",
+            "id" : 42,
+            "startState" : "TX",
+            "endPostalCode" : "77024",
+            "updated" : "2000-01-23T04:56:07.000+00:00",
+            "endAddress" : "7373 Old Katy Rd",
+            "direction" : 1,
+            "status" : 0
+          },
+          "driveFrom" : {
+            "startCity" : "Houston",
+            "startAddress" : "11415 Roark Rd",
+            "endState" : "TX",
+            "created" : "2000-01-23T04:56:07.000+00:00",
+            "endCity" : "Houston",
+            "driverId" : 42,
+            "appointmentId" : 42,
+            "startPostalCode" : "77031",
+            "id" : 42,
+            "startState" : "TX",
+            "endPostalCode" : "77024",
+            "updated" : "2000-01-23T04:56:07.000+00:00",
+            "endAddress" : "7373 Old Katy Rd",
+            "direction" : 1,
+            "status" : 0
+          },
+          "appointment" : {
+            "pickupLocationVague" : "US59 S and BW8",
+            "clinicId" : 42,
+            "dropoffLocationVague" : "I10 W and 610",
+            "callerId" : 42,
+            "created" : "2000-01-23T04:56:07.000+00:00",
+            "id" : 42,
+            "dispatcherId" : 42,
+            "appointmentTypeId" : 1,
+            "appointmentDate" : "2000-01-23T04:56:07.000+00:00",
+            "updated" : "2000-01-23T04:56:07.000+00:00"
+          }
+        }
+      },
+      "allAppointments" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/appointmentDTO"
+        }
+      },
+      "deleteSuccessMessage" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "example" : "Success. Your {dataType} of ID {objectID} has been deleted."
+          }
+        },
+        "example" : {
+          "message" : "Success. Your {dataType} of ID {objectID} has been deleted."
+        }
+      },
+      "volunteerDrive" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "volunteerId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "firstName" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "example" : "Alice"
+          },
+          "lastName" : {
+            "maxLength" : 50,
+            "type" : "string",
+            "example" : "Wagner"
+          },
+          "mobilePhone" : {
+            "maxLength" : 20,
+            "type" : "string",
+            "example" : "5555554321"
+          },
+          "driveId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          },
+          "updated" : {
+            "type" : "string",
+            "format" : "date-time",
+            "readOnly" : true
+          }
+        },
+        "example" : {
+          "firstName" : "Alice",
+          "lastName" : "Wagner",
+          "driveId" : 42,
+          "mobilePhone" : "5555554321",
+          "created" : "2000-01-23T04:56:07.000+00:00",
+          "id" : 42,
+          "volunteerId" : 42,
+          "updated" : "2000-01-23T04:56:07.000+00:00"
+        }
+      },
+      "driverDrive" : {
+        "required" : [ "appointmentDate", "appointmentId", "appointmentTypeId", "clinicId", "direction", "id", "isApproved", "callerIdentifier", "volunteerDriveId" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "volunteerDriveId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "appointmentId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "appointmentTypeId" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : 1
+          },
+          "clinicId" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 42
+          },
+          "appointmentDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "direction" : {
+            "type" : "integer",
+            "description" : "1 = toClinic, 2 = fromClinic",
+            "format" : "int32",
+            "example" : 1
+          },
+          "isApproved" : {
+            "type" : "boolean"
+          },
+          "startLocation" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "example" : "US59 S and BW8"
+          },
+          "startLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "startLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "endLocation" : {
+            "maxLength" : 255,
+            "type" : "string",
+            "example" : "7373 Old Katy Rd Houston, TX 77008"
+          },
+          "endLatitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "endLongitude" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "callerIdentifier" : {
+            "maxLength" : 45,
+            "minLength" : 4,
+            "type" : "string",
+            "example" : "5554"
+          },
+          "callerName" : {
+            "maxLength" : 100,
+            "type" : "string",
+            "example" : "Jane Smith"
+          },
+          "callerNote" : {
+            "maxLength" : 500,
+            "type" : "string",
+            "example" : "Free-form text goes here."
+          }
+        },
+        "example" : {
+          "callerName" : "Jane Smith",
+          "clinicId" : 42,
+          "callerIdentifier" : "5554",
+          "startLocation" : "US59 S and BW8",
+          "appointmentId" : 42,
+          "id" : 42,
+          "appointmentTypeId" : 1,
+          "isApproved" : true,
+          "volunteerDriveId" : 42,
+          "appointmentDate" : "2000-01-23T04:56:07.000+00:00",
+          "endLocation" : "7373 Old Katy Rd Houston, TX 77008",
+		  "callerNote" : "Free-form text goes here.",
+          "direction" : 1,
+		  "startLatitude" : "12.345678",
+		  "startLongitude" : "123.456789",
+		  "endLatitude" : "12.345678",
+		  "endLongitude" : "123.456789"
+        }
+      },
+      "body" : {
+        "type" : "object",
+        "properties" : {
+          "driveId" : {
+            "type" : "integer",
+            "description" : "id of drive user is applying for",
+            "format" : "int64",
+            "example" : 42
+          }
+        }
+      },
+      "body_1" : {
+        "type" : "object",
+        "properties" : {
+          "volunteerDriveId" : {
+            "type" : "integer",
+            "description" : "id of drive to update",
+            "format" : "int64",
+            "example" : 42
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "BearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}
