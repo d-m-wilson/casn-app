@@ -101,15 +101,24 @@
               mat-raised-button
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
-      <!-- <button type="button"
-              mat-raised-button
-              (click)="handleCloseModalClick()"
-              color="accent">Close</button> -->
       <button type="button"
               mat-raised-button
+              (click)="handleCloseModalClick()"
+              color="accent">Go Back</button>
+    </div>
+    <div class="modal-actions-cancel">
+      <button type="button"
+              mat-button
               (click)="handleCancelDriveClick()"
-              color="warn">Cancel Drive</button>
+              color="warn">Cancel This Drive</button>
     </div>
     <pre class="debug">{{ ride | json }}</pre>
   </div>
 </div>
+<!--********************************************************************
+                          Drive Cancel Modal
+**********************************************************************-->
+<app-cancel-drive-modal *ngIf="showCancelDriveModal"
+                        (closeCancelDriveModalClick)="hideCancelDriveModal()"
+                        (closeCancelDriveModalAndUpdateClick)="hideCancelDriveModal(true)"
+                        [driveId]="driveToCancel"></app-cancel-drive-modal>

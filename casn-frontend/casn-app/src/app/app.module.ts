@@ -50,6 +50,7 @@ import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
 import { MapComponent } from './map/map.component';
 import { environment } from '../environments/environment';
+import { CancelDriveModalComponent } from './cancel-drive-modal/cancel-drive-modal.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { environment } from '../environments/environment';
     LoginComponent,
     AppointmentsComponent,
     RideDetailModalComponent,
-    MapComponent
+    MapComponent,
+    CancelDriveModalComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),
