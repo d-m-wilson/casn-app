@@ -52,7 +52,7 @@
                       [ngClass]="{ 'open': r.driveTo.statusId === 0,
                                    'pending': r.driveTo.statusId === 1,
                                    'approved': r.driveTo.statusId === 2,
-                                   'canceled': r.driveFrom.statusId === 3 }">
+                                   'canceled': r.driveTo.statusId === 3 }">
               <div class="drive-card-header">
                 <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
                 <span class="status-text">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
