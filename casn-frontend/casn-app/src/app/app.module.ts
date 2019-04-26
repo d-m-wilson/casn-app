@@ -42,6 +42,8 @@ import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
 import { ApiModule } from './api/api.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
+/* Custom Directives & Pipes */
+import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -56,6 +58,7 @@ import { AppointmentFormComponent } from './appointment-form/appointment-form.co
 
 @NgModule({
   declarations: [
+    MatVerticalStepperScrollerDirective,
     AppComponent,
     DashboardComponent,
     CallersComponent,
