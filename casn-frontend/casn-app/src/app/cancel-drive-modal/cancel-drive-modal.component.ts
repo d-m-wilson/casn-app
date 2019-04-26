@@ -36,18 +36,18 @@ export class CancelDriveModalComponent implements OnInit {
       this.closeCancelDriveModalClick.emit(true);
     }
 
-    // TODO: Uncomment once endpoint is live
     submitDriveCancelRequest() {
-      // this.dispatcherService.cancelDrive(this.driveId).subscribe(
-      //   res => {
-      //     console.log("Success! Canceled drive.");
+      console.log("reason:", this.cancelReason.value)
+      this.dispatcherService.cancelDrive(this.driveId, this.cancelReason.value).subscribe(
+        res => {
+          console.log("Success! Canceled drive.");
           this.closeCancelDriveModalAndUpdateClick.emit(true);
-      //   },
-      //   err => {
-      //     // TODO: Handle error
-      //     console.error("ERROR:", err);
-      //   }
-      // );
+        },
+        err => {
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      );
     }
 
 
