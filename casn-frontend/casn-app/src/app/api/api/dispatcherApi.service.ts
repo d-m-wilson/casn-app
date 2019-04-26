@@ -442,10 +442,10 @@ export class DispatcherApiService implements DispatcherApiServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public cancelDrive(driveId: string, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public cancelDrive(driveId: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public cancelDrive(driveId: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public cancelDrive(driveId: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public cancelDrive(driveId: string, cancelReason: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public cancelDrive(driveId: string, cancelReason: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public cancelDrive(driveId: string, cancelReason: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public cancelDrive(driveId: string, cancelReason: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
 
         let headers = this.defaultHeaders;
@@ -475,7 +475,7 @@ export class DispatcherApiService implements DispatcherApiServiceInterface {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.post<any>(`${this.basePath}/drives/${driveId}/cancel`,
+        return this.httpClient.post<any>(`${this.basePath}/drives/${driveId}/cancel?cancelReasonId=${cancelReason}`,
             driveId,
             {
                 withCredentials: this.configuration.withCredentials,
