@@ -44,7 +44,7 @@
               mat-button
               color="primary"
               (click)="addToHomeScreen()"><mat-icon>home</mat-icon> Click to Install CASN App on Your Home Screen</button>
-      <router-outlet></router-outlet>
+      <router-outlet (activate)="onRouterActivate($event)"></router-outlet>
     </main>
   </mat-sidenav-content>
 </mat-sidenav-container>

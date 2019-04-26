@@ -98,4 +98,11 @@ export class AppComponent implements OnInit {
       this.deferredPrompt = null;
     });
   }
+  /*********************************************************************
+                    Scroll to Top When Navigating
+  **********************************************************************/
+  onRouterActivate(event) {
+    window.scroll(0,0);
+  }
+
 }
