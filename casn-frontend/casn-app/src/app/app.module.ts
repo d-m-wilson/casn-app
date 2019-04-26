@@ -25,6 +25,7 @@ import {
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
+  MatStepperModule,
   MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
@@ -92,6 +93,7 @@ import { CancelDriveModalComponent } from './cancel-drive-modal/cancel-drive-mod
     MatSelectModule,
     MatSidenavModule,
     MatSlideToggleModule,
+    MatStepperModule,
     MatTabsModule,
     MatToolbarModule,
     ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
