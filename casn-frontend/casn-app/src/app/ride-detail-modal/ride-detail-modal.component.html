@@ -108,6 +108,7 @@
     </div>
     <div class="modal-actions-cancel">
       <button type="button"
+              *ngIf="ride[driveType].statusId !== 3"
               mat-button
               (click)="handleCancelDriveClick()"
               color="warn">Cancel This Drive</button>
