@@ -32,12 +32,20 @@ p {
   color: $success-color;
 }
 
-.canceled {
+.canceled-by-caller {
   background-color: #ccc;
 }
 
-.canceled .status-text {
+.canceled-by-caller .status-text {
   color: #555;
+}
+
+.canceled-by-us {
+  background-color: $poop-color-faded;
+}
+
+.canceled-by-us .status-text {
+  color: $poop-color;
 }
 
 .hilight {

@@ -52,9 +52,11 @@
                       [ngClass]="{ 'open': r.driveTo.statusId === 0,
                                    'pending': r.driveTo.statusId === 1,
                                    'approved': r.driveTo.statusId === 2,
-                                   'canceled': r.driveTo.statusId === 3 }">
+                                   'canceled-by-caller': r.driveTo.cancelReasonId === 1,
+                                   'canceled-by-us': r.driveTo.cancelReasonId === 2 }">
               <div class="drive-card-header">
-                <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
+                <mat-icon *ngIf="r.driveTo.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
+                <span *ngIf="r.driveTo.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
                 <span class="status-text">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
@@ -68,9 +70,11 @@
                       [ngClass]="{ 'open': r.driveFrom.statusId === 0,
                                    'pending': r.driveFrom.statusId === 1,
                                    'approved': r.driveFrom.statusId === 2,
-                                   'canceled': r.driveFrom.statusId === 3 }">
+                                   'canceled-by-caller': r.driveFrom.cancelReasonId === 1,
+                                   'canceled-by-us': r.driveFrom.cancelReasonId === 2 }">
               <div class="drive-card-header">
-                <mat-icon class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
+                <mat-icon *ngIf="r.driveFrom.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
+                <span *ngIf="r.driveFrom.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
                 <span class="status-text">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
