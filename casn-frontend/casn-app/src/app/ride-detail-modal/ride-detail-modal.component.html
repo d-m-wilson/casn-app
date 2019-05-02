@@ -103,6 +103,7 @@
               color="accent">Go Back</button>
       <button type="button"
               mat-raised-button
+              [disabled]="ride[driveType].statusId === 3"
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
     </div>
