@@ -113,6 +113,8 @@ THE SOFTWARE.
 
 @angular/material/slide-toggle
 
+@angular/material/stepper
+
 @angular/material/tabs
 
 @angular/material/toolbar
