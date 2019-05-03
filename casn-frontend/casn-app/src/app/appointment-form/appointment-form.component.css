@@ -1,0 +1,45 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 1.2rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.appt-form-group {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.mat-form-field, .mat-checkbox {
+  margin: 5px 0;
+}
+
+.form-btn {
+  margin: 10px 5px;
+}
+
+
+.form-actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.hide {
+  display: none;
+}
+
+.review-card {
+  text-align: center;
+  background-color: #fafafa;
+  margin-bottom: 15px;
+}
