@@ -186,7 +186,7 @@ namespace CASNApp.API.Controllers
             driveToEntity?.SetCallerLocation(driveToLocation);
             driveTo?.SetCallerLocation(driveToLocation);
 
-            var driveFromAddress = driveFromEntity.GetCallerAddress();
+            var driveFromAddress = driveFromEntity?.GetCallerAddress();
             GeocoderQuery.LatLng driveFromLocation = null;
 
             if (driveFromAddress != null)
