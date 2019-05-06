@@ -181,6 +181,7 @@ export class AppointmentFormComponent implements OnInit {
       }
     } else {
       this.appointmentDTO.driveTo = null;
+      this.appointmentDTO.appointment.pickupLocationVague = null;
     }
     if(this.callerNeedsDropoff) {
       if(this.dropoffSameAsPickup) {
