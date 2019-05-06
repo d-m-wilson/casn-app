@@ -12,7 +12,8 @@
              [zoom]="mapCenter.zoom">
       <!--====== Map Markers for driveTo ========-->
       <ng-container *ngFor="let r of rides">
-        <agm-marker iconUrl="assets/img/blue-pushpin.png"
+        <agm-marker *ngIf="r.driveTo.statusId !== 3"
+                    iconUrl="assets/img/blue-pushpin.png"
                     [latitude]="r.driveTo.startLatitude"
                     [longitude]="r.driveTo.startLongitude"
                     (markerClick)="markerClick(infoWindow, $event);
@@ -52,7 +53,8 @@
       </ng-container>
       <!--====== Map Markers for driveFrom ========-->
       <ng-container *ngFor="let r of rides">
-        <agm-marker iconUrl="assets/img/blue-pushpin.png"
+        <agm-marker *ngIf="r.driveFrom.statusId !== 3"
+                    iconUrl="assets/img/blue-pushpin.png"
                     [latitude]="r.driveFrom.endLatitude"
                     [longitude]="r.driveFrom.endLongitude"
                     (markerClick)="markerClick(infoWindow, $event);
