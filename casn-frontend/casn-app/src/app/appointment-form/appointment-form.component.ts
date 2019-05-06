@@ -210,6 +210,7 @@ export class AppointmentFormComponent implements OnInit {
       }
     } else {
       this.appointmentDTO.driveFrom = null;
+      this.appointmentDTO.appointment.dropoffLocationVague = null;
     }
     console.log("Constructed Appointment DTO:", this.appointmentDTO);
     this.saveNewAppt();
