@@ -49,7 +49,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { CallersComponent } from './callers/callers.component';
 import { RidesComponent } from './rides/rides.component';
-import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
 import { MapComponent } from './map/map.component';
 import { environment } from '../environments/environment';
@@ -64,7 +63,6 @@ import { AppointmentFormComponent } from './appointment-form/appointment-form.co
     CallersComponent,
     RidesComponent,
     LoginComponent,
-    AppointmentsComponent,
     RideDetailModalComponent,
     MapComponent,
     CancelDriveModalComponent,

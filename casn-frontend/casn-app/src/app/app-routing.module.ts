@@ -5,7 +5,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RidesComponent } from './rides/rides.component';
 import { CallersComponent } from './callers/callers.component';
 import { LoginComponent } from './login/login.component';
-import { AppointmentsComponent } from './appointments/appointments.component';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 
 const routes: Routes = [
