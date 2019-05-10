@@ -8,7 +8,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-callers',
   templateUrl: './callers.component.html',
-  styleUrls: ['./callers.component.css']
+  styleUrls: ['./callers.component.scss']
 })
 export class CallersComponent implements OnInit {
   existingCaller: any = {};
