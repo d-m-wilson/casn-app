@@ -9,19 +9,25 @@ may be referenced from the Angular Material library in node_modules.
 /*****************************************************************************
     Simplified Palette -- Used Throughout Application in Custom Components
 ******************************************************************************/
-$primary-color: #949ac9;
-$primary-color-dark: #6972b3;
-$accent-color-1: #c182a1;
-$accent-color-2: #7447a3;
+$transparent: rgba(0,0,0,0);
+$frosted: rgba(255,255,255,0.2);
+$dark-frosted: rgba(0,0,0,0.7);
+$primary-color: #ABB1E8;
+$primary-color-dark: #280E9A;
+$accent-color-1: #ae93c9;
+$accent-color-2: #E4E4F1;
 
-$background-color: #e1e1e1;
-$modal-background-color: #e9eaf4;
+$background-color: #F2F7FD;
+$modal-background-color: #E4E4F1;
 $border-color: #949ac9;
 
+$body-color: #3A2B39;
 $error-color: #ef5350;
 $error-color-faded: #ffebee;
 $warn-color: #ffca28;
 $warn-color-faded: #fff8e1;
+$pending-color: #29b6f6;
+$pending-color-faded: #e1f5fe;
 $success-color: #66bb6a;
 $success-color-faded: #e0f2f1;
 $poop-color: #5d4037;
@@ -81,7 +87,7 @@ $mat-casnpurple: (
     contrast: (
         50 : #000000,
         100 : #000000,
-        200 : #000000,
+        200 : #ffffff,
         300 : #ffffff,
         400 : #ffffff,
         500 : #ffffff,

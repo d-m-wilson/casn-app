@@ -9,6 +9,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  background: linear-gradient(#ABB1E8, #280E9A);
 }
 
 .fill-remaining-space {
@@ -30,5 +31,5 @@
 }
 
 .mat-list-icon {
-  color: rgba(0, 0, 0, 0.54);
+  color: rgba(255, 255, 255, 0.54);
 }

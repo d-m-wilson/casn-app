@@ -1,6 +1,6 @@
 <main *ngIf="appointmentTypes && clinics">
   <h1>Create an Appointment</h1>
-  <mat-vertical-stepper mat-vertical-stepper #stepper>
+  <mat-vertical-stepper mat-vertical-stepper #stepper class="candy-stepper">
 <!--********************************************************************
                                 STEP 1
                             Appointment Form
@@ -263,11 +263,11 @@
                   (!callerNeedsPickup || this.driveToForm.valid) &&
                   (!callerNeedsDropoff || dropoffSameAsPickup || this.driveFromForm.valid)"
            class="appt-form-group">
-        <mat-card class="review-card">
+        <mat-card class="review-card candy-card">
           <h4>Caller {{ formAppt.callerIdentifier.value }}'s {{ apptType }}</h4>
           <span class="bold">{{ formAppt.appointmentDate.value | date:'shortTime'}} at {{ apptClinic }}</span>
         </mat-card>
-        <mat-card class="review-card">
+        <mat-card class="review-card candy-card">
           <h4>Drive To Clinic</h4>
           <div *ngIf="callerNeedsPickup; else noPickup">
             <span>Pick Up Caller At:
@@ -285,7 +285,7 @@
             <p style="color:#666"><em>Caller doesn't need a ride to the clinic.</em></p>
           </ng-template>
         </mat-card>
-        <mat-card class="review-card">
+        <mat-card class="review-card candy-card">
           <h4>Drive From Clinic</h4>
           <div *ngIf="callerNeedsDropoff; else noDropoff">
             <span>Drop Off Caller At:</span>

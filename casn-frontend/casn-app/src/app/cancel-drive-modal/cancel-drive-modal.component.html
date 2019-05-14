@@ -6,28 +6,24 @@
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
     <h1>Please Provide a Reason</h1>
-    <mat-card class="cancel-card">
-      <mat-form-field appearance="outline" id="cancel-reason">
-        <mat-label>Reason</mat-label>
-        <mat-select placeholder="Drive Cancel Reason"
-                    aria-label="Drive Cancel Reason"
-                    [formControl]="cancelReason">
-          <mat-option *ngFor="let d of driveCancelReasons" [value]="d.id">
-            {{ d.name }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Note: Only this drive, not the entire appointment, will be canceled.</mat-hint>
-      </mat-form-field>
-    </mat-card>
+    <mat-radio-group aria-label="Drive Cancel Reason"
+                     [formControl]="cancelReason">
+      <mat-radio-button *ngFor="let d of driveCancelReasons" [value]="d.id">
+        {{ d.name }}
+      </mat-radio-button>
+    </mat-radio-group>
+    <br><br>
     <!--=========== Modal Actions ============-->
-    <div class="modal-actions">
+    <div class="mt" style="text-align:center">
       <button type="button"
+              class="btn-cta"
               mat-raised-button
               (click)="submitDriveCancelRequest()"
               [disabled]="!cancelReason.valid"
               color="primary">Submit</button>
+      <br><br>
       <button type="button"
-              mat-raised-button
+              mat-button
               (click)="handleCloseModalClick()"
               color="accent">Go Back</button>
     </div>

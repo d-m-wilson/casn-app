@@ -11,11 +11,12 @@
   // Define any styles affected by the theme.
   .candy-toolbar {
     // Use mat-color to extract individual colors from a palette.
-    background: linear-gradient(
-      10deg,
-      mat-color($mat-casnblue, 100),
-      mat-color($mat-casnblue, 200),
-    );
+    // background: linear-gradient(
+    //   35deg,
+    //   #4BB0F6,
+    //   #A435F4
+    // );
+    background: rgba(0,0,0,0);
     border-color: mat-color($accent, A400);
     color: white;
 
@@ -34,3 +35,10 @@
     }
   }
 }
+
+// mat-color($mat-casnpink, 200),
+// mat-color($mat-casnpink, 300),
+// mat-color($mat-casnpurple, 200),
+// mat-color($mat-casnpurple, 300),
+// mat-color($mat-casnblue, 400),
+// mat-color($mat-casnblue, 300),
