@@ -107,6 +107,8 @@ THE SOFTWARE.
 
 @angular/material/list
 
+@angular/material/radio
+
 @angular/material/select
 
 @angular/material/sidenav
