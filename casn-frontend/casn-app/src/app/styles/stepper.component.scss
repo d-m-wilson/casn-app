@@ -9,10 +9,10 @@
   $accent: map-get($theme, accent);
 
   // Define any styles affected by the theme.
-  .candy-stepper {
-    background: $transparent;
-    color: white;
-  }
+  // .candy-stepper {
+  //   background: $transparent;
+  //   color: white;
+  // }
 }
 
 @mixin candy-stepper-typography($config) {

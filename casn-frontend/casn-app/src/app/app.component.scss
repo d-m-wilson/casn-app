@@ -1,3 +1,5 @@
+@import './styles/variables';
+
 .app-navbar {
   position: relative;
   z-index: 2;
@@ -9,7 +11,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(#ABB1E8, #280E9A);
+  background: $background-color;
+  // background: linear-gradient(180deg, $primary-color 0%, $background-color 15%);
 }
 
 .fill-remaining-space {
@@ -31,5 +34,5 @@
 }
 
 .mat-list-icon {
-  color: rgba(255, 255, 255, 0.54);
+  color: $dark-frosted;
 }

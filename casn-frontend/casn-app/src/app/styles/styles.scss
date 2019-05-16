@@ -57,8 +57,9 @@ body {
 ********************************************************************/
 .mat-mini-fab.mat-frosted {
   background: $frosted;
-  border: 2px solid;
+  border: 2px solid white;
   box-sizing: initial;
+  color: white;
 }
 
 .mat-raised-button.btn-cta {
