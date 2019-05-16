@@ -1,0 +1,32 @@
+<!--********************************************************************
+                          Cancel Drive Modal
+**********************************************************************-->
+<div class="modal" *ngIf="driveId && driveCancelReasons">
+  <div class="modal-content">
+    <span class="close"
+          (click)="handleCloseModalClick()">x</span>
+    <h1>Please Provide a Reason</h1>
+    <mat-radio-group aria-label="Drive Cancel Reason"
+                     [formControl]="cancelReason">
+      <mat-radio-button *ngFor="let d of driveCancelReasons" [value]="d.id">
+        {{ d.name }}
+      </mat-radio-button>
+    </mat-radio-group>
+    <br><br>
+    <!--=========== Modal Actions ============-->
+    <div class="mt" style="text-align:center">
+      <button type="button"
+              class="btn-cta"
+              mat-raised-button
+              (click)="submitDriveCancelRequest()"
+              [disabled]="!cancelReason.valid"
+              color="primary">Submit</button>
+      <br><br>
+      <button type="button"
+              mat-button
+              (click)="handleCloseModalClick()"
+              color="accent">Go Back</button>
+    </div>
+    <pre class="debug">{{ driveCancelReasons | json }}</pre>
+  </div>
+</div>

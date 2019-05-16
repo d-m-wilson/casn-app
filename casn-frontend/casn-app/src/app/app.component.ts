@@ -9,7 +9,7 @@ import { environment } from '../environments/environment';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   opened: boolean;
@@ -98,4 +98,5 @@ export class AppComponent implements OnInit {
       this.deferredPrompt = null;
     });
   }
+
 }

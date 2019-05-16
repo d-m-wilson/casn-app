@@ -1,0 +1,38 @@
+@import './variables';
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin candy-toolbar-theme($theme) {
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+
+  // Define any styles affected by the theme.
+  .candy-toolbar {
+    background: $primary-color;
+    border-color: mat-color($accent, A400);
+    color: white;
+
+    button {
+      height: 69px;
+    }
+  }
+}
+
+@mixin candy-toolbar-typography($config) {
+  .candy-toolbar {
+    font: {
+      family: mat-font-family($config, body-1);
+      size: mat-font-size($config, body-1);
+      weight: mat-font-weight($config, body-1);
+    }
+  }
+}
+
+// mat-color($mat-casnpink, 200),
+// mat-color($mat-casnpink, 300),
+// mat-color($mat-casnpurple, 200),
+// mat-color($mat-casnpurple, 300),
+// mat-color($mat-casnblue, 400),
+// mat-color($mat-casnblue, 300),

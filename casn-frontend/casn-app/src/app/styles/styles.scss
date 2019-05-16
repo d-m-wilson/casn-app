@@ -25,6 +25,7 @@ body {
   color: #555;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 .mat-badge-content {
@@ -47,11 +48,40 @@ body {
   font-weight: 600;
 }
 
+.fa, .fas {
+  font-size: 1.2rem;
+}
+
+/*******************************************************************
+                        Buttons, Mat-Buttons
+********************************************************************/
+.mat-mini-fab.mat-frosted {
+  background: $frosted;
+  border: 2px solid white;
+  box-sizing: initial;
+  color: white;
+}
+
+.mat-raised-button.btn-cta {
+  width: 100%;
+  height: 65px;
+  border-radius: 50px;
+  border: 2px solid;
+}
+
 /*******************************************************************
                     Atomic Classes Margin/Padding
 ********************************************************************/
 .mt {
   margin-top: 0.25rem;
+}
+
+.mr {
+  margin-right: 0.25rem;
+}
+
+.mr-xs {
+  margin-right: 0.1rem;
 }
 
 /*******************************************************************
@@ -67,9 +97,10 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   background-color: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // TODO: Figure out flexbox bug
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
 }
 
 .modal-title {
@@ -77,11 +108,12 @@ body {
 }
 
 .modal-content {
-  background-color: $modal-background-color;
-  margin: 0 auto;
+  border-radius: 15px;
+  background: $modal-background-color;
+  color: $body-color;
+  margin: 5px auto;
   padding: 10px;
-  border: 1px solid #888;
-  width: 95%;
+  width: 90%;
 }
 
 .modal-ctrl-btns {
@@ -90,14 +122,14 @@ body {
 }
 
 .close {
-  color: #aaa;
+  color: $body-color;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
 
 .close:hover, .close:focus {
-  color: black;
+  color: $body-color;
   text-decoration: none;
   cursor: pointer;
 }

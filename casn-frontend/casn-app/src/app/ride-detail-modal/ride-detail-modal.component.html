@@ -6,10 +6,10 @@
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
     <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }}</h1>
-    <mat-tab-group mat-align-tabs="center">
+    <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
-        <mat-card class="appointment-card">
+        <mat-card class="appointment-card candy-card">
           <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
           <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
         </mat-card>
@@ -21,7 +21,7 @@
           <p>{{ ride.appointment.callerNote }}</p>
         </mat-expansion-panel>
         <!--=========== Pick Up Info ============-->
-        <mat-card class="mt">
+        <mat-card class="mt candy-card">
           <mat-card-subtitle>
             Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
@@ -33,7 +33,7 @@
           </a>
         </mat-card>
         <!--=========== Drop Off Info ============-->
-        <mat-card class="mt">
+        <mat-card class="mt candy-card">
           <mat-card-subtitle>
             Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
@@ -45,7 +45,7 @@
           </a>
         </mat-card>
         <!--=========== Volunteers ============-->
-        <mat-card *ngIf="volunteers && !driveIsApproved" class="mt">
+        <mat-card *ngIf="volunteers && !driveIsApproved" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
@@ -56,7 +56,7 @@
                     color="primary">Approve</button>
           </div>
         </mat-card>
-        <mat-card *ngIf="driveIsApproved" class="mt">
+        <mat-card *ngIf="driveIsApproved" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <ng-container *ngFor="let v of volunteers">
             <div *ngIf="v.volunteerId === ride[driveType].driverId"
@@ -69,7 +69,7 @@
       </mat-tab>
       <!--================ Map ===============-->
       <mat-tab label="Map View">
-        <mat-card>
+        <mat-card class="candy-card">
           <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
@@ -98,20 +98,31 @@
     <!--=========== Modal Actions ============-->
     <div class="modal-actions">
       <button type="button"
+              class="btn-cta"
               mat-raised-button
+              [disabled]="ride[driveType].statusId === 3"
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
-      <button type="button"
-              mat-raised-button
-              (click)="handleCloseModalClick()"
-              color="accent">Close</button>
     </div>
-    <!-- <div class="modal-actions">
+    <div class="modal-actions-cancel">
       <button type="button"
-      mat-raised-button
-      (click)="handleCancelDriveClick()"
-      color="warn">Cancel Drive</button>
-    </div> -->
+              mat-button
+              (click)="handleCloseModalClick()"
+              color="accent"
+              class="mr">Go Back</button>
+      <button type="button"
+              *ngIf="ride[driveType].statusId !== 3"
+              mat-button
+              (click)="handleCancelDriveClick()"
+              color="accent">Cancel This Drive</button>
+    </div>
     <pre class="debug">{{ ride | json }}</pre>
   </div>
 </div>
+<!--********************************************************************
+                          Drive Cancel Modal
+**********************************************************************-->
+<app-cancel-drive-modal *ngIf="showCancelDriveModal"
+                        (closeCancelDriveModalClick)="hideCancelDriveModal()"
+                        (closeCancelDriveModalAndUpdateClick)="hideCancelDriveModal(true)"
+                        [driveId]="driveToCancel"></app-cancel-drive-modal>

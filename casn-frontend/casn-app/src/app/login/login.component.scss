@@ -1,3 +1,5 @@
+@import '../styles/variables';
+
 main {
   display: flex;
   flex-direction: column;
@@ -8,6 +10,8 @@ main {
 
 .btn-login {
   width: 250px;
-  height: 75px;
+  height: 90px;
   border-radius: 50px;
+  background: $primary-color;
+  border: 2px solid;
 }

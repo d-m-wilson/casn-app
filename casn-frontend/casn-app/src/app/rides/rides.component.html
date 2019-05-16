@@ -1,4 +1,4 @@
-<ng-container *ngIf="rides && clinics">
+<ng-container *ngIf="rides && clinics && apptTypes">
   <!--********************************************************************
                             Date Selection Sidebar
   **********************************************************************-->
@@ -20,62 +20,76 @@
                                     Ride Cards
     **********************************************************************-->
     <section class="ride-container">
-      <header class="mat-elevation-z1">
-        <span>
-        <mat-icon class="clicky hilight"
-                  (click)="toggleDateFilters()">view_day</mat-icon>
-        <mat-icon class="clicky hilight"
-                  (click)="toggleMapModal()">map</mat-icon>
-                  </span>
-        <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1>
-        <mat-icon class="clicky hilight"
-                  (click)="toggleSettingsModal()">settings</mat-icon>
+      <header>
+        <button mat-mini-fab color="frosted">
+          <i class="fas fa-calendar-day clicky"
+          (click)="toggleDateFilters()"></i>
+        </button>
+        <button mat-mini-fab color="frosted">
+          <i class="fas fa-map-marked-alt clicky"
+          (click)="toggleMapModal()"></i>
+        </button>
+        <button mat-mini-fab color="frosted">
+          <i class="fas fa-filter clicky"
+          (click)="toggleSettingsModal()"></i>
+        </button>
+        <!-- <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1> -->
       </header>
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
           <h2>No rides on this day :(</h2>
       </div>
-      <div *ngFor="let r of ridesToDisplay">
+      <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
         <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayClinics[r.appointment.clinicId]">
-          <mat-card class="appointment-card">
+          <mat-card class="appointment-card candy-card mat-elevation-z0">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
             </div>
             <div>
-              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }} Appointment</span> <br>
-              <span class="bold">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
+              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }}</span> <br>
+              <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
             </div>
           </mat-card>
           <div class="drive-container">
             <mat-card *ngIf="displayRides[r.driveTo?.statusId]"
                       (click)="toggleRideModal(r, true)"
-                      class="drive-card"
+                      class="drive-card candy-card"
                       [ngClass]="{ 'open': r.driveTo.statusId === 0,
                                    'pending': r.driveTo.statusId === 1,
                                    'approved': r.driveTo.statusId === 2,
-                                   'canceled': r.driveFrom.statusId === 3 }">
+                                   'canceled-by-caller': r.driveTo.cancelReasonId === 1,
+                                   'canceled-by-us': r.driveTo.cancelReasonId === 2 }">
               <div class="drive-card-header">
-                <mat-icon class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
-                <span class="status-text">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
+                <mat-icon *ngIf="r.driveTo.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
+                <span *ngIf="r.driveTo.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
+                <span class="status-text bolder">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
-                <mat-icon svgIcon="drive_to" style="min-width:35px"></mat-icon>
-                <p>{{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}</p>
+                <p>
+                  <!-- <mat-icon svgIcon="drive_to" style="min-width:35px"></mat-icon><br> -->
+                  <span class="bolder text-sm">Pick Up</span><br>
+                  {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
+                </p>
               </div>
             </mat-card>
             <mat-card *ngIf="displayRides[r.driveFrom?.statusId]"
                       (click)="toggleRideModal(r)"
-                      class="drive-card"
+                      class="drive-card candy-card"
                       [ngClass]="{ 'open': r.driveFrom.statusId === 0,
                                    'pending': r.driveFrom.statusId === 1,
                                    'approved': r.driveFrom.statusId === 2,
-                                   'canceled': r.driveFrom.statusId === 3 }">
+                                   'canceled-by-caller': r.driveFrom.cancelReasonId === 1,
+                                   'canceled-by-us': r.driveFrom.cancelReasonId === 2 }">
               <div class="drive-card-header">
-                <mat-icon class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
-                <span class="status-text">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
+                <mat-icon *ngIf="r.driveFrom.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
+                <span *ngIf="r.driveFrom.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
+                <span class="status-text bolder">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
-                <mat-icon svgIcon="drive_from" style="min-width:35px"></mat-icon>
-                <p>{{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}</p>
+                <p>
+                  <!-- <mat-icon svgIcon="drive_from" style="min-width:35px"></mat-icon><br> -->
+                  <span class="bolder text-sm">Drop Off</span><br>
+                  {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
+                </p>
               </div>
             </mat-card>
           </div>
@@ -126,7 +140,7 @@
     <div class="modal-title">
       <h2>Filter Drives</h2>
     </div>
-    <mat-card class="mt">
+    <mat-card class="mt candy-card">
       <mat-card-subtitle>By Drive Status</mat-card-subtitle>
       <mat-slide-toggle value="open"
                         [checked]="displayRides[0]"
@@ -149,7 +163,7 @@
                         color="primary">Show Canceled</mat-slide-toggle>
 
     </mat-card>
-    <mat-card class="mt">
+    <mat-card class="mt candy-card">
       <mat-card-subtitle>By Clinic</mat-card-subtitle>
       <ng-container *ngFor="let c of objectKeys(clinics)">
         <mat-slide-toggle [checked]="displayClinics[c]"

@@ -17,6 +17,9 @@ export class RideDetailModalComponent implements OnInit {
   apptTypes: any;
   clinics: any;
   volunteers: any[];
+  // Details for Cancel Drive Modal
+  showCancelDriveModal: boolean = false;
+  driveToCancel: string;
 
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
@@ -93,9 +96,14 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleCancelDriveClick() {
-    if(confirm("Cancel drive--are you sure?")) {
-      console.log("Waiting for drive cancel endpoint....")
-    }
+    this.driveToCancel = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
+    this.showCancelDriveModal = true;
+  }
+
+  hideCancelDriveModal(update?: boolean) {
+    this.driveToCancel = null;
+    this.showCancelDriveModal = false;
+    if(update) this.closeRideModalAndUpdateClick.emit(true);
   }
 
 /*********************************************************************

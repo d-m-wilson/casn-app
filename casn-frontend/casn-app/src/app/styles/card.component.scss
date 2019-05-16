@@ -1,0 +1,30 @@
+@import './variables';
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin candy-card-theme($theme) {
+  // Extract the palettes you need from the theme definition.
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+
+  // Define any styles affected by the theme.
+  .candy-card {
+    background: $background-color;
+    color: $body-color;
+
+    .mat-card-subtitle {
+      color: $body-color;
+    }
+  }
+}
+
+@mixin candy-card-typography($config) {
+  .candy-card {
+    font: {
+      family: mat-font-family($config, body-1);
+      size: mat-font-size($config, body-1);
+      weight: mat-font-weight($config, body-1);
+    }
+  }
+}

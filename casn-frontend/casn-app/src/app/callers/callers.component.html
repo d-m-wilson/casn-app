@@ -3,7 +3,7 @@
                         Caller Search Field
 **********************************************************************-->
   <h2>Schedule A Ride</h2>
-  <h3>Add or Lookup Caller Information</h3>
+  <p><em>Add or look up caller information</em></p>
   <div class="caller-form-group" *ngIf="!displayCallerForm">
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Caller ID</mat-label>
@@ -16,7 +16,7 @@
       <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
     </mat-form-field>
 
-    <button class="form-btn"
+    <button class="form-btn btn-cta"
             mat-raised-button
             color="primary"
             [disabled]="callerIdentifierSearch.invalid"
@@ -105,12 +105,12 @@
                   placeholder="Optional, please include any notes here."></textarea>
         <mat-hint align="end">{{ callerNotes.value.length }} / 500</mat-hint>
       </mat-form-field>
-      <button class="form-btn"
+      <button class="form-btn btn-cta"
               mat-raised-button
               color="primary"
               type="submit"
               [disabled]="!callerForm.valid">Next</button>
-      <button mat-raised-button
+      <button mat-button
               color="warn"
               class="form-btn"
               (click)="handleCancelClick()">Cancel</button>
@@ -130,14 +130,25 @@
                             Caller Modal
 **********************************************************************-->
 <div *ngIf="displayCallerFoundModal" class="modal">
-  <div class="modal-content">
-    <h2>Found Matching Caller: {{ existingCaller.firstName }} {{ existingCaller.lastName }}</h2>
-    <p>Is this your caller?</p>
-    <div class="modal-ctrl-btns">
+  <div class="modal-content" style="text-align:center">
+    <mat-card class="candy-card">
+      <mat-card-subtitle>
+        <em>Found a Match</em>
+      </mat-card-subtitle>
+      <mat-card-title>
+        {{ existingCaller.firstName }} {{ existingCaller.lastName }}
+      </mat-card-title>
+      <br>
+      <p>Is this your caller?</p>
+    </mat-card>
+    <br><br>
+    <div>
       <button mat-raised-button
+              class="btn-cta"
               color="primary"
               (click)="handleYesClick()">Yes</button>
-      <button mat-raised-button
+      <br><br>
+      <button mat-button
               color="accent"
               (click)="handleNoClick()">No, I'll create a different ID.</button>
     </div>

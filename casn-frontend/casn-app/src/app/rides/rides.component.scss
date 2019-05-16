@@ -1,7 +1,15 @@
 @import '../styles/variables';
 
+h1 {
+  font-size: 1.2rem;
+}
+
 p {
   margin: 5px;
+}
+
+.text-sm {
+  font-size: 0.9rem;
 }
 
 .dates-rides-wrapper {
@@ -10,6 +18,7 @@ p {
 
 .open {
   background-color: $error-color-faded;
+  border: 2px solid $error-color;
 }
 
 .open .status-text {
@@ -17,31 +26,39 @@ p {
 }
 
 .pending {
-  background-color: $warn-color-faded;
+  background-color: $pending-color-faded;
+  border: 2px solid $pending-color;
 }
 
 .pending .status-text {
-  color: $warn-color;
+  color: $pending-color;
 }
 
 .approved {
   background-color: $success-color-faded;
+  border: 2px solid $success-color;
 }
 
 .approved .status-text {
   color: $success-color;
 }
 
-.canceled {
+.canceled-by-caller {
   background-color: #ccc;
+  border: 2px solid #555;
 }
 
-.canceled .status-text {
+.canceled-by-caller .status-text {
   color: #555;
 }
 
-.hilight {
-  color: $accent-color-2;
+.canceled-by-us {
+  background-color: $poop-color-faded;
+  border: 2px solid $poop-color;
+}
+
+.canceled-by-us .status-text {
+  color: $poop-color;
 }
 
 /********************************************************************
@@ -89,10 +106,10 @@ p {
 
 .ride-container header {
   display: flex;
-  border: 1px solid $border-color;
   background: $primary-color;
+  opacity: 0.8;
   color: white;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-content: center;
   align-items: center;
   box-sizing: border-box;
@@ -109,8 +126,17 @@ p {
 }
 
 .drive-container {
-  display: flex;
   margin-bottom: 10px;
+  @media only screen and (min-device-width : 350px) {
+    display: flex;
+  }
+}
+
+.appointment-drive-wrapper {
+  background: white;
+  margin: 5px 5px 30px 5px;
+  border-radius: 5px;
+  padding-bottom: 5px;
 }
 
 .no-rides-card {
@@ -124,6 +150,8 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: $transparent;
+  border-radius: 25px;
 }
 
 .date-badge {
@@ -137,15 +165,19 @@ p {
 }
 
 .drive-card {
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  padding: 5px 0px 8px 5px;
+  border-radius: 35px;
+  margin: 5px;
+  @media only screen and (min-device-width : 350px) {
+    width: 100%;
+    flex-direction: column;
+  }
 }
 
 .drive-card-header {
   display: flex;
   align-items: center;
+  min-width: 40%;
 }
 
 .drive-card-content {
@@ -172,6 +204,7 @@ p {
   bottom: 0;
   z-index: 20;
   background-color: $primary-color;
+  opacity: 0.8;
   color: white;
   padding: 5px;
 }

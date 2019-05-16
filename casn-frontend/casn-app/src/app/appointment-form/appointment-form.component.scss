@@ -4,6 +4,10 @@ main {
   align-items: center;
 }
 
+h1 {
+  font-size: 1.2rem;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -24,6 +28,17 @@ form {
   margin: 10px 5px;
 }
 
+
+.form-actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .hide {
   display: none;
+}
+
+.review-card {
+  text-align: center;
+  margin-bottom: 15px;
 }

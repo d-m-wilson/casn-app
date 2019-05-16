@@ -22,9 +22,11 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
+  MatRadioModule,
   MatSelectModule,
   MatSidenavModule,
   MatSlideToggleModule,
+  MatStepperModule,
   MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
@@ -41,26 +43,31 @@ import { ErrorInterceptor } from './auth-services/error.interceptor';
 import { UserService } from './auth-services/user.service';
 import { ApiModule } from './api/api.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
+/* Custom Directives & Pipes */
+import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { CallersComponent } from './callers/callers.component';
 import { RidesComponent } from './rides/rides.component';
-import { AppointmentsComponent } from './appointments/appointments.component';
 import { RideDetailModalComponent } from './ride-detail-modal/ride-detail-modal.component';
 import { MapComponent } from './map/map.component';
 import { environment } from '../environments/environment';
+import { CancelDriveModalComponent } from './cancel-drive-modal/cancel-drive-modal.component';
+import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 
 @NgModule({
   declarations: [
+    MatVerticalStepperScrollerDirective,
     AppComponent,
     DashboardComponent,
     CallersComponent,
     RidesComponent,
     LoginComponent,
-    AppointmentsComponent,
     RideDetailModalComponent,
-    MapComponent
+    MapComponent,
+    CancelDriveModalComponent,
+    AppointmentFormComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),
@@ -87,9 +94,11 @@ import { environment } from '../environments/environment';
     MatListModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatRadioModule,
     MatSelectModule,
     MatSidenavModule,
     MatSlideToggleModule,
+    MatStepperModule,
     MatTabsModule,
     MatToolbarModule,
     ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),

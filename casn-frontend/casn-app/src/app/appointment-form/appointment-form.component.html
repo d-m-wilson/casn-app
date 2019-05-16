@@ -1,0 +1,349 @@
+<main *ngIf="appointmentTypes && clinics">
+  <h1>Create an Appointment</h1>
+  <mat-vertical-stepper mat-vertical-stepper #stepper class="candy-stepper">
+<!--********************************************************************
+                                STEP 1
+                            Appointment Form
+**********************************************************************-->
+    <mat-step [stepControl]="appointmentForm">
+      <form [formGroup]="appointmentForm">
+        <ng-template matStepLabel>Appointment Details</ng-template>
+        <div class="appt-form-group">
+          <h3>Caller #{{ formAppt.callerIdentifier.value }}</h3>
+          <mat-form-field class="example-full-width hide"
+                          appearance="outline"
+                          disabled>
+            <mat-label>Caller ID</mat-label>
+            <input type="text"
+            placeholder="1234"
+            aria-label="Caller Identifier"
+            matInput
+            formControlName="callerIdentifier">
+            <mat-error *ngIf="formAppt.callerIdentifier.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field class="example-full-width hide" appearance="outline">
+            <mat-label>Dispatcher ID</mat-label>
+            <input type="number"
+            placeholder="4321"
+            aria-label="Dispatcher Identifier"
+            matInput
+            formControlName="dispatcherId">
+            <mat-error *ngIf="formAppt.dispatcherId.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="appt-form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Appointment Type</mat-label>
+            <mat-select placeholder="Appt Type"
+                        aria-label="Appointment Type"
+                        formControlName="appointmentTypeId">
+              <mat-option *ngFor="let a of appointmentTypes" [value]="a.value">
+                {{ a.displayValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formAppt.appointmentTypeId.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Clinic</mat-label>
+            <mat-select placeholder="Clinic"
+                        aria-label="Clinic"
+                        formControlName="clinicId">
+              <mat-option *ngFor="let c of clinics" [value]="c.id">
+                {{ c.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formAppt.clinicId.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Appointment Time</mat-label>
+            <input [owlDateTimeTrigger]="dt5"
+                   [owlDateTime]="dt5"
+                   matInput
+                   placeholder="Choose a date"
+                   formControlName="appointmentDate">
+            <owl-date-time [pickerMode]="'dialog'" #dt5></owl-date-time>
+          </mat-form-field>
+          <div class="form-actions">
+            <button mat-raised-button
+                    color="primary"
+                    type="button"
+                    [disabled]="!this.appointmentForm.valid"
+                    matStepperNext>Next</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+<!--********************************************************************
+                                STEP 2
+                          Drive To/Pickup Form
+**********************************************************************-->
+    <mat-step [stepControl]="driveToForm">
+      <form [formGroup]="driveToForm">
+        <ng-template matStepLabel>Drive To Clinic</ng-template>
+        <div class="appt-form-group" *ngIf="!callerNeedsPickup">
+          <h3>Does the caller need a drive <em>TO</em> the clinic?</h3>
+          <button mat-raised-button
+                  color="primary"
+                  type="button"
+                  (click)="callerNeedsPickup = true">Yes</button>
+          <br><br>
+          <!-- If the caller doesn't need a pickup drive, then they must
+          have a dropoff drive -->
+          <button mat-raised-button
+                  color="accent"
+                  type="button"
+                  (click)="callerNeedsDropoff = true"
+                  matStepperNext>No</button>
+        </div>
+        <div class="appt-form-group" *ngIf="callerNeedsPickup">
+          <h3>Pick-Up Address</h3>
+          <mat-form-field appearance="outline">
+            <mat-label>Street Address</mat-label>
+            <input matInput
+                   type="text"
+                   formControlName="pickupAddress"
+                   aria-label="Street Address"
+                   placeholder="345 Main St, Apt F">
+            <mat-error *ngIf="formPickup.pickupAddress.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <input matInput
+                   type="text"
+                   formControlName="pickupCity"
+                   aria-label="Pickup City"
+                   placeholder="Cypress">
+            <mat-error *ngIf="formPickup.pickupCity.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>State</mat-label>
+            <input matInput
+                   type="text"
+                   formControlName="pickupState"
+                   aria-label="Pickup State"
+                   placeholder="TX">
+            <mat-error *ngIf="formPickup.pickupState.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Zip Code</mat-label>
+            <input matInput
+                   type="text"
+                   formControlName="pickupPostalCode"
+                   aria-label="Pickup Zip Code"
+                   placeholder="77777">
+            <mat-error *ngIf="formPickup.pickupPostalCode.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Vague Pickup Location</mat-label>
+            <input matInput
+                   type="text"
+                   formControlName="pickupLocationVague"
+                   aria-label="Vague Pickup Location"
+                   placeholder="23rd and Main St.">
+            <mat-error *ngIf="formPickup.pickupLocationVague.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <div class="form-actions">
+            <button mat-raised-button
+                    color="accent"
+                    type="button"
+                    (click)="callerNeedsPickup = false"
+                    matStepperPrevious>Back</button>
+            <button mat-raised-button
+                    color="primary"
+                    type="button"
+                    [disabled]="!this.driveToForm.valid"
+                    matStepperNext>Next</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+<!--********************************************************************
+                                STEP 3
+                        Drive From/Dropoff Form
+**********************************************************************-->
+    <mat-step [stepControl]="driveFromForm">
+      <form [formGroup]="driveFromForm">
+        <ng-template matStepLabel>Drive From Clinic</ng-template>
+        <!-- The caller can skip the driveFrom as long as a driveTo has
+        been added. If there is no driveTo, the appointment must have a
+        driveFrom -->
+        <div class="appt-form-group" *ngIf="callerNeedsPickup && !callerNeedsDropoff">
+          <h3>Does the caller need a drive home <em>FROM</em> the clinic?</h3>
+          <button mat-raised-button
+                  color="primary"
+                  type="button"
+                  (click)="callerNeedsDropoff = true">Yes</button>
+          <br><br>
+          <button mat-raised-button
+                  color="accent"
+                  type="button"
+                  matStepperNext>No</button>
+        </div>
+        <div class="appt-form-group" *ngIf="callerNeedsDropoff">
+          <h3>Drop-Off Address</h3>
+          <!-- If there's a pickup address, we can set the dropoff address
+          to be the same -->
+          <div *ngIf="callerNeedsPickup">
+            <mat-checkbox (change)="toggleDropoffSameAsPickup($event.checked)"
+                          [checked]="dropoffSameAsPickup">
+              Same as pickup address?
+            </mat-checkbox>
+            <br><br>
+          </div>
+          <ng-container *ngIf="!dropoffSameAsPickup">
+            <mat-form-field appearance="outline">
+              <mat-label>Street Address</mat-label>
+              <input matInput
+                     type="text"
+                     formControlName="dropoffAddress"
+                     aria-label="Street Address"
+                     placeholder="21 Park Dr. Ste 200">
+              <mat-error *ngIf="formDropoff.dropoffAddress.errors?.required">This field is required.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput
+                     type="text"
+                     formControlName="dropoffCity"
+                     aria-label="Dropoff City"
+                     placeholder="Cypress">
+              <mat-error *ngIf="formDropoff.dropoffCity.errors?.required">This field is required.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>State</mat-label>
+              <input matInput
+                     type="text"
+                     formControlName="dropoffState"
+                     aria-label="Dropoff State"
+                     placeholder="TX">
+              <mat-error *ngIf="formDropoff.dropoffState.errors?.required">This field is required.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Zip Code</mat-label>
+              <input matInput
+                     type="text"
+                     formControlName="dropoffPostalCode"
+                     aria-label="Dropoff Zip Code"
+                     placeholder="77777">
+              <mat-error *ngIf="formDropoff.dropoffPostalCode.errors?.required">This field is required.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Vague Dropoff Location</mat-label>
+              <input matInput
+                     type="text"
+                     formControlName="dropoffLocationVague"
+                     aria-label="Vague Dropoff Location"
+                     placeholder="Yale St. off I-45">
+              <mat-error *ngIf="formDropoff.dropoffLocationVague.errors?.required">This field is required.</mat-error>
+            </mat-form-field>
+          </ng-container>
+          <div class="form-actions">
+            <button mat-raised-button
+                    color="accent"
+                    type="button"
+                    (click)="callerNeedsDropoff = false"
+                    matStepperPrevious>Back</button>
+            <button mat-raised-button
+                    color="primary"
+                    type="button"
+                    [disabled]="!dropoffSameAsPickup &&
+                                !this.driveFromForm.valid"
+                    matStepperNext>Next</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+<!--********************************************************************
+                                STEP 4
+                            Review & Submit
+**********************************************************************-->
+    <mat-step>
+      <ng-template matStepLabel>Review &amp; Submit</ng-template>
+      <div *ngIf="this.appointmentForm.valid &&
+                  (!callerNeedsPickup || this.driveToForm.valid) &&
+                  (!callerNeedsDropoff || dropoffSameAsPickup || this.driveFromForm.valid)"
+           class="appt-form-group">
+        <mat-card class="review-card candy-card">
+          <h4>Caller {{ formAppt.callerIdentifier.value }}'s {{ apptType }}</h4>
+          <span class="bold">{{ formAppt.appointmentDate.value | date:'shortTime'}} at {{ apptClinic }}</span>
+        </mat-card>
+        <mat-card class="review-card candy-card">
+          <h4>Drive To Clinic</h4>
+          <div *ngIf="callerNeedsPickup; else noPickup">
+            <span>Pick Up Caller At:
+              <em>{{ formPickup.pickupLocationVague.value }}</em>
+            </span>
+            <br><br>
+            <address>
+              {{ formPickup.pickupAddress.value }}<br>
+              {{ formPickup.pickupCity.value }}
+              {{ formPickup.pickupState.value }},
+              {{ formPickup.pickupPostalCode.value }}
+            </address>
+          </div>
+          <ng-template #noPickup>
+            <p style="color:#666"><em>Caller doesn't need a ride to the clinic.</em></p>
+          </ng-template>
+        </mat-card>
+        <mat-card class="review-card candy-card">
+          <h4>Drive From Clinic</h4>
+          <div *ngIf="callerNeedsDropoff; else noDropoff">
+            <span>Drop Off Caller At:</span>
+            <ng-container *ngIf="dropoffSameAsPickup; else dropoffDifferent">
+              &nbsp;<em>{{ formPickup.pickupLocationVague.value }}</em>
+              <br><br>
+              <address>
+                {{ formPickup.pickupAddress.value }}<br>
+                {{ formPickup.pickupCity.value }}
+                {{ formPickup.pickupState.value }},
+                {{ formPickup.pickupPostalCode.value }}
+              </address>
+            </ng-container>
+            <ng-template #dropoffDifferent>
+              &nbsp;<em>{{ formDropoff.dropoffLocationVague.value }}</em>
+              <br><br>
+              <address>
+                {{ formDropoff.dropoffAddress.value }}<br>
+                {{ formDropoff.dropoffCity.value }}
+                {{ formDropoff.dropoffState.value }},
+                {{ formDropoff.dropoffPostalCode.value }}
+              </address>
+            </ng-template>
+          </div>
+          <ng-template #noDropoff>
+            <p style="color:#666"><em>Caller doesn't need a ride home from the clinic.</em></p>
+          </ng-template>
+        </mat-card>
+        <div class="form-actions">
+          <button mat-raised-button
+                  color="accent"
+                  type="button"
+                  matStepperPrevious>Back</button>
+          <button mat-raised-button
+                  color="primary"
+                  [disabled]="!this.appointmentForm.valid ||
+                              (callerNeedsPickup && !this.driveToForm.valid) ||
+                              (callerNeedsDropoff && (!this.driveFromForm.valid && !dropoffSameAsPickup))"
+                  (click)="onSubmit()"
+                  type="button">Submit</button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</main>
+<!--********************************************************************
+                              Form Debug
+**********************************************************************-->
+<div class="debug">
+  <p>formAppt Status: {{ this.appointmentForm.status }}</p>
+  <p>Form Value:</p>
+  <pre>{{ this.appointmentForm.value | json }}</pre>
+  <p>formPickup Status: {{ this.driveToForm.status }}</p>
+  <p>Form Value:</p>
+  <pre>{{ this.driveToForm.value | json }}</pre>
+  <p>formDropoff Status: {{ this.driveFromForm.status }}</p>
+  <p>Form Value:</p>
+  <pre>{{ this.driveFromForm.value | json }}</pre>
+  <p>Appointment DTO:</p>
+  <pre>{{ this.appointmentDTO | json }}</pre>
+</div>
