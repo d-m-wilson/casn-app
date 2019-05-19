@@ -12,7 +12,7 @@ namespace CASNApp.Core.Entities
             }
             else if (Direction == Models.Drive.DirectionFromClinic)
             {
-                return $"{EndAddress}, {EndCity}, {EndState} {StartPostalCode}";
+                return $"{EndAddress}, {EndCity}, {EndState} {EndPostalCode}";
             }
             else
             {

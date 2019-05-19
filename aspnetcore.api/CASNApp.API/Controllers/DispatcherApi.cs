@@ -120,85 +120,139 @@ namespace CASNApp.API.Controllers
                 Updated = null,
             };
 
-            var driveToEntity = new Core.Entities.Drive
-            {
-                Appointment = appointmentEntity,
-                Direction = Drive.DirectionToClinic,
-                DriverId = null,
-                StartAddress = driveTo.StartAddress,
-                StartCity = driveTo.StartCity,
-                StartState = driveTo.StartState,
-                StartPostalCode = driveTo.StartPostalCode,
-                EndAddress = clinic.Address,
-                EndCity = clinic.City,
-                EndState = clinic.State,
-                EndPostalCode = clinic.PostalCode,
-                EndLatitude = clinic.Latitude,
-                EndLongitude = clinic.Longitude,
-                EndGeocoded = clinic.Geocoded,
-                IsActive = true,
-                Created = DateTime.UtcNow,
-                Updated = null,
-            };
+            Core.Entities.Drive driveToEntity = null;
 
-            var driveFromEntity = new Core.Entities.Drive
+            if (driveTo != null)
             {
-                Appointment = appointmentEntity,
-                Direction = Drive.DirectionFromClinic,
-                DriverId = null,
-                StartAddress = clinic.Address,
-                StartCity = clinic.City,
-                StartState = clinic.State,
-                StartPostalCode = clinic.PostalCode,
-                StartLatitude = clinic.Latitude,
-                StartLongitude = clinic.Longitude,
-                StartGeocoded = clinic.Geocoded,
-                EndAddress = driveFrom.StartAddress,
-                EndCity = driveFrom.StartCity,
-                EndState = driveFrom.StartState,
-                EndPostalCode = driveFrom.StartPostalCode,
-                IsActive = true,
-                Created = DateTime.UtcNow,
-                Updated = null,
-            };
+                driveToEntity = new Core.Entities.Drive
+                {
+                    Appointment = appointmentEntity,
+                    Direction = Drive.DirectionToClinic,
+                    DriverId = null,
+                    StartAddress = driveTo.StartAddress,
+                    StartCity = driveTo.StartCity,
+                    StartState = driveTo.StartState,
+                    StartPostalCode = driveTo.StartPostalCode,
+                    EndAddress = clinic.Address,
+                    EndCity = clinic.City,
+                    EndState = clinic.State,
+                    EndPostalCode = clinic.PostalCode,
+                    EndLatitude = clinic.Latitude,
+                    EndLongitude = clinic.Longitude,
+                    EndGeocoded = clinic.Geocoded,
+                    IsActive = true,
+                    Created = DateTime.UtcNow,
+                    Updated = null,
+                };
+            }
+
+            Core.Entities.Drive driveFromEntity = null;
+
+            if (driveFrom != null)
+            {
+                driveFromEntity = new Core.Entities.Drive
+                {
+                    Appointment = appointmentEntity,
+                    Direction = Drive.DirectionFromClinic,
+                    DriverId = null,
+                    StartAddress = clinic.Address,
+                    StartCity = clinic.City,
+                    StartState = clinic.State,
+                    StartPostalCode = clinic.PostalCode,
+                    StartLatitude = clinic.Latitude,
+                    StartLongitude = clinic.Longitude,
+                    StartGeocoded = clinic.Geocoded,
+                    EndAddress = driveFrom.EndAddress,
+                    EndCity = driveFrom.EndCity,
+                    EndState = driveFrom.EndState,
+                    EndPostalCode = driveFrom.EndPostalCode,
+                    IsActive = true,
+                    Created = DateTime.UtcNow,
+                    Updated = null,
+                };
+            }
 
             var geocoder = new GeocoderQuery(googleApiKey, loggerFactory.CreateLogger<GeocoderQuery>());
 
-            var driveToAddress = driveToEntity.GetCallerAddress();
-            var driveToLocation = await geocoder.ForwardLookupAsync(driveToAddress);
+            var driveToAddress = driveToEntity?.GetCallerAddress();
+            GeocoderQuery.LatLng driveToLocation = null;
 
-            if (driveToLocation == null)
+            if (driveToAddress != null)
+            {
+                driveToLocation = await geocoder.ForwardLookupAsync(driveToAddress);
+            }
+
+            if (driveTo != null && driveToLocation == null)
             {
                 return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Pickup Address.");
             }
 
-            driveToEntity.SetCallerLocation(driveToLocation);
-            driveTo.SetCallerLocation(driveToLocation);
+            driveToEntity?.SetCallerLocation(driveToLocation);
+            driveTo?.SetCallerLocation(driveToLocation);
 
-            var driveFromAddress = driveFromEntity.GetCallerAddress();
-            var driveFromLocation = await geocoder.ForwardLookupAsync(driveFromAddress);
+            var driveFromAddress = driveFromEntity?.GetCallerAddress();
+            GeocoderQuery.LatLng driveFromLocation = null;
 
-            if (driveFromLocation == null)
+            if (driveFromAddress != null)
+            {
+                if (driveToAddress != null &&
+                    string.Equals(driveToAddress, driveFromAddress, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    driveFromLocation = driveToLocation;
+                }
+                else
+                {
+                    driveFromLocation = await geocoder.ForwardLookupAsync(driveFromAddress);
+                }
+            }
+
+            if (driveFrom != null && driveFromLocation == null)
             {
                 return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Dropoff Address.");
             }
 
-            driveFromEntity.SetCallerLocation(driveFromLocation);
-            driveFrom.SetCallerLocation(driveFromLocation);
+            driveFromEntity?.SetCallerLocation(driveFromLocation);
+            driveFrom?.SetCallerLocation(driveFromLocation);
 
             var random = new Random();
 
-            var pickupVagueLocation = driveToLocation.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
-            appointmentEntity.PickupVagueLatitude = pickupVagueLocation.Latitude;
-            appointmentEntity.PickupVagueLongitude = pickupVagueLocation.Longitude;
+            var pickupVagueLocation = driveToLocation?.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
 
-            var dropoffVagueLocation = driveFromLocation.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
-            appointmentEntity.DropoffVagueLatitude = dropoffVagueLocation.Latitude;
-            appointmentEntity.DropoffVagueLongitude = dropoffVagueLocation.Longitude;
+            if (pickupVagueLocation != null)
+            {
+                appointmentEntity.PickupVagueLatitude = pickupVagueLocation.Latitude;
+                appointmentEntity.PickupVagueLongitude = pickupVagueLocation.Longitude;
+            }
+
+            GeocoderQuery.LatLng dropoffVagueLocation;
+
+            if (driveToAddress != null && driveFromAddress != null &&
+                string.Equals(driveToAddress, driveFromAddress, StringComparison.CurrentCultureIgnoreCase))
+            {
+                dropoffVagueLocation = pickupVagueLocation;
+            }
+            else
+            {
+                dropoffVagueLocation = driveFromLocation?.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+            }
+
+            if (dropoffVagueLocation != null)
+            {
+                appointmentEntity.DropoffVagueLatitude = dropoffVagueLocation.Latitude;
+                appointmentEntity.DropoffVagueLongitude = dropoffVagueLocation.Longitude;
+            }
 
             dbContext.Appointment.Add(appointmentEntity);
-            dbContext.Drive.Add(driveToEntity);
-            dbContext.Drive.Add(driveFromEntity);
+
+            if (driveToEntity != null)
+            {
+                dbContext.Drive.Add(driveToEntity);
+            }
+
+            if (driveFromEntity != null)
+            {
+                dbContext.Drive.Add(driveFromEntity);
+            }
 
             await dbContext.SaveChangesAsync();
 
@@ -210,19 +264,25 @@ namespace CASNApp.API.Controllers
             appointment.DropoffVagueLatitude = appointmentEntity.DropoffVagueLatitude;
             appointment.DropoffVagueLongitude = appointmentEntity.DropoffVagueLongitude;
 
-            driveTo.Id = driveToEntity.Id;
-            driveTo.EndAddress = driveToEntity.EndAddress;
-            driveTo.EndCity = driveToEntity.EndCity;
-            driveTo.EndState = driveToEntity.EndState;
-            driveTo.EndPostalCode = driveToEntity.EndPostalCode;
-            driveTo.Created = driveToEntity.Created;
+            if (driveToEntity != null)
+            {
+                driveTo.Id = driveToEntity.Id;
+                driveTo.EndAddress = driveToEntity.EndAddress;
+                driveTo.EndCity = driveToEntity.EndCity;
+                driveTo.EndState = driveToEntity.EndState;
+                driveTo.EndPostalCode = driveToEntity.EndPostalCode;
+                driveTo.Created = driveToEntity.Created;
+            }
 
-            driveFrom.Id = driveFromEntity.Id;
-            driveFrom.EndAddress = driveFromEntity.EndAddress;
-            driveFrom.EndCity = driveFromEntity.EndCity;
-            driveFrom.EndState = driveFromEntity.EndState;
-            driveFrom.EndPostalCode = driveFromEntity.EndPostalCode;
-            driveFrom.Created = driveFromEntity.Created;
+            if (driveFromEntity != null)
+            {
+                driveFrom.Id = driveFromEntity.Id;
+                driveFrom.EndAddress = driveFromEntity.EndAddress;
+                driveFrom.EndCity = driveFromEntity.EndCity;
+                driveFrom.EndState = driveFromEntity.EndState;
+                driveFrom.EndPostalCode = driveFromEntity.EndPostalCode;
+                driveFrom.Created = driveFromEntity.Created;
+            }
 
 			//send initial text message to drivers
 			TwilioCommand newSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, loggerFactory.CreateLogger<TwilioCommand>());
