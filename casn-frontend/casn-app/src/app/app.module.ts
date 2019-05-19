@@ -56,6 +56,7 @@ import { environment } from '../environments/environment';
 import { CancelDriveModalComponent } from './cancel-drive-modal/cancel-drive-modal.component';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { UserStatsComponent } from './user-stats/user-stats.component';
     MapComponent,
     CancelDriveModalComponent,
     AppointmentFormComponent,
-    UserStatsComponent
+    UserStatsComponent,
+    LeaderboardComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),
