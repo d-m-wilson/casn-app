@@ -1,12 +1,46 @@
 <main>
-  <mat-card>
-    <mat-card-title>My Badges</mat-card-title>
-    <div class="badge-container">
-      <div *ngFor="let b of badges; let i=index">
-        <img src="assets/badges/{{i+1}}.png"
-             alt="First Drive Badge"
-             [ngClass]="i === 0 ? 'active' : 'inactive'"/>
-      </div>
-    </div>
-  </mat-card>
+  <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
+    <mat-tab label="Badges">
+      <mat-card>
+        <mat-card-title>My Badges</mat-card-title>
+        <div class="badge-container">
+          <div *ngFor="let b of badges; let i=index">
+            <img src="assets/badges/{{i+1}}.png"
+                 alt="First Drive Badge"
+                 [ngClass]="i === 0 ? 'active' : 'inactive'"/>
+          </div>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab label="Stats">
+      <mat-card class="stat-card" style="text-align:center">
+        <mat-card-header>
+          <mat-card-title>Daily Streaks</mat-card-title>
+          <mat-card-subtitle>Current Streak: 1 day</mat-card-subtitle>
+          <mat-card-subtitle>Longest Streak: 1 day</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+      <mat-card class="stat-card" style="text-align:center">
+        <mat-card-header>
+          <mat-card-title>Weekly Streaks</mat-card-title>
+          <mat-card-subtitle>Current Streak: 1 week</mat-card-subtitle>
+          <mat-card-subtitle>Longest Streak: 1 week</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+      <mat-card class="stat-card" style="text-align:center">
+        <mat-card-header>
+          <mat-card-title>Rewards</mat-card-title>
+          <mat-card-subtitle>Sticker: 5 points</mat-card-subtitle>
+          <mat-card-subtitle>Ballpoint Pen: 25 points</mat-card-subtitle>
+          <mat-card-subtitle><em>CASN Pin #1: 50 points </em></mat-card-subtitle>
+          <mat-card-subtitle><em>CASN Pin #2: 75 points </em></mat-card-subtitle>
+          <mat-card-subtitle><em>Mug: 50 points </em></mat-card-subtitle>
+          <mat-card-subtitle><em>T-Shirt: 100 points</em></mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </mat-tab>
+    <mat-tab label="Leaderboard">
+      <app-leaderboard></app-leaderboard>
+    </mat-tab>
+  </mat-tab-group>
 </main>
