@@ -1,3 +1,12 @@
-<p>
-  user-stats works!
-</p>
+<main>
+  <mat-card>
+    <mat-card-title>My Badges</mat-card-title>
+    <div class="badge-container">
+      <div *ngFor="let b of badges; let i=index">
+        <img src="assets/badges/{{i+1}}.png"
+             alt="First Drive Badge"
+             [ngClass]="i === 0 ? 'active' : 'inactive'"/>
+      </div>
+    </div>
+  </mat-card>
+</main>
