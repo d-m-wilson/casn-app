@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-stats.component.scss']
 })
 export class UserStatsComponent implements OnInit {
-  badges: any[] = new Array(15);
+  badges: any[] = new Array(13);
 
   constructor() {}
 
