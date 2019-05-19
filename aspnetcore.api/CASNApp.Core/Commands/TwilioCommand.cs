@@ -16,7 +16,7 @@ namespace CASNApp.Core.Commands
 		public TwilioCommand(string accountSid, string authTokey, ILogger<TwilioCommand> logger)
 		{
 			this.accountSid = accountSid;
-			this.accountSid = authTokey;
+			this.authToken = authTokey;
 			this.logger = logger;
 		}
 
