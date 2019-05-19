@@ -2,7 +2,7 @@
 export class Constants {
     public readonly MENU_ITEMS = [
       {name: "Home", address: "/", icon: "dashboard"},
-      {name: "My Badges", address: "/stats", icon: "account_circle"},
+      {name: "My Achievements", address: "/stats", icon: "grade"},
       {name: "Schedule a Ride", address: "/caller", icon: "departure_board"},
       {name: "View Schedule", address: "/view-schedule", icon: "event_note"},
     ];
