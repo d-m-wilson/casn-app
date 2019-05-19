@@ -1,0 +1,25 @@
+@import '../styles/variables';
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 50%;
+    img {
+      width: 100%;
+      max-width: 250px;
+      &.inactive {
+        -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+        filter: grayscale(100%);
+      }
+    }
+  }
+}
+
+
+.mat-card-title {
+  text-align: center;
+}
