@@ -39,6 +39,8 @@ namespace CASNApp.API.Controllers
         private readonly string googleApiKey;
         private readonly double vagueLocationMinOffset;
         private readonly double vagueLocationMaxOffset;
+		private readonly string twilioAccountSID;
+		private readonly string twilioAuthKey;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -47,17 +49,19 @@ namespace CASNApp.API.Controllers
             vagueLocationMinOffset = double.Parse(configuration[Core.Constants.VagueLocationMinOffset]);
             vagueLocationMaxOffset = double.Parse(configuration[Core.Constants.VagueLocationMaxOffset]);
             this.loggerFactory = loggerFactory;
-        }
+			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
+			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
+		}
 
-        /// <summary>
-        /// adds a new appointment
-        /// </summary>
-        /// <remarks>Adds appointment (and drives) to the system</remarks>
-        /// <param name="appointmentDTO">appointmentData to add</param>
-        /// <response code="200">Success. Created appointment.</response>
-        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
-        /// <response code="409">Error. That appointment already exists.</response>
-        [HttpPost]
+		/// <summary>
+		/// adds a new appointment
+		/// </summary>
+		/// <remarks>Adds appointment (and drives) to the system</remarks>
+		/// <param name="appointmentDTO">appointmentData to add</param>
+		/// <response code="200">Success. Created appointment.</response>
+		/// <response code="400">Client Error - please check your request format &amp; try again.</response>
+		/// <response code="409">Error. That appointment already exists.</response>
+		[HttpPost]
         [Route("api/dispatcher/appointments")]
         [ValidateModelState]
         [SwaggerOperation("AddAppointment")]
@@ -220,6 +224,10 @@ namespace CASNApp.API.Controllers
             driveFrom.EndPostalCode = driveFromEntity.EndPostalCode;
             driveFrom.Created = driveFromEntity.Created;
 
+			//send initial text message to drivers
+			TwilioCommand newSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, loggerFactory.CreateLogger<TwilioCommand>());
+			newSMS.SendAppointmentMessage();
+			
             return new ObjectResult(appointmentDTO);
         }
 

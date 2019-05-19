@@ -11,6 +11,7 @@ namespace CASNApp.Core
         public const string VagueLocationMinOffset = nameof(VagueLocationMinOffset);
         public const string VagueLocationMaxOffset = nameof(VagueLocationMaxOffset);
         public const string NLogConfigFile = "nlog.config";
-
-    }
+		public const string TwilioAccountSID = nameof(TwilioAccountSID);
+		public const string TwilioAuthKey = nameof(TwilioAuthKey);
+	}
 }
