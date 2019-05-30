@@ -4,10 +4,11 @@
       <mat-card>
         <mat-card-title>My Badges</mat-card-title>
         <div class="badge-container">
-          <div *ngFor="let b of badges; let i=index">
-            <img src="assets/badges/{{i+1}}.png"
-                 alt="First Drive Badge"
-                 [ngClass]="i === 0 ? 'active' : 'inactive'"/>
+          <div *ngFor="let b of badges">
+            <img [src]="b.path"
+                 alt="b.title"
+                 [ngClass]="b.earned ? 'active' : 'inactive'"/>
+            <strong *ngIf="b.earned">Earned {{ b.dateEarned }}</strong>
           </div>
         </div>
       </mat-card>
