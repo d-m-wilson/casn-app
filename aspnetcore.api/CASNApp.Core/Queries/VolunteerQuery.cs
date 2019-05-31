@@ -13,7 +13,21 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-        public Volunteer GetActiveVolunteerByEmail(string email, bool readOnly)
+		public Volunteer[] GetActiveDriversByRadius(bool readOnly)
+		{
+			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+				.Where(v => v.IsActive && v.IsDriver).ToArray();
+			return result;
+		}
+
+		public Volunteer[] GetAllActiveDrivers(bool readOnly)
+		{
+			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+				.Where(v => v.IsActive && v.IsDriver).ToArray();
+			return result;
+		}
+
+		public Volunteer GetActiveVolunteerByEmail(string email, bool readOnly)
         {
             var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
                 .Where(v => v.GoogleAccount == email && v.IsActive && (v.IsDriver || v.IsDispatcher))

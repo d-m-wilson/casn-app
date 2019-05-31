@@ -41,6 +41,7 @@ namespace CASNApp.API.Controllers
         private readonly double vagueLocationMaxOffset;
 		private readonly string twilioAccountSID;
 		private readonly string twilioAuthKey;
+		private readonly string twilioPhoneNumber;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -51,6 +52,7 @@ namespace CASNApp.API.Controllers
             this.loggerFactory = loggerFactory;
 			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
+			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
 		}
 
 		/// <summary>
@@ -285,8 +287,8 @@ namespace CASNApp.API.Controllers
             }
 
 			//send initial text message to drivers
-			TwilioCommand newSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, loggerFactory.CreateLogger<TwilioCommand>());
-			newSMS.SendAppointmentMessage();
+			TwilioCommand newSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+			newSMS.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, 5);
 			
             return new ObjectResult(appointmentDTO);
         }

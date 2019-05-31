@@ -27,8 +27,9 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<Caller> Caller { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
         public virtual DbSet<VolunteerDrive> VolunteerDrive { get; set; }
+		public virtual DbSet<Message> Message { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
@@ -145,7 +146,37 @@ namespace CASNApp.Core.Entities
                     .HasConstraintName("fk_appointment_CallerId");
             });
 
-            modelBuilder.Entity<AppointmentType>(entity =>
+			modelBuilder.Entity<Message>(entity =>
+			{
+				entity.ToTable("message");
+
+				entity.Property(e => e.Id)
+					.IsRequired()
+					.HasColumnName("id");
+
+				entity.Property(e => e.MessageType)
+					.IsRequired()
+					.HasColumnName("messageType");
+
+				entity.Property(e => e.MessageText)
+					.IsRequired()
+					.HasColumnName("messageText")
+					.HasColumnType("varchar(250)");
+
+				entity.Property(e => e.Created)
+					.HasColumnName("created")
+					.HasColumnType("datetime")
+					.HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+					.HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+				entity.Property(e => e.Updated)
+					.HasColumnName("updated")
+					.HasColumnType("datetime")
+					.HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+			});
+
+			modelBuilder.Entity<AppointmentType>(entity =>
             {
                 entity.ToTable("appointmenttype");
 
