@@ -11,9 +11,10 @@
  */
 
 
-export interface CASNAppCoreModelsAppointmentType { 
+export interface CASNAppCoreModelsAppointmentType {
     id?: number;
     name?: string;
     title?: string;
     description?: string;
+    estimatedDuration?: number;
 }

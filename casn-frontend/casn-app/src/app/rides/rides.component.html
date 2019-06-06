@@ -45,7 +45,7 @@
               {{ r.appointment.appointmentDate | date:'d' }}
             </div>
             <div>
-              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }}</span> <br>
+              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
               <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
             </div>
           </mat-card>

@@ -5,7 +5,7 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }}</h1>
+    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
@@ -23,7 +23,7 @@
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
+            Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> <br>{{ clinics[ride.appointment.clinicId].name }} by 9:30 AM</span>:
           </mat-card-subtitle>
           <a [href]="startAddressGoogleMapLink" target="_blank">
             <address>

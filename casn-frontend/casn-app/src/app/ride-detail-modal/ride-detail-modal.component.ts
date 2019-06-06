@@ -44,9 +44,23 @@ export class RideDetailModalComponent implements OnInit {
   getAppointmentTypes(): void {
     this.ds.getAppointmentTypes().subscribe(a => {
       this.apptTypes = a.reduce((acc, cur) => {
-        acc[cur.id] = cur.title;
+        acc[cur.id] = { title: cur.title };
         return acc;
       }, {});
+      // TODO: Remove once API is ready.
+      this.apptTypes["3"].estimatedDuration = 210;
+      this.apptTypes["4"].estimatedDuration = 150;
+      this.apptTypes["5"].estimatedDuration = 90;
+      this.apptTypes["6"].estimatedDuration = 180;
+      this.apptTypes["7"].estimatedDuration = 60;
+      this.apptTypes["8"].estimatedDuration = 30;
+      console.log("appt Types", this.apptTypes);
+      //3 Surgical: 3.5 hours (210 minutes)
+      //4 Ultrasound: 2.5 hours (150 minutes)
+      //5 Lam Insert: 1.5 hours (90 minutes)
+      //6 Lam to Complete: 3 hours (180 minutes)
+      //7 Courthouse Appointment: 1 hour (60 minutes)
+      //8 Follow Up: .5 hours (30 minutes)
     });
   }
 
