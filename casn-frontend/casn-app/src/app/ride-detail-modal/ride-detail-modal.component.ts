@@ -48,12 +48,12 @@ export class RideDetailModalComponent implements OnInit {
         return acc;
       }, {});
       // TODO: Remove once API is ready.
-      this.apptTypes["3"].estimatedDuration = 210;
-      this.apptTypes["4"].estimatedDuration = 150;
-      this.apptTypes["5"].estimatedDuration = 90;
-      this.apptTypes["6"].estimatedDuration = 180;
-      this.apptTypes["7"].estimatedDuration = 60;
-      this.apptTypes["8"].estimatedDuration = 30;
+      this.apptTypes["3"].estimatedDurationMinutes = 210;
+      this.apptTypes["4"].estimatedDurationMinutes = 150;
+      this.apptTypes["5"].estimatedDurationMinutes = 90;
+      this.apptTypes["6"].estimatedDurationMinutes = 180;
+      this.apptTypes["7"].estimatedDurationMinutes = 60;
+      this.apptTypes["8"].estimatedDurationMinutes = 30;
       console.log("appt Types", this.apptTypes);
       //3 Surgical: 3.5 hours (210 minutes)
       //4 Ultrasound: 2.5 hours (150 minutes)
@@ -144,7 +144,7 @@ export class RideDetailModalComponent implements OnInit {
 
   getAppointmentEndTime(apptTime, apptType) {
     const date = new Date(apptTime);
-    const minutes = this.apptTypes[apptType].estimatedDuration;
+    const minutes = this.apptTypes[apptType].estimatedDurationMinutes;
     return new Date(date.getTime() + minutes*60000);
   }
 }
