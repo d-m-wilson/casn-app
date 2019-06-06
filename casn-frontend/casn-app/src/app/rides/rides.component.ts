@@ -204,4 +204,10 @@ export class RidesComponent implements OnInit {
     })
   }
 
+  getAppointmentEndTime(apptTime, apptType) {
+    const date = new Date(apptTime);
+    const minutes = this.apptTypes[apptType].estimatedDuration;
+    return new Date(date.getTime() + minutes*60000);
+  }
+
 }
