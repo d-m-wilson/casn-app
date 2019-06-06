@@ -23,7 +23,7 @@
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> <br>{{ clinics[ride.appointment.clinicId].name }} by 9:30 AM</span>:
+            Pick up caller {{ ride.appointment.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
           <a [href]="startAddressGoogleMapLink" target="_blank">
             <address>

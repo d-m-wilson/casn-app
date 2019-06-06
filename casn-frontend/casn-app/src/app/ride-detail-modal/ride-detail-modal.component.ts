@@ -141,4 +141,10 @@ export class RideDetailModalComponent implements OnInit {
     const driverId = this.ride[this.driveType].driverId
     return !!driverId;
   }
+
+  getAppointmentEndTime(apptTime, apptType) {
+    const date = new Date(apptTime);
+    const minutes = this.apptTypes[apptType].estimatedDuration;
+    return new Date(date.getTime() + minutes*60000);
+  }
 }
