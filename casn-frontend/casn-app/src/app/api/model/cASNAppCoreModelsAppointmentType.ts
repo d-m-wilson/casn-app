@@ -16,5 +16,5 @@ export interface CASNAppCoreModelsAppointmentType {
     name?: string;
     title?: string;
     description?: string;
-    estimatedDuration?: number;
+    estimatedDurationMinutes?: number;
 }
