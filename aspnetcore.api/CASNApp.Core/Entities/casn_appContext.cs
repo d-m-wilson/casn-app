@@ -1,7 +1,6 @@
 ﻿using System;
 using CASNApp.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CASNApp.Core.Entities
 {
@@ -20,14 +19,16 @@ namespace CASNApp.Core.Entities
 
         public virtual DbSet<Appointment> Appointment { get; set; }
         public virtual DbSet<AppointmentType> AppointmentType { get; set; }
+        public virtual DbSet<Badge> Badge { get; set; }
+        public virtual DbSet<Caller> Caller { get; set; }
         public virtual DbSet<Clinic> Clinic { get; set; }
         public virtual DbSet<Drive> Drive { get; set; }
-        public virtual DbSet<DriveStatus> DriveStatus { get; set; }
         public virtual DbSet<DriveCancelReason> DriveCancelReason { get; set; }
-        public virtual DbSet<Caller> Caller { get; set; }
+        public virtual DbSet<DriveStatus> DriveStatus { get; set; }
+        public virtual DbSet<Message> Message { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
+        public virtual DbSet<VolunteerBadge> VolunteerBadge { get; set; }
         public virtual DbSet<VolunteerDrive> VolunteerDrive { get; set; }
-		public virtual DbSet<Message> Message { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -218,6 +219,55 @@ namespace CASNApp.Core.Entities
 
             });
 
+            modelBuilder.Entity<Badge>(entity =>
+            {
+                entity.ToTable("badge");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasColumnName("title")
+                    .HasColumnType("varchar(150)");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasColumnName("description")
+                    .HasColumnType("varchar(500)");
+
+                entity.Property(e => e.Path)
+                    .IsRequired()
+                    .HasColumnName("path")
+                    .HasColumnType("varchar(100)");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("isActive")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'1\\''")
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.IsHidden)
+                    .IsRequired()
+                    .HasColumnName("isHidden")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'0\\''")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Updated)
+                    .HasColumnName("updated")
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+            });
+
             modelBuilder.Entity<Clinic>(entity =>
             {
                 entity.ToTable("clinic");
@@ -382,8 +432,8 @@ namespace CASNApp.Core.Entities
                     .HasColumnName("startLongitude")
                     .HasColumnType("decimal(9,6)");
 
-                entity.Property(e => e.EndGeocoded)
-                    .HasColumnName("endGeocoded")
+                entity.Property(e => e.StartGeocoded)
+                    .HasColumnName("startGeocoded")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Updated)
@@ -578,42 +628,13 @@ namespace CASNApp.Core.Entities
                     .HasColumnName("id")
                     .UseMySqlIdentityColumn();
 
-                entity.Property(e => e.CiviContactId).HasColumnName("civiContactId");
-
-                entity.Property(e => e.Created)
-                    .HasColumnName("created")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                entity.Property(e => e.CiviContactId)
+                    .HasColumnName("civiContactId");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
                     .HasColumnName("firstName")
                     .HasColumnType("varchar(50)");
-
-                entity.Property(e => e.GoogleAccount)
-                    .IsRequired()
-                    .HasColumnName("googleAccount")
-                    .HasColumnType("varchar(100)");
-
-                entity.Property(e => e.GoogleIdentityToken)
-                    .HasColumnName("googleIdentityToken")
-                    .HasColumnType("mediumtext");
-
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasColumnName("isActive")
-                    .HasColumnType("bit(1)")
-                    .HasDefaultValueSql("'b\\'1\\''")
-                    .HasDefaultValue(true);
-
-                entity.Property(e => e.IsDispatcher)
-                    .HasColumnName("isDispatcher")
-                    .HasColumnType("bit(1)");
-
-                entity.Property(e => e.IsDriver)
-                    .HasColumnName("isDriver")
-                    .HasColumnType("bit(1)");
 
                 entity.Property(e => e.LastName)
                     .IsRequired()
@@ -625,10 +646,116 @@ namespace CASNApp.Core.Entities
                     .HasColumnName("mobilePhone")
                     .HasColumnType("varchar(20)");
 
+                entity.Property(e => e.GoogleAccount)
+                    .IsRequired()
+                    .HasColumnName("googleAccount")
+                    .HasColumnType("varchar(100)");
+
+                entity.Property(e => e.IsDriver)
+                    .HasColumnName("isDriver")
+                    .HasColumnType("bit(1)");
+
+                entity.Property(e => e.IsDispatcher)
+                    .HasColumnName("isDispatcher")
+                    .HasColumnType("bit(1)");
+
+                entity.Property(e => e.HasTextConsent)
+                    .HasColumnName("hasTextConsent")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'1\\''")
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("address")
+                    .HasColumnType("varchar(100)");
+
+                entity.Property(e => e.City)
+                    .HasColumnName("city")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.State)
+                    .HasColumnName("state")
+                    .HasColumnType("varchar(30)");
+
+                entity.Property(e => e.PostalCode)
+                    .HasColumnName("postalCode")
+                    .HasColumnType("varchar(10)");
+
+                entity.Property(e => e.Latitude)
+                    .HasColumnName("Latitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.Longitude)
+                    .HasColumnName("Longitude")
+                    .HasColumnType("decimal(9,6)");
+
+                entity.Property(e => e.Geocoded)
+                    .HasColumnName("geocoded")
+                    .HasColumnType("date")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.LastDriveDate)
+                    .HasColumnName("lastDriveDate")
+                    .HasColumnType("date")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasColumnName("isActive")
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'b\\'1\\''")
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
                 entity.Property(e => e.Updated)
                     .HasColumnName("updated")
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+            });
+
+            modelBuilder.Entity<VolunteerBadge>(entity =>
+            {
+                entity.ToTable("volunteer_badge");
+
+                entity.HasIndex(e => e.BadgeId)
+                    .HasName("fk_volunteer_badge_badgeId_idx");
+
+                entity.HasIndex(e => e.VolunteerId)
+                    .HasName("fk_volunteer_badge_volunteerId_idx");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .UseMySqlIdentityColumn();
+
+                entity.Property(e => e.Created)
+                    .HasColumnName("created")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.BadgeId).HasColumnName("badgeId");
+
+                entity.Property(e => e.Updated)
+                    .HasColumnName("updated")
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.VolunteerId).HasColumnName("volunteerId");
+
+                entity.HasOne(d => d.Badge)
+                    .WithMany(p => p.VolunteerBadges)
+                    .HasForeignKey(d => d.BadgeId)
+                    .HasConstraintName("fk_volunteer_badge_badgeId");
+
+                entity.HasOne(d => d.Volunteer)
+                    .WithMany(p => p.VolunteerBadges)
+                    .HasForeignKey(d => d.VolunteerId)
+                    .HasConstraintName("fk_volunteer_badge_volunteerId");
             });
 
             modelBuilder.Entity<VolunteerDrive>(entity =>

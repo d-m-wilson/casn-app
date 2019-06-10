@@ -304,5 +304,32 @@ namespace CASNApp.API.Controllers
             return new ObjectResult(results);
         }
 
+        /// <summary>
+        /// gets list of badges combined with badges earned for the current user
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/badge")]
+        [ValidateModelState]
+        [SwaggerOperation("GetBadgesForVolunteerId")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<BadgeDTO>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetBadgesForVolunteerId()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var badgeQuery = new BadgeQuery(dbContext);
+
+            var results = await badgeQuery.GetBadgesForVolunteerIdAsync(volunteer.Id, true);
+
+            return new ObjectResult(results);
+        }
+
     }
 }
