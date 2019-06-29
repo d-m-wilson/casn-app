@@ -13,17 +13,17 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-		public Volunteer[] GetActiveDriversByRadius(bool readOnly)
+		public Volunteer[] GetActiveDriversByRadiusWithTextConsent(bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
-				.Where(v => v.IsActive && v.IsDriver).ToArray();
+				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent).ToArray();
 			return result;
 		}
 
-		public Volunteer[] GetAllActiveDrivers(bool readOnly)
+		public Volunteer[] GetAllActiveDriversWithTextConsent(bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
-				.Where(v => v.IsActive && v.IsDriver).ToArray();
+				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent).ToArray();
 			return result;
 		}
 

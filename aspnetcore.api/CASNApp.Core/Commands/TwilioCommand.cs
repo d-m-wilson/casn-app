@@ -54,12 +54,14 @@ namespace CASNApp.Core.Commands
 			//get the message by message type
 			MessageQuery messageQuery = new MessageQuery(dbContext);
 			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
-			string messageText = message.MessageText.Replace("{clinic}", appointment.Clinic.Name).Replace("{vagueTo}", appointment.PickupLocationVague).Replace("{vagueFrom}", appointment.DropoffLocationVague);
+			ClinicQuery clinicQuery = new ClinicQuery(dbContext);
+			Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
+			string messageText = message.MessageText.Replace("{clinic}", clinic.Name).Replace("{vagueTo}", appointment.PickupLocationVague).Replace("{vagueFrom}", appointment.DropoffLocationVague);
 			
 			//get the list of drivers for the message based on message type, elapsed time, and length of the drive drive
 			double driveDistance = 0;
-			double initialLatitude;
-			double initialLongitude;
+			double initialLatitude = 0;
+			double initialLongitude = 0;
 			if (messageType == MessageType.ApptAddedRoundTripSameAddress || messageType == MessageType.ApptAddedOneWayToClinic)
 			{
 				driveDistance = GeocoderQuery.LatLng.GetDistance((double)driveTo.StartLatitude, (double)driveTo.StartLongitude, (double)driveTo.EndLatitude, (double)driveTo.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
@@ -84,18 +86,28 @@ namespace CASNApp.Core.Commands
 			//select the drivers 
 			VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
 			Volunteer[] drivers = null;
-			if (driveDistance >= 30) 
-				drivers = volunteerQuery.GetAllActiveDrivers(true); //all drivers if length of drive is greater than 30 miles
-			else 
-			{
-				//calculate the latitude and longitude range for the specified radius
-			}
+			drivers = volunteerQuery.GetAllActiveDriversWithTextConsent(true); //all drivers if length of drive is greater than 30 miles
 
-			//send message
+			//send message to appropriate drivers
 			foreach (Volunteer driver in drivers)
 			{
 				if (driver.MobilePhone != null)
-					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
+				{
+					//send message to all drivers is appointment outside 30 miles or and appointment made for today
+					if (driveDistance >= 30 || appointment.AppointmentDate.Date == DateTime.Now.Date)
+						SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
+					else
+					{
+						int hours = (int)((TimeSpan)(appointment.Created - DateTime.Now)).Hours;
+						double radius = GeocoderQuery.LatLng.GetDistance(initialLatitude, initialLongitude, (double)driver.Latitude, (double)driver.Longitude, GeocoderQuery.LatLng.UnitType.Miles);
+						if (hours < 2 && radius <= 5)
+							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
+						else if (hours < 3 && radius > 5 && radius >= 15)
+							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
+						else if (hours >= 3 && radius > 15)
+							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
+					}
+				}
 			}
 		}
 
