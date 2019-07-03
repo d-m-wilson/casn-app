@@ -9,6 +9,7 @@ import { DispatcherApiService } from '../api/api/dispatcherApi.service';
   styleUrls: ['./ride-detail-modal.component.scss']
 })
 export class RideDetailModalComponent implements OnInit {
+  userRole: string;
   @Input() ride: any = {};
   @Input() isDriveTo: boolean; // show driveTo or driveFrom details
   @Output() closeRideModalClick = new EventEmitter<boolean>();
@@ -26,6 +27,7 @@ export class RideDetailModalComponent implements OnInit {
                private dispatcherService: DispatcherApiService ) { }
 
   ngOnInit() {
+    this.userRole = localStorage.getItem('userRole');
     this.getAppointmentTypes();
     this.getClinics();
     this.getVolunteers();
