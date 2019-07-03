@@ -19,8 +19,8 @@ export class AuthGuard implements CanActivate {
     if(this.authService.isLoggedIn()) {
       const userRole = localStorage.getItem('userRole');
       // Drivers (role 2) are restricted from some pages
-      if(userRole === "2" && this.pageIsRestricted(state.url)) {
-        this.router.navigate(['/error'], { queryParams: { error: "401" }});
+      if(userRole === "1" && this.pageIsRestricted(state.url)) {
+        this.router.navigate(['/error'], { queryParams: { errorCode: "401" }});
         return false;
       }
       return true;
