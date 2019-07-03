@@ -57,6 +57,7 @@ import { CancelDriveModalComponent } from './cancel-drive-modal/cancel-drive-mod
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
     CancelDriveModalComponent,
     AppointmentFormComponent,
     UserStatsComponent,
-    LeaderboardComponent
+    LeaderboardComponent,
+    ErrorPageComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),
