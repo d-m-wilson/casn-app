@@ -65,9 +65,14 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <!-- <mat-icon svgIcon="drive_to" style="min-width:35px"></mat-icon><br> -->
                   <span class="bolder text-sm">Pick Up</span><br>
-                  {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
+                  <!-- TODO: How will we handle approved drives for current user if driver role? -->
+                  <span *ngIf="userRole === '1'; else pickupVague">
+                    {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
+                  </span>
+                  <ng-template #pickupVague>
+                  {{ r.appointment.pickupLocationVague }}
+                  </ng-template>
                 </p>
               </div>
             </mat-card>
@@ -86,9 +91,14 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <!-- <mat-icon svgIcon="drive_from" style="min-width:35px"></mat-icon><br> -->
                   <span class="bolder text-sm">Drop Off</span><br>
-                  {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
+                  <!-- TODO: How will we handle approved drives for current user if driver role? -->
+                  <span *ngIf="userRole === '1'; else dropoffVague">
+                    {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
+                  </span>
+                  <ng-template #dropoffVague>
+                    {{ r.appointment.dropoffLocationVague }}
+                  </ng-template>
                 </p>
               </div>
             </mat-card>
