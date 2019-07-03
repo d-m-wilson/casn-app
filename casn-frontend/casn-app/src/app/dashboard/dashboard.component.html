@@ -2,8 +2,12 @@
   <button class="btn-dash"
           mat-raised-button
           color="primary"
-          routerLink="/caller">
+          routerLink="/caller"
+          [disabled]="userRole === '2'">
           <mat-icon>departure_board</mat-icon> Schedule a Ride
+          <mat-label *ngIf="userRole === '2'">
+            <br><em>(Dispatchers Only)</em>
+          </mat-label>
   </button>
   <button class="btn-dash"
           mat-raised-button
