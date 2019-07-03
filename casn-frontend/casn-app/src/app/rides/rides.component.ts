@@ -10,6 +10,7 @@ import { Constants } from '../app.constants';
 })
 export class RidesComponent implements OnInit {
   objectKeys: any = Object.keys;
+  userRole: string;
   startDate: string;
   endDate: string;
   activeDate: string;
@@ -45,6 +46,7 @@ export class RidesComponent implements OnInit {
                public constants: Constants ) { }
 
   ngOnInit() {
+    this.userRole = localStorage.getItem("userRole");
     this.setDateRange();
     this.getAppointmentTypes();
     this.getClinics();
