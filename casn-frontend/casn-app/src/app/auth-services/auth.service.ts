@@ -114,7 +114,7 @@ export class AuthenticationService {
   checkPermissions(): void {
     this.ds.getCallerByCallerIdentifier("null").subscribe(
       data => {
-        console.log("Huh? This should never happen", data);
+        console.error("Huh? This should never happen", data);
       },
       err => {
         console.log("Error", err);
