@@ -88,7 +88,11 @@
                         iconUrl="assets/img/homegardenbusiness.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
-                <a [href]="startAddressGoogleMapLink" target="_blank">
+                <!-- TODO: Figure out whether to do a role check OR just check this
+                property for conditional display logic -->
+                <a *ngIf="0 || !isDriveTo; else vagueLocation"
+                   [href]="startAddressGoogleMapLink"
+                   target="_blank">
                   <address>{{ ride[driveType].startAddress }}</address>
                 </a>
               </agm-info-window>
@@ -98,7 +102,11 @@
                         iconUrl="assets/img/hospitals.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:
-                <a [href]="endAddressGoogleMapLink" target="_blank">
+                <!-- TODO: Figure out whether to do a role check OR just check this
+                property for conditional display logic -->
+                <a *ngIf="0 || isDriveTo; else vagueLocation"
+                   [href]="endAddressGoogleMapLink"
+                   target="_blank">
                   <address>{{ ride[driveType].endAddress }}</address>
                 </a>
               </agm-info-window>
