@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   // A2HS
   deferredPrompt: any;
   showButton: boolean = false;
+  userRole: string;
 
   constructor(
     private _authService: AuthenticationService,
@@ -37,6 +38,7 @@ export class AppComponent implements OnInit {
       });
     }
     this.menuItems = this.constants.MENU_ITEMS;
+    this.userRole = localStorage.getItem("userRole");
     this.registerCustomMaterialIcons();
   }
   /*********************************************************************
@@ -52,6 +54,7 @@ export class AppComponent implements OnInit {
 
   isLoggedIn() {
     var boolExpr = this._authService.isLoggedIn();
+    this.userRole = localStorage.getItem("userRole");
     return boolExpr;
   }
 
