@@ -9,7 +9,8 @@ import { AuthenticationService }      from './auth.service';
 export class AuthGuard implements CanActivate {
   private _restrictedPages = [
     '/caller',
-    '/appointment'
+    '/appointment',
+    '/message'
   ];
 
   constructor ( private authService: AuthenticationService,

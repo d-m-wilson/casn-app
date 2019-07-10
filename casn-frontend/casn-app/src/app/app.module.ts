@@ -58,6 +58,7 @@ import { AppointmentFormComponent } from './appointment-form/appointment-form.co
 import { UserStatsComponent } from './user-stats/user-stats.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { MassTextComponent } from './mass-text/mass-text.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     AppointmentFormComponent,
     UserStatsComponent,
     LeaderboardComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    MassTextComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),
