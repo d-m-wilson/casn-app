@@ -27,6 +27,7 @@ import {
   MatSidenavModule,
   MatSlideToggleModule,
   MatStepperModule,
+  MatTableModule,
   MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
@@ -107,6 +108,7 @@ import { MassTextComponent } from './mass-text/mass-text.component';
     MatSidenavModule,
     MatSlideToggleModule,
     MatStepperModule,
+    MatTableModule,
     MatTabsModule,
     MatToolbarModule,
     ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
