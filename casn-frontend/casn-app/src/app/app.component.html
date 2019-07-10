@@ -11,12 +11,15 @@
              src="assets/img/casn-logo.png"
              alt="CASN logo"
              routerLink="/">
-        <mat-list-item *ngFor="let m of menuItems" [routerLink]="m.address" (click)="sidenav.close()">
-          <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
-          <h4 mat-line>{{ m.name }}</h4>
-          <!-- <p mat-line>folderupdated</p> -->
-        </mat-list-item>
-        <mat-divider></mat-divider>
+        <ng-container *ngFor="let m of menuItems">
+          <mat-list-item *ngIf="!m.dispatcherOnly || userRole === '1'"
+          [routerLink]="m.address"
+          (click)="sidenav.close()">
+            <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
+            <h4 mat-line>{{ m.name }}</h4>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </ng-container>
         <mat-list-item>
           <mat-icon mat-list-icon>cancel</mat-icon>
           <h4 mat-line (click)="logout()">Log Out</h4>
