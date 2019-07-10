@@ -8,6 +8,7 @@ import { CallersComponent } from './callers/callers.component';
 import { LoginComponent } from './login/login.component';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
 import { UserStatsComponent } from './user-stats/user-stats.component';
+import { MassTextComponent } from './mass-text/mass-text.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full', canActivate: [ AuthGuard ] },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'appointment', component: AppointmentFormComponent, canActivate: [ AuthGuard ] },
   { path: 'view-schedule', component: RidesComponent, canActivate: [ AuthGuard ] },
   { path: 'stats', component: UserStatsComponent, canActivate: [ AuthGuard ] },
+  { path: 'message', component: MassTextComponent, canActivate: [ AuthGuard ] },
   { path: '**', component: DashboardComponent, canActivate: [ AuthGuard ] }
 ];
 
