@@ -4,17 +4,14 @@ import { CanActivate,
          ActivatedRouteSnapshot,
          RouterStateSnapshot } from '@angular/router';
 import { AuthenticationService }      from './auth.service';
+import { Constants } from '../app.constants';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private _restrictedPages = [
-    '/caller',
-    '/appointment',
-    '/message'
-  ];
 
   constructor ( private authService: AuthenticationService,
-                private router: Router ) {}
+                private router: Router,
+                private constants: Constants ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if(this.authService.isLoggedIn()) {
@@ -34,6 +31,6 @@ export class AuthGuard implements CanActivate {
 
   pageIsRestricted(page: string): boolean {
     console.log("Page is", page);
-    return this._restrictedPages.includes(page);
+    return this.constants.RESTRICTED_ROUTES.includes(page);
   }
 }
