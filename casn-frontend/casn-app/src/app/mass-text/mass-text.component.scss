@@ -9,6 +9,11 @@ main {
     min-width: 300px;
   }
 
+  .table-container {
+    height: 300px;
+    overflow: auto;
+  }
+
   .mat-card {
     display: flex;
     flex-direction: column;
