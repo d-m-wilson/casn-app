@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTableDataSource } from '@angular/material/table';
 
-export interface PeriodicElement {
+export interface UserContact {
   name: string;
   position: number;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
+const PERSON_DATA: UserContact[] = [
   {position: 1, name: 'Hydrogen'},
   {position: 2, name: 'Helium'},
   {position: 3, name: 'Lithium'},
@@ -33,8 +33,8 @@ export class MassTextComponent implements OnInit {
   }
 
   displayedColumns: string[] = ['select', 'name'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-  selection = new SelectionModel<PeriodicElement>(true, []);
+  dataSource = new MatTableDataSource<UserContact>(PERSON_DATA);
+  selection = new SelectionModel<UserContact>(true, []);
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -51,7 +51,7 @@ export class MassTextComponent implements OnInit {
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: PeriodicElement): string {
+  checkboxLabel(row?: UserContact): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }

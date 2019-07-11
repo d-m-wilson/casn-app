@@ -1,20 +1,19 @@
 <!-- TODO: Add sticky header -->
-<!-- TODO: Mock up more realistic data -->
-<!-- TODO: Edit table dataSource to use new mock data -->
-<!-- TODO: Add message field & submit button -->
 <!-- TODO: Add confirmation msg on submit -->
 
 <main>
   <h2>Message Volunteers</h2>
-  <mat-form-field appearance="outline">
-    <mat-label>Message</mat-label>
-    <textarea matInput
-              maxlength="160"
-              #message
-              aria-label="Message"
-              placeholder="Please add your message content here."></textarea>
-    <mat-hint align="end">{{ message.value.length }} / 160</mat-hint>
-  </mat-form-field>
+  <mat-card>
+    <mat-form-field appearance="outline">
+      <mat-label>Message</mat-label>
+      <textarea matInput
+                maxlength="160"
+                #message
+                aria-label="Message"
+                placeholder="Please add your message content here."></textarea>
+      <mat-hint align="end">{{ message.value.length }} / 160</mat-hint>
+    </mat-form-field>
+  </mat-card>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
@@ -43,4 +42,6 @@
         (click)="selection.toggle(row)">
     </tr>
   </table>
+  <button mat-raised-button
+          color="primary">Send Message</button>
 </main>
