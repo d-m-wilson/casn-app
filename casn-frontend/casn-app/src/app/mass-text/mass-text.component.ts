@@ -8,16 +8,16 @@ export interface UserContact {
 }
 
 const PERSON_DATA: UserContact[] = [
-  {position: 1, name: 'Hydrogen'},
-  {position: 2, name: 'Helium'},
-  {position: 3, name: 'Lithium'},
-  {position: 4, name: 'Beryllium'},
-  {position: 5, name: 'Boron'},
-  {position: 6, name: 'Carbon'},
-  {position: 7, name: 'Nitrogen'},
-  {position: 8, name: 'Oxygen'},
-  {position: 9, name: 'Fluorine'},
-  {position: 10, name: 'Neon'},
+  {position: 1, name: 'Aspen'},
+  {position: 2, name: 'Brian'},
+  {position: 3, name: 'David'},
+  {position: 4, name: 'Katie'},
+  {position: 5, name: 'Naima'},
+  {position: 6, name: 'Aspen'},
+  {position: 7, name: 'Brian'},
+  {position: 8, name: 'David'},
+  {position: 9, name: 'Katie'},
+  {position: 10, name: 'Naima'},
 ];
 
 @Component({
