@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,17 +15,19 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-		public Volunteer[] GetActiveDriversByRadiusWithTextConsent(bool readOnly)
+		public List<Volunteer> GetActiveDriversByRadiusWithTextConsent(bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
-				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent).ToArray();
+				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent)
+				.ToList();
 			return result;
 		}
 
-		public Volunteer[] GetAllActiveDriversWithTextConsent(bool readOnly)
+		public List<Volunteer> GetAllActiveDriversWithTextConsent(bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
-				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent).ToArray();
+				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent)
+				.ToList();
 			return result;
 		}
 

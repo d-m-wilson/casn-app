@@ -26,7 +26,8 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<DriveCancelReason> DriveCancelReason { get; set; }
         public virtual DbSet<DriveStatus> DriveStatus { get; set; }
         public virtual DbSet<Message> Message { get; set; }
-        public virtual DbSet<Volunteer> Volunteer { get; set; }
+		public virtual DbSet<MessageLog> MessageLog { get; set; }
+		public virtual DbSet<Volunteer> Volunteer { get; set; }
         public virtual DbSet<VolunteerBadge> VolunteerBadge { get; set; }
         public virtual DbSet<VolunteerDrive> VolunteerDrive { get; set; }
 
@@ -152,8 +153,8 @@ namespace CASNApp.Core.Entities
 				entity.ToTable("message");
 
 				entity.Property(e => e.Id)
-					.IsRequired()
-					.HasColumnName("id");
+					.HasColumnName("id")
+					.UseMySqlIdentityColumn();
 
 				entity.Property(e => e.MessageType)
 					.IsRequired()
@@ -175,6 +176,41 @@ namespace CASNApp.Core.Entities
 					.HasColumnType("datetime")
 					.HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
+			});
+
+			modelBuilder.Entity<MessageLog>(entity =>
+			{
+				entity.ToTable("messagelog");
+
+				entity.Property(e => e.Id)
+					.HasColumnName("id")
+					.UseMySqlIdentityColumn();
+
+				entity.Property(e => e.FromPhone)
+					.IsRequired()
+					.HasColumnName("fromPhone")
+					.HasColumnType("varchar(20)");
+
+				entity.Property(e => e.ToPhone)
+					.IsRequired()
+					.HasColumnName("toPhone")
+					.HasColumnType("varchar(20)");
+
+				entity.Property(e => e.Subject)
+					.IsRequired()
+					.HasColumnName("subject")
+					.HasColumnType("varchar(500)");
+
+				entity.Property(e => e.Body)
+					.IsRequired()
+					.HasColumnName("body")
+					.HasColumnType("varchar(4000)");
+
+				entity.Property(e => e.DateSent)
+					.HasColumnName("dateSent")
+					.HasColumnType("datetime")
+					.HasDefaultValueSql("'CURRENT_TIMESTAMP'")
+					.HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 			});
 
 			modelBuilder.Entity<AppointmentType>(entity =>

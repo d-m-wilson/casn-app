@@ -12,13 +12,13 @@ namespace CASNApp.Core.Models
 		public uint Id { get; set; }
 
 		/// <summary>
-		/// Gets or Sets Name
+		/// Gets or Sets MessageType
 		/// </summary>
 		[DataMember(Name = "messageType")]
 		public int MessageType { get; set; }
 
 		/// <summary>
-		/// Gets or Sets Title
+		/// Gets or Sets MessageText
 		/// </summary>
 		[DataMember(Name = "messageText")]
 		public string MessageText { get; set; }

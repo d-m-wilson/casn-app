@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
+using CASNApp.Core.Entities;
+using CASNApp.Core.Queries;
 using Microsoft.Extensions.Logging;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using CASNApp.Core.Entities;
-using CASNApp.Core.Queries;
-using System.Globalization;
 
 namespace CASNApp.Core.Commands
 {
@@ -85,8 +83,7 @@ namespace CASNApp.Core.Commands
 
 			//select the drivers 
 			VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
-			Volunteer[] drivers = null;
-			drivers = volunteerQuery.GetAllActiveDriversWithTextConsent(true); //all drivers if length of drive is greater than 30 miles
+			var drivers = volunteerQuery.GetAllActiveDriversWithTextConsent(true);
 
 			//send message to appropriate drivers
 			foreach (Volunteer driver in drivers)
@@ -98,11 +95,17 @@ namespace CASNApp.Core.Commands
 						SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
 					else
 					{
-						int hours = (int)((TimeSpan)(appointment.Created - DateTime.Now)).Hours;
+						//calculate hours difference
+						int hours = 0;
+						if (((TimeSpan)(DateTime.Now - appointment.Created)).Days != 0)
+							hours = ((int)((TimeSpan)(DateTime.Now - appointment.Created)).Days * 24) + (int)((TimeSpan)(DateTime.Now - appointment.Created)).Hours;
+						else
+							hours = (int)((TimeSpan)(DateTime.Now - appointment.Created)).Hours;
+						
 						double radius = GeocoderQuery.LatLng.GetDistance(initialLatitude, initialLongitude, (double)driver.Latitude, (double)driver.Longitude, GeocoderQuery.LatLng.UnitType.Miles);
 						if (hours < 2 && radius <= 5)
 							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
-						else if (hours < 3 && radius > 5 && radius >= 15)
+						else if (hours < 3 && radius > 5 && radius <= 15)
 							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
 						else if (hours >= 3 && radius > 15)
 							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone);
@@ -113,11 +116,22 @@ namespace CASNApp.Core.Commands
 
 		public void SMSMessage(string messageText, string fromPhone, string toPhone)
 		{
+			//initialize twilio client
 			TwilioClient.Init(accountSid, authToken);
 
+			//send requested message
 			var message = MessageResource.Create(body: messageText,
 												 from: new Twilio.Types.PhoneNumber(fromPhone),
 												 to: new Twilio.Types.PhoneNumber(toPhone));
+
+			//log message sent to database (from number, to number, message text, date sent)
+			var messageLogEntity = new Core.Entities.MessageLog();
+			messageLogEntity.FromPhone = fromPhone;
+			messageLogEntity.ToPhone = toPhone;
+			messageLogEntity.Body = messageText;
+			messageLogEntity.DateSent = DateTime.Now;
+			dbContext.MessageLog.Add(messageLogEntity);
+			dbContext.SaveChanges();
 		}
 	}
 }
