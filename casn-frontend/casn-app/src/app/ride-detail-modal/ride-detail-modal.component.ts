@@ -9,6 +9,7 @@ import { DispatcherApiService } from '../api/api/dispatcherApi.service';
   styleUrls: ['./ride-detail-modal.component.scss']
 })
 export class RideDetailModalComponent implements OnInit {
+  userRole: string;
   @Input() ride: any = {};
   @Input() isDriveTo: boolean; // show driveTo or driveFrom details
   @Output() closeRideModalClick = new EventEmitter<boolean>();
@@ -26,6 +27,7 @@ export class RideDetailModalComponent implements OnInit {
                private dispatcherService: DispatcherApiService ) { }
 
   ngOnInit() {
+    this.userRole = localStorage.getItem('userRole');
     this.getAppointmentTypes();
     this.getClinics();
     this.getVolunteers();
@@ -44,9 +46,23 @@ export class RideDetailModalComponent implements OnInit {
   getAppointmentTypes(): void {
     this.ds.getAppointmentTypes().subscribe(a => {
       this.apptTypes = a.reduce((acc, cur) => {
-        acc[cur.id] = cur.title;
+        acc[cur.id] = { title: cur.title };
         return acc;
       }, {});
+      // TODO: Remove once API is ready.
+      this.apptTypes["3"].estimatedDurationMinutes = 210;
+      this.apptTypes["4"].estimatedDurationMinutes = 150;
+      this.apptTypes["5"].estimatedDurationMinutes = 90;
+      this.apptTypes["6"].estimatedDurationMinutes = 180;
+      this.apptTypes["7"].estimatedDurationMinutes = 60;
+      this.apptTypes["8"].estimatedDurationMinutes = 30;
+      console.log("appt Types", this.apptTypes);
+      //3 Surgical: 3.5 hours (210 minutes)
+      //4 Ultrasound: 2.5 hours (150 minutes)
+      //5 Lam Insert: 1.5 hours (90 minutes)
+      //6 Lam to Complete: 3 hours (180 minutes)
+      //7 Courthouse Appointment: 1 hour (60 minutes)
+      //8 Follow Up: .5 hours (30 minutes)
     });
   }
 
@@ -126,5 +142,11 @@ export class RideDetailModalComponent implements OnInit {
   get driveIsApproved() {
     const driverId = this.ride[this.driveType].driverId
     return !!driverId;
+  }
+
+  getAppointmentEndTime(apptTime, apptType) {
+    const date = new Date(apptTime);
+    const minutes = this.apptTypes[apptType].estimatedDurationMinutes;
+    return new Date(date.getTime() + minutes*60000);
   }
 }

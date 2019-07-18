@@ -1,0 +1,33 @@
+import { Component, OnInit } from '@angular/core';
+import { tempBadges } from './temp-badges'; // TODO: Delete
+import { DefaultApiService } from '../api/api/defaultApi.service';
+
+@Component({
+  selector: 'app-user-stats',
+  templateUrl: './user-stats.component.html',
+  styleUrls: ['./user-stats.component.scss']
+})
+export class UserStatsComponent implements OnInit {
+  badges: any[];
+
+  /*********************************************************************
+                      Constructor, Lifecycle Hooks
+  **********************************************************************/
+  constructor( private ds: DefaultApiService ) {}
+
+  ngOnInit() {
+    this.getBadges()
+  }
+
+  /*********************************************************************
+                            Service Calls
+  **********************************************************************/
+  // TODO: Replace with API call
+  getBadges(): void {
+    // this.ds.getBadgesForVolunteer().subscribe(b => {
+    //   this.badges = b;
+    // })
+    this.badges = tempBadges;
+  }
+
+}

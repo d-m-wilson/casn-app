@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserManager, User, WebStorageStateStore } from 'oidc-client';
 import { environment } from '../../environments/environment';
 import { AppConfigService } from './appconfig.service';
+import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 
 @Injectable()
 export class AuthenticationService {
@@ -10,8 +11,9 @@ export class AuthenticationService {
   private _appConfigService: AppConfigService;
   private _appConfigData;
   private _initialized: Boolean;
-  
-  constructor( private appConfigService: AppConfigService ) {
+
+  constructor( private appConfigService: AppConfigService,
+               private ds: DispatcherApiService ) {
     console.log('AuthenticationService ctor');
     this._initialized = false;
     this._appConfigService = appConfigService;
@@ -63,6 +65,7 @@ export class AuthenticationService {
     this._userManager.getUser().then(user => {
       if (user && !user.expired) {
         this._user = user;
+        this.checkPermissions();
       }
     })
   }
@@ -101,5 +104,29 @@ export class AuthenticationService {
 
   getAccessToken(): string {
     return this._user ? this._user.access_token : '';
+  }
+
+  /*
+    NOTE: We send a request to a dispatcher-only endpoint to check permissions
+    1 = dispatcher
+    2 = driver
+  */
+  checkPermissions(): void {
+    this.ds.getCallerByCallerIdentifier("null").subscribe(
+      data => {
+        console.error("Huh? This should never happen", data);
+      },
+      err => {
+        console.log("Error", err);
+        // 404 - no caller found indicates dispatcher-level permissions
+        if(err.status === 404) {
+          localStorage.setItem('userRole', '1');
+        }
+        // 403 - forbidden indicates driver-level permissions
+        if(err.status === 403) {
+          localStorage.setItem('userRole', '2');
+        }
+      }
+    )
   }
 }

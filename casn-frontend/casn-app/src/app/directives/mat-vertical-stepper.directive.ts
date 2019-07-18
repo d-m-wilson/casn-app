@@ -4,7 +4,7 @@ https://github.com/angular/components/issues/8881
 */
 
 import { Directive, HostListener } from '@angular/core';
-import { MatStepper } from '@angular/material';
+import { MatStepper } from '@angular/material/stepper';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 @Directive({

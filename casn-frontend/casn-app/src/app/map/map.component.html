@@ -24,9 +24,15 @@
                              #infoWindow>
               Start Address:
               <address>
-                <a [href]="getGoogleMapLink(r, 'driveTo', 'start')"
+                <!-- TODO: Figure out whether to do a role check OR just check
+                this property for conditional display logic -->
+                <a *ngIf="0; else vagueLocationPickup"
+                   [href]="getGoogleMapLink(r, 'driveTo', 'start')"
                    target="_blank">{{ r.driveTo.startAddress }}</a>
               </address>
+              <ng-template #vagueLocationPickup>
+                {{ r.appointment.pickupLocationVague }}
+              </ng-template>
               <br>
               End Address:
               <address>
@@ -71,9 +77,15 @@
               <br>
               End Address:
               <address>
-                <a [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
+                <!-- TODO: Figure out whether to do a role check OR just check
+                this property for conditional display logic -->
+                <a *ngIf="0; else vagueLocationDropoff"
+                   [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
                    target="_blank">{{ r.driveFrom.endAddress }}</a>
               </address>
+              <ng-template #vagueLocationDropoff>
+                {{ r.appointment.dropoffLocationVague }}
+              </ng-template>
               <br>
               <button type="button"
                       mat-raised-button

@@ -5,7 +5,7 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId] }}</h1>
+    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
@@ -23,21 +23,32 @@
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Pick up caller {{ ride.appointment.callerIdentifier }} at<span *ngIf="!isDriveTo"> {{ clinics[ride.appointment.clinicId].name }}</span>:
+            Pick up caller {{ ride.appointment.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
-          <a [href]="startAddressGoogleMapLink" target="_blank">
+          <!-- TODO: Figure out whether to do a role check OR just check this
+          property for conditional display logic -->
+          <a *ngIf="0 || !isDriveTo; else vagueLocation"
+             [href]="startAddressGoogleMapLink"
+             target="_blank">
             <address>
               {{ ride[driveType].startAddress }}<br>
               {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
             </address>
           </a>
+          <ng-template #vagueLocation>
+            {{ isDriveTo ? ride.appointment.pickupLocationVague : ride.appointment.dropoffLocationVague }}
+          </ng-template>
         </mat-card>
         <!--=========== Drop Off Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
             Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
-          <a [href]="endAddressGoogleMapLink" target="_blank">
+          <!-- TODO: Figure out whether to do a role check OR just check this
+          property for conditional display logic -->
+          <a *ngIf="0 || isDriveTo; else vagueLocation"
+             [href]="endAddressGoogleMapLink"
+             target="_blank">
             <address>
               {{ ride[driveType].endAddress }}<br>
               {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
@@ -45,11 +56,12 @@
           </a>
         </mat-card>
         <!--=========== Volunteers ============-->
+        <!-- TODO: Ask if drivers should be able to see volunteers -->
         <mat-card *ngIf="volunteers && !driveIsApproved" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
-            <button *ngIf="!driveIsApproved"
+            <button *ngIf="!driveIsApproved && userRole === '1'"
                     type="button"
                     mat-raised-button
                     (click)="handleApproveClick(v.id)"
@@ -76,7 +88,11 @@
                         iconUrl="assets/img/homegardenbusiness.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
-                <a [href]="startAddressGoogleMapLink" target="_blank">
+                <!-- TODO: Figure out whether to do a role check OR just check this
+                property for conditional display logic -->
+                <a *ngIf="0 || !isDriveTo; else vagueLocation"
+                   [href]="startAddressGoogleMapLink"
+                   target="_blank">
                   <address>{{ ride[driveType].startAddress }}</address>
                 </a>
               </agm-info-window>
@@ -86,7 +102,11 @@
                         iconUrl="assets/img/hospitals.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:
-                <a [href]="endAddressGoogleMapLink" target="_blank">
+                <!-- TODO: Figure out whether to do a role check OR just check this
+                property for conditional display logic -->
+                <a *ngIf="0 || isDriveTo; else vagueLocation"
+                   [href]="endAddressGoogleMapLink"
+                   target="_blank">
                   <address>{{ ride[driveType].endAddress }}</address>
                 </a>
               </agm-info-window>

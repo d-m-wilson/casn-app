@@ -45,8 +45,8 @@
               {{ r.appointment.appointmentDate | date:'d' }}
             </div>
             <div>
-              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId] }}</span> <br>
-              <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}} at {{ clinics[r.appointment?.clinicId].name }}</span> <br>
+              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
+              <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}}-{{ getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId) | date:'shortTime' }} <br>{{ clinics[r.appointment?.clinicId].name }}</span> <br>
             </div>
           </mat-card>
           <div class="drive-container">
@@ -65,9 +65,14 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <!-- <mat-icon svgIcon="drive_to" style="min-width:35px"></mat-icon><br> -->
                   <span class="bolder text-sm">Pick Up</span><br>
-                  {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
+                  <!-- TODO: How will we handle approved drives for current user if driver role? -->
+                  <span *ngIf="userRole === '1'; else pickupVague">
+                    {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
+                  </span>
+                  <ng-template #pickupVague>
+                  {{ r.appointment.pickupLocationVague }}
+                  </ng-template>
                 </p>
               </div>
             </mat-card>
@@ -86,9 +91,14 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <!-- <mat-icon svgIcon="drive_from" style="min-width:35px"></mat-icon><br> -->
                   <span class="bolder text-sm">Drop Off</span><br>
-                  {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
+                  <!-- TODO: How will we handle approved drives for current user if driver role? -->
+                  <span *ngIf="userRole === '1'; else dropoffVague">
+                    {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
+                  </span>
+                  <ng-template #dropoffVague>
+                    {{ r.appointment.dropoffLocationVague }}
+                  </ng-template>
                 </p>
               </div>
             </mat-card>

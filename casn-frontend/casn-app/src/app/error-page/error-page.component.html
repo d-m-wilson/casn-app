@@ -1,0 +1,15 @@
+<main>
+  <mat-card *ngIf="!errorType">
+    <h1>Oops, this page is unavailable.</h1>
+    <button mat-raised-button
+            routerLink="/"
+            color="primary">Return Home</button>
+  </mat-card>
+  <mat-card *ngIf="errorType==='401'">
+    <h1>Uh oh, you are not authorized to view this page.</h1>
+    <p>If you believe this is an error, please contact an administrator.</p>
+    <button mat-raised-button
+            routerLink="/"
+            color="primary">Return Home</button>
+  </mat-card>
+</main>
