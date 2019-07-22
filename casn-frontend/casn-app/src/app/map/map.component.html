@@ -26,7 +26,7 @@
               <address>
                 <!-- TODO: Figure out whether to do a role check OR just check
                 this property for conditional display logic -->
-                <a *ngIf="0; else vagueLocationPickup"
+                <a *ngIf="r.driveTo.startAddress; else vagueLocationPickup"
                    [href]="getGoogleMapLink(r, 'driveTo', 'start')"
                    target="_blank">{{ r.driveTo.startAddress }}</a>
               </address>
@@ -79,7 +79,7 @@
               <address>
                 <!-- TODO: Figure out whether to do a role check OR just check
                 this property for conditional display logic -->
-                <a *ngIf="0; else vagueLocationDropoff"
+                <a *ngIf="r.driveFrom.endAddress; else vagueLocationDropoff"
                    [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
                    target="_blank">{{ r.driveFrom.endAddress }}</a>
               </address>
