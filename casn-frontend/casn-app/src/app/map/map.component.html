@@ -14,7 +14,7 @@
         <!--====== Map Markers for driveTo ========-->
         <ng-container *ngFor="let r of rides">
           <agm-marker *ngIf="r.driveTo && r.driveTo.statusId !== 3"
-                      iconUrl="assets/img/blue-pushpin.png"
+                      iconUrl="assets/img/marker_pickup.png"
                       [latitude]="r.driveTo.startLatitude"
                       [longitude]="r.driveTo.startLongitude"
                       (markerClick)="markerClick(infoWindow, $event);
@@ -61,7 +61,7 @@
         <!--====== Map Markers for driveFrom ========-->
         <ng-container *ngFor="let r of rides">
           <agm-marker *ngIf="r.driveFrom && r.driveFrom.statusId !== 3"
-                      iconUrl="assets/img/blue-pushpin.png"
+                      iconUrl="assets/img/marker_dropoff.png"
                       [latitude]="r.driveFrom.endLatitude"
                       [longitude]="r.driveFrom.endLongitude"
                       (markerClick)="markerClick(infoWindow, $event);
@@ -107,7 +107,7 @@
         </ng-container>
         <!--====== Map Markers for Clinics ========-->
         <agm-marker *ngFor="let c of clinics"
-                    iconUrl="assets/img/hospitals.png"
+                    iconUrl="assets/img/marker_clinic.png"
                     [latitude]="c.latitude"
                     [longitude]="c.longitude">
           <agm-info-window [disableAutoPan]="true">

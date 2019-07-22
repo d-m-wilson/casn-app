@@ -85,7 +85,7 @@
           <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
-                        iconUrl="assets/img/homegardenbusiness.png">
+                        iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'dropoff' }}.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
                 <!-- TODO: Figure out whether to do a role check OR just check this
@@ -99,7 +99,7 @@
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
-                        iconUrl="assets/img/hospitals.png">
+                        iconUrl="assets/img/marker_clinic.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:
                 <!-- TODO: Figure out whether to do a role check OR just check this
