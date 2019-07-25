@@ -29,7 +29,7 @@ export const tempBadges = [
     "description": "You earned the achievement for completing your first drive",
     "earned": false,
     "path": "assets/badges/4.png",
-    "dateEarned": "1/2/2019"
+    "dateEarned": "1/2/2019",
   },
   {
     "id": 5,
@@ -45,7 +45,8 @@ export const tempBadges = [
     "description": "You earned the achievement for completing your first drive",
     "earned": true,
     "path": "assets/badges/6.png",
-    "dateEarned": "1/2/2019"
+    "dateEarned": "1/2/2019",
+    "isHidden": true
   },
   {
     "id": 7,
@@ -60,8 +61,9 @@ export const tempBadges = [
     "title": "Comeback",
     "description": "You earned the achievement for completing your first drive",
     "earned": false,
-    "path": "assets/badges/8.png",
-    "dateEarned": "1/2/2019"
+    "path": "assets/badges/8hidden.png",
+    "dateEarned": "1/2/2019",
+    "isHidden": true
   },
   {
     "id": 9,
@@ -109,7 +111,8 @@ export const tempBadges = [
     "description": "You earned the achievement for completing your first drive",
     "earned": true,
     "path": "assets/badges/14.png",
-    "dateEarned": "1/2/2019"
+    "dateEarned": "1/2/2019",
+    "isHidden": true
   },
   {
     "id": 15,
