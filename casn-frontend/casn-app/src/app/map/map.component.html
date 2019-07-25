@@ -24,8 +24,6 @@
                              #infoWindow>
               Start Address:
               <address>
-                <!-- TODO: Figure out whether to do a role check OR just check
-                this property for conditional display logic -->
                 <a *ngIf="r.driveTo.startAddress; else vagueLocationPickup"
                    [href]="getGoogleMapLink(r, 'driveTo', 'start')"
                    target="_blank">{{ r.driveTo.startAddress }}</a>
@@ -77,8 +75,6 @@
               <br>
               End Address:
               <address>
-                <!-- TODO: Figure out whether to do a role check OR just check
-                this property for conditional display logic -->
                 <a *ngIf="r.driveFrom.endAddress; else vagueLocationDropoff"
                    [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
                    target="_blank">{{ r.driveFrom.endAddress }}</a>
