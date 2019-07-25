@@ -25,9 +25,7 @@
           <mat-card-subtitle>
             Pick up caller {{ ride.appointment.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
-          <!-- TODO: Figure out whether to do a role check OR just check this
-          property for conditional display logic -->
-          <a *ngIf="0 || !isDriveTo; else vagueLocation"
+          <a *ngIf="!ride[driveType].startAddress || !isDriveTo; else vagueLocation"
              [href]="startAddressGoogleMapLink"
              target="_blank">
             <address>
@@ -44,9 +42,7 @@
           <mat-card-subtitle>
             Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
-          <!-- TODO: Figure out whether to do a role check OR just check this
-          property for conditional display logic -->
-          <a *ngIf="0 || isDriveTo; else vagueLocation"
+          <a *ngIf="!ride[driveType].endAddress || isDriveTo; else vagueLocation"
              [href]="endAddressGoogleMapLink"
              target="_blank">
             <address>
@@ -85,7 +81,7 @@
           <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
-                        iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'dropoff' }}.png">
+                        iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'clinic' }}.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
                 <!-- TODO: Figure out whether to do a role check OR just check this
