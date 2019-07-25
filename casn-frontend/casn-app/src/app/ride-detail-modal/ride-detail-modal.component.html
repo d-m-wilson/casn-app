@@ -84,9 +84,7 @@
                         iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'clinic' }}.png">
               <agm-info-window [disableAutoPan]="true">
                 Start Address:
-                <!-- TODO: Figure out whether to do a role check OR just check this
-                property for conditional display logic -->
-                <a *ngIf="0 || !isDriveTo; else vagueLocation"
+                <a *ngIf="ride[driveType].startAddress; else vagueLocation"
                    [href]="startAddressGoogleMapLink"
                    target="_blank">
                   <address>{{ ride[driveType].startAddress }}</address>
@@ -95,12 +93,10 @@
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
-                        iconUrl="assets/img/marker_clinic.png">
+                        iconUrl="assets/img/marker_{{ isDriveTo ? 'clinic' : 'dropoff' }}.png">
               <agm-info-window [disableAutoPan]="true">
                 End Address:
-                <!-- TODO: Figure out whether to do a role check OR just check this
-                property for conditional display logic -->
-                <a *ngIf="0 || isDriveTo; else vagueLocation"
+                <a *ngIf="ride[driveType].endAddress; else vagueLocation"
                    [href]="endAddressGoogleMapLink"
                    target="_blank">
                   <address>{{ ride[driveType].endAddress }}</address>
