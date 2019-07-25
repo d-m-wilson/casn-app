@@ -60,6 +60,28 @@ namespace CASNApp.TextMessageManager
 
 		static void Main(string[] args)
 		{
+			//set the mesage priority from the command line
+			TwilioCommand.MessageType messageType = TwilioCommand.MessageType.Unknown;
+			if (args.Length > 0)
+			{
+				int value;
+				if (int.TryParse(args[0], out value))
+				{
+					switch (value)
+					{
+						case 1:
+							messageType = TwilioCommand.MessageType.FriendlyReminder;
+							break;
+						case 2:
+							messageType = TwilioCommand.MessageType.SeriousRequest;
+							break;
+						case 3:
+							messageType = TwilioCommand.MessageType.DesperatePlea;
+							break;
+					}
+				}
+			}
+
 			var servicesProvider = BuildDi();
 			var logger = servicesProvider.GetRequiredService<ILogger<Program>>();
 
@@ -67,11 +89,14 @@ namespace CASNApp.TextMessageManager
 			Console.WriteLine(logMessage);
 			logger.LogInformation(logMessage);
 
+			//connect to the database
 			using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
 			{
+				//get a list of all the appointments with open drives
 				AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
 				var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
 
+				//loop thru the appointments and send the assoicated text message
 				if (openAppointments != null && openAppointments.Count > 0)
 				{
 					loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
@@ -81,7 +106,7 @@ namespace CASNApp.TextMessageManager
 					{
 						Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
 						Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
-						newSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, 5);
+						newSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType);
 					}
 				}
 			}
