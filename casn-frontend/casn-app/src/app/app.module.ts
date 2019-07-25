@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
+import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 /* Angular Material Components */
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -82,6 +83,7 @@ import { MassTextComponent } from './mass-text/mass-text.component';
     OwlNativeDateTimeModule,
     // TODO: Move to lazy loader
     AgmCoreModule.forRoot(),
+    AgmSnazzyInfoWindowModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
