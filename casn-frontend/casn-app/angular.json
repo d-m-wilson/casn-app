@@ -27,7 +27,8 @@
               {
                 "input": "src/app/styles/custom-color-theme.scss"
               },
-              "src/app/styles/styles.scss"
+              "src/app/styles/styles.scss",
+              "node_modules/snazzy-info-window/dist/snazzy-info-window.css"
             ],
             "scripts": []
           },
