@@ -51,20 +51,6 @@ export class MapComponent implements OnInit {
     ride.showPolylines = false;
   }
 
-  lastSelectedInfoWindow: any;
-  markerClick(infoWindow: any, event?: any) {
-    this.mapCenter.latitude = event.latitude;
-    this.mapCenter.longitude = event.longitude;
-    this.mapCenter.zoom = 9;
-    if (infoWindow == this.lastSelectedInfoWindow) return;
-    if (this.lastSelectedInfoWindow != null) {
-      try{
-        this.lastSelectedInfoWindow.close();
-      } catch {} //in case you reload your markers
-    }
-    this.lastSelectedInfoWindow = infoWindow;
-  }
-
 /*********************************************************************
                     Utilities - Getters/Setters, etc.
 **********************************************************************/

@@ -82,26 +82,30 @@
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
                         iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'clinic' }}.png">
-              <agm-info-window [disableAutoPan]="true">
-                Start Address:
-                <a *ngIf="ride[driveType].startAddress; else vagueLocation"
-                   [href]="startAddressGoogleMapLink"
-                   target="_blank">
-                  <address>{{ ride[driveType].startAddress }}</address>
-                </a>
-              </agm-info-window>
+              <agm-snazzy-info-window>
+                <ng-template>
+                  Start Address:
+                  <a *ngIf="ride[driveType].startAddress; else vagueLocation"
+                     [href]="startAddressGoogleMapLink"
+                     target="_blank">
+                    <address>{{ ride[driveType].startAddress }}</address>
+                  </a>
+                </ng-template>
+              </agm-snazzy-info-window>
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
                         iconUrl="assets/img/marker_{{ isDriveTo ? 'clinic' : 'dropoff' }}.png">
-              <agm-info-window [disableAutoPan]="true">
-                End Address:
-                <a *ngIf="ride[driveType].endAddress; else vagueLocation"
-                   [href]="endAddressGoogleMapLink"
-                   target="_blank">
-                  <address>{{ ride[driveType].endAddress }}</address>
-                </a>
-              </agm-info-window>
+              <agm-snazzy-info-window>
+                <ng-template>
+                  End Address:
+                  <a *ngIf="ride[driveType].endAddress; else vagueLocation"
+                     [href]="endAddressGoogleMapLink"
+                     target="_blank">
+                    <address>{{ ride[driveType].endAddress }}</address>
+                  </a>
+                </ng-template>
+              </agm-snazzy-info-window>
             </agm-marker>
           </agm-map>
         </mat-card>
