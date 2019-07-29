@@ -339,26 +339,33 @@ namespace CASNApp.API.Controllers
                 return Conflict(body1);
             }
 
+            var utcNow = DateTime.UtcNow;
+
+            var driver = volunteerQuery.GetActiveDriverById(volunteerDrive.VolunteerId, false);
+
+            //if (!driver.LastDriveApproved.HasValue)
+            //{
+            //    // Give 'em the First Drive badge
+            //    dbContext.VolunteerBadge.Add(new Core.Entities.VolunteerBadge
+            //    {
+            //        BadgeId = 1,
+            //        VolunteerId = driver.Id,
+            //    });
+            //}
+
+            //driver.LastDriveApproved = utcNow;
+
             var drive = volunteerDrive.Drive;
 
             drive.DriverId = volunteerDrive.VolunteerId;
             drive.StatusId = Drive.StatusApproved;
-            drive.Approved = DateTime.UtcNow;
+            drive.Approved = utcNow;
             drive.ApprovedById = volunteer.Id;
-            drive.Updated = DateTime.UtcNow;
+            drive.Updated = utcNow;
 
             dbContext.SaveChanges();
 
             return Ok();
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
         }
 
         /// <summary>

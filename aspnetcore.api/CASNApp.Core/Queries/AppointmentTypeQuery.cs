@@ -21,6 +21,7 @@ namespace CASNApp.Core.Queries
                 .Where(e => e.IsActive)
                 .OrderBy(e => e.Id)
                 .ToListAsync();
+
             return result;
         }
 

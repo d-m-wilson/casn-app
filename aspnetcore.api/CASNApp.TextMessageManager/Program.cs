@@ -9,11 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace CASNApp.TextMessageManager
 {
-	class Program
+    class Program
 	{
 		private static readonly IConfiguration configuration;
 		private static ILoggerFactory loggerFactory;
@@ -40,9 +39,9 @@ namespace CASNApp.TextMessageManager
 			return new ServiceCollection()
 				.AddDbContext<casn_appContext>(options =>
 				{
-					options.UseMySql(configuration[Core.Constants.DbConnectionString], mysqlOptions =>
+					options.UseSqlServer(configuration[Core.Constants.DbConnectionString], sqlOptions =>
 					{
-						mysqlOptions.ServerVersion(Version.Parse(configuration[Core.Constants.MySQLVersionString]), ServerType.MySql)
+						sqlOptions
 							.EnableRetryOnFailure(2);
 					});
 				}, ServiceLifetime.Transient, ServiceLifetime.Transient)

@@ -3,7 +3,7 @@
 namespace CASNApp.Core.Models
 {
     [DataContract]
-    public class AppointmentType
+    public partial class AppointmentType
     {
         /// <summary>
         /// Gets or Sets Id
@@ -29,6 +29,11 @@ namespace CASNApp.Core.Models
         [DataMember(Name = "description")]
         public string Description { get; set; }
 
+        /// <summary>
+        /// Gets or Sets EstimatedDurationMinutes
+        /// </summary>
+        [DataMember(Name = "estimatedDurationMinutes")]
+        public int EstimatedDurationMinutes { get; set; }
 
     }
 }

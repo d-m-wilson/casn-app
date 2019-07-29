@@ -25,7 +25,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -68,10 +67,10 @@ namespace CASNApp.API
                 //})
                 .AddDbContext<casn_appContext>(options =>
                     {
-                        options.UseMySql(_configuration[Core.Constants.DbConnectionString], mysqlOptions =>
+                        options.UseSqlServer(_configuration[Core.Constants.DbConnectionString], sqlOptions =>
                             {
-                                mysqlOptions.ServerVersion(Version.Parse(_configuration[Core.Constants.MySQLVersionString]), ServerType.MySql)
-                                    .EnableRetryOnFailure(int.Parse(_configuration[Core.Constants.MySQLRetryCount]));
+                                sqlOptions
+                                    .EnableRetryOnFailure(int.Parse(_configuration[Core.Constants.DBRetryCount]));
                             });
                     }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 

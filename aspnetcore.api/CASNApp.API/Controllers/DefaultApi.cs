@@ -247,7 +247,9 @@ namespace CASNApp.API.Controllers
             }
 
             var query = new AppointmentTypeQuery(dbContext);
-            var results = await query.GetActiveAppointmentTypesAsync(true);
+            var entities = await query.GetActiveAppointmentTypesAsync(true);
+
+            var results = entities.Select(at => new Core.Models.AppointmentType(at)).ToList();
 
             return new ObjectResult(results);
         }

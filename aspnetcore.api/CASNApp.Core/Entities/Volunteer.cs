@@ -31,7 +31,6 @@ namespace CASNApp.Core.Entities
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
         public DateTime? Geocoded { get; set; }
-        public DateTime? LastDriveDate { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
