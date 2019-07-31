@@ -14,8 +14,8 @@ namespace CASNApp.Core.Entities
             VolunteerDrives = new HashSet<VolunteerDrive>();
         }
 
-        public uint Id { get; set; }
-        public uint CiviContactId { get; set; }
+        public int Id { get; set; }
+        public int CiviContactId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }

@@ -10,8 +10,8 @@ namespace CASNApp.Core.Entities
             Appointments = new HashSet<Appointment>();
         }
 
-        public uint Id { get; set; }
-        public uint CiviContactId { get; set; }
+        public int Id { get; set; }
+        public int CiviContactId { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }

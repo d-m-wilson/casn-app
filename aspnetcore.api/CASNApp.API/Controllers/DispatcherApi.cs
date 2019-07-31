@@ -382,7 +382,7 @@ namespace CASNApp.API.Controllers
         [Route("api/drives/{driveId}/cancel")]
         [ValidateModelState]
         [SwaggerOperation("CancelDrive")]
-        public virtual async Task<IActionResult> CancelDrive([FromRoute]uint driveId, [FromQuery]uint cancelReasonId)
+        public virtual async Task<IActionResult> CancelDrive([FromRoute]int driveId, [FromQuery]int cancelReasonId)
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);

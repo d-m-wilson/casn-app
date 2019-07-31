@@ -46,7 +46,7 @@ namespace CASNApp.Core.Models
         /// Gets or Sets Status
         /// </summary>
         [DataMember(Name = "statusId")]
-        public uint StatusId { get; set; }
+        public int StatusId { get; set; }
 
         /// <summary>
         /// Gets or Sets StatusName
@@ -160,7 +160,7 @@ namespace CASNApp.Core.Models
         /// Gets or Sets CancelReasonId
         /// </summary>
         [DataMember(Name = "cancelReasonId")]
-        public uint? CancelReasonId { get; internal set; }
+        public int? CancelReasonId { get; internal set; }
 
         /// <summary>
         /// Gets or Sets CancelReason

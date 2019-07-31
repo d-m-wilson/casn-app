@@ -85,7 +85,7 @@ namespace CASNApp.API.Controllers
             var volunteerDrive = new Core.Entities.VolunteerDrive
             {
                 Created = DateTime.UtcNow,
-                DriveId = (uint)driveId.Value,
+                DriveId = (int)driveId.Value,
                 VolunteerId = volunteer.Id,
                 IsActive = true,
             };

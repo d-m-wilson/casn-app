@@ -13,7 +13,7 @@ namespace CASNApp.Core.Queries
 			this.dbContext = dbContext;
 		}
 
-		public Clinic GetClinicByID(uint clinicId, bool readOnly)
+		public Clinic GetClinicByID(int clinicId, bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Clinic.AsNoTracking() : dbContext.Clinic)
 				.Where(m => m.Id == clinicId)

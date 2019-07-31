@@ -11,10 +11,10 @@ namespace CASNApp.Core.Entities
         {
             if (e.Id.HasValue)
             {
-                Id = (uint)e.Id.Value;
+                Id = (int)e.Id.Value;
             }
 
-            CiviContactId = e.CiviContactId.HasValue ? (uint)e.CiviContactId.Value : 0;
+            CiviContactId = e.CiviContactId.HasValue ? (short)e.CiviContactId.Value : 0;
             CallerIdentifier = e.CallerIdentifier;
             FirstName = e.FirstName;
             LastName = e.LastName;
@@ -26,7 +26,7 @@ namespace CASNApp.Core.Entities
             }
 
             PreferredLanguage = e.PreferredLanguage;
-            PreferredContactMethod = e.PreferredContactMethod.HasValue ? (sbyte)e.PreferredContactMethod.Value : (sbyte)0;
+            PreferredContactMethod = e.PreferredContactMethod.HasValue ? (short)e.PreferredContactMethod.Value : (short)0;
             Note = e.Note;
 
             if (e.Created.HasValue)

@@ -24,7 +24,7 @@ namespace CASNApp.Core.Queries
             return result;
         }
 
-        public Task<DriveCancelReason> GetActiveCancelReasonAsync(uint id, bool readOnly)
+        public Task<DriveCancelReason> GetActiveCancelReasonAsync(int id, bool readOnly)
         {
             var result = (readOnly ? dbContext.DriveCancelReason.AsNoTracking() : dbContext.DriveCancelReason)
                 .SingleOrDefaultAsync(e => e.Id == id && e.IsActive);

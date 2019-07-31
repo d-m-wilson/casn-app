@@ -5,7 +5,7 @@ namespace CASNApp.Core.Entities
     public class VolunteerBadge
     {
         public int Id { get; set; }
-        public uint VolunteerId { get; set; }
+        public int VolunteerId { get; set; }
         public int BadgeId { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }

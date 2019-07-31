@@ -6,10 +6,10 @@ namespace CASNApp.Core.Models
     {
         public const int DirectionToClinic = 1;
         public const int DirectionFromClinic = 2;
-        public const uint StatusOpen = 0;
-        public const uint StatusPending = 1;
-        public const uint StatusApproved = 2;
-        public const uint StatusCanceled = 3;
+        public const int StatusOpen = 0;
+        public const int StatusPending = 1;
+        public const int StatusApproved = 2;
+        public const int StatusCanceled = 3;
 
         public Drive() { }
 

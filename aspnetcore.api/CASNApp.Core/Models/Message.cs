@@ -9,7 +9,7 @@ namespace CASNApp.Core.Models
 		/// Gets or Sets Id
 		/// </summary>
 		[DataMember(Name = "id")]
-		public uint Id { get; set; }
+		public int Id { get; set; }
 
 		/// <summary>
 		/// Gets or Sets MessageType

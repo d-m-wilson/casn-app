@@ -13,7 +13,7 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-        public Task<Drive> GetDriveAsync(uint driveId)
+        public Task<Drive> GetDriveAsync(int driveId)
         {
             var result = dbContext.Drive.SingleOrDefaultAsync(d => d.Id == driveId);
             return result;

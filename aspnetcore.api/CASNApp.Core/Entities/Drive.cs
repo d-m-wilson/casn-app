@@ -10,11 +10,11 @@ namespace CASNApp.Core.Entities
             VolunteerDrives = new HashSet<VolunteerDrive>();
         }
 
-        public uint Id { get; set; }
-        public uint AppointmentId { get; set; }
+        public int Id { get; set; }
+        public int AppointmentId { get; set; }
         public byte Direction { get; set; }
-        public uint StatusId { get; set; }
-        public uint? DriverId { get; set; }
+        public int StatusId { get; set; }
+        public int? DriverId { get; set; }
         public string StartAddress { get; set; }
         public string StartCity { get; set; }
         public string StartState { get; set; }
@@ -33,8 +33,8 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
         public DateTime? Approved { get; set; }
-        public uint? ApprovedById { get; set; }
-        public uint? CancelReasonId { get; set; }
+        public int? ApprovedById { get; set; }
+        public int? CancelReasonId { get; set; }
 
         public Appointment Appointment { get; set; }
         public Volunteer Driver { get; set; }

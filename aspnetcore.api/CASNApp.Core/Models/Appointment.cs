@@ -109,7 +109,7 @@ namespace CASNApp.Core.Models
         /// </summary>
         [Required]
         [DataMember(Name="appointmentTypeId")]
-        public uint? AppointmentTypeId { get; set; }
+        public int? AppointmentTypeId { get; set; }
 
         /// <summary>
         /// Gets or Sets AppointmentType

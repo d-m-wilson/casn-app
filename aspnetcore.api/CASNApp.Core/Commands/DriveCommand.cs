@@ -14,7 +14,7 @@ namespace CASNApp.Core.Commands
             this.dbContext = dbContext;
         }
 
-        public async Task<CommandResult<Models.Drive>> CancelDriveAsync(uint driveId, uint cancelReasonId)
+        public async Task<CommandResult<Models.Drive>> CancelDriveAsync(int driveId, int cancelReasonId)
         {
             var driveQuery = new DriveQuery(dbContext);
             var drive = await driveQuery.GetDriveAsync(driveId);

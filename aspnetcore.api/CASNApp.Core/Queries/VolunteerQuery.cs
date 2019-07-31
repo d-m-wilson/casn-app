@@ -63,7 +63,7 @@ namespace CASNApp.Core.Queries
             return null;
         }
 
-        public Volunteer GetActiveDriverById(uint volunteerId, bool readOnly)
+        public Volunteer GetActiveDriverById(int volunteerId, bool readOnly)
         {
             var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
                 .Where(v => v.Id == volunteerId && v.IsActive && (v.IsDriver || v.IsDispatcher))

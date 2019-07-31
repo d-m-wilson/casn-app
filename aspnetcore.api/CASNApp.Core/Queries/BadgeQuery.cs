@@ -17,7 +17,7 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-        public Task<List<BadgeDTO>> GetBadgesForVolunteerIdAsync(uint volunteerId, bool readOnly)
+        public Task<List<BadgeDTO>> GetBadgesForVolunteerIdAsync(int volunteerId, bool readOnly)
         {
             var result = from b in (readOnly ? dbContext.Badge.AsNoTracking() : dbContext.Badge)
                          where b.IsActive
