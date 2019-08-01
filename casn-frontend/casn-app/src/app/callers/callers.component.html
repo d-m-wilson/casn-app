@@ -73,7 +73,9 @@
       </mat-form-field>
       <mat-checkbox formControlName="isMinor"
                     aria-label="Minor">Minor?</mat-checkbox>
-      <mat-form-field appearance="outline">
+
+
+      <!-- <mat-form-field appearance="outline">
         <mat-label>Preferred Language</mat-label>
         <mat-select placeholder="Language"
                     aria-label="Preferred Language"
@@ -83,7 +85,27 @@
           </mat-option>
         </mat-select>
         <mat-error *ngIf="f.preferredLanguage.errors?.required">This field is required.</mat-error>
+      </mat-form-field> -->
+
+      <mat-form-field appearance="outline">
+        <mat-label>Preferred Language</mat-label>
+        <input type="text"
+               placeholder="Language"
+               aria-label="Preferred Language"
+               matInput
+               formControlName="preferredLanguage"
+               [matAutocomplete]="preferredLanguageAuto">
+        <mat-autocomplete autoActiveFirstOption 
+                          #preferredLanguageAuto="matAutocomplete">
+          <mat-option *ngFor="let l of filteredLanguages | async" [value]="l">
+            {{ l }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="f.preferredLanguage.errors?.required">This field is required.</mat-error>
       </mat-form-field>
+
+
+
       <mat-form-field appearance="outline">
         <mat-label>Preferred Contact Method</mat-label>
         <mat-select placeholder="Contact Method"

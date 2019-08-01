@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-callers',
@@ -25,13 +26,19 @@ export class CallersComponent implements OnInit {
                private location: Location,
                private router: Router ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    // Set up filtering for preferredLanguage autocomplete
+    this.filteredLanguages = this.f.preferredLanguage.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterLanguage(value))
+    );
+  }
 
   /*********************************************************************
                                 Form
   **********************************************************************/
-  // TODO: Remove French? Was used bc dummy data includes it.
-  languages: string[] = ['English', 'Spanish', 'French', 'Other'];
+  languages: string[] = ['English', 'Spanish', 'French', 'Vietnamese'];
+  filteredLanguages: Observable<string[]>;
   contactMethods: any[] = [ {value: 1, displayValue: 'Text'},
                             {value: 2, displayValue: 'Call'},
                             {value: 3, displayValue: 'Email'} ];
@@ -64,6 +71,11 @@ export class CallersComponent implements OnInit {
       // TODO: There should be an update caller endpoint
       this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
     }
+  }
+
+  filterLanguage(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.languages.filter(l => l.toLowerCase().indexOf(filterValue) === 0);
   }
 
   /*********************************************************************
