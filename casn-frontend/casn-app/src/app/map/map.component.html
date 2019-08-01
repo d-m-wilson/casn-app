@@ -20,6 +20,7 @@
                       (markerClick)="showPolylinesForMarker(r)"
                       [animation]="'DROP'">
             <agm-snazzy-info-window [closeWhenOthersOpen]="true"
+                                    [maxHeight]="250"
                                     (afterClose)="hidePolylinesForMarker(r)">
               <ng-template>
                 Start address:
@@ -66,6 +67,7 @@
                       (markerClick)="showPolylinesForMarker(r)"
                       [animation]="'DROP'">
             <agm-snazzy-info-window [closeWhenOthersOpen]="true"
+                                    [maxHeight]="250"
                                     (afterClose)="hidePolylinesForMarker(r)">
               <ng-template>
                 Start Address:
@@ -109,7 +111,8 @@
                     [latitude]="c.latitude"
                     [longitude]="c.longitude"
                     [animation]="'DROP'">
-          <agm-snazzy-info-window [closeWhenOthersOpen]="true">
+          <agm-snazzy-info-window [closeWhenOthersOpen]="true"
+                                  [maxHeight]="250">
             <ng-template>
               <strong>{{ c.name }}</strong>
               <br/>
