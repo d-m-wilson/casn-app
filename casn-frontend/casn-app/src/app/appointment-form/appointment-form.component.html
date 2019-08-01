@@ -61,7 +61,9 @@
                    matInput
                    placeholder="Choose a date"
                    formControlName="appointmentDate">
-            <owl-date-time [pickerMode]="'dialog'" #dt5></owl-date-time>
+            <owl-date-time [pickerMode]="'dialog'"
+                           [hour12Timer]="true"
+                           #dt5></owl-date-time>
           </mat-form-field>
           <div class="form-actions">
             <button mat-raised-button
