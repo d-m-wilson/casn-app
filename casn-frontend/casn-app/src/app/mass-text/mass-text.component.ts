@@ -27,6 +27,7 @@ const PERSON_DATA: UserContact[] = [
 })
 export class MassTextComponent implements OnInit {
   message: string = '';
+  showConfirmationModal: boolean = false;
 
   constructor() { }
 
@@ -61,10 +62,7 @@ export class MassTextComponent implements OnInit {
   }
 
   sendMessage() {
-    const recipient = this.selection.selected.length + ' recipients';
-    if(confirm(`Send message to ${recipient}?`)) {
-      console.log("--Logic to send msg goes here")
-    }
+    console.log("--Logic to send msg goes here")
   }
 
 }
