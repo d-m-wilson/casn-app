@@ -43,18 +43,6 @@ namespace CASNApp.Core.Models
         public long? CallerId { get; set; }
 
         /// <summary>
-        /// Gets or Sets CallerIdentifier
-        /// </summary>
-        [DataMember(Name= "callerIdentifier")]
-        public string CallerIdentifier { get; set; }
-
-        /// <summary>
-        /// Gets or Sets CallerNote
-        /// </summary>
-        [DataMember(Name= "callerNote")]
-        public string CallerNote { get; set; }
-
-        /// <summary>
         /// Gets or Sets ClinicId
         /// </summary>
         [Required]

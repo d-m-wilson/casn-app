@@ -22,5 +22,16 @@
             Updated = e.Updated;
         }
 
+        public void Redact()
+        {
+            CiviContactId = null;
+            FirstName = "";
+            LastName = "";
+            Note = null;
+            Phone = "";
+            Created = null;
+            Updated = null;
+        }
+
     }
 }

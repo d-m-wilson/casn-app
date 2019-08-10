@@ -36,9 +36,11 @@ namespace CASNApp.API.Controllers
     {
         private readonly Core.Entities.casn_appContext dbContext;
         private readonly ILoggerFactory loggerFactory;
+        private readonly ILogger<DispatcherApiController> logger;
         private readonly string googleApiKey;
         private readonly double vagueLocationMinOffset;
         private readonly double vagueLocationMaxOffset;
+        private readonly bool twilioIsEnabled;
 		private readonly string twilioAccountSID;
 		private readonly string twilioAuthKey;
 		private readonly string twilioPhoneNumber;
@@ -50,7 +52,9 @@ namespace CASNApp.API.Controllers
             vagueLocationMinOffset = double.Parse(configuration[Core.Constants.VagueLocationMinOffset]);
             vagueLocationMaxOffset = double.Parse(configuration[Core.Constants.VagueLocationMaxOffset]);
             this.loggerFactory = loggerFactory;
-			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
+            logger = loggerFactory.CreateLogger<DispatcherApiController>();
+            twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
+            twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
 		}
@@ -286,9 +290,19 @@ namespace CASNApp.API.Controllers
                 driveFrom.Created = driveFromEntity.Created;
             }
 
-			//send initial text message to drivers
-			TwilioCommand newSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
-			newSMS.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown);
+            if (twilioIsEnabled)
+            {
+                try
+                {
+                    //send initial text message to drivers
+                    var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+                    twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddAppointment)}(): Exception");
+                }
+            }
 			
             return new ObjectResult(appointmentDTO);
         }

@@ -129,10 +129,16 @@ namespace CASNApp.API.Controllers
 
                 var apptDto = new AppointmentDTO
                 {
+                    Caller = new Core.Models.Caller(a.Caller),
                     Appointment = new Core.Models.Appointment(a),
                     DriveTo = driveTo == null ? null : new Core.Models.Drive(driveTo),
                     DriveFrom = driveFrom == null ? null : new Core.Models.Drive(driveFrom)
                 };
+
+                if (!volunteer.IsDispatcher)
+                {
+                    apptDto.Redact(volunteer);
+                }
 
                 return apptDto;
             }).ToList();
@@ -208,10 +214,16 @@ namespace CASNApp.API.Controllers
 
             var apptDTO = new AppointmentDTO
             {
+                Caller = new Core.Models.Caller(apptEntity.Caller),
                 Appointment = new Core.Models.Appointment(apptEntity),
                 DriveTo = driveTo == null ? null : new Core.Models.Drive(driveTo),
                 DriveFrom = driveFrom == null ? null : new Core.Models.Drive(driveFrom)
             };
+
+            if (!volunteer.IsDispatcher)
+            {
+                apptDTO.Redact(volunteer);
+            }
 
             return Ok(apptDTO);
 
