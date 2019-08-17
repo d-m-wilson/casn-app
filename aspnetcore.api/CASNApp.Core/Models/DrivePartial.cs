@@ -119,7 +119,7 @@ namespace CASNApp.Core.Models
             {
                 StartLatitude = appointment.PickupVagueLatitude;
                 StartLongitude = appointment.PickupVagueLongitude;
-                StartAddress = "";
+                StartAddress = appointment.PickupLocationVague;
                 StartCity = "";
                 StartState = "";
                 StartPostalCode = "";
@@ -128,7 +128,7 @@ namespace CASNApp.Core.Models
             {
                 EndLatitude = appointment.DropoffVagueLatitude;
                 EndLongitude = appointment.DropoffVagueLongitude;
-                EndAddress = "";
+                EndAddress = appointment.DropoffLocationVague;
                 EndCity = "";
                 EndState = "";
                 EndPostalCode = "";
