@@ -9,21 +9,24 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace CASNApp.Core.Models
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
     [DataContract]
     public partial class AppointmentDTO : IEquatable<AppointmentDTO>
-    { 
+    {
+        /// <summary>
+        /// Gets or Sets Caller
+        /// </summary>
+        [DataMember(Name = "caller")]
+        public Caller Caller { get; set; }
+
         /// <summary>
         /// Gets or Sets Appointment
         /// </summary>
@@ -88,7 +91,12 @@ namespace CASNApp.Core.Models
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
+            return
+                (
+                    Caller == other.Caller ||
+                    Caller != null &&
+                    Caller.Equals(other.Caller)
+                ) &&
                 (
                     Appointment == other.Appointment ||
                     Appointment != null &&
@@ -116,6 +124,8 @@ namespace CASNApp.Core.Models
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
+                    if (Caller != null)
+                    hashCode = hashCode * 59 + Caller.GetHashCode();
                     if (Appointment != null)
                     hashCode = hashCode * 59 + Appointment.GetHashCode();
                     if (DriveTo != null)

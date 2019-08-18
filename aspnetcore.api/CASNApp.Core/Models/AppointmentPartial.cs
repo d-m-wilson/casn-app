@@ -14,10 +14,9 @@
             DispatcherId = a.DispatcherId;
             DropoffLocationVague = a.DropoffLocationVague;
             DropoffVagueLatitude = a.DropoffVagueLatitude;
+            DropoffVagueLongitude = a.DropoffVagueLongitude;
             Id = a.Id;
             CallerId = a.CallerId;
-            CallerIdentifier = a.Caller.CallerIdentifier;
-            CallerNote = a.Caller.Note;
             PickupLocationVague = a.PickupLocationVague;
             PickupVagueLatitude = a.PickupVagueLatitude;
             PickupVagueLongitude = a.PickupVagueLongitude;
@@ -48,6 +47,10 @@
             }
 
             return true;
+        }
+
+        public void Redact()
+        {
         }
 
     }

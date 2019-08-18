@@ -103,5 +103,42 @@ namespace CASNApp.Core.Models
             }
         }
 
+        public void Redact(Appointment appointment)
+        {
+            if (appointment == null)
+            {
+                throw new ArgumentNullException(nameof(appointment));
+            }
+
+            if (appointment.Id != AppointmentId)
+            {
+                throw new ArgumentException("Appointment ID mismatch", nameof(appointment));
+            }
+
+            if (Direction == DirectionToClinic)
+            {
+                StartLatitude = appointment.PickupVagueLatitude;
+                StartLongitude = appointment.PickupVagueLongitude;
+                StartAddress = appointment.PickupLocationVague;
+                StartCity = "";
+                StartState = "";
+                StartPostalCode = "";
+            }
+            else if (Direction == DirectionFromClinic)
+            {
+                EndLatitude = appointment.DropoffVagueLatitude;
+                EndLongitude = appointment.DropoffVagueLongitude;
+                EndAddress = appointment.DropoffLocationVague;
+                EndCity = "";
+                EndState = "";
+                EndPostalCode = "";
+            }
+            else
+            {
+                string errorMessage = $"Invalid value for {nameof(Drive)}.{nameof(Direction)}: {Direction}";
+                throw new InvalidOperationException(errorMessage);
+            }
+        }
+
     }
 }

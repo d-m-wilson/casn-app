@@ -9,15 +9,13 @@
  */
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace CASNApp.Core.Models
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
