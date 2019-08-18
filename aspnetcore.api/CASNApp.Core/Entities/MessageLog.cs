@@ -11,5 +11,7 @@ namespace CASNApp.Core.Entities
 		public string Subject { get; set; }
 		public string Body { get; set; }
 		public DateTime DateSent { get; set; }
+		public int? AppointmentId { get; set; }
+		public int? VolunteerId { get; set; }
 	}
 }

@@ -63,21 +63,17 @@ namespace CASNApp.TextMessageManager
 			TwilioCommand.MessageType messageType = TwilioCommand.MessageType.Unknown;
 			if (args.Length > 0)
 			{
-				int value;
-				if (int.TryParse(args[0], out value))
+				switch (args[0].ToUpper().Substring(0,1))
 				{
-					switch (value)
-					{
-						case 1:
-							messageType = TwilioCommand.MessageType.FriendlyReminder;
-							break;
-						case 2:
-							messageType = TwilioCommand.MessageType.SeriousRequest;
-							break;
-						case 3:
-							messageType = TwilioCommand.MessageType.DesperatePlea;
-							break;
-					}
+					case "F":
+						messageType = TwilioCommand.MessageType.FriendlyReminder;
+						break;
+					case "S":
+						messageType = TwilioCommand.MessageType.SeriousRequest;
+						break;
+					case "D":
+						messageType = TwilioCommand.MessageType.DesperatePlea;
+						break;
 				}
 			}
 
@@ -94,18 +90,28 @@ namespace CASNApp.TextMessageManager
 				//get a list of all the appointments with open drives
 				AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
 				var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
+				loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
 
-				//loop thru the appointments and send the assoicated text message
-				if (openAppointments != null && openAppointments.Count > 0)
+				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
 				{
-					loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
-					DriveQuery driveQuery = new DriveQuery(dbContext);
-					TwilioCommand newSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
-					foreach (Appointment appointment in openAppointments)
+					//send out a single reminder message for all open appointments
+					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					reminderSMS.SendAppointmentReminderMessage(openAppointments, messageType);
+				}
+				else
+				{
+					//loop thru the appointments and send the assoicated text message
+					if (openAppointments != null && openAppointments.Count > 0)
 					{
-						Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
-						Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
-						newSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType);
+						DriveQuery driveQuery = new DriveQuery(dbContext);
+						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+						foreach (Appointment appointment in openAppointments)
+						{
+							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
+							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
+							if (driveTo != null || driveFrom != null)
+								appointmentSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType);
+						}
 					}
 				}
 			}

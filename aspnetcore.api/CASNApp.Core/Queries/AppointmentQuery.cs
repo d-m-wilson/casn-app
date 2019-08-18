@@ -18,7 +18,9 @@ namespace CASNApp.Core.Queries
 		public List<Appointment> GetAllAppointmentsWithOpenDrives(bool readOnly)
 		{
 			var openAppointmentIds = (readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive)
-				.Where(d => d.IsActive && d.StatusId == Models.Drive.StatusOpen)
+				.Where(d => d.IsActive && d.StatusId == Models.Drive.StatusOpen 
+						&& d.StartLatitude != null && d.StartLongitude != null
+						&& d.EndLatitude != null && d.EndLongitude != null)
 				.Select(d => d.AppointmentId)
 				.Distinct()
 				.ToList();

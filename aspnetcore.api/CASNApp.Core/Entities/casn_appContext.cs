@@ -439,7 +439,9 @@ namespace CASNApp.Core.Entities
             {
                 entity.HasIndex(e => e.DateSent);
 
-                entity.Property(e => e.Body)
+				entity.Property(e => e.AppointmentId);
+
+				entity.Property(e => e.Body)
                     .IsRequired()
                     .HasMaxLength(2000);
 
@@ -452,12 +454,16 @@ namespace CASNApp.Core.Entities
                     .IsRequired()
                     .HasMaxLength(20);
 
-                entity.Property(e => e.Subject).HasMaxLength(500);
+                entity.Property(e => e.Subject)
+					.HasMaxLength(500);
 
                 entity.Property(e => e.ToPhone)
                     .IsRequired()
                     .HasMaxLength(20);
-            });
+
+				entity.Property(e => e.VolunteerId)
+					.IsRequired();
+			});
 
             modelBuilder.Entity<Volunteer>(entity =>
             {

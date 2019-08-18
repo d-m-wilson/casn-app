@@ -6,6 +6,8 @@
     [Subject] NVARCHAR(500) NULL,
     [Body] NVARCHAR(2000) NOT NULL,
     [DateSent] DATETIME NOT NULL CONSTRAINT [DF_MessageLog_DateSent] DEFAULT GETUTCDATE(),
+    [AppointmentId] INT NULL, 
+    [VolunteerId] INT NULL, 
     CONSTRAINT [PK_MessageLog] PRIMARY KEY CLUSTERED ([Id] ASC)
 )
 GO
