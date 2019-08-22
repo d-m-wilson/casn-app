@@ -26,19 +26,17 @@
             <mat-list-item *ngIf="ride.caller.phone">
               <mat-icon mat-list-icon>phone</mat-icon>
               <h4 mat-line>
-                <a href="tel:{{ ride.caller.phone }}">
+                <a href="sms:+1{{ ride.caller.phone }}">
                   {{ ride.caller.phone | phone }}
                 </a>
               </h4>
             </mat-list-item>
-            <!-- TODO: Fix dummy conditional -->
-            <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English' || true">
+            <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English'">
               <mat-icon mat-list-icon>speaker_notes</mat-icon>
               <h4 mat-line>Preferred Language</h4>
               <p mat-line>{{ ride.caller.preferredLanguage }}</p>
             </mat-list-item>
-            <!-- TODO: Fix dummy conditional -->
-            <mat-list-item *ngIf="ride.caller.minor || true">
+            <mat-list-item *ngIf="ride.caller.minor">
               <mat-icon mat-list-icon>report</mat-icon>
               <h4 mat-line>Caller is a minor</h4>
             </mat-list-item>
