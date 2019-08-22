@@ -35,46 +35,39 @@
           <mat-card-subtitle>
             Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
-          <a *ngIf="!ride[driveType].startAddress || !isDriveTo; else vagueLocation"
-             [href]="startAddressGoogleMapLink"
-             target="_blank">
+          <!-- TODO: Ask about map link -->
+          <a [href]="startAddressGoogleMapLink" target="_blank">
             <address>
               {{ ride[driveType].startAddress }}<br>
-              {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+              {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
             </address>
           </a>
-          <ng-template #vagueLocation>
-            {{ isDriveTo ? ride.appointment.pickupLocationVague : ride.appointment.dropoffLocationVague }}
-          </ng-template>
         </mat-card>
         <!--=========== Drop Off Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
             Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
-          <a *ngIf="!ride[driveType].endAddress || isDriveTo; else vagueLocation"
-             [href]="endAddressGoogleMapLink"
-             target="_blank">
+          <a [href]="endAddressGoogleMapLink" target="_blank">
             <address>
               {{ ride[driveType].endAddress }}<br>
-              {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+              {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
             </address>
           </a>
         </mat-card>
         <!--=========== Volunteers ============-->
-        <!-- TODO: Ask if drivers should be able to see volunteers -->
-        <mat-card *ngIf="volunteers && !driveIsApproved" class="mt candy-card">
+        <mat-card *ngIf="volunteers && !driveIsApproved && userRole === '1'" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
-            <button *ngIf="!driveIsApproved && userRole === '1'"
+            <button *ngIf="!driveIsApproved"
                     type="button"
                     mat-raised-button
                     (click)="handleApproveClick(v.id)"
                     color="primary">Approve</button>
           </div>
         </mat-card>
-        <mat-card *ngIf="driveIsApproved" class="mt candy-card">
+        <mat-card *ngIf="driveIsApproved && userRole === '1'" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <ng-container *ngFor="let v of volunteers">
             <div *ngIf="v.volunteerId === ride[driveType].driverId"
