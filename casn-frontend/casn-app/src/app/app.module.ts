@@ -45,6 +45,7 @@ import { ApiModule } from './api/api.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 /* Custom Directives & Pipes */
 import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
+import { PhonePipe } from './pipes/phone.pipe';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -75,7 +76,8 @@ import { MassTextComponent } from './mass-text/mass-text.component';
     UserStatsComponent,
     LeaderboardComponent,
     ErrorPageComponent,
-    MassTextComponent
+    MassTextComponent,
+    PhonePipe
   ],
   imports: [
     NgxMaskModule.forRoot(),

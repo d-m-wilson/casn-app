@@ -14,14 +14,35 @@
           <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
         </mat-card>
         <!--=========== Caller Info ============-->
-        <mat-expansion-panel expanded class="mt"
-                             *ngIf="ride.caller.isMinor ||
-                                    ride.caller.preferredLanguage !== 'English'">
+        <mat-expansion-panel expanded class="mt">
           <mat-expansion-panel-header>
-            <mat-panel-title>Special Information</mat-panel-title>
+            <mat-panel-title>Caller Information</mat-panel-title>
           </mat-expansion-panel-header>
-          <p *ngIf="ride.caller.isMinor">Caller is a minor</p>
-          <p *ngIf="ride.caller.preferredLanguage !== 'English'">Caller's preferred language is {{ ride.caller.preferredLanguage }}</p>
+          <mat-list>
+            <mat-list-item *ngIf="ride.caller.firstName">
+              <mat-icon mat-list-icon>account_circle</mat-icon>
+              <h4 mat-line>{{ ride.caller.firstName }} {{ ride.caller.lastName }}</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="ride.caller.phone">
+              <mat-icon mat-list-icon>phone</mat-icon>
+              <h4 mat-line>
+                <a href="tel:{{ ride.caller.phone }}">
+                  {{ ride.caller.phone | phone }}
+                </a>
+              </h4>
+            </mat-list-item>
+            <!-- TODO: Fix dummy conditional -->
+            <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English' || true">
+              <mat-icon mat-list-icon>speaker_notes</mat-icon>
+              <h4 mat-line>Preferred Language</h4>
+              <p mat-line>{{ ride.caller.preferredLanguage }}</p>
+            </mat-list-item>
+            <!-- TODO: Fix dummy conditional -->
+            <mat-list-item *ngIf="ride.caller.minor || true">
+              <mat-icon mat-list-icon>report</mat-icon>
+              <h4 mat-line>Caller is a minor</h4>
+            </mat-list-item>
+          </mat-list>
         </mat-expansion-panel>
         <!--=========== Caller Notes ============-->
         <mat-expansion-panel expanded class="mt" *ngIf="ride.caller.note">
