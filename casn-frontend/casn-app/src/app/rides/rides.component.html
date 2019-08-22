@@ -44,7 +44,7 @@
               {{ r.appointment.appointmentDate | date:'d' }}
             </div>
             <div>
-              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
+              <span class="bolder">{{ r.caller.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
               <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}}-{{ getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId) | date:'shortTime' }} <br>{{ clinics[r.appointment?.clinicId].name }}</span> <br>
             </div>
           </mat-card>

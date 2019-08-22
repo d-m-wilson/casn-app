@@ -5,7 +5,7 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
+    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
@@ -13,17 +13,27 @@
           <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
           <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
         </mat-card>
+        <!--=========== Caller Info ============-->
+        <mat-expansion-panel expanded class="mt"
+                             *ngIf="ride.caller.isMinor ||
+                                    ride.caller.preferredLanguage !== 'English'">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Special Information</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p *ngIf="ride.caller.isMinor">Caller is a minor</p>
+          <p *ngIf="ride.caller.preferredLanguage !== 'English'">Caller's preferred language is {{ ride.caller.preferredLanguage }}</p>
+        </mat-expansion-panel>
         <!--=========== Caller Notes ============-->
-        <mat-expansion-panel expanded class="mt" *ngIf="ride.appointment.callerNote">
+        <mat-expansion-panel expanded class="mt" *ngIf="ride.caller.note">
           <mat-expansion-panel-header>
             <mat-panel-title>Notes from Dispatcher</mat-panel-title>
           </mat-expansion-panel-header>
-          <p>{{ ride.appointment.callerNote }}</p>
+          <p>{{ ride.caller.note }}</p>
         </mat-expansion-panel>
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Pick up caller {{ ride.appointment.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
+            Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
           <a *ngIf="!ride[driveType].startAddress || !isDriveTo; else vagueLocation"
              [href]="startAddressGoogleMapLink"
