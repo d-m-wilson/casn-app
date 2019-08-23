@@ -54,8 +54,10 @@
           <mat-card-subtitle>
             Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
-          <!-- TODO: Ask about map link -->
-          <a [href]="startAddressGoogleMapLink" target="_blank">
+          <!-- NOTE: Conditional tests if real address available -->
+          <a *ngIf="ride[driveType].startPostalCode; else startAddress"
+             [href]="startAddressGoogleMapLink"
+             target="_blank">
             <address>
               {{ ride[driveType].startAddress }}<br>
               {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
@@ -67,7 +69,10 @@
           <mat-card-subtitle>
             Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
-          <a [href]="endAddressGoogleMapLink" target="_blank">
+          <!-- NOTE: Conditional tests if real address available -->
+          <a *ngIf="ride[driveType].endPostalCode; else endAddress"
+             [href]="endAddressGoogleMapLink"
+             target="_blank">
             <address>
               {{ ride[driveType].endAddress }}<br>
               {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
@@ -107,7 +112,8 @@
               <agm-snazzy-info-window>
                 <ng-template>
                   Start Address:
-                  <a *ngIf="ride[driveType].startAddress; else vagueLocation"
+                  <!-- NOTE: Conditional tests if real address available -->
+                  <a *ngIf="ride[driveType].startPostalCode; else startAddress"
                      [href]="startAddressGoogleMapLink"
                      target="_blank">
                     <address>{{ ride[driveType].startAddress }}</address>
@@ -121,7 +127,8 @@
               <agm-snazzy-info-window>
                 <ng-template>
                   End Address:
-                  <a *ngIf="ride[driveType].endAddress; else vagueLocation"
+                  <!-- NOTE: Conditional tests if real address available -->
+                  <a *ngIf="ride[driveType].endPostalCode; else endAddress"
                      [href]="endAddressGoogleMapLink"
                      target="_blank">
                     <address>{{ ride[driveType].endAddress }}</address>
@@ -164,3 +171,19 @@
                         (closeCancelDriveModalClick)="hideCancelDriveModal()"
                         (closeCancelDriveModalAndUpdateClick)="hideCancelDriveModal(true)"
                         [driveId]="driveToCancel"></app-cancel-drive-modal>
+
+
+
+<ng-template #startAddress>
+  <address>
+    {{ ride[driveType].startAddress }}<br>
+    {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+  </address>
+</ng-template>
+
+<ng-template #endAddress>
+  <address>
+    {{ ride[driveType].endAddress }}<br>
+    {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+  </address>
+</ng-template>
