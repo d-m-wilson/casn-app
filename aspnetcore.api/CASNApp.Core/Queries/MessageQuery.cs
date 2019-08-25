@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CASNApp.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,8 @@ namespace CASNApp.Core.Queries
 		{
 			var result = (readOnly ? dbContext.Message.AsNoTracking() : dbContext.Message)
 				.Where(m => m.MessageType == messageType)
-				.SingleOrDefault();
+				.OrderBy(m => Guid.NewGuid())
+				.FirstOrDefault();
 			return result;
 		}
 

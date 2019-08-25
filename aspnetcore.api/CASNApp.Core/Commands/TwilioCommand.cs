@@ -131,7 +131,6 @@ namespace CASNApp.Core.Commands
 				Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
 				ClinicQuery clinicQuery = new ClinicQuery(dbContext);
 				Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
-				string messageText = message.MessageText.Replace("{clinic}", clinic.Name).Replace("{vagueTo}", appointment.PickupLocationVague).Replace("{vagueFrom}", appointment.DropoffLocationVague).Replace("{timeDate}", appointment.AppointmentDate.ToString());
 
 				//select the drivers 
 				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
@@ -142,6 +141,14 @@ namespace CASNApp.Core.Commands
 				{
 					if (driver.MobilePhone != null)
 					{
+						//build the outbound message text
+						string messageText = message.MessageText.Replace("{clinic}", clinic.Name)
+						.Replace("{vagueTo}", appointment.PickupLocationVague)
+						.Replace("{vagueFrom}", appointment.DropoffLocationVague)
+						.Replace("{timeDate}", appointment.AppointmentDate.ToString())
+						.Replace("{volunteerFirstName}", driver.FirstName)
+						.Replace("{dayOfTheWeek}",appointment.AppointmentDate.DayOfWeek.ToString());
+						
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
 						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
 							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
