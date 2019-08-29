@@ -52,6 +52,9 @@ export class RidesComponent implements OnInit {
     this.getClinics();
     this.getRides();
     this.getDriveStatuses();
+
+    const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters"));
+    if(showDateFilters) this.toggleDateFilters();
   }
 
   /*********************************************************************
@@ -134,6 +137,7 @@ export class RidesComponent implements OnInit {
 
   toggleDateFilters(): void {
     this.showDateFilters = !this.showDateFilters;
+    localStorage.setItem("showDateFilters", JSON.stringify(this.showDateFilters));
     // If a date filter was applied, remove it.
     this.activeDate = null;
     this.ridesToDisplay = this.rides;
