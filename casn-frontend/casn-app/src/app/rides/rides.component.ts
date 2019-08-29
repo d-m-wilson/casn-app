@@ -216,4 +216,13 @@ export class RidesComponent implements OnInit {
     return new Date(date.getTime() + minutes*60000);
   }
 
+  swipe(action: string) {
+    if(!this.showDateFilters && action === 'swiperight') {
+      this.toggleDateFilters();
+    }
+    if(this.showDateFilters && action === 'swipeleft') {
+      this.toggleDateFilters();
+    }
+}
+
 }

@@ -1,4 +1,6 @@
-<ng-container *ngIf="rides && clinics && apptTypes">
+<ng-container *ngIf="rides && clinics && apptTypes"
+              (swipeleft)="swipe($event.type)"
+              (swiperight)="swipe($event.type)">
   <!--********************************************************************
                             Date Selection Sidebar
   **********************************************************************-->
