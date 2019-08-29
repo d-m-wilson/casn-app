@@ -156,7 +156,7 @@
               color="accent"
               class="mr">Go Back</button>
       <button type="button"
-              *ngIf="ride[driveType].statusId !== 3"
+              *ngIf="userRole === '1' && ride[driveType].statusId !== 3"
               mat-button
               (click)="handleCancelDriveClick()"
               color="accent">Cancel This Drive</button>
