@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1566518926708,
+  "timestamp": 1567101003694,
   "index": "/app/index.html",
   "assetGroups": [
     {
@@ -10,7 +10,7 @@
       "urls": [
         "/app/favicon.ico",
         "/app/index.html",
-        "/app/main.434c1e98a185f204cbc9.js",
+        "/app/main.6ed8e6cd146482404941.js",
         "/app/polyfills-es5.6a9f5fde365a77ab7943.js",
         "/app/polyfills.eb122b81ceab8935e738.js",
         "/app/runtime.1375ccab199dabc5ab5a.js",
@@ -155,8 +155,8 @@
     "/app/assets/splashscreens/iphonexsmax_splash.png": "74530dd676947fc76838265720d9599dd664c44a",
     "/app/blank_profile_pic.f5ef4263a9c36adac595.png": "63d727a3e1bd82b55be329a0f47698e244899f89",
     "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/app/index.html": "5cefcf0ecf980f96ac1c17b3438cef5b9880a99c",
-    "/app/main.434c1e98a185f204cbc9.js": "9ca85a3213cf79fa501de66fe4370f3d612998c1",
+    "/app/index.html": "8e1630cae339aa67a3a06f1a5862f1e37b6be21f",
+    "/app/main.6ed8e6cd146482404941.js": "2bf05825fb9e0ce78749528417eb2d72d7956e45",
     "/app/polyfills-es5.6a9f5fde365a77ab7943.js": "934e86a8280c34ce3ce10f75db1de79822362f1e",
     "/app/polyfills.eb122b81ceab8935e738.js": "64fb64b29afde90ab0c58514c0cf754f2d092bc0",
     "/app/runtime.1375ccab199dabc5ab5a.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
