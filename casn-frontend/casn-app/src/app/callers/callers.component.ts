@@ -40,8 +40,7 @@ export class CallersComponent implements OnInit {
   languages: string[] = ['English', 'Spanish', 'French', 'Vietnamese'];
   filteredLanguages: Observable<string[]>;
   contactMethods: any[] = [ {value: 1, displayValue: 'Text'},
-                            {value: 2, displayValue: 'Call'},
-                            {value: 3, displayValue: 'Email'} ];
+                            {value: 2, displayValue: 'Call'} ];
 
   callerIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
 
@@ -50,8 +49,7 @@ export class CallersComponent implements OnInit {
                         Validators.maxLength(6)]],
     firstName: ['', Validators.required],
     lastName: [''],
-    phone: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")], // TODO: Require either phone OR email
-    // email: [''],
+    phone: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
     isMinor: [false, Validators.required],
     preferredLanguage: ['English', Validators.required],
     preferredContactMethod: [1, Validators.required],
