@@ -14,7 +14,7 @@
           <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
         </mat-card>
         <!--=========== Caller Info ============-->
-        <mat-expansion-panel expanded class="mt">
+        <mat-expansion-panel expanded class="mt candy-expansion-panel">
           <mat-expansion-panel-header>
             <mat-panel-title>Caller Information</mat-panel-title>
           </mat-expansion-panel-header>
@@ -43,7 +43,9 @@
           </mat-list>
         </mat-expansion-panel>
         <!--=========== Caller Notes ============-->
-        <mat-expansion-panel expanded class="mt" *ngIf="ride.caller.note">
+        <mat-expansion-panel expanded
+                             class="mt candy-expansion-panel"
+                             *ngIf="ride.caller.note">
           <mat-expansion-panel-header>
             <mat-panel-title>Notes from Dispatcher</mat-panel-title>
           </mat-expansion-panel-header>
