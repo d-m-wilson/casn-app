@@ -28,9 +28,9 @@ export class RideDetailModalComponent implements OnInit {
 
   ngOnInit() {
     this.userRole = localStorage.getItem('userRole');
+    if(this.userRole === '1') this.getVolunteers();
     this.getAppointmentTypes();
     this.getClinics();
-    this.getVolunteers();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
   }
 
