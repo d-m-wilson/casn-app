@@ -67,13 +67,12 @@ p {
 .date-sidebar {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 155px);
+  height: calc(100vh - 100px);
   width: 65px;
-  margin-top: 55px;
 }
 
 .date-card {
-  background-color: $primary-color-dark;
+  background-color: $primary-color;
   color: white;
   border: 1px solid $border-color;
   display: flex;
@@ -143,6 +142,10 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  img {
+    width: 100%;
+  }
 }
 
 .appointment-card {
@@ -187,12 +190,6 @@ p {
 /********************************************************************
                       Footer - Settings/Controls
 ********************************************************************/
-.fab {
-  position: fixed;
-  bottom: 50px;
-  right: 10px;
-}
-
 .fixed-footer {
   display: flex;
   align-items: center;
@@ -212,4 +209,107 @@ p {
   display: flex;
   justify-content: space-between;
   padding-top: 1rem;
+}
+
+/********************************************************************
+                      Filter FAB Menu
+********************************************************************/
+.fab-container {
+  // height: 100vh;
+  // width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .phone {
+    height: calc(100vh - 95px);
+    // width: 15rem;
+    // background-color: $background-color;
+    // border-radius: 0.5rem;
+    // box-shadow: 0 5px 15px -9px darken($background-color, 27%);
+    position: relative;
+    box-sizing: content-box;
+
+    label {
+      content: "";
+      height: 3rem;
+      width: 3rem;
+      background-color: $primary-color-dark;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transform: rotate(45deg);
+      transition: cubic-bezier(0.48, 0.52, 0.62, 1.25) 0.3s;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .submenu {
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      opacity: 0;
+      transition: cubic-bezier(0.48, 0.52, 0.62, 1.25) 0.3s;
+      z-index: 1;
+
+      &:hover {
+        cursor: pointer;
+      }
+      svg {
+        height: 1.2rem;
+        width: 1.2rem;
+      }
+      &:first-of-type {
+        background-color: $primary-color;
+        transition-delay: 0.2s;
+      }
+      &:nth-of-type(2) {
+        background-color: $border-color;
+        transition-delay: 0.1s;
+      }
+      &:last-of-type {
+        background-color: $accent-color-1;
+      }
+    }
+
+    #trigger {
+      display: none;
+
+      &:checked {
+        & ~ label {
+          transform: rotate(0deg);
+        }
+        & ~ .submenu {
+          opacity: 1;
+          transition: 0.3s cubic-bezier(0.48, 0.52, 0.62, 1.25);
+          &:first-of-type {
+            transform: translateY(-4rem);
+          }
+          &:nth-of-type(2) {
+            transform: translate(-3rem, -2.9rem);
+            transition-delay: 0.1s;
+          }
+          &:last-of-type {
+            transform: translateX(-4rem);
+            transition-delay: 0.2s;
+          }
+        }
+      }
+    }
+  }
 }
