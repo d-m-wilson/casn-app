@@ -104,7 +104,9 @@ p {
 ********************************************************************/
 .ride-container {
   width: 100%;
-  height: calc(100vh - 102px); /* Header: 56px, Footer: 46px */
+  // Fallback for browsers that do not support custom properties
+  height: calc(100vh - 75px); // header-55px, footer-20px
+  height: calc(var(--vh, 1vh) * 100 - 75px);
   overflow: auto;
 }
 
@@ -207,7 +209,7 @@ p {
   bottom: 0;
   z-index: 20;
   background-color: $primary-color;
-  opacity: 0.8;
+  // opacity: 0.8;
   color: white;
   padding: 5px;
   height: 20px;
