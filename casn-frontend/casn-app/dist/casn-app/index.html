@@ -25,9 +25,16 @@
   <link href="/assets/splashscreens/ipadpro1_splash.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
   <link href="/assets/splashscreens/ipadpro3_splash.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
   <link href="/assets/splashscreens/ipadpro2_splash.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
-<link rel="stylesheet" href="styles.f761efd96003c51c48a8.css"></head>
+<link rel="stylesheet" href="styles.2954339f298746520120.css"></head>
 <body>
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
-<script src="runtime.1375ccab199dabc5ab5a.js"></script><script src="polyfills-es5.6a9f5fde365a77ab7943.js" nomodule></script><script src="polyfills.eb122b81ceab8935e738.js"></script><script src="main.ea3335c066fb3cbb4763.js"></script></body>
+  <script>
+    // Hack for mobile Safari & other browsers w/ buggy vh implementation
+    window.addEventListener('resize', () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    });
+  </script>
+<script src="runtime.1375ccab199dabc5ab5a.js"></script><script src="polyfills-es5.6a9f5fde365a77ab7943.js" nomodule></script><script src="polyfills.eb122b81ceab8935e738.js"></script><script src="main.cfd55e5fb3e7298479b8.js"></script></body>
 </html>

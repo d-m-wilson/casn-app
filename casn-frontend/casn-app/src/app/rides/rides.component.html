@@ -1,4 +1,6 @@
-<ng-container *ngIf="rides && clinics && apptTypes">
+<ng-container *ngIf="rides && clinics && apptTypes"
+              (swipeleft)="swipe($event.type)"
+              (swiperight)="swipe($event.type)">
   <!--********************************************************************
                             Date Selection Sidebar
   **********************************************************************-->
@@ -8,12 +10,10 @@
            *ngFor="let d of datesToDisplay"
            (click)="toggleActiveDate(d)"
            [ngClass]="{ 'active': d === activeDate }">
-        {{ d | date:'EEE' }}
-        <span class="day"
-              [matBadge]="dateFilterProperties[d]?.numApptsThisDay"
+        <span [matBadge]="dateFilterProperties[d]?.numApptsThisDay"
               [matBadgeHidden]="dateFilterProperties[d]?.numApptsThisDay < 1"
-              matBadgeOverlap="false">{{ d | date:'d' }}</span>
-        {{ d | date:'MMM' }}
+              matBadgeOverlap="false">{{ d | date:'EEE' }}</span>
+        <span class="day">{{ d | date:'d' }}</span>
       </div>
     </nav>
     <!--********************************************************************
@@ -33,10 +33,9 @@
           <i class="fas fa-filter clicky"
           (click)="toggleSettingsModal()"></i>
         </button>
-        <!-- <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1> -->
       </header>
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
-          <h2>No rides on this day :(</h2>
+          <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
       <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
         <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayClinics[r.appointment.clinicId]">
@@ -45,7 +44,7 @@
               {{ r.appointment.appointmentDate | date:'d' }}
             </div>
             <div>
-              <span class="bolder">{{ r.appointment.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
+              <span class="bolder">{{ r.caller.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
               <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}}-{{ getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId) | date:'shortTime' }} <br>{{ clinics[r.appointment?.clinicId].name }}</span> <br>
             </div>
           </mat-card>
@@ -66,13 +65,9 @@
               <div class="drive-card-content">
                 <p>
                   <span class="bolder text-sm">Pick Up</span><br>
-                  <!-- TODO: How will we handle approved drives for current user if driver role? -->
-                  <span *ngIf="userRole === '1'; else pickupVague">
+                  <span>
                     {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
                   </span>
-                  <ng-template #pickupVague>
-                  {{ r.appointment.pickupLocationVague }}
-                  </ng-template>
                 </p>
               </div>
             </mat-card>
@@ -92,13 +87,9 @@
               <div class="drive-card-content">
                 <p>
                   <span class="bolder text-sm">Drop Off</span><br>
-                  <!-- TODO: How will we handle approved drives for current user if driver role? -->
-                  <span *ngIf="userRole === '1'; else dropoffVague">
+                  <span>
                     {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
                   </span>
-                  <ng-template #dropoffVague>
-                    {{ r.appointment.dropoffLocationVague }}
-                  </ng-template>
                 </p>
               </div>
             </mat-card>
@@ -155,22 +146,22 @@
       <mat-slide-toggle value="open"
                         [checked]="displayRides[0]"
                         (change)="displayRides[0] = $event.source.checked"
-                        color="primary">Show Open</mat-slide-toggle>
+                        color="primary">Open</mat-slide-toggle>
       <br><br>
       <mat-slide-toggle value="pending"
                         [checked]="displayRides[1]"
                         (change)="displayRides[1] = $event.source.checked"
-                        color="primary">Show Pending</mat-slide-toggle>
+                        color="primary">Pending</mat-slide-toggle>
       <br><br>
       <mat-slide-toggle value="approved"
                         [checked]="displayRides[2]"
                         (change)="displayRides[2] = $event.source.checked"
-                        color="primary">Show Approved</mat-slide-toggle>
+                        color="primary">Approved</mat-slide-toggle>
       <br><br>
       <mat-slide-toggle value="canceled"
                         [checked]="displayRides[3]"
                         (change)="displayRides[3] = $event.source.checked"
-                        color="primary">Show Canceled</mat-slide-toggle>
+                        color="primary">Canceled</mat-slide-toggle>
 
     </mat-card>
     <mat-card class="mt candy-card">
@@ -178,7 +169,7 @@
       <ng-container *ngFor="let c of objectKeys(clinics)">
         <mat-slide-toggle [checked]="displayClinics[c]"
                           (change)="displayClinics[c] = $event.source.checked"
-                          color="primary">Show {{ clinics[c].name }}
+                          color="primary">{{ clinics[c].name }}
         </mat-slide-toggle>
         <br><br>
       </ng-container>

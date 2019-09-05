@@ -5,7 +5,7 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.appointment.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
+    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
@@ -13,62 +13,87 @@
           <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
           <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
         </mat-card>
+        <!--=========== Caller Info ============-->
+        <mat-expansion-panel expanded class="mt candy-expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Caller Information</mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-list>
+            <mat-list-item *ngIf="ride.caller.firstName">
+              <mat-icon mat-list-icon>account_circle</mat-icon>
+              <h4 mat-line>{{ ride.caller.firstName }} {{ ride.caller.lastName }}</h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="ride.caller.phone">
+              <mat-icon mat-list-icon>{{ ride.caller.preferredContactMethod === 1 ? 'textsms' : 'phone' }}</mat-icon>
+              <h4 mat-line>
+                <a href="{{ ride.caller.preferredContactMethod === 1 ? 'sms' : 'tel' }}:+1{{ ride.caller.phone }}">
+                  {{ ride.caller.phone | phone }}
+                </a>
+              </h4>
+            </mat-list-item>
+            <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English'">
+              <mat-icon mat-list-icon>speaker_notes</mat-icon>
+              <h4 mat-line>Preferred Language</h4>
+              <p mat-line>{{ ride.caller.preferredLanguage }}</p>
+            </mat-list-item>
+            <mat-list-item *ngIf="ride.caller.minor">
+              <mat-icon mat-list-icon>report</mat-icon>
+              <h4 mat-line>Caller is a minor</h4>
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
         <!--=========== Caller Notes ============-->
-        <mat-expansion-panel expanded class="mt" *ngIf="ride.appointment.callerNote">
+        <mat-expansion-panel expanded
+                             class="mt candy-expansion-panel"
+                             *ngIf="ride.caller.note">
           <mat-expansion-panel-header>
             <mat-panel-title>Notes from Dispatcher</mat-panel-title>
           </mat-expansion-panel-header>
-          <p>{{ ride.appointment.callerNote }}</p>
+          <p>{{ ride.caller.note }}</p>
         </mat-expansion-panel>
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Pick up caller {{ ride.appointment.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
+            Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
           </mat-card-subtitle>
-          <!-- TODO: Figure out whether to do a role check OR just check this
-          property for conditional display logic -->
-          <a *ngIf="0 || !isDriveTo; else vagueLocation"
+          <!-- NOTE: Conditional tests if real address available -->
+          <a *ngIf="ride[driveType].startPostalCode; else startAddress"
              [href]="startAddressGoogleMapLink"
              target="_blank">
             <address>
               {{ ride[driveType].startAddress }}<br>
-              {{ ride[driveType].startCity }}, {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+              {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
             </address>
           </a>
-          <ng-template #vagueLocation>
-            {{ isDriveTo ? ride.appointment.pickupLocationVague : ride.appointment.dropoffLocationVague }}
-          </ng-template>
         </mat-card>
         <!--=========== Drop Off Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
             Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
-          <!-- TODO: Figure out whether to do a role check OR just check this
-          property for conditional display logic -->
-          <a *ngIf="0 || isDriveTo; else vagueLocation"
+          <!-- NOTE: Conditional tests if real address available -->
+          <a *ngIf="ride[driveType].endPostalCode; else endAddress"
              [href]="endAddressGoogleMapLink"
              target="_blank">
             <address>
               {{ ride[driveType].endAddress }}<br>
-              {{ ride[driveType].endCity }}, {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+              {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
             </address>
           </a>
         </mat-card>
         <!--=========== Volunteers ============-->
-        <!-- TODO: Ask if drivers should be able to see volunteers -->
-        <mat-card *ngIf="volunteers && !driveIsApproved" class="mt candy-card">
+        <mat-card *ngIf="volunteers && !driveIsApproved && userRole === '1'" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
-            <button *ngIf="!driveIsApproved && userRole === '1'"
+            <button *ngIf="!driveIsApproved"
                     type="button"
                     mat-raised-button
                     (click)="handleApproveClick(v.id)"
                     color="primary">Approve</button>
           </div>
         </mat-card>
-        <mat-card *ngIf="driveIsApproved" class="mt candy-card">
+        <mat-card *ngIf="driveIsApproved && userRole === '1'" class="mt candy-card">
           <span class="bolder">Volunteers</span>
           <ng-container *ngFor="let v of volunteers">
             <div *ngIf="v.volunteerId === ride[driveType].driverId"
@@ -85,31 +110,33 @@
           <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
-                        iconUrl="assets/img/homegardenbusiness.png">
-              <agm-info-window [disableAutoPan]="true">
-                Start Address:
-                <!-- TODO: Figure out whether to do a role check OR just check this
-                property for conditional display logic -->
-                <a *ngIf="0 || !isDriveTo; else vagueLocation"
-                   [href]="startAddressGoogleMapLink"
-                   target="_blank">
-                  <address>{{ ride[driveType].startAddress }}</address>
-                </a>
-              </agm-info-window>
+                        iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'clinic' }}.png">
+              <agm-snazzy-info-window>
+                <ng-template>
+                  Start Address:
+                  <!-- NOTE: Conditional tests if real address available -->
+                  <a *ngIf="ride[driveType].startPostalCode; else startAddress"
+                     [href]="startAddressGoogleMapLink"
+                     target="_blank">
+                    <address>{{ ride[driveType].startAddress }}</address>
+                  </a>
+                </ng-template>
+              </agm-snazzy-info-window>
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
-                        iconUrl="assets/img/hospitals.png">
-              <agm-info-window [disableAutoPan]="true">
-                End Address:
-                <!-- TODO: Figure out whether to do a role check OR just check this
-                property for conditional display logic -->
-                <a *ngIf="0 || isDriveTo; else vagueLocation"
-                   [href]="endAddressGoogleMapLink"
-                   target="_blank">
-                  <address>{{ ride[driveType].endAddress }}</address>
-                </a>
-              </agm-info-window>
+                        iconUrl="assets/img/marker_{{ isDriveTo ? 'clinic' : 'dropoff' }}.png">
+              <agm-snazzy-info-window>
+                <ng-template>
+                  End Address:
+                  <!-- NOTE: Conditional tests if real address available -->
+                  <a *ngIf="ride[driveType].endPostalCode; else endAddress"
+                     [href]="endAddressGoogleMapLink"
+                     target="_blank">
+                    <address>{{ ride[driveType].endAddress }}</address>
+                  </a>
+                </ng-template>
+              </agm-snazzy-info-window>
             </agm-marker>
           </agm-map>
         </mat-card>
@@ -131,7 +158,7 @@
               color="accent"
               class="mr">Go Back</button>
       <button type="button"
-              *ngIf="ride[driveType].statusId !== 3"
+              *ngIf="userRole === '1' && ride[driveType].statusId !== 3"
               mat-button
               (click)="handleCancelDriveClick()"
               color="accent">Cancel This Drive</button>
@@ -146,3 +173,19 @@
                         (closeCancelDriveModalClick)="hideCancelDriveModal()"
                         (closeCancelDriveModalAndUpdateClick)="hideCancelDriveModal(true)"
                         [driveId]="driveToCancel"></app-cancel-drive-modal>
+
+
+
+<ng-template #startAddress>
+  <address>
+    {{ ride[driveType].startAddress }}<br>
+    {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+  </address>
+</ng-template>
+
+<ng-template #endAddress>
+  <address>
+    {{ ride[driveType].endAddress }}<br>
+    {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+  </address>
+</ng-template>

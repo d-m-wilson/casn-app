@@ -14,38 +14,38 @@
         <!--====== Map Markers for driveTo ========-->
         <ng-container *ngFor="let r of rides">
           <agm-marker *ngIf="r.driveTo && r.driveTo.statusId !== 3"
-                      iconUrl="assets/img/blue-pushpin.png"
+                      iconUrl="assets/img/marker_pickup.png"
                       [latitude]="r.driveTo.startLatitude"
                       [longitude]="r.driveTo.startLongitude"
-                      (markerClick)="markerClick(infoWindow, $event);
-                                     showPolylinesForMarker(r)">
-            <agm-info-window [disableAutoPan]="true"
-                             (infoWindowClose)="hidePolylinesForMarker(r)"
-                             #infoWindow>
-              Start Address:
-              <address>
-                <!-- TODO: Figure out whether to do a role check OR just check
-                this property for conditional display logic -->
-                <a *ngIf="0; else vagueLocationPickup"
-                   [href]="getGoogleMapLink(r, 'driveTo', 'start')"
-                   target="_blank">{{ r.driveTo.startAddress }}</a>
-              </address>
-              <ng-template #vagueLocationPickup>
-                {{ r.appointment.pickupLocationVague }}
+                      (markerClick)="showPolylinesForMarker(r)"
+                      [animation]="'DROP'">
+            <agm-snazzy-info-window [closeWhenOthersOpen]="true"
+                                    [maxHeight]="250"
+                                    (afterClose)="hidePolylinesForMarker(r)">
+              <ng-template>
+                Start address:
+                <address>
+                  <a *ngIf="r.driveTo.startAddress; else vagueLocationPickup"
+                     [href]="getGoogleMapLink(r, 'driveTo', 'start')"
+                     target="_blank">{{ r.driveTo.startAddress }}</a>
+                </address>
+                <ng-template #vagueLocationPickup>
+                  {{ r.appointment.pickupLocationVague }}
+                </ng-template>
+                <br>
+                End Address:
+                <address>
+                  <a [href]="getGoogleMapLink(r, 'driveTo', 'end')"
+                     target="_blank">{{ r.driveTo.endAddress }}</a>
+                </address>
+                <br>
+                <button type="button"
+                        mat-raised-button
+                        (click)="handleCloseModalClick();
+                                 handleSeeDriveDetailsClick(r, 'driveTo')"
+                        color="primary">See Drive Details</button>
               </ng-template>
-              <br>
-              End Address:
-              <address>
-                <a [href]="getGoogleMapLink(r, 'driveTo', 'end')"
-                   target="_blank">{{ r.driveTo.endAddress }}</a>
-              </address>
-              <br>
-              <button type="button"
-                      mat-raised-button
-                      (click)="handleCloseModalClick();
-                               handleSeeDriveDetailsClick(r, 'driveTo')"
-                      color="primary">See Drive Details</button>
-            </agm-info-window>
+            </agm-snazzy-info-window>
           </agm-marker>
           <agm-polyline strokeWeight="2"
                         strokeColor="#00f"
@@ -61,38 +61,38 @@
         <!--====== Map Markers for driveFrom ========-->
         <ng-container *ngFor="let r of rides">
           <agm-marker *ngIf="r.driveFrom && r.driveFrom.statusId !== 3"
-                      iconUrl="assets/img/blue-pushpin.png"
+                      iconUrl="assets/img/marker_dropoff.png"
                       [latitude]="r.driveFrom.endLatitude"
                       [longitude]="r.driveFrom.endLongitude"
-                      (markerClick)="markerClick(infoWindow, $event);
-                                     showPolylinesForMarker(r)">
-            <agm-info-window [disableAutoPan]="true"
-                             (infoWindowClose)="hidePolylinesForMarker(r)"
-                             #infoWindow>
-              Start Address:
-              <address>
-                <a [href]="getGoogleMapLink(r, 'driveFrom', 'start')"
-                   target="_blank">{{ r.driveFrom.startAddress }}</a>
-              </address>
-              <br>
-              End Address:
-              <address>
-                <!-- TODO: Figure out whether to do a role check OR just check
-                this property for conditional display logic -->
-                <a *ngIf="0; else vagueLocationDropoff"
-                   [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
-                   target="_blank">{{ r.driveFrom.endAddress }}</a>
-              </address>
-              <ng-template #vagueLocationDropoff>
-                {{ r.appointment.dropoffLocationVague }}
+                      (markerClick)="showPolylinesForMarker(r)"
+                      [animation]="'DROP'">
+            <agm-snazzy-info-window [closeWhenOthersOpen]="true"
+                                    [maxHeight]="250"
+                                    (afterClose)="hidePolylinesForMarker(r)">
+              <ng-template>
+                Start Address:
+                <address>
+                  <a [href]="getGoogleMapLink(r, 'driveFrom', 'start')"
+                     target="_blank">{{ r.driveFrom.startAddress }}</a>
+                </address>
+                <br>
+                End Address:
+                <address>
+                  <a *ngIf="r.driveFrom.endAddress; else vagueLocationDropoff"
+                     [href]="getGoogleMapLink(r, 'driveFrom', 'end')"
+                     target="_blank">{{ r.driveFrom.endAddress }}</a>
+                </address>
+                <ng-template #vagueLocationDropoff>
+                  {{ r.appointment.dropoffLocationVague }}
+                </ng-template>
+                <br>
+                <button type="button"
+                        mat-raised-button
+                        (click)="handleCloseModalClick();
+                                 handleSeeDriveDetailsClick(r, 'driveFrom')"
+                        color="primary">See Drive Details</button>
               </ng-template>
-              <br>
-              <button type="button"
-                      mat-raised-button
-                      (click)="handleCloseModalClick();
-                               handleSeeDriveDetailsClick(r, 'driveFrom')"
-                      color="primary">See Drive Details</button>
-            </agm-info-window>
+            </agm-snazzy-info-window>
           </agm-marker>
           <agm-polyline strokeWeight="2"
                         strokeColor="#00f"
@@ -107,17 +107,21 @@
         </ng-container>
         <!--====== Map Markers for Clinics ========-->
         <agm-marker *ngFor="let c of clinics"
-                    iconUrl="assets/img/hospitals.png"
+                    iconUrl="assets/img/marker_clinic.png"
                     [latitude]="c.latitude"
-                    [longitude]="c.longitude">
-          <agm-info-window [disableAutoPan]="true">
-            <strong>{{ c.name }}</strong>
-            <br/>
-            <address>
-              <a [href]="getClinicGoogleMapLink(c)"
-                 target="_blank">{{ c.address }}</a>
-            </address>
-          </agm-info-window>
+                    [longitude]="c.longitude"
+                    [animation]="'DROP'">
+          <agm-snazzy-info-window [closeWhenOthersOpen]="true"
+                                  [maxHeight]="250">
+            <ng-template>
+              <strong>{{ c.name }}</strong>
+              <br/>
+              <address>
+                <a [href]="getClinicGoogleMapLink(c)"
+                   target="_blank">{{ c.address }}</a>
+              </address>
+            </ng-template>
+          </agm-snazzy-info-window>
         </agm-marker>
       </agm-map>
     </mat-card>

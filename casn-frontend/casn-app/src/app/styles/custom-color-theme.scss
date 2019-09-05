@@ -5,6 +5,7 @@
 @import './stepper.component';
 @import './card.component';
 @import './tab-group.component';
+@import './expansion-panel.component';
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -32,3 +33,4 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 @include candy-stepper-theme($candy-app-theme);
 @include candy-card-theme($candy-app-theme);
 @include candy-tab-group-theme($candy-app-theme);
+@include candy-expansion-panel-theme($candy-app-theme);

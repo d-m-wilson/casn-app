@@ -52,6 +52,9 @@ export class RidesComponent implements OnInit {
     this.getClinics();
     this.getRides();
     this.getDriveStatuses();
+
+    const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters"));
+    if(showDateFilters) this.toggleDateFilters();
   }
 
   /*********************************************************************
@@ -134,6 +137,7 @@ export class RidesComponent implements OnInit {
 
   toggleDateFilters(): void {
     this.showDateFilters = !this.showDateFilters;
+    localStorage.setItem("showDateFilters", JSON.stringify(this.showDateFilters));
     // If a date filter was applied, remove it.
     this.activeDate = null;
     this.ridesToDisplay = this.rides;
@@ -189,7 +193,7 @@ export class RidesComponent implements OnInit {
   getStatusText(status: number): string {
     switch(status) {
       case 0: return "Apply Now!";
-      case 1: return "Pending"; // TODO: Will be affected by user role
+      case 1: return "Pending";
       case 2: return "Approved";
       case 3: return "Canceled"
       default: return "";
@@ -210,6 +214,11 @@ export class RidesComponent implements OnInit {
     const date = new Date(apptTime);
     const minutes = this.apptTypes[apptType].estimatedDurationMinutes;
     return new Date(date.getTime() + minutes*60000);
+  }
+
+  swipe(action: string) {
+    if(action === 'swiperight') this.handleChangeWeekClick('next');
+    if(action === 'swipeleft') this.handleChangeWeekClick('prev');
   }
 
 }

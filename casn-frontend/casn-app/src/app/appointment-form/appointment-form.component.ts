@@ -104,7 +104,6 @@ export class AppointmentFormComponent implements OnInit {
     // TODO: Get dispatcherId from localstorage
     // Need to talk to David about this -- handle on backend?
     dispatcherId: [5],
-    // TODO: What is the most used clinic? Set as default.
     clinicId: [1, Validators.required],
     appointmentDate: ['', Validators.required],
   });

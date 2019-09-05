@@ -1,6 +1,3 @@
-<!-- TODO: Add confirmation msg on submit -->
-<!-- TODO: Confirm msg max length; sms=160 char -->
-
 <main>
   <h2>Message Volunteers</h2>
   <mat-card>
@@ -54,9 +51,43 @@
     <br>
     <mat-card-actions>
       <button mat-raised-button
+              [disabled]="!message || selection.selected.length < 1"
               class="btn-cta"
-              (click)="sendMessage()"
+              (click)="showConfirmationModal = true"
               color="primary">Send Message</button>
     </mat-card-actions>
   </mat-card>
 </main>
+<!--********************************************************************
+                            Confirmation Modal
+**********************************************************************-->
+<div *ngIf="showConfirmationModal" class="modal">
+  <div class="modal-content">
+    <span class="close"
+          (click)="showConfirmationModal = false">x</span>
+    <div class="modal-title">
+      <h2>Please Confirm</h2>
+    </div>
+    <mat-card class="mt candy-card">
+      <mat-card-subtitle>Message:</mat-card-subtitle>
+      <p>{{ message }}</p>
+    </mat-card>
+    <mat-card class="mt candy-card">
+      <mat-card-subtitle>Send To {{ selection.selected.length }} People:</mat-card-subtitle>
+      <ul>
+        <li *ngFor="let s of selection.selected">{{ s.name }}</li>
+      </ul>
+    </mat-card>
+    <div class="modal-actions">
+      <button type="button"
+              class="btn-cta"
+              mat-raised-button
+              (click)="sendMessage()"
+              color="primary">Send Message</button>
+      <button type="button"
+              mat-button
+              (click)="showConfirmationModal = false"
+              color="accent">Go Back</button>
+    </div>
+  </div>
+</div>

@@ -30,4 +30,8 @@ export class UserStatsComponent implements OnInit {
     this.badges = tempBadges;
   }
 
+  toggleTapped(badge) {
+    badge.tapped = badge.tapped ? false : true;
+  }
+
 }

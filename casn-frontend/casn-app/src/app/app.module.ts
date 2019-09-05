@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
+import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 /* Angular Material Components */
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -44,6 +45,7 @@ import { ApiModule } from './api/api.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 /* Custom Directives & Pipes */
 import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
+import { PhonePipe } from './pipes/phone.pipe';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -74,7 +76,8 @@ import { MassTextComponent } from './mass-text/mass-text.component';
     UserStatsComponent,
     LeaderboardComponent,
     ErrorPageComponent,
-    MassTextComponent
+    MassTextComponent,
+    PhonePipe
   ],
   imports: [
     NgxMaskModule.forRoot(),
@@ -82,6 +85,7 @@ import { MassTextComponent } from './mass-text/mass-text.component';
     OwlNativeDateTimeModule,
     // TODO: Move to lazy loader
     AgmCoreModule.forRoot(),
+    AgmSnazzyInfoWindowModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
