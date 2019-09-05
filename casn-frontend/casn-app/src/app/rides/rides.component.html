@@ -23,7 +23,7 @@
     **********************************************************************-->
     <section class="ride-container">
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
-          <img src="/assets/img/no_rides.png" alt="no rides today">
+          <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
       <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
         <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayClinics[r.appointment.clinicId]">
@@ -85,10 +85,11 @@
         </ng-container>
       </div>
     </section>
+    <!-- TODO: Delete -->
     <!--********************************************************************
                           Drive Filters/Submenus
     **********************************************************************-->
-    <div class='fab-container'>
+    <!-- <div class='fab-container'>
       <div class='phone'>
         <input id='trigger' type='checkbox'>
         <label for='trigger'>
@@ -107,7 +108,7 @@
              (click)="toggleSettingsModal()"></i>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </ng-container>
 <!--********************************************************************
