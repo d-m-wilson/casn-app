@@ -30,5 +30,12 @@
 <body>
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <script>
+    // Hack for mobile Safari & other browsers w/ buggy vh implementation
+    window.addEventListener('resize', () => {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    });
+  </script>
 </body>
 </html>
