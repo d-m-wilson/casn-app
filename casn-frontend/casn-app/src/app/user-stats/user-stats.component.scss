@@ -53,7 +53,7 @@
 
 /* Do a horizontal flip when you click/tap flip box container */
 .flip-card-inner.tapped {
-  --webkit-transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
   transform: rotateY(180deg);
 }
 

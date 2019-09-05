@@ -13,14 +13,10 @@
                      alt="b.title"
                      [ngClass]="b.earned ? 'active' : 'inactive'"/>
               </div>
-              <div class="back" *ngIf="b.earned">
+              <div class="back">
                 <h3>{{ b.title }}</h3>
                 <p *ngIf="b.earned"><em>Earned {{ b.dateEarned }}</em></p>
-                <p>{{ b.description }}</p>
-              </div>
-              <div class="back" *ngIf="!b.earned">
-                <h3>{{ b.title }}</h3>
-                <p>???</p>
+                <p>{{ b.earned ? b.description : '???' }}</p>
               </div>
             </div>
           </div>
