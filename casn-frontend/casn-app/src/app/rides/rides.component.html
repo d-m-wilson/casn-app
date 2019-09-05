@@ -21,17 +21,20 @@
     **********************************************************************-->
     <section class="ride-container">
       <header>
-        <button mat-mini-fab color="frosted">
-          <i class="fas fa-calendar-day clicky"
-          (click)="toggleDateFilters()"></i>
+        <button mat-mini-fab
+                color="frosted"
+                (click)="toggleDateFilters()">
+          <i class="fas fa-calendar-day clicky"></i>
         </button>
-        <button mat-mini-fab color="frosted">
-          <i class="fas fa-map-marked-alt clicky"
-          (click)="toggleMapModal()"></i>
+        <button mat-mini-fab
+                color="frosted"
+                (click)="toggleMapModal()">
+          <i class="fas fa-map-marked-alt clicky"></i>
         </button>
-        <button mat-mini-fab color="frosted">
-          <i class="fas fa-filter clicky"
-          (click)="toggleSettingsModal()"></i>
+        <button mat-mini-fab
+                color="frosted"
+                (click)="toggleSettingsModal()">
+          <i class="fas fa-filter clicky"></i>
         </button>
       </header>
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
