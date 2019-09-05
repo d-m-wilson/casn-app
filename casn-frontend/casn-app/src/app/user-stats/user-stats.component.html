@@ -16,6 +16,7 @@
               <div class="back">
                 <h3>{{ b.title }}</h3>
                 <p *ngIf="b.earned"><em>Earned {{ b.dateEarned }}</em></p>
+                <!-- TODO: Replace w/ b.hidden property -->
                 <p>{{ b.earned ? b.description : '???' }}</p>
               </div>
             </div>
