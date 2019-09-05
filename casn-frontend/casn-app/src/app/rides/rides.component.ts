@@ -217,12 +217,8 @@ export class RidesComponent implements OnInit {
   }
 
   swipe(action: string) {
-    if(!this.showDateFilters && action === 'swiperight') {
-      this.toggleDateFilters();
-    }
-    if(this.showDateFilters && action === 'swipeleft') {
-      this.toggleDateFilters();
-    }
-}
+    if(action === 'swiperight') this.handleChangeWeekClick('next');
+    if(action === 'swipeleft') this.handleChangeWeekClick('prev');
+  }
 
 }
