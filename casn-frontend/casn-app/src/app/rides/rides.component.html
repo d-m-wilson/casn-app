@@ -10,12 +10,10 @@
            *ngFor="let d of datesToDisplay"
            (click)="toggleActiveDate(d)"
            [ngClass]="{ 'active': d === activeDate }">
-        {{ d | date:'EEE' }}
-        <span class="day"
-              [matBadge]="dateFilterProperties[d]?.numApptsThisDay"
+        <span [matBadge]="dateFilterProperties[d]?.numApptsThisDay"
               [matBadgeHidden]="dateFilterProperties[d]?.numApptsThisDay < 1"
-              matBadgeOverlap="false">{{ d | date:'d' }}</span>
-        {{ d | date:'MMM' }}
+              matBadgeOverlap="false">{{ d | date:'EEE' }}</span>
+        <span class="day">{{ d | date:'d' }}</span>
       </div>
     </nav>
     <!--********************************************************************
