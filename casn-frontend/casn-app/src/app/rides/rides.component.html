@@ -22,6 +22,21 @@
                                     Ride Cards
     **********************************************************************-->
     <section class="ride-container">
+      <header>
+        <button mat-mini-fab color="frosted">
+          <i class="fas fa-calendar-day clicky"
+          (click)="toggleDateFilters()"></i>
+        </button>
+        <button mat-mini-fab color="frosted">
+          <i class="fas fa-map-marked-alt clicky"
+          (click)="toggleMapModal()"></i>
+        </button>
+        <button mat-mini-fab color="frosted">
+          <i class="fas fa-filter clicky"
+          (click)="toggleSettingsModal()"></i>
+        </button>
+        <!-- <h1>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h1> -->
+      </header>
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
           <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
@@ -85,30 +100,6 @@
         </ng-container>
       </div>
     </section>
-    <!-- TODO: Delete -->
-    <!--********************************************************************
-                          Drive Filters/Submenus
-    **********************************************************************-->
-    <!-- <div class='fab-container'>
-      <div class='phone'>
-        <input id='trigger' type='checkbox'>
-        <label for='trigger'>
-          <mat-icon>clear</mat-icon>
-        </label>
-        <div class='submenu'>
-          <i class="fas fa-calendar-day clicky"
-             (click)="toggleDateFilters()"></i>
-        </div>
-        <div class='submenu'>
-          <i class="fas fa-map-marked-alt clicky"
-             (click)="toggleMapModal()"></i>
-        </div>
-        <div class='submenu'>
-          <i class="fas fa-filter clicky"
-             (click)="toggleSettingsModal()"></i>
-        </div>
-      </div>
-    </div> -->
   </div>
 </ng-container>
 <!--********************************************************************
