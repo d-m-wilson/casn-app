@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
-import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal.component';
 import { Constants } from '../app.constants';
 
 @Component({
@@ -90,6 +89,7 @@ export class RidesComponent implements OnInit {
   }
 
   getRides(): void {
+    console.log("Getting rides....")
     this.ds.getAppointments(this.startDate, this.endDate).subscribe(appts => {
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = appts;
@@ -144,8 +144,8 @@ export class RidesComponent implements OnInit {
   }
 
   handleChangeWeekClick(changeType: string): void {
-    if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -6));
-    if(changeType === 'next') this.setDateRange(this.addDays(this.endDate, 1));
+    if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -7));
+    if(changeType === 'next') this.setDateRange(this.addDays(this.startDate, 7));
     this.getRides();
   }
 
