@@ -30,12 +30,15 @@ namespace CASNApp.Core.Queries
 				.Where(a => a.IsActive && openAppointmentIds.Contains(a.Id))
 				.ToList();
 			
-			//var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
-			//	.Join((readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive), appt => appt.Id, drive => drive.AppointmentId, (appt, drive) => new { Appointment = appt, Drive = drive })
-			//	.Where(apptAnddrive => apptAnddrive.Drive.Status.Name == "Open");
-
 			return result;
 		}
 
+		public Appointment GetAppointmentById(int appointmentId, bool readOnly)
+		{
+			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
+				.Where(a => a.Id == appointmentId)
+				.SingleOrDefault();
+			return result;
+		}
 	}
 }

@@ -15,10 +15,13 @@ using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
 using CASNApp.Core.Models;
 using CASNApp.Core.Queries;
+using CASNApp.Core.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.Logging;
 
 namespace CASNApp.API.Controllers
 {
@@ -29,21 +32,32 @@ namespace CASNApp.API.Controllers
     public class DriverApiController : Controller
     {
         private readonly Core.Entities.casn_appContext dbContext;
+		private readonly ILoggerFactory loggerFactory;
+		private readonly ILogger<DispatcherApiController> logger;
+		private readonly bool twilioIsEnabled;
+		private readonly string twilioAccountSID;
+		private readonly string twilioAuthKey;
+		private readonly string twilioPhoneNumber;
 
-        public DriverApiController(Core.Entities.casn_appContext dbContext)
+		public DriverApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
-        }
+			this.loggerFactory = loggerFactory;
+			twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
+			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
+			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
+			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
+		}
 
-        /// <summary>
-        /// applies a volunteer for a drive
-        /// </summary>
-        /// <remarks>Adds a volunteer drive application</remarks>
-        /// <param name="body"></param>
-        /// <response code="200">Success. Added applicant record.</response>
-        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
-        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
-        [HttpPost]
+		/// <summary>
+		/// applies a volunteer for a drive
+		/// </summary>
+		/// <remarks>Adds a volunteer drive application</remarks>
+		/// <param name="body"></param>
+		/// <response code="200">Success. Added applicant record.</response>
+		/// <response code="400">Client Error - please check your request format &amp; try again.</response>
+		/// <response code="404">Error. The driveId or volunteerId was not found.</response>
+		[HttpPost]
         [Route("api/drives/apply")]
         [ValidateModelState]
         [SwaggerOperation("AddDriveApplicant")]
@@ -102,7 +116,22 @@ namespace CASNApp.API.Controllers
 
             var volunteerDriveDTO = new Core.Models.VolunteerDrive(volunteerDrive);
 
-            return Ok(volunteerDriveDTO);
+			//send Drive Applied for Drive message
+			if (twilioIsEnabled)
+			{
+				try
+				{
+					//send initial text message to drivers
+					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					twilioCommand.SendDispatherMessage(drive, volunteer, TwilioCommand.MessageType.DriverAppliedForDrive);
+				}
+				catch (Exception ex)
+				{
+					logger.LogError(ex, $"{nameof(AddDriveApplicant)}(): Exception");
+				}
+			}
+
+			return Ok(volunteerDriveDTO);
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200);

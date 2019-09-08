@@ -15,10 +15,10 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-		public List<Volunteer> GetActiveDriversByRadiusWithTextConsent(bool readOnly)
+		public List<Volunteer> GetAllActiveDispatcherssWithTextConsent(bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
-				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent)
+				.Where(v => v.IsActive && v.IsDispatcher && v.HasTextConsent)
 				.ToList();
 			return result;
 		}

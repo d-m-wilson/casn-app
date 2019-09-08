@@ -32,6 +32,9 @@ namespace CASNApp.Core.Commands
 			FriendlyReminder = 6,
 			SeriousRequest = 7,
 			DesperatePlea = 8,
+			DriverAppliedForDrive = 9,
+			DriveCanceled = 10,
+			DriverApprovedForDrive = 11,
 		}
 
 		public TwilioCommand(string accountSid, string authTokey, string accountPhoneNumber, ILogger<TwilioCommand> logger, casn_appContext dbContext)
@@ -43,6 +46,50 @@ namespace CASNApp.Core.Commands
 			this.dbContext = dbContext;
 		}
 
+		public void SendDispatherMessage(Drive drive, Volunteer driver, MessageType messageType)
+		{
+			//get the message by message type
+			MessageQuery messageQuery = new MessageQuery(dbContext);
+			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
+
+			//get the appointment by id
+			AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
+			var appointment = appointmentQuery.GetAppointmentById(drive.AppointmentId, true);
+
+			//check the message type to see if the message is being sent to the driver or the dispatchers
+			if (messageType == MessageType.DriverAppliedForDrive)
+			{
+				//select the dispatchers
+				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
+				var dispatchers = volunteerQuery.GetAllActiveDispatcherssWithTextConsent(true);
+
+				//send message to appropriate dispatchers
+				foreach (Volunteer dispatcher in dispatchers)
+				{
+					if (dispatcher.MobilePhone != null)
+					{
+						//build the outbound message text
+						string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
+
+						//send message to all dispatchers
+						SMSMessage(messageText, accountPhoneNumber, dispatcher.MobilePhone, dispatcher.Id, appointment.Id);
+					}
+				}
+			}
+			else
+			{
+				//send message to driver
+				if (driver.MobilePhone != null)
+				{
+					//build the appintment listing
+					string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
+
+					//send text message to driver
+					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, drive.AppointmentId);
+				}
+			}
+		}
+
 		public void SendAppointmentReminderMessage(List<Appointment> appointments, MessageType messageType)
 		{
 			//get the message by message type
@@ -50,7 +97,7 @@ namespace CASNApp.Core.Commands
 			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
 
 			//build the appintment listing
-			string messageText = message.MessageText.Replace("{driveCount}", appointments.Count.ToString());
+			string messageText = BuildMessage(message.MessageText, null, null, null, appointments.Count, 0);
 			Dictionary<int, string> driveList = new Dictionary<int, string>();
 			if (appointments.Count <= 3)
 			{
@@ -142,13 +189,8 @@ namespace CASNApp.Core.Commands
 					if (driver.MobilePhone != null)
 					{
 						//build the outbound message text
-						string messageText = message.MessageText.Replace("{clinic}", clinic.Name)
-						.Replace("{vagueTo}", appointment.PickupLocationVague)
-						.Replace("{vagueFrom}", appointment.DropoffLocationVague)
-						.Replace("{timeDate}", appointment.AppointmentDate.ToString())
-						.Replace("{volunteerFirstName}", driver.FirstName)
-						.Replace("{dayOfTheWeek}",appointment.AppointmentDate.DayOfWeek.ToString());
-						
+						string messageText = BuildMessage(message.MessageText, clinic, appointment, driver, 0, 0);
+
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
 						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
 							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
@@ -175,6 +217,17 @@ namespace CASNApp.Core.Commands
 			}
 		}
 
+		private string BuildMessage(string messageText, Clinic clinic, Appointment appointment, Volunteer driver, int driveCount, int driveId)
+		{
+			return messageText.Replace("{clinic}", clinic != null ? clinic.Name : "")
+				.Replace("{vagueTo}", appointment != null ? appointment.PickupLocationVague : "")
+				.Replace("{vagueFrom}", appointment != null ? appointment.DropoffLocationVague : "")
+				.Replace("{timeDate}", appointment != null ? appointment.AppointmentDate.ToString() : "")
+				.Replace("{dayOfTheWeek}", appointment != null ? appointment.AppointmentDate.DayOfWeek.ToString() : "")
+				.Replace("{volunteerFirstName}", driver != null ? driver.FirstName : "")
+				.Replace("{driveCount}", driveCount.ToString())
+				.Replace("{driveId}", driveId.ToString()); 
+		}
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)
 		{
 			//initialize twilio client

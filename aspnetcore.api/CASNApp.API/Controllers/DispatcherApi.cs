@@ -379,7 +379,22 @@ namespace CASNApp.API.Controllers
 
             dbContext.SaveChanges();
 
-            return Ok();
+			//send Drive Approved for Drive message
+			if (twilioIsEnabled)
+			{
+				try
+				{
+					//send initial text message to drivers
+					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					twilioCommand.SendDispatherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
+				}
+				catch (Exception ex)
+				{
+					logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
+				}
+			}
+
+			return Ok();
         }
 
         /// <summary>
@@ -413,7 +428,24 @@ namespace CASNApp.API.Controllers
 
             await dbContext.SaveChangesAsync();
 
-            switch (result.ErrorCode)
+			//send Caller Canceled Drive message
+			if (twilioIsEnabled)
+			{
+				try
+				{
+					//send initial text message to driver
+					DriveQuery driveQuery = new DriveQuery(dbContext);
+					var drive = await driveQuery.GetDriveAsync(driveId);
+					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					twilioCommand.SendDispatherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
+				}
+				catch (Exception ex)
+				{
+					logger.LogError(ex, $"{nameof(CancelDrive)}(): Exception");
+				}
+			}
+
+			switch (result.ErrorCode)
             {
                 case Core.Misc.ErrorCode.None:
                     return Ok(result.Data);
