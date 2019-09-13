@@ -66,7 +66,7 @@ namespace CASNApp.Core.Commands
 				//send message to appropriate dispatchers
 				foreach (Volunteer dispatcher in dispatchers)
 				{
-					if (dispatcher.MobilePhone != null)
+					if (!String.IsNullOrEmpty(dispatcher.MobilePhone))
 					{
 						//build the outbound message text
 						string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
@@ -79,7 +79,7 @@ namespace CASNApp.Core.Commands
 			else
 			{
 				//send message to driver
-				if (driver.MobilePhone != null)
+				if (!String.IsNullOrEmpty(driver.MobilePhone))
 				{
 					//build the appintment listing
 					string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
@@ -116,7 +116,7 @@ namespace CASNApp.Core.Commands
 			//send the message to all drivers
 			foreach (Volunteer driver in drivers)
 			{
-				if (driver.MobilePhone != null)
+				if (!String.IsNullOrEmpty(driver.MobilePhone))
 				{
 					//send message to all drivers is appointment outside 30 miles or and appointment made for today
 					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
@@ -186,7 +186,7 @@ namespace CASNApp.Core.Commands
 				//send message to appropriate drivers
 				foreach (Volunteer driver in drivers)
 				{
-					if (driver.MobilePhone != null)
+					if (!String.IsNullOrEmpty(driver.MobilePhone) && driver.Latitude.HasValue && driver.Longitude.HasValue)
 					{
 						//build the outbound message text
 						string messageText = BuildMessage(message.MessageText, clinic, appointment, driver, 0, 0);
@@ -219,12 +219,12 @@ namespace CASNApp.Core.Commands
 
 		private string BuildMessage(string messageText, Clinic clinic, Appointment appointment, Volunteer driver, int driveCount, int driveId)
 		{
-			return messageText.Replace("{clinic}", clinic != null ? clinic.Name : "")
-				.Replace("{vagueTo}", appointment != null ? appointment.PickupLocationVague : "")
-				.Replace("{vagueFrom}", appointment != null ? appointment.DropoffLocationVague : "")
-				.Replace("{timeDate}", appointment != null ? appointment.AppointmentDate.ToString() : "")
-				.Replace("{dayOfTheWeek}", appointment != null ? appointment.AppointmentDate.DayOfWeek.ToString() : "")
-				.Replace("{volunteerFirstName}", driver != null ? driver.FirstName : "")
+			return messageText.Replace("{clinic}", clinic?.Name ?? "")
+				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
+				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "")
+				.Replace("{timeDate}", appointment?.AppointmentDate.ToString() ?? "")
+				.Replace("{dayOfTheWeek}", appointment?.AppointmentDate.DayOfWeek.ToString() ?? "")
+				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{driveCount}", driveCount.ToString())
 				.Replace("{driveId}", driveId.ToString()); 
 		}

@@ -33,7 +33,7 @@ namespace CASNApp.API.Controllers
     {
         private readonly Core.Entities.casn_appContext dbContext;
 		private readonly ILoggerFactory loggerFactory;
-		private readonly ILogger<DispatcherApiController> logger;
+		private readonly ILogger<DriverApiController> logger;
 		private readonly bool twilioIsEnabled;
 		private readonly string twilioAccountSID;
 		private readonly string twilioAuthKey;
@@ -43,6 +43,7 @@ namespace CASNApp.API.Controllers
         {
             this.dbContext = dbContext;
 			this.loggerFactory = loggerFactory;
+			logger = loggerFactory.CreateLogger<DriverApiController>();
 			twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
 			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
