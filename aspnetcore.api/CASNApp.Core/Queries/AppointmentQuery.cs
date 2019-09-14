@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
@@ -27,7 +28,8 @@ namespace CASNApp.Core.Queries
 
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Drives)
-				.Where(a => a.IsActive && openAppointmentIds.Contains(a.Id))
+				.Where(a => a.IsActive && DateTime.Compare(a.AppointmentDate, DateTime.Now) >= 0 
+					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
 			
 			return result;

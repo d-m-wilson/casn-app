@@ -46,7 +46,7 @@ namespace CASNApp.Core.Commands
 			this.dbContext = dbContext;
 		}
 
-		public void SendDispatherMessage(Drive drive, Volunteer driver, MessageType messageType)
+		public void SendDispatcherMessage(Drive drive, Volunteer driver, MessageType messageType)
 		{
 			//get the message by message type
 			MessageQuery messageQuery = new MessageQuery(dbContext);

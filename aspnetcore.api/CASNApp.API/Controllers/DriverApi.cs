@@ -124,7 +124,7 @@ namespace CASNApp.API.Controllers
 				{
 					//send initial text message to drivers
 					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
-					twilioCommand.SendDispatherMessage(drive, volunteer, TwilioCommand.MessageType.DriverAppliedForDrive);
+					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriverAppliedForDrive);
 				}
 				catch (Exception ex)
 				{

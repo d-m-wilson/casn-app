@@ -386,7 +386,7 @@ namespace CASNApp.API.Controllers
 				{
 					//send initial text message to drivers
 					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
-					twilioCommand.SendDispatherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
+					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
 				}
 				catch (Exception ex)
 				{
@@ -437,7 +437,7 @@ namespace CASNApp.API.Controllers
 					DriveQuery driveQuery = new DriveQuery(dbContext);
 					var drive = await driveQuery.GetDriveAsync(driveId);
 					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
-					twilioCommand.SendDispatherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
+					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
 				}
 				catch (Exception ex)
 				{
