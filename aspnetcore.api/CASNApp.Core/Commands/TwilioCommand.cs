@@ -96,17 +96,20 @@ namespace CASNApp.Core.Commands
 			MessageQuery messageQuery = new MessageQuery(dbContext);
 			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
 
-			//build the appintment listing
+			//build the reminder message text
 			string messageText = BuildMessage(message.MessageText, null, null, null, appointments.Count, 0);
-			Dictionary<int, string> driveList = new Dictionary<int, string>();
-			if (appointments.Count <= 3)
+
+			//build the appoint list message text
+			string appointmentListText = "";
+			ClinicQuery clinicQuery = new ClinicQuery(dbContext);
+			foreach (Appointment appointment in appointments)
 			{
-				ClinicQuery clinicQuery = new ClinicQuery(dbContext);
-				foreach (Appointment appointment in appointments)
-				{
-					Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
-					driveList.Add(appointment.Id, clinic.Name + " at " + appointment.AppointmentDate.ToString());
-				}
+				Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
+				string appointmentDate = appointment.AppointmentDate.ToLocalTime().ToShortDateString();
+				string appointmentTime = appointment.AppointmentDate.ToLocalTime().ToShortTimeString();
+				if (appointmentListText != "")
+					appointmentListText += "\n";
+				appointmentListText += clinic.Name + " on " + appointmentDate + " at " + appointmentTime;
 			}
 
 			//select the drivers 
@@ -120,8 +123,7 @@ namespace CASNApp.Core.Commands
 				{
 					//send message to all drivers is appointment outside 30 miles or and appointment made for today
 					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
-					foreach (KeyValuePair<int, string> driveDetail in driveList)
-						SMSMessage(driveDetail.Value, accountPhoneNumber, driver.MobilePhone, driver.Id, driveDetail.Key);
+					SMSMessage(appointmentListText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
 				}
 			}
 		}
