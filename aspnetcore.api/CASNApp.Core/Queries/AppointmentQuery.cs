@@ -29,6 +29,7 @@ namespace CASNApp.Core.Queries
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Drives)
 				.Where(a => a.IsActive && DateTime.Compare(a.AppointmentDate, DateTime.UtcNow) >= 0 
+					&& a.AppointmentDate.Subtract(DateTime.UtcNow).Days >= 1 
 					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
 			

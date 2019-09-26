@@ -20,6 +20,7 @@ namespace CASNApp.Core.Commands
 		private string authToken;
 		private string accountPhoneNumber;
 		private ILogger<TwilioCommand> logger;
+		private TimeZoneInfo timeZone;
 
 		public enum MessageType
 		{
@@ -37,13 +38,14 @@ namespace CASNApp.Core.Commands
 			DriverApprovedForDrive = 11,
 		}
 
-		public TwilioCommand(string accountSid, string authTokey, string accountPhoneNumber, ILogger<TwilioCommand> logger, casn_appContext dbContext)
+		public TwilioCommand(string accountSid, string authTokey, string accountPhoneNumber, ILogger<TwilioCommand> logger, casn_appContext dbContext, string timeZoneName = "Central Standard Time")
 		{
 			this.accountSid = accountSid;
 			this.authToken = authTokey;
 			this.accountPhoneNumber = accountPhoneNumber;
 			this.logger = logger;
 			this.dbContext = dbContext;
+			this.timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
 		}
 
 		public void SendDispatcherMessage(Drive drive, Volunteer driver, MessageType messageType)
@@ -105,11 +107,9 @@ namespace CASNApp.Core.Commands
 			foreach (Appointment appointment in appointments)
 			{
 				Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
-				string appointmentDate = appointment.AppointmentDate.ToLocalTime().ToShortDateString();
-				string appointmentTime = appointment.AppointmentDate.ToLocalTime().ToShortTimeString();
 				if (appointmentListText != "")
 					appointmentListText += "\n";
-				appointmentListText += clinic.Name + " on " + appointmentDate + " at " + appointmentTime;
+				appointmentListText += clinic.Name + " on " + TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt");
 			}
 
 			//select the drivers 
@@ -224,7 +224,7 @@ namespace CASNApp.Core.Commands
 			return messageText.Replace("{clinic}", clinic?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
 				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "")
-				.Replace("{timeDate}", appointment?.AppointmentDate.ToString() ?? "")
+				.Replace("{timeDate}", (appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : ""))
 				.Replace("{dayOfTheWeek}", appointment?.AppointmentDate.DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{driveCount}", driveCount.ToString())
