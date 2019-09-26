@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1568126036019,
+  "timestamp": 1569510749286,
   "index": "/app/index.html",
   "assetGroups": [
     {
@@ -10,7 +10,7 @@
       "urls": [
         "/app/favicon.ico",
         "/app/index.html",
-        "/app/main.a180f03328c88799ce2e.js",
+        "/app/main.7daaf0989afcac6e80c5.js",
         "/app/polyfills-es5.6a9f5fde365a77ab7943.js",
         "/app/polyfills.eb122b81ceab8935e738.js",
         "/app/runtime.1375ccab199dabc5ab5a.js",
@@ -139,9 +139,9 @@
     "/app/assets/img/casn-logo.png": "2dc6d17f5fa1a625f625a38b5ecde695ec59c65b",
     "/app/assets/img/casn_logo_vert.gif": "369a96a15ddd08542800d213e272fff6b123c506",
     "/app/assets/img/marker_clinic.png": "48e4c3938c276734e606115d196deb1a7ac79bd5",
-    "/app/assets/img/marker_dropoff.png": "e0485b83ae5d38665b811887410e8b7bc0fd0a13",
-    "/app/assets/img/marker_pickup.png": "42accef6977be0fc59f701561507728385fc1477",
-    "/app/assets/img/no_rides.png": "eab3ec059092c8f7152d352c11992821a36c4d66",
+    "/app/assets/img/marker_dropoff.png": "3cd5da0cf03ffcb1b05554682407f95ea90ed0b5",
+    "/app/assets/img/marker_pickup.png": "2afcd1cb2adb9ae221e6b9eacbb1e2283eb54a6c",
+    "/app/assets/img/no_rides.png": "2b69dcc94416bb48b849d409dfae3b68ec7f8a2b",
     "/app/assets/oidc-login-redirect.html": "235fbe5d0ab7453c6a24a2275ff36cde4654c0b0",
     "/app/assets/splashscreens/ipad_splash.png": "412538e42b68ddf8f7c13a9c876d5ff460cea63f",
     "/app/assets/splashscreens/ipadpro1_splash.png": "894bca4ebb573ad033b78b1636280df733028197",
@@ -155,8 +155,8 @@
     "/app/assets/splashscreens/iphonexsmax_splash.png": "74530dd676947fc76838265720d9599dd664c44a",
     "/app/blank_profile_pic.f5ef4263a9c36adac595.png": "63d727a3e1bd82b55be329a0f47698e244899f89",
     "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/app/index.html": "ec4cb1e627e02a599169e5b90d8267ae299522ed",
-    "/app/main.a180f03328c88799ce2e.js": "2056cf44c135b1b9e63b301e58a19333d937771b",
+    "/app/index.html": "c412d0068374cb5a13f0cd3ac2e9fb04d3675858",
+    "/app/main.7daaf0989afcac6e80c5.js": "aeb9fa0df0652394a85f90ca3614c7f003b73d02",
     "/app/polyfills-es5.6a9f5fde365a77ab7943.js": "934e86a8280c34ce3ce10f75db1de79822362f1e",
     "/app/polyfills.eb122b81ceab8935e738.js": "64fb64b29afde90ab0c58514c0cf754f2d092bc0",
     "/app/runtime.1375ccab199dabc5ab5a.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
