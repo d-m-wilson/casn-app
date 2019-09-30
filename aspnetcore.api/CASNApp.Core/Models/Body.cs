@@ -29,7 +29,7 @@ namespace CASNApp.Core.Models
         /// </summary>
         /// <value>id of drive user is applying for</value>
         [DataMember(Name="driveId")]
-        public long? DriveId { get; set; }
+        public int? DriveId { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -29,7 +29,7 @@ namespace CASNApp.Core.Models
         /// </summary>
         /// <value>id of drive to update</value>
         [DataMember(Name="volunteerDriveId")]
-        public long? VolunteerDriveId { get; set; }
+        public int? VolunteerDriveId { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

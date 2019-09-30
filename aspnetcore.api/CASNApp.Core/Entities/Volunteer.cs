@@ -11,7 +11,7 @@ namespace CASNApp.Core.Entities
             Approvals = new HashSet<Drive>();
             Drives = new HashSet<Drive>();
             VolunteerBadges = new HashSet<VolunteerBadge>();
-            VolunteerDrives = new HashSet<VolunteerDrive>();
+            VolunteerDriveLogs = new HashSet<VolunteerDriveLog>();
         }
 
         public int Id { get; set; }
@@ -38,7 +38,7 @@ namespace CASNApp.Core.Entities
         public ICollection<Drive> Approvals { get; set; }
         public ICollection<Drive> Drives { get; set; }
         public ICollection<VolunteerBadge> VolunteerBadges { get; set; }
-        public ICollection<VolunteerDrive> VolunteerDrives { get; set; }
+        public ICollection<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
 
     }
 }

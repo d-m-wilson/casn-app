@@ -14,6 +14,10 @@ namespace CASNApp.Core.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public int TriggerType { get; set; }
+        public string ProcedureName { get; set; }
+        public int? ClinicId { get; set; }
+        public int? CountTarget { get; set; }
         public bool IsActive { get; set; }
         public bool IsHidden { get; set; }
         public DateTime Created { get; set; }

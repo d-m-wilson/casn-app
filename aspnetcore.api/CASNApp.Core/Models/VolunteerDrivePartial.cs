@@ -6,19 +6,19 @@
         {
         }
 
-        public VolunteerDrive(Entities.VolunteerDrive vd)
+        public VolunteerDrive(Entities.VolunteerDriveLog vdl)
         {
-            Created = vd.Created;
-            DriveId = vd.DriveId;
-            Id = vd.Id;
-            Updated = vd.Updated;
-            VolunteerId = vd.VolunteerId;
+            Created = vdl.Created;
+            DriveId = vdl.DriveId;
+            Id = vdl.Id;
+            Updated = vdl.Updated;
+            VolunteerId = vdl.VolunteerId;
 
-            if (vd.Volunteer != null)
+            if (vdl.Volunteer != null)
             {
-                FirstName = vd.Volunteer?.FirstName;
-                LastName = vd.Volunteer?.LastName;
-                MobilePhone = vd.Volunteer?.MobilePhone;
+                FirstName = vdl.Volunteer?.FirstName;
+                LastName = vdl.Volunteer?.LastName;
+                MobilePhone = vdl.Volunteer?.MobilePhone;
             }
         }
 

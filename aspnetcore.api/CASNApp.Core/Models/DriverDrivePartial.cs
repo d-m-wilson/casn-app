@@ -11,25 +11,25 @@ namespace CASNApp.Core.Models
         {
         }
 
-        public DriverDrive(Entities.VolunteerDrive vd)
+        public DriverDrive(Entities.VolunteerDriveLog vdl)
         {
-            AppointmentDate = vd.Drive.Appointment.AppointmentDate;
-            AppointmentId = vd.Drive.AppointmentId;
-            AppointmentTypeId = vd.Drive.Appointment.AppointmentTypeId;
-            ClinicId = vd.Drive.Appointment.ClinicId;
-            Direction = vd.Drive.Direction;
-            EndLocation = vd.Drive.Appointment.DropoffLocationVague;
-            EndLatitude = vd.Drive.Appointment.DropoffVagueLatitude;
-            EndLongitude = vd.Drive.Appointment.DropoffVagueLongitude;
-            Id = vd.Id;
-            IsApproved = vd.Drive.StatusId == Drive.StatusApproved;
-            CallerIdentifier = vd.Drive.Appointment.Caller.CallerIdentifier;
-            CallerName = vd.Drive.Appointment.Caller.FirstName + " " + vd.Drive.Appointment.Caller.LastName;
-            CallerNote = vd.Drive.Appointment.Caller.Note;
-            StartLocation = vd.Drive.Appointment.PickupLocationVague;
-            StartLatitude = vd.Drive.Appointment.PickupVagueLatitude;
-            StartLongitude = vd.Drive.Appointment.PickupVagueLongitude;
-            VolunteerDriveId = vd.Id;
+            AppointmentDate = vdl.Drive.Appointment.AppointmentDate;
+            AppointmentId = vdl.Drive.AppointmentId;
+            AppointmentTypeId = vdl.Drive.Appointment.AppointmentTypeId;
+            ClinicId = vdl.Drive.Appointment.ClinicId;
+            Direction = vdl.Drive.Direction;
+            EndLocation = vdl.Drive.Appointment.DropoffLocationVague;
+            EndLatitude = vdl.Drive.Appointment.DropoffVagueLatitude;
+            EndLongitude = vdl.Drive.Appointment.DropoffVagueLongitude;
+            Id = vdl.Id;
+            IsApproved = vdl.Drive.StatusId == Drive.StatusApproved;
+            CallerIdentifier = vdl.Drive.Appointment.Caller.CallerIdentifier;
+            CallerName = vdl.Drive.Appointment.Caller.FirstName + " " + vdl.Drive.Appointment.Caller.LastName;
+            CallerNote = vdl.Drive.Appointment.Caller.Note;
+            StartLocation = vdl.Drive.Appointment.PickupLocationVague;
+            StartLatitude = vdl.Drive.Appointment.PickupVagueLatitude;
+            StartLongitude = vdl.Drive.Appointment.PickupVagueLongitude;
+            VolunteerDriveId = vdl.Id;
         }
 
     }

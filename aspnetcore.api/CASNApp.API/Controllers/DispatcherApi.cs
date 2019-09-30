@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
 using CASNApp.Core.Commands;
+using CASNApp.Core.Misc;
 using CASNApp.Core.Models;
 using CASNApp.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
@@ -44,6 +45,7 @@ namespace CASNApp.API.Controllers
 		private readonly string twilioAccountSID;
 		private readonly string twilioAuthKey;
 		private readonly string twilioPhoneNumber;
+        private readonly bool badgesAreEnabled;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -57,17 +59,18 @@ namespace CASNApp.API.Controllers
             twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
-		}
+            badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
+        }
 
-		/// <summary>
-		/// adds a new appointment
-		/// </summary>
-		/// <remarks>Adds appointment (and drives) to the system</remarks>
-		/// <param name="appointmentDTO">appointmentData to add</param>
-		/// <response code="200">Success. Created appointment.</response>
-		/// <response code="400">Client Error - please check your request format &amp; try again.</response>
-		/// <response code="409">Error. That appointment already exists.</response>
-		[HttpPost]
+        /// <summary>
+        /// adds a new appointment
+        /// </summary>
+        /// <remarks>Adds appointment (and drives) to the system</remarks>
+        /// <param name="appointmentDTO">appointmentData to add</param>
+        /// <response code="200">Success. Created appointment.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="409">Error. That appointment already exists.</response>
+        [HttpPost]
         [Route("api/dispatcher/appointments")]
         [ValidateModelState]
         [SwaggerOperation("AddAppointment")]
@@ -330,52 +333,47 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var volunteerDriveId = body1.VolunteerDriveId;
-
-            if (!volunteerDriveId.HasValue)
+            if (!body1.VolunteerDriveId.HasValue)
             {
                 return BadRequest(body1);
             }
 
-            var volunteerDrive = dbContext.VolunteerDrive
-                .Include(vd => vd.Drive)
-                .Where(vd => vd.Id == volunteerDriveId.Value && vd.IsActive)
-                .SingleOrDefault();
+            var volunteerDriveLogQuery = new VolunteerDriveLogQuery(dbContext);
+            var volunteerDriveLog = volunteerDriveLogQuery.GetByIdAsync(body1.VolunteerDriveId.Value, false).Result;
 
-            if (volunteerDrive == null)
+            if (volunteerDriveLog == null)
             {
                 return NotFound(body1);
             }
 
-            if (volunteerDrive.Drive.StatusId != Drive.StatusPending ||
-                volunteerDrive.Drive.DriverId.HasValue)
+            if (volunteerDriveLog.Drive.StatusId != Drive.StatusPending ||
+                volunteerDriveLog.Drive.DriverId.HasValue)
             {
                 return Conflict(body1);
             }
 
             var utcNow = DateTime.UtcNow;
 
-            var driver = volunteerQuery.GetActiveDriverById(volunteerDrive.VolunteerId, false);
+            var driver = volunteerQuery.GetActiveDriverById(volunteerDriveLog.VolunteerId, false);
 
-            //if (!driver.LastDriveApproved.HasValue)
-            //{
-            //    // Give 'em the First Drive badge
-            //    dbContext.VolunteerBadge.Add(new Core.Entities.VolunteerBadge
-            //    {
-            //        BadgeId = 1,
-            //        VolunteerId = driver.Id,
-            //    });
-            //}
+            var drive = volunteerDriveLog.Drive;
 
-            //driver.LastDriveApproved = utcNow;
-
-            var drive = volunteerDrive.Drive;
-
-            drive.DriverId = volunteerDrive.VolunteerId;
+            drive.DriverId = volunteerDriveLog.VolunteerId;
             drive.StatusId = Drive.StatusApproved;
             drive.Approved = utcNow;
             drive.ApprovedById = volunteer.Id;
             drive.Updated = utcNow;
+
+            if (volunteerDriveLog != null)
+            {
+                volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.APPROVED;
+                volunteerDriveLog.Approved = DateTime.UtcNow;
+                volunteerDriveLog.Updated = DateTime.UtcNow;
+            }
+            else
+            {
+                logger.LogError($"VolunteerDriveLog not found for volunteer {volunteer.Id}, drive {drive.Id}.");
+            }
 
             dbContext.SaveChanges();
 
@@ -393,6 +391,34 @@ namespace CASNApp.API.Controllers
 					logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
 				}
 			}
+
+            // check and award badges
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    var badgeCommand = new BadgeCommand(dbContext, loggerFactory.CreateLogger<BadgeCommand>());
+                    var badgeQuery = new BadgeQuery(dbContext);
+                    var relevantUnearnedBadges = badgeQuery.GetRelevantUnearnedBadgesForVolunteerIdAsync(driver.Id, BadgeTriggerType.ApprovedForDrive, false).Result;
+
+                    foreach (var badge in relevantUnearnedBadges)
+                    {
+                        var badgeAwarded = badgeCommand.CheckAndAwardBadgeAsync(badge, driver, volunteerDriveLog).Result;
+
+                        if (badgeAwarded)
+                        {
+                            dbContext.SaveChanges();
+
+                            //if we're going to text the volunteer about the badge they just earned, here's where to do that
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(AddDriver)}(): Exception: {ex}");
+                }
+            }
 
 			return Ok();
         }
@@ -621,12 +647,12 @@ namespace CASNApp.API.Controllers
                 return BadRequest();
             }
 
-            var results = dbContext.VolunteerDrive
+            var results = dbContext.VolunteerDriveLog
                 .AsNoTracking()
-                .Include(vd => vd.Volunteer)
-                .Where(vd => vd.DriveId == driveId.Value && vd.IsActive)
-                .OrderBy(vd => vd.Created)
-                .Select(vd => new Core.Models.VolunteerDrive(vd))
+                .Include(vdl => vdl.Volunteer)
+                .Where(vdl => vdl.DriveId == driveId.Value && vdl.IsActive)
+                .OrderBy(vdl => vdl.Created)
+                .Select(vdl => new Core.Models.VolunteerDrive(vdl))
                 .ToList();
 
             return Ok(results);

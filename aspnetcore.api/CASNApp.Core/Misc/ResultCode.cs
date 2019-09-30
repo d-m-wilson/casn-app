@@ -6,6 +6,7 @@
         NotFound,
         InvalidOperation,
         ChildEntityNotFound,
+        BadRequest,
 
     }
 }

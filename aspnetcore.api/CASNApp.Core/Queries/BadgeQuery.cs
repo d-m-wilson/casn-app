@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
+using CASNApp.Core.Misc;
 using CASNApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,34 @@ namespace CASNApp.Core.Queries
                          };
 
             return result.ToListAsync();
+        }
+
+        public async Task<List<Badge>> GetUnearnedBadgesForVolunteerIdAsync(int volunteerId, bool readOnly)
+        {
+            var earnedBadgeIds = await (readOnly ? dbContext.VolunteerBadge.AsNoTracking() : dbContext.VolunteerBadge)
+                .Where(vb => vb.VolunteerId == volunteerId)
+                .Select(vb => vb.BadgeId)
+                .ToListAsync();
+
+            var unearnedBadges = (readOnly ? dbContext.Badge.AsNoTracking() : dbContext.Badge)
+                .Where(b => !earnedBadgeIds.Contains(b.Id) && b.IsActive)
+                .ToListAsync();
+
+            return await unearnedBadges;
+        }
+
+        public async Task<List<Badge>> GetRelevantUnearnedBadgesForVolunteerIdAsync(int volunteerId, BadgeTriggerType badgeTriggerType, bool readOnly)
+        {
+            var earnedBadgeIds = await(readOnly ? dbContext.VolunteerBadge.AsNoTracking() : dbContext.VolunteerBadge)
+                .Where(vb => vb.VolunteerId == volunteerId)
+                .Select(vb => vb.BadgeId)
+                .ToListAsync();
+
+            var unearnedBadges = (readOnly ? dbContext.Badge.AsNoTracking() : dbContext.Badge)
+                .Where(b => !earnedBadgeIds.Contains(b.Id) && b.TriggerType == (int)badgeTriggerType && b.IsActive)
+                .ToListAsync();
+
+            return await unearnedBadges;
         }
 
     }

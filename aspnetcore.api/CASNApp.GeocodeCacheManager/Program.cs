@@ -194,6 +194,49 @@ namespace CASNApp.GeocodeCacheManager
             Console.WriteLine(logMessage);
             logger.LogInformation(logMessage);
 
+            logMessage = $"Refreshing {nameof(Volunteer)} records...";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
+
+            var volunteerCount = 0;
+
+            using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
+            {
+                var volunteers = dbContext.Volunteer;
+
+                foreach (var volunteer in volunteers)
+                {
+                    if (volunteer.Latitude.HasValue &&
+                        volunteer.Longitude.HasValue &&
+                        (!volunteer.Geocoded.HasValue ||
+                        volunteer.Geocoded.Value.AddDays(maxDays) > DateTime.UtcNow))
+                    {
+                        continue;
+                    }
+
+                    var clinicAddress = volunteer.GetAddress();
+                    var clinicLocation = geocoder.ForwardLookupAsync(clinicAddress).Result;
+
+                    if (clinicLocation == null)
+                    {
+                        logMessage = "The geocoder returned null. Please check the log for details.";
+                        Console.WriteLine(logMessage);
+                        logger.LogError(logMessage);
+                        throw new Exception(logMessage);
+                    }
+
+                    volunteer.SetLocation(clinicLocation);
+
+                    volunteerCount++;
+                }
+
+                dbContext.SaveChanges();
+            }
+
+            logMessage = $"{volunteerCount} {nameof(Volunteer)} records refreshed.";
+            Console.WriteLine(logMessage);
+            logger.LogInformation(logMessage);
+
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using CASNApp.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,7 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<MessageLog> MessageLog { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
         public virtual DbSet<VolunteerBadge> VolunteerBadge { get; set; }
-        public virtual DbSet<VolunteerDrive> VolunteerDrive { get; set; }
+        public virtual DbSet<VolunteerDriveLog> VolunteerDriveLog { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -181,6 +182,21 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.TriggerType)
+                    .IsRequired()
+                    .HasColumnType("int");
+
+                entity.Property(e => e.ProcedureName)
+                    .IsRequired()
+                    .HasColumnType("nvarchar")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.ClinicId)
+                    .HasColumnType("int");
+
+                entity.Property(e => e.CountTarget)
+                    .HasColumnType("int");
             });
 
             modelBuilder.Entity<Caller>(entity =>
@@ -527,6 +543,9 @@ namespace CASNApp.Core.Entities
                 entity.HasIndex(e => e.VolunteerId)
                     .HasName("FK_Volunteer_Badge_VolunteerId_idx");
 
+                entity.HasIndex(e => e.VolunteerDriveLogId)
+                    .HasName("FK_Volunteer_Badge_VolunteerDriveLogId_idx");
+
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
@@ -545,17 +564,23 @@ namespace CASNApp.Core.Entities
                     .WithMany(p => p.VolunteerBadges)
                     .HasForeignKey(d => d.VolunteerId)
                     .HasConstraintName("FK_Volunteer_Badge_VolunteerId");
+
+                entity.HasOne(d => d.VolunteerDriveLog)
+                    .WithMany(p => p.VolunteerBadges)
+                    .HasForeignKey(d => d.VolunteerDriveLogId)
+                    .HasConstraintName("FK_Volunteer_Badge_VolunteerDriveLogId");
+
             });
 
-            modelBuilder.Entity<VolunteerDrive>(entity =>
+            modelBuilder.Entity<VolunteerDriveLog>(entity =>
             {
-                entity.ToTable("Volunteer_Drive");
+                entity.ToTable("Volunteer_DriveLog");
 
                 entity.HasIndex(e => e.DriveId)
-                    .HasName("FK_Volunteer_Drive_DriveId_idx");
+                    .HasName("FK_Volunteer_DriveLog_DriveId_idx");
 
                 entity.HasIndex(e => e.VolunteerId)
-                    .HasName("FK_Volunteer_Drive_VolunteerId_idx");
+                    .HasName("FK_Volunteer_DriveLog_VolunteerId_idx");
 
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
@@ -570,16 +595,35 @@ namespace CASNApp.Core.Entities
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
+                entity.Property(e => e.Canceled)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Approved)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Reassigned)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
                 entity.HasOne(d => d.Drive)
-                    .WithMany(p => p.VolunteerDrives)
+                    .WithMany(p => p.VolunteerDriveLogs)
                     .HasForeignKey(d => d.DriveId)
                     .HasConstraintName("FK_Volunteer_Drive_DriveId");
 
                 entity.HasOne(d => d.Volunteer)
-                    .WithMany(p => p.VolunteerDrives)
+                    .WithMany(p => p.VolunteerDriveLogs)
                     .HasForeignKey(d => d.VolunteerId)
                     .HasConstraintName("FK_Volunteer_Drive_VolunteerId");
             });
+
         }
+
+        public SqlConnection GetSqlConnection()
+        {
+            return (SqlConnection)Database.GetDbConnection();
+        }
+
     }
 }

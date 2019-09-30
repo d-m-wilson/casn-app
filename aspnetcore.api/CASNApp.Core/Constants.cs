@@ -14,5 +14,6 @@ namespace CASNApp.Core
         public const string TwilioAccountSID = nameof(TwilioAccountSID);
 		public const string TwilioAuthKey = nameof(TwilioAuthKey);
 		public const string TwilioPhoneNumber = nameof(TwilioPhoneNumber);
-	}
+        public const string BadgesAreEnabled = nameof(BadgesAreEnabled);
+    }
 }

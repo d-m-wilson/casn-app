@@ -22,6 +22,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.Logging;
+using CASNApp.Core.Misc;
 
 namespace CASNApp.API.Controllers
 {
@@ -38,8 +39,9 @@ namespace CASNApp.API.Controllers
 		private readonly string twilioAccountSID;
 		private readonly string twilioAuthKey;
 		private readonly string twilioPhoneNumber;
+        private readonly bool badgesAreEnabled;
 
-		public DriverApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
+        public DriverApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
 			this.loggerFactory = loggerFactory;
@@ -48,17 +50,18 @@ namespace CASNApp.API.Controllers
 			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
-		}
+            badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
+        }
 
-		/// <summary>
-		/// applies a volunteer for a drive
-		/// </summary>
-		/// <remarks>Adds a volunteer drive application</remarks>
-		/// <param name="body"></param>
-		/// <response code="200">Success. Added applicant record.</response>
-		/// <response code="400">Client Error - please check your request format &amp; try again.</response>
-		/// <response code="404">Error. The driveId or volunteerId was not found.</response>
-		[HttpPost]
+        /// <summary>
+        /// applies a volunteer for a drive
+        /// </summary>
+        /// <remarks>Adds a volunteer drive application</remarks>
+        /// <param name="body"></param>
+        /// <response code="200">Success. Added applicant record.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
+        [HttpPost]
         [Route("api/drives/apply")]
         [ValidateModelState]
         [SwaggerOperation("AddDriveApplicant")]
@@ -87,7 +90,7 @@ namespace CASNApp.API.Controllers
                 return NotFound(body);
             }
 
-            bool alreadyApplied = dbContext.VolunteerDrive
+            bool alreadyApplied = dbContext.VolunteerDriveLog
                 .Include(vd => vd.Drive)
                 .Where(vd => vd.VolunteerId == volunteer.Id && vd.DriveId == drive.Id && vd.IsActive)
                 .Any();
@@ -97,15 +100,16 @@ namespace CASNApp.API.Controllers
                 return Conflict(body);
             }
 
-            var volunteerDrive = new Core.Entities.VolunteerDrive
+            var volunteerDriveLog = new Core.Entities.VolunteerDriveLog
             {
                 Created = DateTime.UtcNow,
                 DriveId = (int)driveId.Value,
                 VolunteerId = volunteer.Id,
                 IsActive = true,
+                DriveLogStatusId = Core.Entities.DriveLogStatus.APPLIED,
             };
 
-            dbContext.VolunteerDrive.Add(volunteerDrive);
+            dbContext.VolunteerDriveLog.Add(volunteerDriveLog);
             
             if (drive.StatusId == Drive.StatusOpen)
             {
@@ -115,7 +119,7 @@ namespace CASNApp.API.Controllers
 
             dbContext.SaveChanges();
 
-            var volunteerDriveDTO = new Core.Models.VolunteerDrive(volunteerDrive);
+            var volunteerDriveDTO = new Core.Models.VolunteerDrive(volunteerDriveLog);
 
 			//send Drive Applied for Drive message
 			if (twilioIsEnabled)
@@ -132,16 +136,35 @@ namespace CASNApp.API.Controllers
 				}
 			}
 
-			return Ok(volunteerDriveDTO);
+            // check and award badges
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    var badgeCommand = new BadgeCommand(dbContext, loggerFactory.CreateLogger<BadgeCommand>());
+                    var badgeQuery = new BadgeQuery(dbContext);
+                    var relevantUnearnedBadges = badgeQuery.GetRelevantUnearnedBadgesForVolunteerIdAsync(volunteer.Id, BadgeTriggerType.AppliedForDrive, false).Result;
 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
+                    foreach (var badge in relevantUnearnedBadges)
+                    {
+                        var badgeAwarded = badgeCommand.CheckAndAwardBadgeAsync(badge, volunteer, volunteerDriveLog).Result;
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+                        if (badgeAwarded)
+                        {
+                            dbContext.SaveChanges();
 
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
+                            //if we're going to text the volunteer about the badge they just earned, here's where to do that
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(AddDriveApplicant)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok(volunteerDriveDTO);
         }
 
         /// <summary>
@@ -164,12 +187,12 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var results = dbContext.VolunteerDrive
+            var results = dbContext.VolunteerDriveLog
                 .AsNoTracking()
-                .Include(vd => vd.Drive.Appointment.Caller)
-                .Where(vd => vd.VolunteerId == volunteer.Id &&
-                    vd.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
-                .Select(vd => new DriverDrive(vd))
+                .Include(vdl => vdl.Drive.Appointment.Caller)
+                .Where(vdl => vdl.VolunteerId == volunteer.Id &&
+                    vdl.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
+                .Select(vdl => new DriverDrive(vdl))
                 .ToList();
 
             return Ok(results);
