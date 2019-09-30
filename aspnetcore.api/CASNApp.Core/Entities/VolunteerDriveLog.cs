@@ -14,9 +14,9 @@ namespace CASNApp.Core.Entities
         public int VolunteerId { get; set; }
         public int DriveId { get; set; }
         public int DriveLogStatusId { get; set; }
-        public DateTime Canceled { get; set; }
-        public DateTime Approved { get; set; }
-        public DateTime Reassigned { get; set; }
+        public DateTime? Canceled { get; set; }
+        public DateTime? Approved { get; set; }
+        public DateTime? Reassigned { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
         public bool IsActive { get; set; }
