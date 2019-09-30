@@ -214,10 +214,19 @@ namespace CASNApp.GeocodeCacheManager
                         continue;
                     }
 
-                    var clinicAddress = volunteer.GetAddress();
-                    var clinicLocation = geocoder.ForwardLookupAsync(clinicAddress).Result;
+                    if (string.IsNullOrWhiteSpace(volunteer.Address) ||
+                        string.IsNullOrWhiteSpace(volunteer.City) ||
+                        string.IsNullOrWhiteSpace(volunteer.State) ||
+                        string.IsNullOrWhiteSpace(volunteer.PostalCode))
+                    {
+                        logger.LogWarning($"Skipping volunteer {volunteer.Id} because their address is incomplete.");
+                        continue;
+                    }
 
-                    if (clinicLocation == null)
+                    var volunteerAddress = volunteer.GetAddress();
+                    var volunteerLocation = geocoder.ForwardLookupAsync(volunteerAddress).Result;
+
+                    if (volunteerLocation == null)
                     {
                         logMessage = "The geocoder returned null. Please check the log for details.";
                         Console.WriteLine(logMessage);
@@ -225,7 +234,7 @@ namespace CASNApp.GeocodeCacheManager
                         throw new Exception(logMessage);
                     }
 
-                    volunteer.SetLocation(clinicLocation);
+                    volunteer.SetLocation(volunteerLocation);
 
                     volunteerCount++;
                 }
