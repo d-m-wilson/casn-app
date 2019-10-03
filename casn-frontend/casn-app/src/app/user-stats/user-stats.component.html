@@ -11,18 +11,19 @@
               <div class="front">
                 <img [src]="b.path"
                      alt="b.title"
-                     [ngClass]="b.earned ? 'active' : 'inactive'"/>
+                     [ngClass]="b.isEarned ? 'active' : 'inactive'"/>
               </div>
               <div class="back">
                 <h3>{{ b.title }}</h3>
-                <p *ngIf="b.earned"><em>Earned {{ b.dateEarned }}</em></p>
-                <!-- TODO: Replace w/ b.hidden property -->
-                <p>{{ b.earned ? b.description : '???' }}</p>
+                <p *ngIf="b.isEarned"><em>Earned {{ b.dateEarned }}</em></p>
+                <p>{{ b.isHidden ? '???' : b.description }}</p>
               </div>
             </div>
           </div>
         </div>
       </mat-card>
+
+      <pre>{{ badges | json }}</pre>
     </mat-tab>
     <mat-tab label="Stats">
       <mat-card class="stat-card">

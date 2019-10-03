@@ -24,10 +24,11 @@ export class UserStatsComponent implements OnInit {
   **********************************************************************/
   // TODO: Replace with API call
   getBadges(): void {
-    // this.ds.getBadgesForVolunteer().subscribe(b => {
-    //   this.badges = b;
-    // })
-    this.badges = tempBadges;
+    this.ds.getBadges().subscribe(b => {
+      console.log("BADGEZZZZ", b);
+      this.badges = b;
+    })
+    // this.badges = tempBadges;
   }
 
   toggleTapped(badge) {
