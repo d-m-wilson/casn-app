@@ -5,13 +5,17 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
+    <h1>
+      {{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}
+    </h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
         <mat-card class="appointment-card candy-card">
-          <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
-          <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
+          <div><span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
+          <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span>
+          <mat-icon color="accent"
+                    (click)="editAppointment()">edit</mat-icon>
         </mat-card>
         <!--=========== Caller Info ============-->
         <mat-expansion-panel expanded class="mt candy-expansion-panel">
