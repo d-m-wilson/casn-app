@@ -32,6 +32,11 @@ export class CallersComponent implements OnInit {
       startWith(''),
       map(value => this.filterLanguage(value))
     );
+
+    // If caller already selected, search callerIdentifier
+    // const callerId = """ Get caller id from URL params """
+    // this.callerIdentifierSearch.setValue(callerId);
+    // this.searchCallerIdentifier();
   }
 
   /*********************************************************************
@@ -133,7 +138,6 @@ export class CallersComponent implements OnInit {
         console.log("404 - No existing caller was found");
         this.displayCallerForm = true;
         this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
-
       }
     );
   }
