@@ -21,16 +21,11 @@ export class UserStatsComponent implements OnInit {
   /*********************************************************************
                             Service Calls
   **********************************************************************/
-  // TODO: Replace with API call
   getBadges(): void {
-    this.ds.getBadges().subscribe(b => {
-      console.log("BADGEZZZZ", b);
-      this.badges = b;
-    })
-    // this.badges = tempBadges;
+    this.ds.getBadges().subscribe(b => this.badges = b);
   }
 
-  toggleTapped(badge) {
+  toggleTapped(badge): void {
     badge.tapped = badge.tapped ? false : true;
   }
 

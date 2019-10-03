@@ -6,17 +6,17 @@
         <div class="badge-container">
           <div class="flip-card" *ngFor="let b of badges">
             <div class="flip-card-inner"
-                 (click)="toggleTapped(b)"
-                 [ngClass]="b.tapped ? 'tapped' : ''">
-              <div class="front">
+                 (click)="toggleTapped(b)">
+              <div class="front" *ngIf="!b.tapped">
                 <img [src]="b.path"
                      alt="b.title"
                      [ngClass]="b.isEarned ? 'active' : 'inactive'"/>
               </div>
-              <div class="back">
+              <div class="front back" *ngIf="b.tapped">
                 <h3>{{ b.title }}</h3>
                 <p *ngIf="b.isEarned"><em>Earned {{ b.dateEarned }}</em></p>
-                <p>{{ b.isHidden ? '???' : b.description }}</p>
+                <p *ngIf="b.isEarned">{{ b.description }}</p>
+                <p *ngIf="!b.isEarned"><em>{{ b.isHidden ? '???' : b.description }}</em></p>
               </div>
             </div>
           </div>
