@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { tempBadges } from './temp-badges'; // TODO: Delete
 import { DefaultApiService } from '../api/api/defaultApi.service';
 
 @Component({
