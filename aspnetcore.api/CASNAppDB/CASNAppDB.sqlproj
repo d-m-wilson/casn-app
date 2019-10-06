@@ -72,7 +72,7 @@
     <Build Include="dbo\Tables\AppointmentType.sql" />
     <Build Include="dbo\Tables\Badge.sql" />
     <Build Include="dbo\Tables\Caller.sql" />
-    <Build Include="dbo\Tables\Clinic.sql" />
+    <Build Include="dbo\Tables\ServiceProvider.sql" />
     <Build Include="dbo\Tables\Drive.sql" />
     <Build Include="dbo\Tables\DriveCancelReason.sql" />
     <Build Include="dbo\Tables\DriveStatus.sql" />
@@ -85,11 +85,15 @@
     <Build Include="dbo\Tables\DriveLogStatus.sql" />
     <None Include="dbo\Tables\Data\DriveLogStatus.data.sql" />
     <Build Include="dbo\Stored Procedures\uspCheckBadgeAllClinics.sql" />
+    <Build Include="dbo\Tables\ServiceProviderType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="CASNAppDB.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Tables\Data\ServiceProviderType.data.sql" />
   </ItemGroup>
 </Project>

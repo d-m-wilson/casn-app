@@ -2,7 +2,7 @@
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Clinic
+    public partial class ServiceProvider
     {
         public string GetAddress()
         {

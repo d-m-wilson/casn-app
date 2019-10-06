@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Queries;
 using Microsoft.Extensions.Logging;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using System.Collections;
-using System.Reflection;
-using System.ComponentModel;
-using System.Collections.Generic;
 
 namespace CASNApp.Core.Commands
 {
 
-	public class TwilioCommand
+    public class TwilioCommand
 	{
 		private readonly Core.Entities.casn_appContext dbContext;
 		private string accountSid;
@@ -25,8 +21,8 @@ namespace CASNApp.Core.Commands
 		public enum MessageType
 		{
 			Unknown = 0,
-			ApptAddedOneWayToClinic = 1,
-			ApptAddedOneWayFromClinic = 2,
+			ApptAddedOneWayToServiceProvider = 1,
+            ApptAddedOneWayFromServiceProvider = 2,
 			ApptAddedRoundTripSameAddress = 3,
 			ApptAddedRoundTripDiffAddress = 4,
 			ApptAddedToday = 5,
@@ -38,14 +34,16 @@ namespace CASNApp.Core.Commands
 			DriverApprovedForDrive = 11,
 		}
 
-		public TwilioCommand(string accountSid, string authTokey, string accountPhoneNumber, ILogger<TwilioCommand> logger, casn_appContext dbContext, string timeZoneName = "Central Standard Time")
+        //TODO: optional parameters are not a great idea, this one should probably be removed
+		public TwilioCommand(string accountSid, string authToken, string accountPhoneNumber, ILogger<TwilioCommand> logger,
+            casn_appContext dbContext, string timeZoneName = "Central Standard Time")
 		{
 			this.accountSid = accountSid;
-			this.authToken = authTokey;
+			this.authToken = authToken;
 			this.accountPhoneNumber = accountPhoneNumber;
 			this.logger = logger;
 			this.dbContext = dbContext;
-			this.timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
+			timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
 		}
 
 		public void SendDispatcherMessage(Drive drive, Volunteer driver, MessageType messageType)
@@ -103,13 +101,13 @@ namespace CASNApp.Core.Commands
 
 			//build the appoint list message text
 			string appointmentListText = "";
-			ClinicQuery clinicQuery = new ClinicQuery(dbContext);
+			ServiceProviderQuery serviceProviderQuery = new ServiceProviderQuery(dbContext);
 			foreach (Appointment appointment in appointments)
 			{
-				Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
+				ServiceProvider serviceProvider = serviceProviderQuery.GetServiceProviderById(appointment.ServiceProviderId, true);
 				if (appointmentListText != "")
 					appointmentListText += "\n";
-				appointmentListText += clinic.Name + " on " + TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt");
+				appointmentListText += serviceProvider.Name + " on " + TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt");
 			}
 
 			//select the drivers 
@@ -134,9 +132,9 @@ namespace CASNApp.Core.Commands
 			if (appointment.AppointmentDate.Date == DateTime.UtcNow.Date)
 				messageType = MessageType.ApptAddedToday;
 			else if (driveTo == null && driveFrom != null)
-				messageType = MessageType.ApptAddedOneWayFromClinic;
+				messageType = MessageType.ApptAddedOneWayFromServiceProvider;
 			else if (driveTo != null && driveFrom == null)
-				messageType = MessageType.ApptAddedOneWayToClinic;
+				messageType = MessageType.ApptAddedOneWayToServiceProvider;
 			else if (driveTo.StartAddress == driveFrom.EndAddress)
 				messageType = MessageType.ApptAddedRoundTripSameAddress;
 			else if (driveTo.StartAddress != driveFrom.EndAddress)
@@ -153,13 +151,13 @@ namespace CASNApp.Core.Commands
 				double initialLongitude = 0;
 				if (messageType != MessageType.ApptAddedToday)
 				{
-					if (messageType == MessageType.ApptAddedRoundTripSameAddress || messageType == MessageType.ApptAddedOneWayToClinic)
+					if (messageType == MessageType.ApptAddedRoundTripSameAddress || messageType == MessageType.ApptAddedOneWayToServiceProvider)
 					{
 						driveDistance = GeocoderQuery.LatLng.GetDistance((double)driveTo.StartLatitude, (double)driveTo.StartLongitude, (double)driveTo.EndLatitude, (double)driveTo.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
 						initialLatitude = (double)driveTo.StartLatitude;
 						initialLongitude = (double)driveTo.StartLongitude;
 					}
-					else if (messageType == MessageType.ApptAddedOneWayFromClinic)
+					else if (messageType == MessageType.ApptAddedOneWayFromServiceProvider)
 					{
 						driveDistance = GeocoderQuery.LatLng.GetDistance((double)driveFrom.StartLatitude, (double)driveFrom.StartLongitude, (double)driveFrom.EndLatitude, (double)driveFrom.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
 						initialLatitude = (double)driveFrom.StartLatitude;
@@ -178,8 +176,8 @@ namespace CASNApp.Core.Commands
 				//get the message by message type
 				MessageQuery messageQuery = new MessageQuery(dbContext);
 				Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
-				ClinicQuery clinicQuery = new ClinicQuery(dbContext);
-				Clinic clinic = clinicQuery.GetClinicByID(appointment.ClinicId, true);
+				ServiceProviderQuery serviceProviderQuery = new ServiceProviderQuery(dbContext);
+				ServiceProvider serviceProvider = serviceProviderQuery.GetServiceProviderById(appointment.ServiceProviderId, true);
 
 				//select the drivers 
 				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
@@ -191,7 +189,7 @@ namespace CASNApp.Core.Commands
 					if (!String.IsNullOrEmpty(driver.MobilePhone) && driver.Latitude.HasValue && driver.Longitude.HasValue)
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, clinic, appointment, driver, 0, 0);
+						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, 0, 0);
 
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
 						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
@@ -219,9 +217,9 @@ namespace CASNApp.Core.Commands
 			}
 		}
 
-		private string BuildMessage(string messageText, Clinic clinic, Appointment appointment, Volunteer driver, int driveCount, int driveId)
+		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, int driveCount, int driveId)
 		{
-			return messageText.Replace("{clinic}", clinic?.Name ?? "")
+			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
 				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "")
 				.Replace("{timeDate}", (appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : ""))
@@ -230,6 +228,7 @@ namespace CASNApp.Core.Commands
 				.Replace("{driveCount}", driveCount.ToString())
 				.Replace("{driveId}", driveId.ToString()); 
 		}
+
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)
 		{
 			//initialize twilio client

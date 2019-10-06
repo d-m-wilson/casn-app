@@ -28,7 +28,7 @@ namespace CASNApp.GeocodeCacheManager
             maxDays = int.Parse(configuration["GeocodeCacheMaxDays"]);
         }
 
-        private static ServiceProvider BuildDi()
+        private static Microsoft.Extensions.DependencyInjection.ServiceProvider BuildDi()
         {
             return new ServiceCollection()
                 .AddDbContext<casn_appContext>(options =>
@@ -147,11 +147,11 @@ namespace CASNApp.GeocodeCacheManager
             Console.WriteLine(logMessage);
             logger.LogInformation(logMessage);
 
-            logMessage = $"Refreshing {nameof(Clinic)} records...";
+            logMessage = $"Refreshing {nameof(Core.Entities.ServiceProvider)} records...";
             Console.WriteLine(logMessage);
             logger.LogInformation(logMessage);
 
-            var clinicCount = 0;
+            var serviceProviderCount = 0;
 
             var googleApiKey = configuration["GoogleApiKey"];
             var geocoderLogger = servicesProvider.GetRequiredService<ILogger<GeocoderQuery>>();
@@ -159,22 +159,22 @@ namespace CASNApp.GeocodeCacheManager
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
             {
-                var clinics = dbContext.Clinic;
+                var serviceProviders = dbContext.ServiceProvider;
 
-                foreach (var clinic in clinics)
+                foreach (var serviceProvider in serviceProviders)
                 {
-                    if (clinic.Latitude.HasValue &&
-                        clinic.Longitude.HasValue &&
-                        (!clinic.Geocoded.HasValue ||
-                        clinic.Geocoded.Value.AddDays(maxDays) > DateTime.UtcNow))
+                    if (serviceProvider.Latitude.HasValue &&
+                        serviceProvider.Longitude.HasValue &&
+                        (!serviceProvider.Geocoded.HasValue ||
+                        serviceProvider.Geocoded.Value.AddDays(maxDays) > DateTime.UtcNow))
                     {
                         continue;
                     }
 
-                    var clinicAddress = clinic.GetAddress();
-                    var clinicLocation = geocoder.ForwardLookupAsync(clinicAddress).Result;
+                    var serviceProviderAddress = serviceProvider.GetAddress();
+                    var serviceProviderLocation = geocoder.ForwardLookupAsync(serviceProviderAddress).Result;
 
-                    if (clinicLocation == null)
+                    if (serviceProviderLocation == null)
                     {
                         logMessage = "The geocoder returned null. Please check the log for details.";
                         Console.WriteLine(logMessage);
@@ -182,15 +182,15 @@ namespace CASNApp.GeocodeCacheManager
                         throw new Exception(logMessage);
                     }
 
-                    clinic.SetLocation(clinicLocation);
+                    serviceProvider.SetLocation(serviceProviderLocation);
 
-                    clinicCount++;
+                    serviceProviderCount++;
                 }
 
                 dbContext.SaveChanges();
             }
 
-            logMessage = $"{clinicCount} {nameof(Clinic)} records refreshed.";
+            logMessage = $"{serviceProviderCount} {nameof(Core.Entities.ServiceProvider)} records refreshed.";
             Console.WriteLine(logMessage);
             logger.LogInformation(logMessage);
 

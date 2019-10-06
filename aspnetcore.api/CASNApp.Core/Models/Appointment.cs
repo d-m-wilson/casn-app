@@ -43,11 +43,11 @@ namespace CASNApp.Core.Models
         public long? CallerId { get; set; }
 
         /// <summary>
-        /// Gets or Sets ClinicId
+        /// Gets or Sets ServiceProviderId
         /// </summary>
         [Required]
-        [DataMember(Name="clinicId")]
-        public long? ClinicId { get; set; }
+        [DataMember]
+        public long? ServiceProviderId { get; set; }
 
         /// <summary>
         /// Gets or Sets PickupLocationVague
@@ -128,7 +128,7 @@ namespace CASNApp.Core.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  DispatcherId: ").Append(DispatcherId).Append("\n");
             sb.Append("  CallerId: ").Append(CallerId).Append("\n");
-            sb.Append("  ClinicId: ").Append(ClinicId).Append("\n");
+            sb.Append("  ServiceProviderId: ").Append(ServiceProviderId).Append("\n");
             sb.Append("  PickupLocationVague: ").Append(PickupLocationVague).Append("\n");
             sb.Append("  DropoffLocationVague: ").Append(DropoffLocationVague).Append("\n");
             sb.Append("  AppointmentDate: ").Append(AppointmentDate).Append("\n");
@@ -187,9 +187,9 @@ namespace CASNApp.Core.Models
                     CallerId.Equals(other.CallerId)
                 ) && 
                 (
-                    ClinicId == other.ClinicId ||
-                    ClinicId != null &&
-                    ClinicId.Equals(other.ClinicId)
+                    ServiceProviderId == other.ServiceProviderId ||
+                    ServiceProviderId != null &&
+                    ServiceProviderId.Equals(other.ServiceProviderId)
                 ) && 
                 (
                     PickupLocationVague == other.PickupLocationVague ||
@@ -239,8 +239,8 @@ namespace CASNApp.Core.Models
                     hashCode = hashCode * 59 + DispatcherId.GetHashCode();
                     if (CallerId != null)
                     hashCode = hashCode * 59 + CallerId.GetHashCode();
-                    if (ClinicId != null)
-                    hashCode = hashCode * 59 + ClinicId.GetHashCode();
+                    if (ServiceProviderId != null)
+                    hashCode = hashCode * 59 + ServiceProviderId.GetHashCode();
                     if (PickupLocationVague != null)
                     hashCode = hashCode * 59 + PickupLocationVague.GetHashCode();
                     if (DropoffLocationVague != null)

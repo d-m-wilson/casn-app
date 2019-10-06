@@ -9,7 +9,7 @@
             AppointmentDate = a.AppointmentDate;
             AppointmentTypeId = a.AppointmentTypeId;
             AppointmentType = a.AppointmentType?.Name;
-            ClinicId = a.ClinicId;
+            ServiceProviderId = a.ServiceProviderId;
             Created = a.Created;
             DispatcherId = a.DispatcherId;
             DropoffLocationVague = a.DropoffLocationVague;
@@ -28,7 +28,7 @@
             if (!CallerId.HasValue)
                 return false;
 
-            if (!ClinicId.HasValue)
+            if (!ServiceProviderId.HasValue)
                 return false;
 
             if (!DispatcherId.HasValue)

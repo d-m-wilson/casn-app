@@ -13,7 +13,7 @@ namespace CASNApp.Core.Entities
         public int Id { get; set; }
         public int DispatcherId { get; set; }
         public int CallerId { get; set; }
-        public int ClinicId { get; set; }
+        public int ServiceProviderId { get; set; }
         public string PickupLocationVague { get; set; }
         public decimal? PickupVagueLatitude { get; set; }
         public decimal? PickupVagueLongitude { get; set; }
@@ -29,7 +29,7 @@ namespace CASNApp.Core.Entities
         public DateTime? Updated { get; set; }
 
         public AppointmentType AppointmentType { get; set; }
-        public Clinic Clinic { get; set; }
+        public ServiceProvider ServiceProvider { get; set; }
         public Volunteer Dispatcher { get; set; }
         public Caller Caller { get; set; }
         public ICollection<Drive> Drives { get; set; }

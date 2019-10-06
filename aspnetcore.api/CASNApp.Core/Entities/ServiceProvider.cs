@@ -3,15 +3,16 @@ using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Clinic
+    public partial class ServiceProvider
     {
-        public Clinic()
+        public ServiceProvider()
         {
             Appointments = new HashSet<Appointment>();
         }
 
         public int Id { get; set; }
         public int CiviContactId { get; set; }
+        public int ServiceProviderTypeId { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
@@ -26,5 +27,6 @@ namespace CASNApp.Core.Entities
         public DateTime? Updated { get; set; }
 
         public ICollection<Appointment> Appointments { get; set; }
+        public ServiceProviderType ServiceProviderType { get; set; }
     }
 }

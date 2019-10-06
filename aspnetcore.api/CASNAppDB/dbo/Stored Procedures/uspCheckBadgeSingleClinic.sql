@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[uspCheckBadgeSingleClinic]
     @VolunteerId INT,
-    @ClinicId INT,
+    @ServiceProviderId INT,
 	@CountTarget INT
 AS
 BEGIN
@@ -12,7 +12,7 @@ BEGIN
     INNER JOIN [dbo].[Appointment] a ON a.Id = d.AppointmentId
     WHERE vdl.VolunteerId = @VolunteerId
         AND vdl.IsActive = 1
-        AND a.ClinicId = @ClinicId
+        AND a.ServiceProviderId = @ServiceProviderId
 
     IF (@DriveCount = @CountTarget)
     BEGIN

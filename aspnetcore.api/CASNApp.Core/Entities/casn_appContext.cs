@@ -22,12 +22,14 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<AppointmentType> AppointmentType { get; set; }
         public virtual DbSet<Badge> Badge { get; set; }
         public virtual DbSet<Caller> Caller { get; set; }
-        public virtual DbSet<Clinic> Clinic { get; set; }
         public virtual DbSet<Drive> Drive { get; set; }
         public virtual DbSet<DriveCancelReason> DriveCancelReason { get; set; }
+        public virtual DbSet<DriveLogStatus> DriveLogStatus { get; set; }
         public virtual DbSet<DriveStatus> DriveStatus { get; set; }
         public virtual DbSet<Message> Message { get; set; }
         public virtual DbSet<MessageLog> MessageLog { get; set; }
+        public virtual DbSet<ServiceProvider> ServiceProvider { get; set; }
+        public virtual DbSet<ServiceProviderType> ServiceProviderType { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
         public virtual DbSet<VolunteerBadge> VolunteerBadge { get; set; }
         public virtual DbSet<VolunteerDriveLog> VolunteerDriveLog { get; set; }
@@ -51,8 +53,8 @@ namespace CASNApp.Core.Entities
                 entity.HasIndex(e => e.CallerId)
                     .HasName("FK_Appointment_CallerId_idx");
 
-                entity.HasIndex(e => e.ClinicId)
-                    .HasName("FK_Appointment_ClinicId_idx");
+                entity.HasIndex(e => e.ServiceProviderId)
+                    .HasName("FK_Appointment_ServiceProviderId_idx");
 
                 entity.HasIndex(e => e.DispatcherId)
                     .HasName("FK_Appointment_DispatcherId_idx");
@@ -105,11 +107,11 @@ namespace CASNApp.Core.Entities
                     .HasForeignKey(d => d.CallerId)
                     .HasConstraintName("FK_Appointment_CallerId");
 
-                entity.HasOne(d => d.Clinic)
+                entity.HasOne(d => d.ServiceProvider)
                     .WithMany(p => p.Appointments)
-                    .HasForeignKey(d => d.ClinicId)
+                    .HasForeignKey(d => d.ServiceProviderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Appointment_ClinicId");
+                    .HasConstraintName("FK_Appointment_ServiceProviderId");
 
                 entity.HasOne(d => d.Dispatcher)
                     .WithMany(p => p.Appointments)
@@ -192,7 +194,7 @@ namespace CASNApp.Core.Entities
                     .HasColumnType("nvarchar")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.ClinicId)
+                entity.Property(e => e.ServiceProviderId)
                     .HasColumnType("int");
 
                 entity.Property(e => e.CountTarget)
@@ -229,54 +231,6 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.PreferredLanguage)
                     .IsRequired()
                     .HasMaxLength(25);
-
-                entity.Property(e => e.Updated)
-                    .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
-            });
-
-            modelBuilder.Entity<Clinic>(entity =>
-            {
-                entity.Property(e => e.Address)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.City)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Created)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
-
-                entity.Property(e => e.Geocoded)
-                    .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
-
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(0x01)");
-
-                entity.Property(e => e.Latitude).HasColumnType("decimal(9, 6)");
-
-                entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Phone)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.PostalCode)
-                    .IsRequired()
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.State)
-                    .IsRequired()
-                    .HasMaxLength(30);
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
@@ -480,6 +434,90 @@ namespace CASNApp.Core.Entities
 				entity.Property(e => e.VolunteerId)
 					.IsRequired();
 			});
+
+            modelBuilder.Entity<ServiceProvider>(entity =>
+            {
+                entity.HasIndex(e => e.ServiceProviderTypeId)
+                    .HasName("FK_ServiceProvider_ServiceProviderTypeId_idx");
+
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Geocoded)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(0x01)");
+
+                entity.Property(e => e.Latitude).HasColumnType("decimal(9, 6)");
+
+                entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PostalCode)
+                    .IsRequired()
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.Updated)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.HasOne(d => d.ServiceProviderType)
+                    .WithMany(p => p.ServiceProviders)
+                    .HasForeignKey(d => d.ServiceProviderTypeId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_ServiceProvider_ServiceProviderTypeId");
+            });
+
+            modelBuilder.Entity<ServiceProviderType>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .HasName("UQ_AppointmentType_Name")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(0x01)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Updated)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+            });
 
             modelBuilder.Entity<Volunteer>(entity =>
             {

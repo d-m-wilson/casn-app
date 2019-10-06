@@ -2,7 +2,7 @@
     [Id]                    INT            IDENTITY (41, 1) NOT NULL,
     [DispatcherId]          INT            NOT NULL,
     [CallerId]              INT            NOT NULL,
-    [ClinicId]              INT            NOT NULL,
+    [ServiceProviderId]     INT            NOT NULL,
     [PickupLocationVague]   NVARCHAR (255) NULL,
     [PickupVagueLatitude]   DECIMAL (9, 6) NULL,
     [PickupVagueLongitude]  DECIMAL (9, 6) NULL,
@@ -19,7 +19,7 @@
     CONSTRAINT [PK_Appointment] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Appointment_AppointmentTypeId] FOREIGN KEY ([AppointmentTypeId]) REFERENCES [dbo].[AppointmentType] ([Id]),
     CONSTRAINT [FK_Appointment_CallerId] FOREIGN KEY ([CallerId]) REFERENCES [dbo].[Caller] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_Appointment_ClinicId] FOREIGN KEY ([ClinicId]) REFERENCES [dbo].[Clinic] ([Id]),
+    CONSTRAINT [FK_Appointment_ServiceProviderId] FOREIGN KEY ([ServiceProviderId]) REFERENCES [dbo].[ServiceProvider] ([Id]),
     CONSTRAINT [FK_Appointment_DispatcherId] FOREIGN KEY ([DispatcherId]) REFERENCES [dbo].[Volunteer] ([Id])
 );
 
@@ -35,8 +35,8 @@ CREATE NONCLUSTERED INDEX [FK_Appointment_CallerId_idx]
 
 
 GO
-CREATE NONCLUSTERED INDEX [FK_Appointment_ClinicId_idx]
-    ON [dbo].[Appointment]([ClinicId] ASC);
+CREATE NONCLUSTERED INDEX [FK_Appointment_ServiceProviderId_idx]
+    ON [dbo].[Appointment]([ServiceProviderId] ASC);
 
 
 GO

@@ -4,8 +4,8 @@ namespace CASNApp.Core.Models
 {
     public partial class Drive
     {
-        public const int DirectionToClinic = 1;
-        public const int DirectionFromClinic = 2;
+        public const int DirectionToServiceProvider = 1;
+        public const int DirectionFromServiceProvider = 2;
         public const int StatusOpen = 0;
         public const int StatusPending = 1;
         public const int StatusApproved = 2;
@@ -46,15 +46,15 @@ namespace CASNApp.Core.Models
             if (!Direction.HasValue)
                 return false;
 
-            if (direction == DirectionToClinic &&
-                Direction != DirectionToClinic)
+            if (direction == DirectionToServiceProvider &&
+                Direction != DirectionToServiceProvider)
                 return false;
 
-            if (direction == DirectionFromClinic &&
-                Direction != DirectionFromClinic)
+            if (direction == DirectionFromServiceProvider &&
+                Direction != DirectionFromServiceProvider)
                 return false;
 
-            if (Direction.Value == DirectionToClinic)
+            if (Direction.Value == DirectionToServiceProvider)
             {
                 if (string.IsNullOrWhiteSpace(StartAddress))
                     return false;
@@ -65,7 +65,7 @@ namespace CASNApp.Core.Models
                 if (string.IsNullOrWhiteSpace(StartState))
                     return false;
             }
-            else if (Direction.Value == DirectionFromClinic)
+            else if (Direction.Value == DirectionFromServiceProvider)
             {
                 if (string.IsNullOrWhiteSpace(EndAddress))
                     return false;
@@ -86,12 +86,12 @@ namespace CASNApp.Core.Models
 
         public void SetCallerLocation(Queries.GeocoderQuery.LatLng point)
         {
-            if (Direction == DirectionToClinic)
+            if (Direction == DirectionToServiceProvider)
             {
                 StartLatitude = point.Latitude;
                 StartLongitude = point.Longitude;
             }
-            else if (Direction == DirectionFromClinic)
+            else if (Direction == DirectionFromServiceProvider)
             {
                 EndLatitude = point.Latitude;
                 EndLongitude = point.Longitude;
@@ -115,7 +115,7 @@ namespace CASNApp.Core.Models
                 throw new ArgumentException("Appointment ID mismatch", nameof(appointment));
             }
 
-            if (Direction == DirectionToClinic)
+            if (Direction == DirectionToServiceProvider)
             {
                 StartLatitude = appointment.PickupVagueLatitude;
                 StartLongitude = appointment.PickupVagueLongitude;
@@ -124,7 +124,7 @@ namespace CASNApp.Core.Models
                 StartState = "";
                 StartPostalCode = "";
             }
-            else if (Direction == DirectionFromClinic)
+            else if (Direction == DirectionFromServiceProvider)
             {
                 EndLatitude = appointment.DropoffVagueLatitude;
                 EndLongitude = appointment.DropoffVagueLongitude;

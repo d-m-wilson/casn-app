@@ -10,3 +10,4 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 :r .\dbo\Tables\Data\DriveLogStatus.data.sql
+:r .\dbo\Tables\Data\ServiceProviderType.data.sql

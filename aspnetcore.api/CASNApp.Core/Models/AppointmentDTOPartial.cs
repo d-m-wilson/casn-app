@@ -10,10 +10,10 @@
             if (DriveTo == null && DriveFrom == null)
                 return false;
 
-            if (DriveTo != null && !DriveTo.Validate(Drive.DirectionToClinic))
+            if (DriveTo != null && !DriveTo.Validate(Drive.DirectionToServiceProvider))
                 return false;
 
-            if (DriveFrom != null && !DriveFrom.Validate(Drive.DirectionFromClinic))
+            if (DriveFrom != null && !DriveFrom.Validate(Drive.DirectionFromServiceProvider))
                 return false;
 
             return true;

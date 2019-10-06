@@ -95,12 +95,12 @@ namespace CASNApp.API.Controllers
             var driveTo = appointmentDTO.DriveTo;
             var driveFrom = appointmentDTO.DriveFrom;
 
-            var clinic = await dbContext.Clinic
+            var serviceProvider = await dbContext.ServiceProvider
                 .AsNoTracking()
-                .Where(c => c.Id == appointment.ClinicId)
+                .Where(c => c.Id == appointment.ServiceProviderId)
                 .FirstOrDefaultAsync();
 
-            if (clinic == null)
+            if (serviceProvider == null)
             {
                 return BadRequest(appointmentDTO);
             }
@@ -119,7 +119,7 @@ namespace CASNApp.API.Controllers
             {
                 DispatcherId = volunteer.Id,
                 CallerId = caller.Id,
-                ClinicId = clinic.Id,
+                ServiceProviderId = serviceProvider.Id,
                 PickupLocationVague = appointment.PickupLocationVague,
                 DropoffLocationVague = appointment.DropoffLocationVague,
                 AppointmentDate = appointment.AppointmentDate.Value,
@@ -136,19 +136,19 @@ namespace CASNApp.API.Controllers
                 driveToEntity = new Core.Entities.Drive
                 {
                     Appointment = appointmentEntity,
-                    Direction = Drive.DirectionToClinic,
+                    Direction = Drive.DirectionToServiceProvider,
                     DriverId = null,
                     StartAddress = driveTo.StartAddress,
                     StartCity = driveTo.StartCity,
                     StartState = driveTo.StartState,
                     StartPostalCode = driveTo.StartPostalCode,
-                    EndAddress = clinic.Address,
-                    EndCity = clinic.City,
-                    EndState = clinic.State,
-                    EndPostalCode = clinic.PostalCode,
-                    EndLatitude = clinic.Latitude,
-                    EndLongitude = clinic.Longitude,
-                    EndGeocoded = clinic.Geocoded,
+                    EndAddress = serviceProvider.Address,
+                    EndCity = serviceProvider.City,
+                    EndState = serviceProvider.State,
+                    EndPostalCode = serviceProvider.PostalCode,
+                    EndLatitude = serviceProvider.Latitude,
+                    EndLongitude = serviceProvider.Longitude,
+                    EndGeocoded = serviceProvider.Geocoded,
                     IsActive = true,
                     Created = DateTime.UtcNow,
                     Updated = null,
@@ -162,15 +162,15 @@ namespace CASNApp.API.Controllers
                 driveFromEntity = new Core.Entities.Drive
                 {
                     Appointment = appointmentEntity,
-                    Direction = Drive.DirectionFromClinic,
+                    Direction = Drive.DirectionFromServiceProvider,
                     DriverId = null,
-                    StartAddress = clinic.Address,
-                    StartCity = clinic.City,
-                    StartState = clinic.State,
-                    StartPostalCode = clinic.PostalCode,
-                    StartLatitude = clinic.Latitude,
-                    StartLongitude = clinic.Longitude,
-                    StartGeocoded = clinic.Geocoded,
+                    StartAddress = serviceProvider.Address,
+                    StartCity = serviceProvider.City,
+                    StartState = serviceProvider.State,
+                    StartPostalCode = serviceProvider.PostalCode,
+                    StartLatitude = serviceProvider.Latitude,
+                    StartLongitude = serviceProvider.Longitude,
+                    StartGeocoded = serviceProvider.Geocoded,
                     EndAddress = driveFrom.EndAddress,
                     EndCity = driveFrom.EndCity,
                     EndState = driveFrom.EndState,
@@ -684,7 +684,7 @@ namespace CASNApp.API.Controllers
             // return StatusCode(404);
 
             string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"caller\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"callerIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"clinicId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"callerId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
+            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"caller\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"callerIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"serviceProviderId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"callerId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
             
             var example = exampleJson != null
             ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)

@@ -5,7 +5,7 @@
     [Path]        NVARCHAR (100) NOT NULL,
     [TriggerType] INT            NOT NULL,
     [ProcedureName] NVARCHAR(100) NOT NULL,
-    [ClinicId]    INT NULL,
+    [ServiceProviderId]    INT NULL,
     [CountTarget] INT NULL,
     [IsActive]    BIT            CONSTRAINT [DF_Badge_IsActive] DEFAULT (0x01) NOT NULL,
     [IsHidden]    BIT            CONSTRAINT [DF_Badge_IsHidden] DEFAULT (0x00) NOT NULL,

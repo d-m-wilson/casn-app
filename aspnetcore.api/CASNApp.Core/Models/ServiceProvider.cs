@@ -22,7 +22,7 @@ namespace CASNApp.Core.Models
     /// 
     /// </summary>
     [DataContract]
-    public partial class Clinic : IEquatable<Clinic>
+    public partial class ServiceProvider : IEquatable<ServiceProvider>
     { 
         /// <summary>
         /// Gets or Sets Id
@@ -35,6 +35,18 @@ namespace CASNApp.Core.Models
         /// </summary>
         [DataMember(Name="civiContactId")]
         public long? CiviContactId { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets ServiceProviderTypeId
+        /// </summary>
+        [DataMember]
+        public int ServiceProviderTypeId { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets ServiceProviderType
+        /// </summary>
+        [DataMember]
+        public string ServiceProviderType { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -91,7 +103,7 @@ namespace CASNApp.Core.Models
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Clinic {\n");
+            sb.Append("class ServiceProvider {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  CiviContactId: ").Append(CiviContactId).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
@@ -122,15 +134,15 @@ namespace CASNApp.Core.Models
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((Clinic)obj);
+            return obj.GetType() == GetType() && Equals((ServiceProvider)obj);
         }
 
         /// <summary>
-        /// Returns true if Clinic instances are equal
+        /// Returns true if ServiceProvider instances are equal
         /// </summary>
-        /// <param name="other">Instance of Clinic to be compared</param>
+        /// <param name="other">Instance of ServiceProvider to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(Clinic other)
+        public bool Equals(ServiceProvider other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -208,12 +220,12 @@ namespace CASNApp.Core.Models
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(Clinic left, Clinic right)
+        public static bool operator ==(ServiceProvider left, ServiceProvider right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(Clinic left, Clinic right)
+        public static bool operator !=(ServiceProvider left, ServiceProvider right)
         {
             return !Equals(left, right);
         }

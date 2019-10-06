@@ -6,11 +6,11 @@ namespace CASNApp.Core.Entities
     {
         public string GetCallerAddress()
         {
-            if (Direction == Models.Drive.DirectionToClinic)
+            if (Direction == Models.Drive.DirectionToServiceProvider)
             {
                 return $"{StartAddress}, {StartCity}, {StartState} {StartPostalCode}";
             }
-            else if (Direction == Models.Drive.DirectionFromClinic)
+            else if (Direction == Models.Drive.DirectionFromServiceProvider)
             {
                 return $"{EndAddress}, {EndCity}, {EndState} {EndPostalCode}";
             }
@@ -23,13 +23,13 @@ namespace CASNApp.Core.Entities
 
         public void SetCallerLocation(Queries.GeocoderQuery.LatLng point)
         {
-            if (Direction == Models.Drive.DirectionToClinic)
+            if (Direction == Models.Drive.DirectionToServiceProvider)
             {
                 StartLatitude = point.Latitude;
                 StartLongitude = point.Longitude;
                 StartGeocoded = DateTime.UtcNow;
             }
-            else if (Direction == Models.Drive.DirectionFromClinic)
+            else if (Direction == Models.Drive.DirectionFromServiceProvider)
             {
                 EndLatitude = point.Latitude;
                 EndLongitude = point.Longitude;

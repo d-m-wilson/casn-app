@@ -35,9 +35,9 @@ namespace CASNApp.Core.Models
         public long? AppointmentId { get; set; }
 
         /// <summary>
-        /// 1 = toClinic, 2 = fromClinic
+        /// 1 = toServiceProvider, 2 = fromServiceProvider
         /// </summary>
-        /// <value>1 = toClinic, 2 = fromClinic</value>
+        /// <value>1 = toServiceProvider, 2 = fromServiceProvider</value>
         [Required]
         [DataMember(Name="direction")]
         public int? Direction { get; set; }

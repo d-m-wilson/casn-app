@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Extensions;
-using CASNApp.Core.Misc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace CASNApp.Core.Commands
@@ -30,9 +26,9 @@ namespace CASNApp.Core.Commands
 
             sqlParameters.Add(new SqlParameter("VolunteerId", volunteer.Id));
 
-            if (badge.ClinicId.HasValue)
+            if (badge.ServiceProviderId.HasValue)
             {
-                sqlParameters.Add(new SqlParameter("ClinicId", badge.ClinicId.Value));
+                sqlParameters.Add(new SqlParameter("ServiceProviderId", badge.ServiceProviderId.Value));
             }
 
             if (badge.CountTarget.HasValue)

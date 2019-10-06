@@ -40,15 +40,15 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets list of clinics
+        /// gets list of service providers
         /// </summary>
         /// <response code="200">successful operation</response>
         [HttpGet]
-        [Route("api/clinic")]
+        [Route("api/serviceprovider")]
         [ValidateModelState]
-        [SwaggerOperation("GetClinics")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.Clinic>), description: "successful operation")]
-        public virtual async Task<IActionResult> GetClinics()
+        [SwaggerOperation("GetServiceProviders")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.ServiceProvider>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetServiceProviders()
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);
@@ -59,12 +59,13 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var clinics = await dbContext.Clinic
+            var serviceProviders = await dbContext.ServiceProvider
                 .AsNoTracking()
-                .Select(c => new Core.Models.Clinic(c))
+                .Include(sp => sp.ServiceProviderType)
+                .Select(c => new Core.Models.ServiceProvider(c))
                 .ToListAsync();
 
-            return new ObjectResult(clinics);
+            return new ObjectResult(serviceProviders);
         }
 
         /// <summary>
@@ -108,8 +109,8 @@ namespace CASNApp.API.Controllers
 
             foreach (var appt in appointmentEntities)
             {
-                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
-                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
+                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
                 if (driveTo?.Id != null)
                 {
@@ -124,8 +125,8 @@ namespace CASNApp.API.Controllers
 
             var appointmentDTOs = appointmentEntities.Select(a =>
             {
-                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
-                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
+                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
                 var apptDto = new AppointmentDTO
                 {
@@ -196,8 +197,8 @@ namespace CASNApp.API.Controllers
 
             var driveIds = new List<long>();
 
-                var driveToEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
-                var driveFromEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
+                var driveToEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+                var driveFromEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
                 if (driveToEntity?.Id != null)
                 {
@@ -209,8 +210,8 @@ namespace CASNApp.API.Controllers
                     driveIds.Add(driveFromEntity.Id);
                 }
 
-            var driveTo = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
-            var driveFrom = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
+            var driveTo = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+            var driveFrom = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
             var apptDTO = new AppointmentDTO
             {

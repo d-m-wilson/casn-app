@@ -16,7 +16,7 @@ namespace CASNApp.Core.Models
             AppointmentDate = vdl.Drive.Appointment.AppointmentDate;
             AppointmentId = vdl.Drive.AppointmentId;
             AppointmentTypeId = vdl.Drive.Appointment.AppointmentTypeId;
-            ClinicId = vdl.Drive.Appointment.ClinicId;
+            ServiceProviderId = vdl.Drive.Appointment.ServiceProviderId;
             Direction = vdl.Drive.Direction;
             EndLocation = vdl.Drive.Appointment.DropoffLocationVague;
             EndLatitude = vdl.Drive.Appointment.DropoffVagueLatitude;

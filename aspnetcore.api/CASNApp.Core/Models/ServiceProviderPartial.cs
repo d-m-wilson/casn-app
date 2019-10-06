@@ -1,15 +1,17 @@
 ﻿namespace CASNApp.Core.Models
 {
-    public partial class Clinic
+    public partial class ServiceProvider
     {
-        public Clinic()
+        public ServiceProvider()
         {
         }
 
-        public Clinic(Entities.Clinic e)
+        public ServiceProvider(Entities.ServiceProvider e)
         {
             Id = e.Id;
             CiviContactId = e.CiviContactId;
+            ServiceProviderTypeId = e.ServiceProviderTypeId;
+            ServiceProviderType = e.ServiceProviderType?.Name;
             Name = e.Name;
             Phone = e.Phone;
             Address = e.Address;

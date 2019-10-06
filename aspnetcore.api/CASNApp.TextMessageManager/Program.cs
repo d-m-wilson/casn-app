@@ -34,7 +34,7 @@ namespace CASNApp.TextMessageManager
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
 		}
 
-		private static ServiceProvider BuildDi()
+		private static Microsoft.Extensions.DependencyInjection.ServiceProvider BuildDi()
 		{
 			return new ServiceCollection()
 				.AddDbContext<casn_appContext>(options =>
@@ -107,8 +107,8 @@ namespace CASNApp.TextMessageManager
 						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
 						foreach (Appointment appointment in openAppointments)
 						{
-							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToClinic);
-							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromClinic);
+							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 							if (driveTo != null || driveFrom != null)
 								appointmentSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType);
 						}

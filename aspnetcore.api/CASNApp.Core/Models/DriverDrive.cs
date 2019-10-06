@@ -51,11 +51,11 @@ namespace CASNApp.Core.Models
         public int? AppointmentTypeId { get; set; }
 
         /// <summary>
-        /// Gets or Sets ClinicId
+        /// Gets or Sets ServiceProviderId
         /// </summary>
         [Required]
-        [DataMember(Name="clinicId")]
-        public long? ClinicId { get; set; }
+        [DataMember]
+        public long? ServiceProviderId { get; set; }
 
         /// <summary>
         /// Gets or Sets AppointmentDate
@@ -65,9 +65,9 @@ namespace CASNApp.Core.Models
         public DateTime? AppointmentDate { get; set; }
 
         /// <summary>
-        /// 1 &#x3D; toClinic, 2 &#x3D; fromClinic
+        /// 1 &#x3D; toServiceProvider, 2 &#x3D; fromServiceProvider
         /// </summary>
-        /// <value>1 &#x3D; toClinic, 2 &#x3D; fromClinic</value>
+        /// <value>1 &#x3D; toServiceProvider, 2 &#x3D; fromServiceProvider</value>
         [Required]
         [DataMember(Name="direction")]
         public int? Direction { get; set; }
@@ -146,7 +146,7 @@ namespace CASNApp.Core.Models
             sb.Append("  VolunteerDriveId: ").Append(VolunteerDriveId).Append("\n");
             sb.Append("  AppointmentId: ").Append(AppointmentId).Append("\n");
             sb.Append("  AppointmentTypeId: ").Append(AppointmentTypeId).Append("\n");
-            sb.Append("  ClinicId: ").Append(ClinicId).Append("\n");
+            sb.Append("  ServiceProviderId: ").Append(ServiceProviderId).Append("\n");
             sb.Append("  AppointmentDate: ").Append(AppointmentDate).Append("\n");
             sb.Append("  Direction: ").Append(Direction).Append("\n");
             sb.Append("  IsApproved: ").Append(IsApproved).Append("\n");
@@ -211,9 +211,9 @@ namespace CASNApp.Core.Models
                     AppointmentTypeId.Equals(other.AppointmentTypeId)
                 ) && 
                 (
-                    ClinicId == other.ClinicId ||
-                    ClinicId != null &&
-                    ClinicId.Equals(other.ClinicId)
+                    ServiceProviderId == other.ServiceProviderId ||
+                    ServiceProviderId != null &&
+                    ServiceProviderId.Equals(other.ServiceProviderId)
                 ) && 
                 (
                     AppointmentDate == other.AppointmentDate ||
@@ -270,8 +270,8 @@ namespace CASNApp.Core.Models
                     hashCode = hashCode * 59 + AppointmentId.GetHashCode();
                     if (AppointmentTypeId != null)
                     hashCode = hashCode * 59 + AppointmentTypeId.GetHashCode();
-                    if (ClinicId != null)
-                    hashCode = hashCode * 59 + ClinicId.GetHashCode();
+                    if (ServiceProviderId != null)
+                    hashCode = hashCode * 59 + ServiceProviderId.GetHashCode();
                     if (AppointmentDate != null)
                     hashCode = hashCode * 59 + AppointmentDate.GetHashCode();
                     if (Direction != null)
