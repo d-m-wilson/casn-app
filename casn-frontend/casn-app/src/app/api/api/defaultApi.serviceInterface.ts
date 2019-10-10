@@ -15,7 +15,7 @@ import { Observable }                                        from 'rxjs';
 
 import { CASNAppCoreModelsAppointmentDTO } from '../model/cASNAppCoreModelsAppointmentDTO';
 import { CASNAppCoreModelsAppointmentType } from '../model/cASNAppCoreModelsAppointmentType';
-import { CASNAppCoreModelsClinic } from '../model/cASNAppCoreModelsClinic';
+import { CASNAppCoreModelsServiceProvider } from '../model/cASNAppCoreModelsServiceProvider';
 import { CASNAppCoreModelsDriveCancelReason } from '../model/cASNAppCoreModelsDriveCancelReason';
 import { CASNAppCoreModelsDriveStatus } from '../model/cASNAppCoreModelsDriveStatus';
 
@@ -53,7 +53,7 @@ export interface DefaultApiServiceInterface {
     * gets list of clinics
     *
     */
-    getClinics(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsClinic>>;
+    getServiceProviders(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsServiceProvider>>;
 
     /**
     * gets list of drive cancel reasons
