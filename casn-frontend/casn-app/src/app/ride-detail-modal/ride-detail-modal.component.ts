@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { DriverApiService } from '../api/api/driverApi.service';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ride-detail-modal',
@@ -24,7 +25,8 @@ export class RideDetailModalComponent implements OnInit {
 
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
-               private dispatcherService: DispatcherApiService ) { }
+               private dispatcherService: DispatcherApiService,
+               private router: Router ) { }
 
   ngOnInit() {
     this.userRole = localStorage.getItem('userRole');
@@ -121,6 +123,10 @@ export class RideDetailModalComponent implements OnInit {
     this.driveToCancel = null;
     this.showCancelDriveModal = false;
     if(update) this.closeRideModalAndUpdateClick.emit(true);
+  }
+
+  editAppointment(): void {
+    this.router.navigate(['/caller', { callerIdentifier: this.ride.caller.callerIdentifier }]);
   }
 
 /*********************************************************************
