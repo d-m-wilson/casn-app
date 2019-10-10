@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { startWith, map } from 'rxjs/operators';
 
@@ -14,6 +14,7 @@ import { startWith, map } from 'rxjs/operators';
 export class CallersComponent implements OnInit {
   existingCaller: any = {};
   existingCallerId: Number;
+  editingCaller: boolean = false;
   /* Display flags for caller lookup feature */
   displayCallerFoundModal: boolean = false;
   displayCallerForm: boolean = false;
@@ -24,6 +25,7 @@ export class CallersComponent implements OnInit {
   constructor( private ds: DispatcherApiService,
                private fb: FormBuilder,
                private location: Location,
+               private route: ActivatedRoute,
                private router: Router ) { }
 
   ngOnInit() {
@@ -34,9 +36,12 @@ export class CallersComponent implements OnInit {
     );
 
     // If caller already selected, search callerIdentifier
-    // const callerId = """ Get caller id from URL params """
-    // this.callerIdentifierSearch.setValue(callerId);
-    // this.searchCallerIdentifier();
+    const callerIdentifier = this.route.snapshot.paramMap.get('callerIdentifier');
+    if(callerIdentifier) {
+      this.editingCaller = true;
+      this.callerIdentifierSearch.setValue(callerIdentifier);
+      this.searchCallerIdentifier();
+    }
   }
 
   /*********************************************************************
@@ -71,8 +76,7 @@ export class CallersComponent implements OnInit {
     if(isNewCaller) {
       this.saveNewCaller();
     } else {
-      // TODO: There should be an update caller endpoint
-      this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
+      this.updateCaller();
     }
   }
 
@@ -128,6 +132,8 @@ export class CallersComponent implements OnInit {
             note: p.note,
           };
           this.displayCallerFoundModal = true;
+          // If editing caller, assume user auto-confirms the callerIdentifier is correct
+          if(this.editingCaller) this.handleYesClick();
         } else {
           this.displayCallerForm = true;
           this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
@@ -146,6 +152,14 @@ export class CallersComponent implements OnInit {
     this.ds.addCaller(this.callerForm.value).subscribe(p => {
       this.router.navigate(['/appointment', { callerIdentifier: p.callerIdentifier, callerId: p.id }]);
     });
+  }
+
+  // TODO: get this working once update endpoint is live
+  updateCaller(): void {
+    // this.ds.updateCaller(this.callerForm.value).subscribe(p => {
+    //   this.router.navigate(['/appointment', { callerIdentifier: p.callerIdentifier, callerId: p.id }]);
+    // });
+    this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
   }
 
 }
