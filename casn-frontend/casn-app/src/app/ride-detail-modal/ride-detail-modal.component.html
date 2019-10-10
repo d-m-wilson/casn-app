@@ -12,12 +12,13 @@
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
         <mat-card class="appointment-card candy-card"
-                  style="display: flex;align-items: center;justify-content: space-evenly;">
+                  [ngClass]="{ 'edit-card': userRole === '1' }">
           <div>
             <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
             <span class="bold">at {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
           </div>
-            <button mat-mini-fab
+            <button *ngIf="userRole === '1'"
+                    mat-mini-fab
                     color="accent"
                     (click)="editAppointment()"><mat-icon>edit</mat-icon></button>
         </mat-card>

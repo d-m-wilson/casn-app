@@ -168,8 +168,7 @@
 
     </mat-card>
     <mat-card class="mt candy-card">
-      <!-- TODO: Should this be clinics only? -->
-      <mat-card-subtitle>By Clinic</mat-card-subtitle>
+      <mat-card-subtitle>By Service Provider</mat-card-subtitle>
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">
         <mat-slide-toggle [checked]="displayServiceProviders[s]"
                           (change)="displayServiceProviders[s] = $event.source.checked"
