@@ -11,12 +11,12 @@
  */
 
 
-export interface CASNAppCoreModelsDriverDrive { 
+export interface CASNAppCoreModelsDriverDrive {
     id: number;
     volunteerDriveId: number;
     appointmentId: number;
     appointmentTypeId: number;
-    clinicId: number;
+    serviceProviderId: number;
     appointmentDate: Date;
     direction: number;
     isApproved: boolean;

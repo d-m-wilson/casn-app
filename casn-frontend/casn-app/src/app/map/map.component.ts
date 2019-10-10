@@ -16,19 +16,19 @@ export class MapComponent implements OnInit {
   houstonLatitude: number = 29.7604;
   houstonLongitude: number = -95.3698;
   mapCenter: any = { latitude: 29.7604, longitude: -95.3698, zoom: 9 };
-  clinics: any;
+  serviceProviders: any;
 
   constructor( private ds: DefaultApiService ) { }
 
   ngOnInit() {
-    this.getClinics()
+    this.getServiceProviders()
   }
 
   /*********************************************************************
                           Service Calls
   **********************************************************************/
-  getClinics(): void {
-    this.ds.getClinics().subscribe(c => this.clinics = c);
+  getServiceProviders(): void {
+    this.ds.getServiceProviders().subscribe(s => this.serviceProviders = s);
   }
 
 /*********************************************************************
@@ -60,8 +60,8 @@ export class MapComponent implements OnInit {
     return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
   }
 
-  getClinicGoogleMapLink(clinic: any): string {
-    const query = `${clinic.address} ${clinic.city} ${clinic.postalCode}`;
+  getServiceProviderGoogleMapLink(provider: any): string {
+    const query = `${provider.address} ${provider.city} ${provider.postalCode}`;
     const urlEncodedQuery = encodeURI(query);
     return `https://www.google.com/maps/search/?api=1&query=${urlEncodedQuery}`;
   }

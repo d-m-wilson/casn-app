@@ -16,7 +16,7 @@ export class RideDetailModalComponent implements OnInit {
   @Output() closeRideModalAndUpdateClick = new EventEmitter<boolean>();
   driveType: string;
   apptTypes: any;
-  clinics: any;
+  serviceProviders: any;
   volunteers: any[];
   // Details for Cancel Drive Modal
   showCancelDriveModal: boolean = false;
@@ -30,16 +30,16 @@ export class RideDetailModalComponent implements OnInit {
     this.userRole = localStorage.getItem('userRole');
     if(this.userRole === '1') this.getVolunteers();
     this.getAppointmentTypes();
-    this.getClinics();
+    this.getServiceProviders();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
   }
 
 /*********************************************************************
                           Service Calls
 **********************************************************************/
-  getClinics(): void {
-    this.ds.getClinics().subscribe(c => {
-      this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
+  getServiceProviders(): void {
+    this.ds.getServiceProviders().subscribe(s => {
+      this.serviceProviders = s.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
 

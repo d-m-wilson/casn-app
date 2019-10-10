@@ -1,4 +1,4 @@
-<ng-container *ngIf="rides && clinics && apptTypes"
+<ng-container *ngIf="rides && serviceProviders && apptTypes"
               (swipeleft)="swipe($event.type)"
               (swiperight)="swipe($event.type)">
   <!--********************************************************************
@@ -41,14 +41,14 @@
           <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
       <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
-        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayClinics[r.appointment.clinicId]">
+        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayServiceProviders[r.appointment.serviceProviderId]">
           <mat-card class="appointment-card candy-card mat-elevation-z0">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
             </div>
             <div>
               <span class="bolder">{{ r.caller.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
-              <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}}-{{ getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId) | date:'shortTime' }} <br>{{ clinics[r.appointment?.clinicId].name }}</span> <br>
+              <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}}-{{ getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId) | date:'shortTime' }} <br>{{ serviceProviders[r.appointment?.serviceProviderId].name }}</span> <br>
             </div>
           </mat-card>
           <div class="drive-container">
@@ -168,11 +168,12 @@
 
     </mat-card>
     <mat-card class="mt candy-card">
+      <!-- TODO: Should this be clinics only? -->
       <mat-card-subtitle>By Clinic</mat-card-subtitle>
-      <ng-container *ngFor="let c of objectKeys(clinics)">
-        <mat-slide-toggle [checked]="displayClinics[c]"
-                          (change)="displayClinics[c] = $event.source.checked"
-                          color="primary">{{ clinics[c].name }}
+      <ng-container *ngFor="let s of objectKeys(serviceProviders)">
+        <mat-slide-toggle [checked]="displayServiceProviders[s]"
+                          (change)="displayServiceProviders[s] = $event.source.checked"
+                          color="primary">{{ serviceProviders[s].name }}
         </mat-slide-toggle>
         <br><br>
       </ng-container>

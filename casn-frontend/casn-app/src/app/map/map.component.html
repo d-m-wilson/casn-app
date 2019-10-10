@@ -105,20 +105,21 @@
             </agm-polyline-point>
           </agm-polyline>
         </ng-container>
-        <!--====== Map Markers for Clinics ========-->
-        <agm-marker *ngFor="let c of clinics"
+        <!--====== Map Markers for Service Providers ========-->
+        <!-- TODO: Do we want a courthouse marker? -->
+        <agm-marker *ngFor="let s of serviceProviders"
                     iconUrl="assets/img/marker_clinic.png"
-                    [latitude]="c.latitude"
-                    [longitude]="c.longitude"
+                    [latitude]="s.latitude"
+                    [longitude]="s.longitude"
                     [animation]="'DROP'">
           <agm-snazzy-info-window [closeWhenOthersOpen]="true"
                                   [maxHeight]="250">
             <ng-template>
-              <strong>{{ c.name }}</strong>
+              <strong>{{ s.name }}</strong>
               <br/>
               <address>
-                <a [href]="getClinicGoogleMapLink(c)"
-                   target="_blank">{{ c.address }}</a>
+                <a [href]="getServiceProviderGoogleMapLink(s)"
+                   target="_blank">{{ s.address }}</a>
               </address>
             </ng-template>
           </agm-snazzy-info-window>

@@ -1,4 +1,4 @@
-<main *ngIf="appointmentTypes && clinics">
+<main *ngIf="appointmentTypes && serviceProviders">
   <h1>Create an Appointment</h1>
   <mat-vertical-stepper mat-vertical-stepper #stepper class="candy-stepper">
 <!--********************************************************************
@@ -44,15 +44,15 @@
             <mat-error *ngIf="formAppt.appointmentTypeId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <mat-label>Clinic</mat-label>
-            <mat-select placeholder="Clinic"
-                        aria-label="Clinic"
-                        formControlName="clinicId">
-              <mat-option *ngFor="let c of clinics" [value]="c.id">
-                {{ c.name }}
+            <mat-label>Service Provider</mat-label>
+            <mat-select placeholder="Service Provider"
+                        aria-label="Service Provider"
+                        formControlName="serviceProviderId">
+              <mat-option *ngFor="let s of serviceProviders" [value]="s.id">
+                {{ s.name }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="formAppt.clinicId.errors?.required">This field is required.</mat-error>
+            <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Appointment Time</mat-label>
@@ -267,7 +267,7 @@
            class="appt-form-group">
         <mat-card class="review-card candy-card">
           <h4>Caller {{ formAppt.callerIdentifier.value }}'s {{ apptType }}</h4>
-          <span class="bold">{{ formAppt.appointmentDate.value | date:'shortTime'}} at {{ apptClinic }}</span>
+          <span class="bold">{{ formAppt.appointmentDate.value | date:'shortTime'}} at {{ apptServiceProvider }}</span>
         </mat-card>
         <mat-card class="review-card candy-card">
           <h4>Drive To Clinic</h4>

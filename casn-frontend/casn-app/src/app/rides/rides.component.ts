@@ -16,7 +16,7 @@ export class RidesComponent implements OnInit {
   datesToDisplay: any[]; // All dates from startDate to endDate
   rides: any[];
   ridesToDisplay: any[]; // Subset of rides, may have filters applied
-  clinics: any;
+  serviceProviders: any;
   apptTypes: any;
   driveStatuses: any;
 
@@ -27,8 +27,8 @@ export class RidesComponent implements OnInit {
   dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
   displayRides: boolean[] = [true, true, true, true];
-  // Display flags for clinics
-  displayClinics: any = {};
+  // Display flags for service providers
+  displayServiceProviders: any = {};
 
   /************** Ride Modal **************/
   displayRideModal: boolean = false;
@@ -48,7 +48,7 @@ export class RidesComponent implements OnInit {
     this.userRole = localStorage.getItem("userRole");
     this.setDateRange();
     this.getAppointmentTypes();
-    this.getClinics();
+    this.getServiceProviders();
     this.getRides();
     this.getDriveStatuses();
 
@@ -99,10 +99,10 @@ export class RidesComponent implements OnInit {
     });
   }
 
-  getClinics(): void {
-    this.ds.getClinics().subscribe(c => {
-      this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
-      this.objectKeys(this.clinics).forEach(c => this.displayClinics[c] = true);
+  getServiceProviders(): void {
+    this.ds.getServiceProviders().subscribe(c => {
+      this.serviceProviders = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
+      this.objectKeys(this.serviceProviders).forEach(c => this.displayServiceProviders[c] = true);
     });
   }
 

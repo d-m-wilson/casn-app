@@ -20,7 +20,7 @@ export class AppointmentFormComponent implements OnInit {
   callerId: number;
   callerIdentifier: string;
   appointmentTypes: any[];
-  clinics: any;
+  serviceProviders: any;
   appointmentDTO: any;
   callerNeedsPickup: boolean;
   callerNeedsDropoff: boolean;
@@ -43,7 +43,7 @@ export class AppointmentFormComponent implements OnInit {
     stepElement.scrollTop = 0;
     this.getAppointmentTypes();
     this.getCaller();
-    this.getClinics();
+    this.getServiceProviders();
   }
 
   /*********************************************************************
@@ -68,14 +68,14 @@ export class AppointmentFormComponent implements OnInit {
     this.formAppt.callerIdentifier.setValue(this.callerIdentifier);
   }
 
-  getClinics(): void {
-    this.defaultService.getClinics().subscribe(
+  getServiceProviders(): void {
+    this.defaultService.getServiceProviders().subscribe(
       data => {
-        this.clinics = data;
+        this.serviceProviders = data;
       },
       err => {
-        console.error("--Error fetching clinics...", err);
-        alert('An error occurred while fetching clinics. Please refresh & try again.')
+        console.error("--Error fetching serviceProviders...", err);
+        alert('An error occurred while fetching serviceProviders. Please refresh & try again.')
       }
     );
   }
@@ -104,7 +104,7 @@ export class AppointmentFormComponent implements OnInit {
     // TODO: Get dispatcherId from localstorage
     // Need to talk to David about this -- handle on backend?
     dispatcherId: [5],
-    clinicId: [1, Validators.required],
+    serviceProviderId: [1, Validators.required],
     appointmentDate: ['', Validators.required],
   });
 
@@ -145,8 +145,8 @@ export class AppointmentFormComponent implements OnInit {
     return (this.appointmentTypes.find(a => a.value === this.formAppt.appointmentTypeId.value)).displayValue;
   }
 
-  get apptClinic(): string {
-    return (this.clinics.find(c => c.id == this.formAppt.clinicId.value)).name;
+  get apptServiceProvider(): string {
+    return (this.serviceProviders.find(s => s.id == this.formAppt.serviceProviderId.value)).name;
   }
 
 
@@ -161,7 +161,7 @@ export class AppointmentFormComponent implements OnInit {
       appointmentTypeId: this.formAppt.appointmentTypeId.value,
       callerId: this.formAppt.callerId.value,
       dispatcherId: this.formAppt.dispatcherId.value,
-      clinicId: this.formAppt.clinicId.value,
+      serviceProviderId: this.formAppt.serviceProviderId.value,
       appointmentDate: this.formAppt.appointmentDate.value.toISOString(),
       pickupLocationVague: this.formPickup.pickupLocationVague.value,
       dropoffLocationVague: this.dropoffSameAsPickup ? this.formPickup.pickupLocationVague.value : this.formDropoff.dropoffLocationVague.value

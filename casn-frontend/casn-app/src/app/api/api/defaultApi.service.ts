@@ -243,7 +243,7 @@ export class DefaultApiService implements DefaultApiServiceInterface {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<Array<CASNAppCoreModelsClinic>>(`${this.basePath}/serviceprovider`,
+        return this.httpClient.get<Array<CASNAppCoreModelsServiceProvider>>(`${this.basePath}/serviceprovider`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
