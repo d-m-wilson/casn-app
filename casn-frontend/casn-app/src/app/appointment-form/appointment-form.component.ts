@@ -21,6 +21,8 @@ export class AppointmentFormComponent implements OnInit {
   callerIdentifier: string;
   appointmentTypes: any[];
   serviceProviders: any;
+  clinicServiceProviders: any;
+  courthouseServiceProviders: any;
   appointmentDTO: any;
   callerNeedsPickup: boolean;
   callerNeedsDropoff: boolean;
@@ -55,6 +57,7 @@ export class AppointmentFormComponent implements OnInit {
 
   getAppointmentTypes(): void {
     this.defaultService.getAppointmentTypes().subscribe(a => {
+      console.log("APPT TYPES:", a)
       this.appointmentTypes = a.map(i => {
         return { value: i.id, displayValue: i.title };
       })
@@ -71,7 +74,10 @@ export class AppointmentFormComponent implements OnInit {
   getServiceProviders(): void {
     this.defaultService.getServiceProviders().subscribe(
       data => {
+        console.log("Service Providers:", data)
         this.serviceProviders = data;
+        this.courthouseServiceProviders = data.filter(s => s.serviceProviderTypeId === 2);
+        this.clinicServiceProviders = data.filter(s => s.serviceProviderTypeId === 1);
       },
       err => {
         console.error("--Error fetching serviceProviders...", err);

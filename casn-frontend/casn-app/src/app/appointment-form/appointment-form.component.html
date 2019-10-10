@@ -43,12 +43,26 @@
             </mat-select>
             <mat-error *ngIf="formAppt.appointmentTypeId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <!--********* Conditionally display clinics vs. courthouses based on appt type *****************-->
+          <!-- Clinics Only -->
+          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value !== 7">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
                         formControlName="serviceProviderId">
-              <mat-option *ngFor="let s of serviceProviders" [value]="s.id">
+              <mat-option *ngFor="let s of clinicServiceProviders" [value]="s.id">
+                {{ s.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
+          </mat-form-field>
+          <!-- Courthouses Only -->
+          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value === 7">
+            <mat-label>Service Provider</mat-label>
+            <mat-select placeholder="Service Provider"
+                        aria-label="Service Provider"
+                        formControlName="serviceProviderId">
+              <mat-option *ngFor="let s of courthouseServiceProviders" [value]="s.id">
                 {{ s.name }}
               </mat-option>
             </mat-select>
@@ -81,9 +95,9 @@
 **********************************************************************-->
     <mat-step [stepControl]="driveToForm">
       <form [formGroup]="driveToForm">
-        <ng-template matStepLabel>Drive To Clinic</ng-template>
+        <ng-template matStepLabel>Drive To {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</ng-template>
         <div class="appt-form-group" *ngIf="!callerNeedsPickup">
-          <h3>Does the caller need a drive <em>TO</em> the clinic?</h3>
+          <h3>Does the caller need a drive <em>TO</em> the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}?</h3>
           <button mat-raised-button
                   color="primary"
                   type="button"
@@ -165,12 +179,12 @@
 **********************************************************************-->
     <mat-step [stepControl]="driveFromForm">
       <form [formGroup]="driveFromForm">
-        <ng-template matStepLabel>Drive From Clinic</ng-template>
+        <ng-template matStepLabel>Drive From {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</ng-template>
         <!-- The caller can skip the driveFrom as long as a driveTo has
         been added. If there is no driveTo, the appointment must have a
         driveFrom -->
         <div class="appt-form-group" *ngIf="callerNeedsPickup && !callerNeedsDropoff">
-          <h3>Does the caller need a drive home <em>FROM</em> the clinic?</h3>
+          <h3>Does the caller need a drive home <em>FROM</em> the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}?</h3>
           <button mat-raised-button
                   color="primary"
                   type="button"
@@ -270,7 +284,7 @@
           <span class="bold">{{ formAppt.appointmentDate.value | date:'shortTime'}} at {{ apptServiceProvider }}</span>
         </mat-card>
         <mat-card class="review-card candy-card">
-          <h4>Drive To Clinic</h4>
+          <h4>Drive To {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</h4>
           <div *ngIf="callerNeedsPickup; else noPickup">
             <span>Pick Up Caller At:
               <em>{{ formPickup.pickupLocationVague.value }}</em>
@@ -284,11 +298,11 @@
             </address>
           </div>
           <ng-template #noPickup>
-            <p style="color:#666"><em>Caller doesn't need a ride to the clinic.</em></p>
+            <p style="color:#666"><em>Caller doesn't need a ride to the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}.</em></p>
           </ng-template>
         </mat-card>
         <mat-card class="review-card candy-card">
-          <h4>Drive From Clinic</h4>
+          <h4>Drive From {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</h4>
           <div *ngIf="callerNeedsDropoff; else noDropoff">
             <span>Drop Off Caller At:</span>
             <ng-container *ngIf="dropoffSameAsPickup; else dropoffDifferent">
@@ -313,7 +327,7 @@
             </ng-template>
           </div>
           <ng-template #noDropoff>
-            <p style="color:#666"><em>Caller doesn't need a ride home from the clinic.</em></p>
+            <p style="color:#666"><em>Caller doesn't need a ride home from the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}.</em></p>
           </ng-template>
         </mat-card>
         <div class="form-actions">
