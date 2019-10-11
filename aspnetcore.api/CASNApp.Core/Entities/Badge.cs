@@ -22,6 +22,7 @@ namespace CASNApp.Core.Entities
         public bool IsHidden { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
+        public int DisplayOrdinal { get; set; }
 
         public ICollection<VolunteerBadge> VolunteerBadges { get; set; }
 

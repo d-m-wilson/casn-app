@@ -29,6 +29,7 @@ namespace CASNApp.Core.Queries
                          new { Key1 = vb.BadgeId, Key2 = vb.VolunteerId }
                          into vbgroup
                          from subvb in vbgroup.DefaultIfEmpty()
+                         orderby b.DisplayOrdinal ascending, b.Id ascending
                          select new BadgeDTO
                          {
                              Id = b.Id,
