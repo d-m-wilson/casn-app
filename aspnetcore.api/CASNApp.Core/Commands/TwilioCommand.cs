@@ -34,16 +34,16 @@ namespace CASNApp.Core.Commands
 			DriverApprovedForDrive = 11,
 		}
 
-        //TODO: optional parameters are not a great idea, this one should probably be removed
 		public TwilioCommand(string accountSid, string authToken, string accountPhoneNumber, ILogger<TwilioCommand> logger,
-            casn_appContext dbContext, string timeZoneName = "Central Standard Time")
+            casn_appContext dbContext, string timeZoneName)
 		{
 			this.accountSid = accountSid;
 			this.authToken = authToken;
 			this.accountPhoneNumber = accountPhoneNumber;
 			this.logger = logger;
 			this.dbContext = dbContext;
-			timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName);
+            timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
+                throw new ArgumentException($"Time zone not found: \"{timeZoneName}\"", nameof(timeZoneName));
 		}
 
 		public void SendDispatcherMessage(Drive drive, Volunteer driver, MessageType messageType)

@@ -46,6 +46,7 @@ namespace CASNApp.API.Controllers
 		private readonly string twilioAuthKey;
 		private readonly string twilioPhoneNumber;
         private readonly bool badgesAreEnabled;
+        private readonly string userTimeZoneName;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -60,6 +61,7 @@ namespace CASNApp.API.Controllers
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
             badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
+            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
         }
 
         /// <summary>
@@ -298,7 +300,8 @@ namespace CASNApp.API.Controllers
                 try
                 {
                     //send initial text message to drivers
-                    var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+                    var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
+                        dbContext, userTimeZoneName);
                     twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown);
                 }
                 catch (Exception ex)
@@ -383,7 +386,8 @@ namespace CASNApp.API.Controllers
 				try
 				{
 					//send initial text message to drivers
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
+                        dbContext, userTimeZoneName);
 					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
 				}
 				catch (Exception ex)
@@ -462,7 +466,8 @@ namespace CASNApp.API.Controllers
 					//send initial text message to driver
 					DriveQuery driveQuery = new DriveQuery(dbContext);
 					var drive = await driveQuery.GetDriveAsync(driveId);
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
+                        dbContext, userTimeZoneName);
 					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
 				}
 				catch (Exception ex)

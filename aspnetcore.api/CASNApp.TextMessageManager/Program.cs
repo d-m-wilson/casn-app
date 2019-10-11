@@ -19,8 +19,9 @@ namespace CASNApp.TextMessageManager
 		private static readonly string twilioAccountSID;
 		private static readonly string twilioAuthKey;
 		private static readonly string twilioPhoneNumber;
+        private static readonly string userTimeZoneName;
 
-		static Program()
+        static Program()
 		{
 			configuration = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
@@ -32,9 +33,10 @@ namespace CASNApp.TextMessageManager
 			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
-		}
+            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
+        }
 
-		private static Microsoft.Extensions.DependencyInjection.ServiceProvider BuildDi()
+        private static Microsoft.Extensions.DependencyInjection.ServiceProvider BuildDi()
 		{
 			return new ServiceCollection()
 				.AddDbContext<casn_appContext>(options =>
@@ -95,7 +97,8 @@ namespace CASNApp.TextMessageManager
 				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
 				{
 					//send out a single reminder message for all open appointments
-					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
+                        dbContext, userTimeZoneName);
 					reminderSMS.SendAppointmentReminderMessage(openAppointments, messageType);
 				}
 				else
@@ -104,7 +107,8 @@ namespace CASNApp.TextMessageManager
 					if (openAppointments != null && openAppointments.Count > 0)
 					{
 						DriveQuery driveQuery = new DriveQuery(dbContext);
-						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(), dbContext);
+						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
+                            dbContext, userTimeZoneName);
 						foreach (Appointment appointment in openAppointments)
 						{
 							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
