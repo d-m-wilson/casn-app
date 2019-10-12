@@ -95,5 +95,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dbo\Tables\Data\ServiceProviderType.data.sql" />
+    <None Include="dbo\Tables\Data\Badge.data.sql" />
+    <None Include="dbo\Tables\Data\AppointmentType.data.sql" />
+    <None Include="dbo\Tables\Data\DriveStatus.data.sql" />
+    <None Include="dbo\Tables\Data\DriveCancelReason.data.sql" />
+    <None Include="dbo\Tables\Data\Message.data.sql" />
   </ItemGroup>
 </Project>

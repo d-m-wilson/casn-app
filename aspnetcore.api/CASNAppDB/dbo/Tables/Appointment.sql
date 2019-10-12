@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Appointment] (
     [Id]                    INT            IDENTITY (41, 1) NOT NULL,
     [DispatcherId]          INT            NOT NULL,
-    [CallerId]              INT            NOT NULL,
+    [CallerId]              INT            NULL,
     [ServiceProviderId]     INT            NOT NULL,
     [PickupLocationVague]   NVARCHAR (255) NULL,
     [PickupVagueLatitude]   DECIMAL (9, 6) NULL,
@@ -18,7 +18,7 @@
     [Updated]               DATETIME       NULL,
     CONSTRAINT [PK_Appointment] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Appointment_AppointmentTypeId] FOREIGN KEY ([AppointmentTypeId]) REFERENCES [dbo].[AppointmentType] ([Id]),
-    CONSTRAINT [FK_Appointment_CallerId] FOREIGN KEY ([CallerId]) REFERENCES [dbo].[Caller] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Appointment_CallerId] FOREIGN KEY ([CallerId]) REFERENCES [dbo].[Caller] ([Id]) ON DELETE SET NULL,
     CONSTRAINT [FK_Appointment_ServiceProviderId] FOREIGN KEY ([ServiceProviderId]) REFERENCES [dbo].[ServiceProvider] ([Id]),
     CONSTRAINT [FK_Appointment_DispatcherId] FOREIGN KEY ([DispatcherId]) REFERENCES [dbo].[Volunteer] ([Id])
 );

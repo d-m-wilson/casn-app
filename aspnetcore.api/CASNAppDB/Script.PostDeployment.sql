@@ -9,5 +9,17 @@ Post-Deployment Script Template
                SELECT * FROM [$(TableName)]                    
 --------------------------------------------------------------------------------------
 */
+:r .\dbo\Tables\Data\AppointmentType.data.sql
+GO
+:r .\dbo\Tables\Data\Badge.data.sql
+GO
+:r .\dbo\Tables\Data\DriveCancelReason.data.sql
+GO
 :r .\dbo\Tables\Data\DriveLogStatus.data.sql
+GO
+:r .\dbo\Tables\Data\DriveStatus.data.sql
+GO
+:r .\dbo\Tables\Data\Message.data.sql
+GO
 :r .\dbo\Tables\Data\ServiceProviderType.data.sql
+GO
