@@ -12,7 +12,7 @@ namespace CASNApp.Core.Entities
 
         public int Id { get; set; }
         public int DispatcherId { get; set; }
-        public int CallerId { get; set; }
+        public int? CallerId { get; set; }
         public int ServiceProviderId { get; set; }
         public string PickupLocationVague { get; set; }
         public decimal? PickupVagueLatitude { get; set; }
