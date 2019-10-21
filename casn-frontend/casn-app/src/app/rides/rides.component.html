@@ -41,7 +41,7 @@
           <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
       <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
-        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && displayServiceProviders[r.appointment.serviceProviderId]">
+        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)">
           <mat-card class="appointment-card candy-card mat-elevation-z0">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
@@ -165,17 +165,22 @@
                         [checked]="displayRides[3]"
                         (change)="displayRides[3] = $event.source.checked"
                         color="primary">Canceled</mat-slide-toggle>
-
     </mat-card>
     <mat-card class="mt candy-card">
       <mat-card-subtitle>By Service Provider</mat-card-subtitle>
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">
-        <mat-slide-toggle [checked]="displayServiceProviders[s]"
+        <mat-slide-toggle *ngIf="serviceProviders[s].serviceProviderTypeId === 1"
+                          [checked]="displayServiceProviders[s]"
                           (change)="displayServiceProviders[s] = $event.source.checked"
                           color="primary">{{ serviceProviders[s].name }}
         </mat-slide-toggle>
         <br><br>
       </ng-container>
+      <mat-slide-toggle [checked]="displayServiceProviders['courthouses']"
+                        (change)="displayServiceProviders['courthouses'] = $event.source.checked"
+                        color="primary">Courthouses
+      </mat-slide-toggle>
+      <br><br>
     </mat-card>
     <div class="modal-actions">
       <button type="button"

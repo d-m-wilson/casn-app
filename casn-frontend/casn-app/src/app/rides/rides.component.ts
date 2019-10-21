@@ -100,9 +100,14 @@ export class RidesComponent implements OnInit {
   }
 
   getServiceProviders(): void {
-    this.ds.getServiceProviders().subscribe(c => {
-      this.serviceProviders = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
-      this.objectKeys(this.serviceProviders).forEach(c => this.displayServiceProviders[c] = true);
+    this.ds.getServiceProviders().subscribe(p => {
+      this.serviceProviders = p.reduce((map, obj) => (map[obj.id] = obj, map), {});
+      // NOTE: All courthouses are displayed/hidden with a single toggle.
+      // The rest of the service providers are toggled on/off individually.
+      this.displayServiceProviders['courthouses'] = true;
+      this.objectKeys(this.serviceProviders).forEach(s => {
+        if(s.serviceProviderTypeId !== 2) this.displayServiceProviders[s] = true;
+      });
     });
   }
 
@@ -219,6 +224,16 @@ export class RidesComponent implements OnInit {
   swipe(action: string) {
     if(action === 'swiperight') this.handleChangeWeekClick('next');
     if(action === 'swipeleft') this.handleChangeWeekClick('prev');
+  }
+
+  providerIsDisplayed(providerId: string|number): boolean {
+    // NOTE: All courthouses are toggled on/off with a single toggle
+    // If it's a courthouse, check if courthouses are displayed
+    if(this.serviceProviders[providerId].serviceProviderTypeId === 2) {
+      return this.displayServiceProviders['courthouses'];
+    }
+    // Otherwise, just check if the individual provider is displayed
+    return this.displayServiceProviders[providerId]
   }
 
 }
