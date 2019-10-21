@@ -78,7 +78,6 @@ export class RidesComponent implements OnInit {
       this.apptTypes["6"].estimatedDurationMinutes = 180;
       this.apptTypes["7"].estimatedDurationMinutes = 60;
       this.apptTypes["8"].estimatedDurationMinutes = 30;
-      console.log("appt Types", this.apptTypes);
       //3 Surgical: 3.5 hours (210 minutes)
       //4 Ultrasound: 2.5 hours (150 minutes)
       //5 Lam Insert: 1.5 hours (90 minutes)
@@ -89,7 +88,6 @@ export class RidesComponent implements OnInit {
   }
 
   getRides(): void {
-    console.log("Getting rides....")
     this.ds.getAppointments(this.startDate, this.endDate).subscribe(appts => {
       appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
       this.rides = appts;
