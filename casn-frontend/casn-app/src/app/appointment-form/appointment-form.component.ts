@@ -5,6 +5,13 @@ import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
+/**
+  TODO: Edit Appointment Feature
+  - Receive appointment data OR receive apptID and GET data from API.
+  - Set form values from appt data
+  - Ensure UX of form works correctly
+**/
+
 @Component({
   selector: 'app-appointment-form',
   templateUrl: './appointment-form.component.html',
@@ -57,7 +64,6 @@ export class AppointmentFormComponent implements OnInit {
 
   getAppointmentTypes(): void {
     this.defaultService.getAppointmentTypes().subscribe(a => {
-      console.log("APPT TYPES:", a)
       this.appointmentTypes = a.map(i => {
         return { value: i.id, displayValue: i.title };
       })
