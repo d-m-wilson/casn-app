@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1571689373091,
+  "timestamp": 1571699536550,
   "index": "/app/index.html",
   "assetGroups": [
     {
@@ -10,7 +10,7 @@
       "urls": [
         "/app/favicon.ico",
         "/app/index.html",
-        "/app/main.dbc45f4e637fe8c63407.js",
+        "/app/main.e7e021756c4f69060ba6.js",
         "/app/polyfills-es5.6a9f5fde365a77ab7943.js",
         "/app/polyfills.eb122b81ceab8935e738.js",
         "/app/runtime.1375ccab199dabc5ab5a.js",
@@ -87,7 +87,7 @@
     {
       "name": "api-freshness",
       "patterns": [
-        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/appointments\\/.*"
+        "https:\\/\\/test\\.casn\\.app\\/api\\/appointments\\/.*"
       ],
       "strategy": "freshness",
       "maxSize": 3,
@@ -97,11 +97,11 @@
     {
       "name": "api-performance",
       "patterns": [
-        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/serviceprovider\\/.*",
-        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/appointmentType\\/.*",
-        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/driveCancelReason\\/.*",
-        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/api\\/driveStatus\\/.*",
-        "https:\\/\\/casnapptest\\.dmwilson\\.info\\/appconfig\\.json"
+        "https:\\/\\/test\\.casn\\.app\\/api\\/serviceprovider\\/.*",
+        "https:\\/\\/test\\.casn\\.app\\/api\\/appointmentType\\/.*",
+        "https:\\/\\/test\\.casn\\.app\\/api\\/driveCancelReason\\/.*",
+        "https:\\/\\/test\\.casn\\.app\\/api\\/driveStatus\\/.*",
+        "https:\\/\\/test\\.casn\\.app\\/appconfig\\.json"
       ],
       "strategy": "performance",
       "maxSize": 3,
@@ -167,8 +167,8 @@
     "/app/assets/splashscreens/iphonexsmax_splash.png": "74530dd676947fc76838265720d9599dd664c44a",
     "/app/blank_profile_pic.f5ef4263a9c36adac595.png": "63d727a3e1bd82b55be329a0f47698e244899f89",
     "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/app/index.html": "7e8780c404c2b55a9eaab0eaf3093e5722f6f544",
-    "/app/main.dbc45f4e637fe8c63407.js": "8b01e2910a2b1908ea5c056da12886b2b64580c9",
+    "/app/index.html": "4823ac4c052ed3e91a7998f7c9b9b27530c43ec4",
+    "/app/main.e7e021756c4f69060ba6.js": "966a579baa942b56dd0a89bdbb37399490a5e538",
     "/app/polyfills-es5.6a9f5fde365a77ab7943.js": "934e86a8280c34ce3ce10f75db1de79822362f1e",
     "/app/polyfills.eb122b81ceab8935e738.js": "64fb64b29afde90ab0c58514c0cf754f2d092bc0",
     "/app/runtime.1375ccab199dabc5ab5a.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
