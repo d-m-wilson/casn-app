@@ -13,7 +13,7 @@
                      [ngClass]="b.isEarned ? 'active' : 'inactive'"/>
               </div>
               <div class="front back" *ngIf="b.tapped">
-                <h3>{{ b.title }}</h3>
+                <h3>{{ !b.isEarned && b.isHidden ? '???' : b.title }}</h3>
                 <p *ngIf="b.isEarned"><em>Earned {{ b.dateEarned }}</em></p>
                 <p *ngIf="b.isEarned">{{ b.description }}</p>
                 <p *ngIf="!b.isEarned"><em>{{ b.isHidden ? '???' : b.description }}</em></p>
@@ -23,7 +23,7 @@
         </div>
       </mat-card>
     </mat-tab>
-    <mat-tab label="Stats">
+    <!-- <mat-tab label="Stats">
       <mat-card class="stat-card">
         <mat-card-header>
           <mat-card-title>Daily Streaks</mat-card-title>
@@ -41,6 +41,6 @@
     </mat-tab>
     <mat-tab label="Leaderboard">
       <app-leaderboard></app-leaderboard>
-    </mat-tab>
+    </mat-tab> -->
   </mat-tab-group>
 </main>

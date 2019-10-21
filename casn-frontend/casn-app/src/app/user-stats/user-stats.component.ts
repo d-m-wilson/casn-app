@@ -22,7 +22,13 @@ export class UserStatsComponent implements OnInit {
                             Service Calls
   **********************************************************************/
   getBadges(): void {
-    this.ds.getBadges().subscribe(b => this.badges = b);
+    this.ds.getBadges().subscribe(badges => {
+      this.badges = badges.map(b => {
+        if(b.isEarned) return b;
+        if(b.isHidden) b.path = `/assets/badges/hidden${Math.floor(Math.random() * 3) + 1}.png`;
+        return b;
+      })
+    });
   }
 
   toggleTapped(badge): void {
