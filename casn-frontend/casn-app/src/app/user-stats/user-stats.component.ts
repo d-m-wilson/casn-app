@@ -25,7 +25,7 @@ export class UserStatsComponent implements OnInit {
     this.ds.getBadges().subscribe(badges => {
       this.badges = badges.map(b => {
         if(b.isEarned) return b;
-        if(b.isHidden) b.path = `/assets/badges/hidden${Math.floor(Math.random() * 3) + 1}.png`;
+        if(b.isHidden) b.path = `assets/badges/hidden${Math.floor(Math.random() * 3) + 1}.png`;
         return b;
       })
     });
