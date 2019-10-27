@@ -100,5 +100,6 @@
     <None Include="dbo\Tables\Data\DriveStatus.data.sql" />
     <None Include="dbo\Tables\Data\DriveCancelReason.data.sql" />
     <None Include="dbo\Tables\Data\Message.data.sql" />
+    <Build Include="dbo\Stored Procedures\uspRedactionPlan.sql" />
   </ItemGroup>
 </Project>
