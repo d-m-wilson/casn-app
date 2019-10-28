@@ -207,7 +207,7 @@ namespace CASNApp.Core.Commands
 							double radius = GeocoderQuery.LatLng.GetDistance(initialLatitude, initialLongitude, (double)driver.Latitude, (double)driver.Longitude, GeocoderQuery.LatLng.UnitType.Miles);
 							if (hours < 2 && radius <= 5)
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
-							else if (hours < 3 && radius > 5 && radius <= 15)
+							else if (hours >= 2 && hours < 3 && radius > 5 && radius <= 15)
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
 							else if (hours >= 3 && radius > 15)
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
