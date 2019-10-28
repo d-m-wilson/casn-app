@@ -152,11 +152,12 @@
       </mat-tab>
     </mat-tab-group>
     <!--=========== Modal Actions ============-->
+    <!-- TODO: Check if volunteer list includes current user, disable btn -->
     <div class="modal-actions">
       <button type="button"
               class="btn-cta"
               mat-raised-button
-              [disabled]="ride[driveType].statusId === 3"
+              [disabled]="ride[driveType].statusId === 2"
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
     </div>
