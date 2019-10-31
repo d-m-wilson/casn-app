@@ -129,7 +129,8 @@ namespace CASNApp.Core.Commands
 		public void SendAppointmentMessage(Appointment appointment, Drive driveTo, Drive driveFrom, MessageType messageType)
 		{
 			//determine type of meesage that would be displayed
-			if (appointment.AppointmentDate.Date == DateTime.UtcNow.Date)
+			//if (appointment.AppointmentDate.Date == DateTime.UtcNow.Date)
+			if (TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).Date == TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).Date)
 				messageType = MessageType.ApptAddedToday;
 			else if (driveTo == null && driveFrom != null)
 				messageType = MessageType.ApptAddedOneWayFromServiceProvider;
