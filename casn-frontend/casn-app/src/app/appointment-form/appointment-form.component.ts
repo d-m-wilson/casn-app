@@ -4,6 +4,7 @@ import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { AppointmentDataService } from '../appointment-data.service';
 
 /**
   TODO: Edit Appointment Feature
@@ -26,6 +27,7 @@ export class AppointmentFormComponent implements OnInit {
   */
   callerId: number;
   callerIdentifier: string;
+
   appointmentTypes: any[];
   serviceProviders: any;
   clinicServiceProviders: any;
@@ -35,11 +37,23 @@ export class AppointmentFormComponent implements OnInit {
   callerNeedsDropoff: boolean;
   dropoffSameAsPickup: boolean;
 
+  /*
+  NOTE:
+  When the user edits a caller, that data will be passed to the AppointmentDataService,
+  which is used here to populate the appointmentToEdit object. This is because
+  the edited caller & edited appointment are saved together with a single API
+  call when this form is submitted, so data sharing between the two components
+  is required.
+  */
+  appointmentToEdit: any;
+  editingAppointment: boolean = false;
+
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DispatcherApiService,
                private defaultService: DefaultApiService,
+               private sharedApptDataService: AppointmentDataService,
                private fb: FormBuilder,
                private route: ActivatedRoute,
                private location: Location,
@@ -53,6 +67,16 @@ export class AppointmentFormComponent implements OnInit {
     this.getAppointmentTypes();
     this.getCaller();
     this.getServiceProviders();
+
+    // If user is editing existing appointment, populate form accordingly
+    const appointmentId = this.route.snapshot.paramMap.get('appointmentId');
+    if(appointmentId) {
+      console.log("Editing Appointment", appointmentId);
+      this.editingAppointment = true;
+      this.sharedApptDataService.currentMessage.subscribe(a => this.appointmentToEdit = a);
+      this.setFormValuesForEditing();
+      console.log("The appointment to edit:", this.appointmentToEdit);
+    }
   }
 
   /*********************************************************************
@@ -80,7 +104,6 @@ export class AppointmentFormComponent implements OnInit {
   getServiceProviders(): void {
     this.defaultService.getServiceProviders().subscribe(
       data => {
-        console.log("Service Providers:", data)
         this.serviceProviders = data;
         this.courthouseServiceProviders = data.filter(s => s.serviceProviderTypeId === 2);
         this.clinicServiceProviders = data.filter(s => s.serviceProviderTypeId === 1);
@@ -159,6 +182,32 @@ export class AppointmentFormComponent implements OnInit {
 
   get apptServiceProvider(): string {
     return (this.serviceProviders.find(s => s.id == this.formAppt.serviceProviderId.value)).name;
+  }
+
+  setFormValuesForEditing(): void {
+    console.log("Setting form values", this.appointmentToEdit);
+
+    // Set appointment form values
+    const a = this.appointmentToEdit.appointment;
+    this.formAppt.appointmentTypeId.setValue(a.appointmentTypeId);
+    this.formAppt.serviceProviderId.setValue(a.serviceProviderId);
+    this.formAppt.appointmentDate.setValue(a.appointmentDate);
+    this.formPickup.pickupLocationVague.setValue(a.pickupLocationVague);
+    this.formDropoff.dropoffLocationVague.setValue(a.dropoffLocationVague);
+
+    // Set driveTo form values
+    const dt = this.appointmentToEdit.driveTo;
+    this.formPickup.pickupAddress.setValue(dt.startAddress);
+    this.formPickup.pickupCity.setValue(dt.startCity);
+    this.formPickup.pickupState.setValue(dt.startState);
+    this.formPickup.pickupPostalCode.setValue(dt.startPostalCode);
+
+    // Set driveFrom form values
+    const df = this.appointmentToEdit.driveFrom;
+    this.formDropoff.dropoffAddress.setValue(df.endAddress);
+    this.formDropoff.dropoffCity.setValue(df.endCity);
+    this.formDropoff.dropoffState.setValue(df.endState);
+    this.formDropoff.dropoffPostalCode.setValue(df.endPostalCode);
   }
 
 
