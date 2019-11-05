@@ -98,7 +98,9 @@ export class RideDetailModalComponent implements OnInit {
         this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {
-        // TODO: Handle error
+        if(err.status === 409) {
+          alert("Our records show you've already applied for this drive. We'll contact you soon to let you know if you're approved.")
+        }
         console.error("ERROR:", err);
       }
     );
