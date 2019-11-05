@@ -8,9 +8,7 @@ import { AppointmentDataService } from '../appointment-data.service';
 
 /**
   TODO: Edit Appointment Feature
-  - Receive appointment data OR receive apptID and GET data from API.
-  - Set form values from appt data
-  - Ensure UX of form works correctly
+  - Save date correctly
 **/
 
 @Component({
@@ -129,6 +127,24 @@ export class AppointmentFormComponent implements OnInit {
       }
     );
   }
+
+  updateAppt(): void {
+    // TODO: Should I be editing only those fields which have changed and
+    // returning all other fields as-is? E.g. I'm not resetting addresses if
+    // user changes service provider. Check w/ David.
+    console.log("Updating your appt!", this.appointmentDTO);
+    this.ds.updateAppointment(this.appointmentToEdit.appointment.id, this.appointmentToEdit).subscribe(
+      data => {
+        console.log("Save appt response is", data);
+        alert('Success! Your appointment has been updated.');
+        this.router.navigate(['']);
+      },
+      err => {
+        console.error("--Error saving appt data...", err);
+        alert('An error occurred, and your appointment was not updated.');
+      }
+    );
+  }
   /*********************************************************************
                                 Forms
   **********************************************************************/
@@ -165,7 +181,11 @@ export class AppointmentFormComponent implements OnInit {
     const dropoffInvalid = this.callerNeedsDropoff && !this.dropoffSameAsPickup && !this.driveFromForm.valid;
     const formInvalid = apptInvalid || pickupInvalid || dropoffInvalid;
     if(formInvalid) return;
-    this.constructAppointmentDTO();
+    if(this.editingAppointment) {
+      this.editAppointmentDTO();
+    } else {
+      this.constructAppointmentDTO();
+    }
   }
 
   /*********************************************************************
@@ -185,13 +205,11 @@ export class AppointmentFormComponent implements OnInit {
   }
 
   setFormValuesForEditing(): void {
-    console.log("Setting form values", this.appointmentToEdit);
-
     // Set appointment form values
     const a = this.appointmentToEdit.appointment;
     this.formAppt.appointmentTypeId.setValue(a.appointmentTypeId);
     this.formAppt.serviceProviderId.setValue(a.serviceProviderId);
-    this.formAppt.appointmentDate.setValue(a.appointmentDate);
+    this.formAppt.appointmentDate.setValue(new Date(a.appointmentDate));
     this.formPickup.pickupLocationVague.setValue(a.pickupLocationVague);
     this.formDropoff.dropoffLocationVague.setValue(a.dropoffLocationVague);
 
@@ -214,7 +232,6 @@ export class AppointmentFormComponent implements OnInit {
   /*********************************************************************
                       DTO Construction for API Calls
   **********************************************************************/
-  // TODO: Confirm what I need to send to backend for one-way drives.
   // TODO: Refactor this, possibly out into a service call.
   constructAppointmentDTO(): void {
     this.appointmentDTO = {};
@@ -275,6 +292,47 @@ export class AppointmentFormComponent implements OnInit {
     }
     console.log("Constructed Appointment DTO:", this.appointmentDTO);
     this.saveNewAppt();
+  }
+
+  editAppointmentDTO(): void {
+    // Update appointment values from form
+    this.appointmentToEdit.appointment.appointmentTypeId = this.formAppt.appointmentTypeId.value;
+    this.appointmentToEdit.appointment.serviceProviderId = this.formAppt.serviceProviderId.value;
+    this.appointmentToEdit.appointment.appointmentDate = this.formAppt.appointmentDate.value.toISOString();
+    this.appointmentToEdit.appointment.pickupLocationVague = this.formPickup.pickupLocationVague.value;
+    this.appointmentToEdit.appointment.dropoffLocationVague = this.dropoffSameAsPickup ? this.formPickup.pickupLocationVague.value : this.formDropoff.dropoffLocationVague.value;
+
+    // Update driveTo values from form
+    if(this.callerNeedsPickup) {
+      this.appointmentToEdit.driveTo.startAddress = this.formPickup.pickupAddress.value;
+      this.appointmentToEdit.driveTo.startCity = this.formPickup.pickupCity.value;
+      this.appointmentToEdit.driveTo.startState = this.formPickup.pickupState.value;
+      this.appointmentToEdit.driveTo.startPostalCode = this.formPickup.pickupPostalCode.value;
+    } else {
+      this.appointmentToEdit.driveTo = null;
+      this.appointmentToEdit.appointment.pickupLocationVague = null;
+    }
+
+    // Update driveFrom values values from form
+    if(this.callerNeedsDropoff) {
+      if(this.dropoffSameAsPickup) {
+        this.appointmentToEdit.driveFrom.endAddress = this.formPickup.pickupAddress.value;
+        this.appointmentToEdit.driveFrom.endCity = this.formPickup.pickupCity.value;
+        this.appointmentToEdit.driveFrom.endState = this.formPickup.pickupState.value;
+        this.appointmentToEdit.driveFrom.endPostalCode = this.formPickup.pickupPostalCode.value;
+      } else {
+        this.appointmentToEdit.driveFrom.endAddress = this.formDropoff.dropoffAddress.value;
+        this.appointmentToEdit.driveFrom.endCity = this.formDropoff.dropoffCity.value;
+        this.appointmentToEdit.driveFrom.endState = this.formDropoff.dropoffState.value;
+        this.appointmentToEdit.driveFrom.endPostalCode = this.formDropoff.dropoffPostalCode.value;
+      }
+    } else {
+      this.appointmentToEdit.driveFrom = null;
+      this.appointmentToEdit.appointment.dropoffLocationVague = null;
+    }
+
+    console.log("Updated appointment DTO:", this.appointmentToEdit);
+    this.updateAppt();
   }
 
   /*********************************************************************
