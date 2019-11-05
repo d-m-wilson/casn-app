@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { DriverApiService } from '../api/api/driverApi.service';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
+import { AppointmentDataService } from "../appointment-data.service";
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,6 +27,7 @@ export class RideDetailModalComponent implements OnInit {
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
                private dispatcherService: DispatcherApiService,
+               private sharedApptDataService: AppointmentDataService,
                private router: Router ) { }
 
   ngOnInit() {
@@ -126,9 +128,12 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   editAppointment(): void {
+    // Pass the appt data to a data sharing service to populate the edit forms.
+    this.sharedApptDataService.changeMessage(this.ride);
+    // Navigate to the edit forms.
     this.router.navigate(['/caller', {
       callerIdentifier: this.ride.caller.callerIdentifier,
-      appointmentId: this.ride.appointment.id 
+      appointmentId: this.ride.appointment.id
     }]);
   }
 
