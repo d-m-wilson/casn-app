@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
+import { AppointmentDataService } from "../appointment-data.service";
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { startWith, map } from 'rxjs/operators';
@@ -23,6 +24,7 @@ export class CallersComponent implements OnInit {
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DispatcherApiService,
+               private sharedApptDataService: AppointmentDataService,
                private fb: FormBuilder,
                private location: Location,
                private route: ActivatedRoute,
@@ -154,11 +156,8 @@ export class CallersComponent implements OnInit {
     });
   }
 
-  // TODO: get this working once update endpoint is live
   updateCaller(): void {
-    // this.ds.updateCaller(this.callerForm.value).subscribe(p => {
-    //   this.router.navigate(['/appointment', { callerIdentifier: p.callerIdentifier, callerId: p.id }]);
-    // });
+    this.sharedApptDataService.changeMessage(this.callerForm.value);
     this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
   }
 
