@@ -126,7 +126,10 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   editAppointment(): void {
-    this.router.navigate(['/caller', { callerIdentifier: this.ride.caller.callerIdentifier }]);
+    this.router.navigate(['/caller', {
+      callerIdentifier: this.ride.caller.callerIdentifier,
+      appointmentId: this.ride.appointment.id 
+    }]);
   }
 
 /*********************************************************************
