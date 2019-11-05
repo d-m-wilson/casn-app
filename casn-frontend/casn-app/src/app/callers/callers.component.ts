@@ -163,7 +163,11 @@ export class CallersComponent implements OnInit {
     // appt form is completed.
     this.appointmentToEdit.caller = this.callerForm.value;
     this.sharedApptDataService.changeMessage(this.appointmentToEdit);
-    this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
+    this.router.navigate(['/appointment', {
+      callerIdentifier: this.f.callerIdentifier.value,
+      callerId: this.existingCallerId,
+      appointmentId: this.appointmentToEdit.appointment.id
+    }]);
   }
 
 }
