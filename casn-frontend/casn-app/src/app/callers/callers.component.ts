@@ -162,6 +162,7 @@ export class CallersComponent implements OnInit {
     // NOTE: The caller & appt will be updated in a single API call once the
     // appt form is completed.
     this.appointmentToEdit.caller = this.callerForm.value;
+    this.appointmentToEdit.caller.id = this.existingCallerId;
     this.sharedApptDataService.changeMessage(this.appointmentToEdit);
     this.router.navigate(['/appointment', {
       callerIdentifier: this.f.callerIdentifier.value,
