@@ -16,6 +16,7 @@ export class CallersComponent implements OnInit {
   existingCaller: any = {};
   existingCallerId: Number;
   editingCaller: boolean = false;
+  appointmentToEdit: any;
   /* Display flags for caller lookup feature */
   displayCallerFoundModal: boolean = false;
   displayCallerForm: boolean = false;
@@ -41,6 +42,7 @@ export class CallersComponent implements OnInit {
     const callerIdentifier = this.route.snapshot.paramMap.get('callerIdentifier');
     if(callerIdentifier) {
       this.editingCaller = true;
+      this.sharedApptDataService.currentMessage.subscribe(a => this.appointmentToEdit = a);
       this.callerIdentifierSearch.setValue(callerIdentifier);
       this.searchCallerIdentifier();
     }
@@ -157,7 +159,10 @@ export class CallersComponent implements OnInit {
   }
 
   updateCaller(): void {
-    this.sharedApptDataService.changeMessage(this.callerForm.value);
+    // NOTE: The caller & appt will be updated in a single API call once the
+    // appt form is completed.
+    this.appointmentToEdit.caller = this.callerForm.value;
+    this.sharedApptDataService.changeMessage(this.appointmentToEdit);
     this.router.navigate(['/appointment', { callerIdentifier: this.f.callerIdentifier.value, callerId: this.existingCallerId }]);
   }
 
