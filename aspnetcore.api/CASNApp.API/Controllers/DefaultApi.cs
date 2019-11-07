@@ -102,7 +102,8 @@ namespace CASNApp.API.Controllers
                 .Include(a => a.Caller)
                 .Where(a => a.AppointmentDate >= start &&
                             a.AppointmentDate <= end &&
-                            a.IsActive)
+                            a.IsActive &&
+                            a.CallerId.HasValue)
                 .ToListAsync();
 
             var driveIds = new List<long>();
