@@ -152,8 +152,6 @@ export class AppointmentFormComponent implements OnInit {
     appointmentTypeId: [3, Validators.required],
     callerId: [0],
     callerIdentifier: ['', Validators.required],
-    // TODO: Get dispatcherId from localstorage
-    // Need to talk to David about this -- handle on backend?
     dispatcherId: [5],
     serviceProviderId: [1, Validators.required],
     appointmentDate: ['', Validators.required],
