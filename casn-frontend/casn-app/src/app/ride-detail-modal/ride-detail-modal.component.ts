@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { DriverApiService } from '../api/api/driverApi.service';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
+import { AppointmentDataService } from "../appointment-data.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ride-detail-modal',
@@ -16,7 +18,7 @@ export class RideDetailModalComponent implements OnInit {
   @Output() closeRideModalAndUpdateClick = new EventEmitter<boolean>();
   driveType: string;
   apptTypes: any;
-  clinics: any;
+  serviceProviders: any;
   volunteers: any[];
   // Details for Cancel Drive Modal
   showCancelDriveModal: boolean = false;
@@ -24,27 +26,30 @@ export class RideDetailModalComponent implements OnInit {
 
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
-               private dispatcherService: DispatcherApiService ) { }
+               private dispatcherService: DispatcherApiService,
+               private sharedApptDataService: AppointmentDataService,
+               private router: Router ) { }
 
   ngOnInit() {
     this.userRole = localStorage.getItem('userRole');
     if(this.userRole === '1') this.getVolunteers();
     this.getAppointmentTypes();
-    this.getClinics();
+    this.getServiceProviders();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
   }
 
 /*********************************************************************
                           Service Calls
 **********************************************************************/
-  getClinics(): void {
-    this.ds.getClinics().subscribe(c => {
-      this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
+  getServiceProviders(): void {
+    this.ds.getServiceProviders().subscribe(s => {
+      this.serviceProviders = s.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
 
   getAppointmentTypes(): void {
     this.ds.getAppointmentTypes().subscribe(a => {
+      console.log("appt TYPESSSS", a)
       this.apptTypes = a.reduce((acc, cur) => {
         acc[cur.id] = { title: cur.title };
         return acc;
@@ -93,7 +98,9 @@ export class RideDetailModalComponent implements OnInit {
         this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {
-        // TODO: Handle error
+        if(err.status === 409) {
+          alert("Our records show you've already applied for this drive. We'll contact you soon to let you know if you're approved.")
+        }
         console.error("ERROR:", err);
       }
     );
@@ -120,6 +127,16 @@ export class RideDetailModalComponent implements OnInit {
     this.driveToCancel = null;
     this.showCancelDriveModal = false;
     if(update) this.closeRideModalAndUpdateClick.emit(true);
+  }
+
+  editAppointment(): void {
+    // Pass the appt data to a data sharing service to populate the edit forms.
+    this.sharedApptDataService.changeMessage(this.ride);
+    // Navigate to the edit forms.
+    this.router.navigate(['/caller', {
+      callerIdentifier: this.ride.caller.callerIdentifier,
+      appointmentId: this.ride.appointment.id
+    }]);
   }
 
 /*********************************************************************

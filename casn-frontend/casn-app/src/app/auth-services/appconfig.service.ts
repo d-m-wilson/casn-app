@@ -9,7 +9,7 @@ export class AppConfigService {
 
     loadAppConfig() {
         console.log('AppConfigService loadAppConfig()');
-        return this.http.get('https://casnapptest.dmwilson.info/appconfig.json')
+        return this.http.get('https://test.casn.app/appconfig.json')
             .toPromise()
             .then(data => {
                 this.appConfig = data;

@@ -5,7 +5,7 @@
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/app/",
-  "start_url": "https://casnapptest.dmwilson.info/app/",
+  "start_url": "https://test.casn.app/app/",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",

@@ -5,6 +5,7 @@ export * from './cASNAppCoreModelsBody';
 export * from './cASNAppCoreModelsBody1';
 export * from './cASNAppCoreModelsCaller';
 export * from './cASNAppCoreModelsClinic';
+export * from './cASNAppCoreModelsServiceProvider';
 export * from './cASNAppCoreModelsDeleteSuccessMessage';
 export * from './cASNAppCoreModelsDrive';
 export * from './cASNAppCoreModelsDriveCancelReason';

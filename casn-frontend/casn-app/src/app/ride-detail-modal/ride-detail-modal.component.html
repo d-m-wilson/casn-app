@@ -1,17 +1,26 @@
 <!--********************************************************************
                           Ride Detail Modal
 **********************************************************************-->
-<div class="modal" *ngIf="ride && clinics && apptTypes">
+<div class="modal" *ngIf="ride && serviceProviders && apptTypes">
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
+    <h1>
+      {{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}
+    </h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
-        <mat-card class="appointment-card candy-card">
-          <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
-          <span class="bold">at {{ clinics[ride.appointment.clinicId].name }}</span><br>
+        <mat-card class="appointment-card candy-card"
+                  [ngClass]="{ 'edit-card': userRole === '1' }">
+          <div>
+            <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
+            <span class="bold">at {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
+          </div>
+            <button *ngIf="userRole === '1'"
+                    mat-mini-fab
+                    color="accent"
+                    (click)="editAppointment()"><mat-icon>edit</mat-icon></button>
         </mat-card>
         <!--=========== Caller Info ============-->
         <mat-expansion-panel expanded class="mt candy-expansion-panel">
@@ -36,7 +45,7 @@
               <h4 mat-line>Preferred Language</h4>
               <p mat-line>{{ ride.caller.preferredLanguage }}</p>
             </mat-list-item>
-            <mat-list-item *ngIf="ride.caller.minor">
+            <mat-list-item *ngIf="ride.caller.isMinor">
               <mat-icon mat-list-icon>report</mat-icon>
               <h4 mat-line>Caller is a minor</h4>
             </mat-list-item>
@@ -54,7 +63,7 @@
         <!--=========== Pick Up Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ clinics[ride.appointment.clinicId].name }}</span>:
+            Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>:
           </mat-card-subtitle>
           <!-- NOTE: Conditional tests if real address available -->
           <a *ngIf="ride[driveType].startPostalCode; else startAddress"
@@ -69,7 +78,7 @@
         <!--=========== Drop Off Info ============-->
         <mat-card class="mt candy-card">
           <mat-card-subtitle>
-            Drop off at<span *ngIf="isDriveTo"> {{ clinics[ride.appointment.clinicId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
+            Drop off at<span *ngIf="isDriveTo"> {{ serviceProviders[ride.appointment.serviceProviderId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
           </mat-card-subtitle>
           <!-- NOTE: Conditional tests if real address available -->
           <a *ngIf="ride[driveType].endPostalCode; else endAddress"
@@ -143,11 +152,12 @@
       </mat-tab>
     </mat-tab-group>
     <!--=========== Modal Actions ============-->
+    <!-- TODO: Check if volunteer list includes current user, disable btn -->
     <div class="modal-actions">
       <button type="button"
               class="btn-cta"
               mat-raised-button
-              [disabled]="ride[driveType].statusId === 3"
+              [disabled]="ride[driveType].statusId === 2"
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
     </div>

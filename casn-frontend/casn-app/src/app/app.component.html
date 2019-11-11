@@ -30,6 +30,15 @@
                           Main App Content
 **********************************************************************-->
   <mat-sidenav-content>
+    <button *ngIf="showButton"
+            class="mat-elevation-z4 add-to-home-btn"
+            mat-button
+            color="primary"
+            (click)="addToHomeScreen()"
+            [@openClose]="isOpen ? 'open' : 'closed'">
+            <mat-icon>home</mat-icon>
+            <span class="btn-text">Install CASN on Your Home Screen</span>
+    </button>
     <mat-toolbar class="app-navbar candy-toolbar">
       <img class="logo"
            src="assets/img/casn-logo.png"
@@ -41,12 +50,6 @@
                 (click)="sidenav.toggle()">menu</mat-icon>
     </mat-toolbar>
     <main>
-      <button *ngIf="showButton"
-              class="mat-elevation-z4"
-              style="width:100%"
-              mat-button
-              color="primary"
-              (click)="addToHomeScreen()"><mat-icon>home</mat-icon> Click to Install CASN on Your Home Screen</button>
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>

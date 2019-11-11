@@ -15,7 +15,7 @@ import { Observable }                                        from 'rxjs';
 
 import { CASNAppCoreModelsAppointmentDTO } from '../model/cASNAppCoreModelsAppointmentDTO';
 import { CASNAppCoreModelsAppointmentType } from '../model/cASNAppCoreModelsAppointmentType';
-import { CASNAppCoreModelsClinic } from '../model/cASNAppCoreModelsClinic';
+import { CASNAppCoreModelsServiceProvider } from '../model/cASNAppCoreModelsServiceProvider';
 import { CASNAppCoreModelsDriveCancelReason } from '../model/cASNAppCoreModelsDriveCancelReason';
 import { CASNAppCoreModelsDriveStatus } from '../model/cASNAppCoreModelsDriveStatus';
 
@@ -26,7 +26,7 @@ import { Configuration }                                     from '../configurat
 export interface DefaultApiServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
-    
+
 
     /**
     * gets appointment by appointmentID
@@ -37,7 +37,7 @@ export interface DefaultApiServiceInterface {
 
     /**
     * gets list of appointment types
-    * 
+    *
     */
     getAppointmentTypes(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsAppointmentType>>;
 
@@ -51,20 +51,26 @@ export interface DefaultApiServiceInterface {
 
     /**
     * gets list of clinics
-    * 
+    *
     */
-    getClinics(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsClinic>>;
+    getServiceProviders(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsServiceProvider>>;
 
     /**
     * gets list of drive cancel reasons
-    * 
+    *
     */
     getDriveCancelReasons(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsDriveCancelReason>>;
 
     /**
     * gets list of drive statuses
-    * 
+    *
     */
     getDriveStatuses(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsDriveStatus>>;
+
+    /**
+    * gets list of badges combined with badges earned for the current user
+    *
+    */
+    getBadges(extraHttpRequestParams?: any): Observable<Array<any>>;
 
 }

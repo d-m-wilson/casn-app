@@ -9,6 +9,13 @@ h1 {
   text-align: center;
 }
 
+.edit-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: left;
+}
+
 .modal-actions {
   display: flex;
   justify-content: center;

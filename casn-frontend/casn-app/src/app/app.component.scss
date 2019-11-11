@@ -35,3 +35,10 @@
 .mat-list-icon {
   color: $dark-frosted;
 }
+
+.add-to-home-btn {
+  width: 100%;
+  position: fixed;
+  z-index: 3;
+  background: white;
+}

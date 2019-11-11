@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
-import { RideDetailModalComponent } from '../ride-detail-modal/ride-detail-modal.component';
 import { Constants } from '../app.constants';
 
 @Component({
@@ -17,7 +16,7 @@ export class RidesComponent implements OnInit {
   datesToDisplay: any[]; // All dates from startDate to endDate
   rides: any[];
   ridesToDisplay: any[]; // Subset of rides, may have filters applied
-  clinics: any;
+  serviceProviders: any;
   apptTypes: any;
   driveStatuses: any;
 
@@ -28,8 +27,8 @@ export class RidesComponent implements OnInit {
   dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
   displayRides: boolean[] = [true, true, true, true];
-  // Display flags for clinics
-  displayClinics: any = {};
+  // Display flags for service providers
+  displayServiceProviders: any = {};
 
   /************** Ride Modal **************/
   displayRideModal: boolean = false;
@@ -49,7 +48,7 @@ export class RidesComponent implements OnInit {
     this.userRole = localStorage.getItem("userRole");
     this.setDateRange();
     this.getAppointmentTypes();
-    this.getClinics();
+    this.getServiceProviders();
     this.getRides();
     this.getDriveStatuses();
 
@@ -79,7 +78,6 @@ export class RidesComponent implements OnInit {
       this.apptTypes["6"].estimatedDurationMinutes = 180;
       this.apptTypes["7"].estimatedDurationMinutes = 60;
       this.apptTypes["8"].estimatedDurationMinutes = 30;
-      console.log("appt Types", this.apptTypes);
       //3 Surgical: 3.5 hours (210 minutes)
       //4 Ultrasound: 2.5 hours (150 minutes)
       //5 Lam Insert: 1.5 hours (90 minutes)
@@ -99,10 +97,15 @@ export class RidesComponent implements OnInit {
     });
   }
 
-  getClinics(): void {
-    this.ds.getClinics().subscribe(c => {
-      this.clinics = c.reduce((map, obj) => (map[obj.id] = obj, map), {});
-      this.objectKeys(this.clinics).forEach(c => this.displayClinics[c] = true);
+  getServiceProviders(): void {
+    this.ds.getServiceProviders().subscribe(p => {
+      this.serviceProviders = p.reduce((map, obj) => (map[obj.id] = obj, map), {});
+      // NOTE: All courthouses are displayed/hidden with a single toggle.
+      // The rest of the service providers are toggled on/off individually.
+      this.displayServiceProviders['courthouses'] = true;
+      this.objectKeys(this.serviceProviders).forEach(s => {
+        if(s.serviceProviderTypeId !== 2) this.displayServiceProviders[s] = true;
+      });
     });
   }
 
@@ -144,8 +147,8 @@ export class RidesComponent implements OnInit {
   }
 
   handleChangeWeekClick(changeType: string): void {
-    if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -6));
-    if(changeType === 'next') this.setDateRange(this.addDays(this.endDate, 1));
+    if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -7));
+    if(changeType === 'next') this.setDateRange(this.addDays(this.startDate, 7));
     this.getRides();
   }
 
@@ -219,6 +222,16 @@ export class RidesComponent implements OnInit {
   swipe(action: string) {
     if(action === 'swiperight') this.handleChangeWeekClick('next');
     if(action === 'swipeleft') this.handleChangeWeekClick('prev');
+  }
+
+  providerIsDisplayed(providerId: string|number): boolean {
+    // NOTE: All courthouses are toggled on/off with a single toggle
+    // If it's a courthouse, check if courthouses are displayed
+    if(this.serviceProviders[providerId].serviceProviderTypeId === 2) {
+      return this.displayServiceProviders['courthouses'];
+    }
+    // Otherwise, just check if the individual provider is displayed
+    return this.displayServiceProviders[providerId]
   }
 
 }

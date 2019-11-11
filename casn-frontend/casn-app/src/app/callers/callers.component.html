@@ -2,8 +2,8 @@
 <!--********************************************************************
                         Caller Search Field
 **********************************************************************-->
-  <h2>Schedule A Ride</h2>
-  <p><em>Add or look up caller information</em></p>
+  <h2>{{ editingCaller ? 'Edit' : 'Schedule' }} A Ride</h2>
+  <p *ngIf="!editingCaller"><em>Add or look up caller information</em></p>
   <div class="caller-form-group" *ngIf="!displayCallerForm">
     <mat-form-field class="example-full-width" appearance="outline">
       <mat-label>Caller ID</mat-label>

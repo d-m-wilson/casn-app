@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { tempBadges } from './temp-badges'; // TODO: Delete
 import { DefaultApiService } from '../api/api/defaultApi.service';
 
 @Component({
@@ -22,15 +21,17 @@ export class UserStatsComponent implements OnInit {
   /*********************************************************************
                             Service Calls
   **********************************************************************/
-  // TODO: Replace with API call
   getBadges(): void {
-    // this.ds.getBadgesForVolunteer().subscribe(b => {
-    //   this.badges = b;
-    // })
-    this.badges = tempBadges;
+    this.ds.getBadges().subscribe(badges => {
+      this.badges = badges.map(b => {
+        if(b.isEarned) return b;
+        if(b.isHidden) b.path = `assets/badges/hidden${Math.floor(Math.random() * 3) + 1}.png`;
+        return b;
+      })
+    });
   }
 
-  toggleTapped(badge) {
+  toggleTapped(badge): void {
     badge.tapped = badge.tapped ? false : true;
   }
 
