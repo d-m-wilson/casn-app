@@ -107,6 +107,7 @@ p {
   // Fallback for browsers that do not support custom properties
   height: calc(100vh - 75px); // header-55px, footer-20px
   height: calc(var(--vh, 1vh) * 100 - 75px);
+  min-height: -webkit-fill-available;
   overflow: auto;
 }
 
