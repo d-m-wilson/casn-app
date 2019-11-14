@@ -10,24 +10,23 @@
 
 using System;
 using System.IO;
+using CASNApp.Core.Entities;
+using CASNApp.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using CASNApp.API.Filters;
-using CASNApp.API.Entities;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CASNApp.API
 {
@@ -68,10 +67,10 @@ namespace CASNApp.API
                 //})
                 .AddDbContext<casn_appContext>(options =>
                     {
-                        options.UseMySql(_configuration[Constants.DbConnectionString], mysqlOptions =>
+                        options.UseSqlServer(_configuration[Core.Constants.DbConnectionString], sqlOptions =>
                             {
-                                mysqlOptions.ServerVersion(Constants.MySQLVersion, ServerType.MySql)
-                                    .EnableRetryOnFailure(2);
+                                sqlOptions
+                                    .EnableRetryOnFailure(int.Parse(_configuration[Core.Constants.DBRetryCount]));
                             });
                     }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 

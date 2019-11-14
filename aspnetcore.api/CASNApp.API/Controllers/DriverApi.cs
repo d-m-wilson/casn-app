@@ -13,12 +13,16 @@ using System.Collections.Generic;
 using System.Linq;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
-using CASNApp.API.Models;
-using CASNApp.API.Queries;
+using CASNApp.Core.Models;
+using CASNApp.Core.Queries;
+using CASNApp.Core.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.Logging;
+using CASNApp.Core.Misc;
 
 namespace CASNApp.API.Controllers
 {
@@ -28,11 +32,27 @@ namespace CASNApp.API.Controllers
     [Authorize(Policy = Constants.IsDriverPolicy)]
     public class DriverApiController : Controller
     {
-        private readonly Entities.casn_appContext dbContext;
+        private readonly Core.Entities.casn_appContext dbContext;
+		private readonly ILoggerFactory loggerFactory;
+		private readonly ILogger<DriverApiController> logger;
+		private readonly bool twilioIsEnabled;
+		private readonly string twilioAccountSID;
+		private readonly string twilioAuthKey;
+		private readonly string twilioPhoneNumber;
+        private readonly bool badgesAreEnabled;
+        private readonly string userTimeZoneName;
 
-        public DriverApiController(Entities.casn_appContext dbContext)
+        public DriverApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
+			this.loggerFactory = loggerFactory;
+			logger = loggerFactory.CreateLogger<DriverApiController>();
+			twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
+			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
+			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
+			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
+            badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
+            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
         }
 
         /// <summary>
@@ -72,7 +92,7 @@ namespace CASNApp.API.Controllers
                 return NotFound(body);
             }
 
-            bool alreadyApplied = dbContext.VolunteerDrive
+            bool alreadyApplied = dbContext.VolunteerDriveLog
                 .Include(vd => vd.Drive)
                 .Where(vd => vd.VolunteerId == volunteer.Id && vd.DriveId == drive.Id && vd.IsActive)
                 .Any();
@@ -82,36 +102,72 @@ namespace CASNApp.API.Controllers
                 return Conflict(body);
             }
 
-            var volunteerDrive = new Entities.VolunteerDrive
+            var volunteerDriveLog = new Core.Entities.VolunteerDriveLog
             {
                 Created = DateTime.UtcNow,
-                DriveId = (uint)driveId.Value,
+                DriveId = (int)driveId.Value,
                 VolunteerId = volunteer.Id,
                 IsActive = true,
+                DriveLogStatusId = Core.Entities.DriveLogStatus.APPLIED,
             };
 
-            dbContext.VolunteerDrive.Add(volunteerDrive);
+            dbContext.VolunteerDriveLog.Add(volunteerDriveLog);
             
-            if (drive.Status == Drive.StatusOpen)
+            if (drive.StatusId == Drive.StatusOpen)
             {
-                drive.Status = Drive.StatusPending;
+                drive.StatusId = Drive.StatusPending;
                 drive.Updated = DateTime.UtcNow;
             }
 
             dbContext.SaveChanges();
 
-            var volunteerDriveDTO = new Models.VolunteerDrive(volunteerDrive);
+            var volunteerDriveDTO = new Core.Models.VolunteerDrive(volunteerDriveLog);
+
+			//send Drive Applied for Drive message
+			if (twilioIsEnabled)
+			{
+				try
+				{
+					//send initial text message to drivers
+					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
+                        dbContext, userTimeZoneName);
+					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriverAppliedForDrive);
+				}
+				catch (Exception ex)
+				{
+					logger.LogError(ex, $"{nameof(AddDriveApplicant)}(): Exception");
+				}
+			}
+
+            // check and award badges
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    var badgeCommand = new BadgeCommand(dbContext, loggerFactory.CreateLogger<BadgeCommand>());
+                    var badgeQuery = new BadgeQuery(dbContext);
+                    var relevantUnearnedBadges = badgeQuery.GetRelevantUnearnedBadgesForVolunteerIdAsync(volunteer.Id, BadgeTriggerType.AppliedForDrive, false).Result;
+
+                    foreach (var badge in relevantUnearnedBadges)
+                    {
+                        var badgeAwarded = badgeCommand.CheckAndAwardBadgeAsync(badge, volunteer, volunteerDriveLog).Result;
+
+                        if (badgeAwarded)
+                        {
+                            dbContext.SaveChanges();
+
+                            //if we're going to text the volunteer about the badge they just earned, here's where to do that
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(AddDriveApplicant)}(): Exception: {ex}");
+                }
+            }
 
             return Ok(volunteerDriveDTO);
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
         }
 
         /// <summary>
@@ -134,12 +190,12 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var results = dbContext.VolunteerDrive
+            var results = dbContext.VolunteerDriveLog
                 .AsNoTracking()
-                .Include(vd => vd.Drive.Appointment.Caller)
-                .Where(vd => vd.VolunteerId == volunteer.Id &&
-                    vd.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
-                .Select(vd => new DriverDrive(vd))
+                .Include(vdl => vdl.Drive.Appointment.Caller)
+                .Where(vdl => vdl.VolunteerId == volunteer.Id &&
+                    vdl.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
+                .Select(vdl => new DriverDrive(vdl))
                 .ToList();
 
             return Ok(results);

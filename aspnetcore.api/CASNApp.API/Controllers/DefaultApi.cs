@@ -15,8 +15,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
-using CASNApp.API.Models;
-using CASNApp.API.Queries;
+using CASNApp.Core.Entities;
+using CASNApp.Core.Models;
+using CASNApp.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,23 +32,23 @@ namespace CASNApp.API.Controllers
     [Authorize(Policy = Constants.IsDispatcherOrDriverPolicy)]
     public class DefaultApiController : Controller
     {
-        private readonly Entities.casn_appContext dbContext;
+        private readonly casn_appContext dbContext;
 
-        public DefaultApiController(Entities.casn_appContext dbContext)
+        public DefaultApiController(casn_appContext dbContext)
         {
             this.dbContext = dbContext;
         }
 
         /// <summary>
-        /// gets list of clinics
+        /// gets list of service providers
         /// </summary>
         /// <response code="200">successful operation</response>
         [HttpGet]
-        [Route("api/clinic")]
+        [Route("api/serviceprovider")]
         [ValidateModelState]
-        [SwaggerOperation("GetClinics")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Models.Clinic>), description: "successful operation")]
-        public virtual async Task<IActionResult> GetClinics()
+        [SwaggerOperation("GetServiceProviders")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.ServiceProvider>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetServiceProviders()
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);
@@ -58,12 +59,13 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var clinics = await dbContext.Clinic
+            var serviceProviders = await dbContext.ServiceProvider
                 .AsNoTracking()
-                .Select(c => new Models.Clinic(c))
+                .Include(sp => sp.ServiceProviderType)
+                .Select(c => new Core.Models.ServiceProvider(c))
                 .ToListAsync();
 
-            return new ObjectResult(clinics);
+            return new ObjectResult(serviceProviders);
         }
 
         /// <summary>
@@ -100,15 +102,16 @@ namespace CASNApp.API.Controllers
                 .Include(a => a.Caller)
                 .Where(a => a.AppointmentDate >= start &&
                             a.AppointmentDate <= end &&
-                            a.IsActive)
+                            a.IsActive &&
+                            a.CallerId.HasValue)
                 .ToListAsync();
 
             var driveIds = new List<long>();
 
             foreach (var appt in appointmentEntities)
             {
-                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
-                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
                 if (driveTo?.Id != null)
                 {
@@ -123,15 +126,21 @@ namespace CASNApp.API.Controllers
 
             var appointmentDTOs = appointmentEntities.Select(a =>
             {
-                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
-                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
                 var apptDto = new AppointmentDTO
                 {
-                    Appointment = new Models.Appointment(a),
-                    DriveTo = driveTo == null ? null : new Drive(driveTo),
-                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
+                    Caller = new Core.Models.Caller(a.Caller),
+                    Appointment = new Core.Models.Appointment(a),
+                    DriveTo = driveTo == null ? null : new Core.Models.Drive(driveTo),
+                    DriveFrom = driveFrom == null ? null : new Core.Models.Drive(driveFrom)
                 };
+
+                if (!volunteer.IsDispatcher)
+                {
+                    apptDto.Redact(volunteer);
+                }
 
                 return apptDto;
             }).ToList();
@@ -189,8 +198,8 @@ namespace CASNApp.API.Controllers
 
             var driveIds = new List<long>();
 
-                var driveToEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
-                var driveFromEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+                var driveToEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+                var driveFromEntity = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
                 if (driveToEntity?.Id != null)
                 {
@@ -202,15 +211,21 @@ namespace CASNApp.API.Controllers
                     driveIds.Add(driveFromEntity.Id);
                 }
 
-            var driveTo = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionToClinic);
-            var driveFrom = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Drive.DirectionFromClinic);
+            var driveTo = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+            var driveFrom = apptEntity.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 
             var apptDTO = new AppointmentDTO
             {
-                Appointment = new Models.Appointment(apptEntity),
-                DriveTo = driveTo == null ? null : new Drive(driveTo),
-                DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
+                Caller = new Core.Models.Caller(apptEntity.Caller),
+                Appointment = new Core.Models.Appointment(apptEntity),
+                DriveTo = driveTo == null ? null : new Core.Models.Drive(driveTo),
+                DriveFrom = driveFrom == null ? null : new Core.Models.Drive(driveFrom)
             };
+
+            if (!volunteer.IsDispatcher)
+            {
+                apptDTO.Redact(volunteer);
+            }
 
             return Ok(apptDTO);
 
@@ -223,6 +238,113 @@ namespace CASNApp.API.Controllers
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
+        }
+
+        /// <summary>
+        /// gets list of appointment types
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/appointmentType")]
+        [ValidateModelState]
+        [SwaggerOperation("GetAppointmentTypes")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.AppointmentType>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetAppointmentTypes()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new AppointmentTypeQuery(dbContext);
+            var entities = await query.GetActiveAppointmentTypesAsync(true);
+
+            var results = entities.Select(at => new Core.Models.AppointmentType(at)).ToList();
+
+            return new ObjectResult(results);
+        }
+
+        /// <summary>
+        /// gets list of drive statuses
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/driveStatus")]
+        [ValidateModelState]
+        [SwaggerOperation("GetDriveStatuses")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.DriveStatus>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetDriveStatuses()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new DriveStatusQuery(dbContext);
+            var results = await query.GetActiveDriveStatusesAsync(true);
+
+            return new ObjectResult(results);
+        }
+
+        /// <summary>
+        /// gets list of drive cancel reasons
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/driveCancelReason")]
+        [ValidateModelState]
+        [SwaggerOperation("GetDriveCancelReasons")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.DriveCancelReason>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetDriveCancelReasons()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new DriveCancelReasonQuery(dbContext);
+            var results = await query.GetActiveCancelReasonsAsync(true);
+
+            return new ObjectResult(results);
+        }
+
+        /// <summary>
+        /// gets list of badges combined with badges earned for the current user
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/badge")]
+        [ValidateModelState]
+        [SwaggerOperation("GetBadgesForVolunteerId")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<BadgeDTO>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetBadgesForVolunteerId()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var badgeQuery = new BadgeQuery(dbContext);
+
+            var results = await badgeQuery.GetBadgesForVolunteerIdAsync(volunteer.Id, true);
+
+            return new ObjectResult(results);
         }
 
     }

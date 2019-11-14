@@ -262,10 +262,12 @@ __pycache__/
 
 # custom entries
 keys.json
+*.mwb
 *.mwb.bak
 [Ss]ecrets.cs
 [Ss]ecrets.json
 .vscode/
+*.refactorlog
 
 # MacOS Finder
 .DS_Store
