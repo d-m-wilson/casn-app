@@ -142,7 +142,7 @@ namespace CASNApp.Core.Models
         /// Gets or Sets Updated
         /// </summary>
         [DataMember(Name="updated")]
-        public DateTime? Updated { get; internal set; }
+        public DateTime? Updated { get; set; }
 
         /// <summary>
         /// Gets or Sets Approved

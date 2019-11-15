@@ -498,7 +498,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">invalid input, object invalid</response>
         /// <response code="409">the item already exists</response>
         [HttpPost]
-        [Route("api/caller")]
+        [Route("api/dispatcher/caller")]
         [ValidateModelState]
         [SwaggerOperation("AddCaller")]
         public virtual async Task<IActionResult> AddCaller([FromBody]Caller caller)
@@ -676,26 +676,251 @@ namespace CASNApp.API.Controllers
         [Route("api/dispatcher/appointments/{appointmentID}")]
         [ValidateModelState]
         [SwaggerOperation("UpdateAppointment")]
-        [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
-        public virtual IActionResult UpdateAppointment([FromRoute][Required]string appointmentID, [FromBody]AppointmentDTO appointmentDTO)
+        [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Updated appointment.")]
+        public virtual async Task<IActionResult> UpdateAppointment([FromRoute][Required]string appointmentID, [FromBody]AppointmentDTO appointmentDTO)
         {
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AppointmentDTO));
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
 
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
+            if (!appointmentDTO.Validate())
+            {
+                return BadRequest(appointmentDTO);
+            }
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"caller\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"callerIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"serviceProviderId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"callerId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)
-            : default(AppointmentDTO);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var callerModel = appointmentDTO.Caller;
+
+            if (!ModelState.IsValid ||
+                callerModel == null ||
+                string.IsNullOrWhiteSpace(callerModel.CallerIdentifier) ||
+                (string.IsNullOrWhiteSpace(callerModel.FirstName) && string.IsNullOrWhiteSpace(callerModel.LastName)) ||
+                string.IsNullOrWhiteSpace(callerModel.Phone))
+            {
+                return BadRequest();
+            }
+
+            var appointmentModel = appointmentDTO.Appointment;
+
+            var serviceProvider = await dbContext.ServiceProvider
+                .AsNoTracking()
+                .Where(c => c.Id == appointmentModel.ServiceProviderId && c.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (serviceProvider == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            var callerEntity = await dbContext.Caller
+                .Where(c => c.Id == appointmentModel.CallerId && c.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (callerEntity == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            var appointmentEntity = await dbContext.Appointment
+                .Include(a => a.Drives)
+                .Where(a => a.Id == appointmentModel.Id && a.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (appointmentEntity == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            appointmentEntity.DispatcherId = volunteer.Id;
+            appointmentEntity.ServiceProviderId = serviceProvider.Id;
+            appointmentEntity.PickupLocationVague = appointmentModel.PickupLocationVague;
+            appointmentEntity.DropoffLocationVague = appointmentModel.DropoffLocationVague;
+            appointmentEntity.AppointmentDate = appointmentModel.AppointmentDate.Value;
+            appointmentEntity.AppointmentTypeId = appointmentModel.AppointmentTypeId.Value;
+            appointmentEntity.IsActive = true;
+            appointmentEntity.Updated = DateTime.UtcNow;
+
+
+            var driveToEntity = appointmentEntity.Drives
+                .Where(d => d.Direction == Drive.DirectionToServiceProvider && d.IsActive)
+                .SingleOrDefault();
+
+            var driveFromEntity = appointmentEntity.Drives
+                .Where(d => d.Direction == Drive.DirectionFromServiceProvider && d.IsActive)
+                .SingleOrDefault();
+
+
+            var driveToModel = appointmentDTO.DriveTo;
+            var driveFromModel = appointmentDTO.DriveFrom;
+
+            if (driveToModel != null)
+            {
+                if (driveToEntity != null)
+                {
+                    // update it
+                    driveToEntity.UpdateFromModel(driveToModel);
+                }
+                else
+                {
+                    // add it
+                    driveToEntity = Core.Entities.Drive.CreateFromModel(
+                        driveToModel,
+                        appointmentEntity,
+                        Drive.DirectionToServiceProvider,
+                        serviceProvider);
+
+                    dbContext.Drive.Add(driveToEntity);
+                }
+            }
+            else
+            {
+                if (driveToEntity != null)
+                {
+                    // delete it
+                    driveToEntity.Sanitize();
+                    dbContext.Remove(driveToEntity);
+                }
+                else
+                {
+                    // do nothing
+                }
+            }
+
+            if (driveFromModel != null)
+            {
+                if (driveFromEntity != null)
+                {
+                    // update it
+                    driveFromEntity.UpdateFromModel(driveFromModel);
+                }
+                else
+                {
+                    // add it
+                    driveFromEntity = Core.Entities.Drive.CreateFromModel(
+                        driveFromModel,
+                        appointmentEntity,
+                        Drive.DirectionFromServiceProvider,
+                        serviceProvider);
+
+                    dbContext.Drive.Add(driveFromEntity);
+                }
+            }
+            else
+            {
+                if (driveFromEntity != null)
+                {
+                    // delete it
+                    driveFromEntity.Sanitize();
+                    dbContext.Remove(driveFromEntity);
+                }
+                else
+                {
+                    // do nothing
+                }
+            }
+
+
+            var geocoder = new GeocoderQuery(googleApiKey, loggerFactory.CreateLogger<GeocoderQuery>());
+
+            var driveToAddress = driveToEntity?.GetCallerAddress();
+            GeocoderQuery.LatLng driveToLocation = null;
+
+            if (driveToAddress != null)
+            {
+                driveToLocation = await geocoder.ForwardLookupAsync(driveToAddress);
+            }
+
+            if (driveToModel != null && driveToLocation == null)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Pickup Address.");
+            }
+
+            driveToEntity?.SetCallerLocation(driveToLocation);
+            driveToModel?.SetCallerLocation(driveToLocation);
+
+            var driveFromAddress = driveFromEntity?.GetCallerAddress();
+            GeocoderQuery.LatLng driveFromLocation = null;
+
+            if (driveFromAddress != null)
+            {
+                if (driveToAddress != null &&
+                    string.Equals(driveToAddress, driveFromAddress, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    driveFromLocation = driveToLocation;
+                }
+                else
+                {
+                    driveFromLocation = await geocoder.ForwardLookupAsync(driveFromAddress);
+                }
+            }
+
+            if (driveFromModel != null && driveFromLocation == null)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Dropoff Address.");
+            }
+
+            driveFromEntity?.SetCallerLocation(driveFromLocation);
+            driveFromModel?.SetCallerLocation(driveFromLocation);
+
+            var random = new Random();
+
+            var pickupVagueLocation = driveToLocation?.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+
+            if (pickupVagueLocation != null)
+            {
+                appointmentEntity.PickupVagueLatitude = pickupVagueLocation.Latitude;
+                appointmentEntity.PickupVagueLongitude = pickupVagueLocation.Longitude;
+            }
+
+            GeocoderQuery.LatLng dropoffVagueLocation;
+
+            if (driveToAddress != null && driveFromAddress != null &&
+                string.Equals(driveToAddress, driveFromAddress, StringComparison.CurrentCultureIgnoreCase))
+            {
+                dropoffVagueLocation = pickupVagueLocation;
+            }
+            else
+            {
+                dropoffVagueLocation = driveFromLocation?.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+            }
+
+            if (dropoffVagueLocation != null)
+            {
+                appointmentEntity.DropoffVagueLatitude = dropoffVagueLocation.Latitude;
+                appointmentEntity.DropoffVagueLongitude = dropoffVagueLocation.Longitude;
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            appointmentModel.Id = appointmentEntity.Id;
+            appointmentModel.Created = appointmentEntity.Created;
+            appointmentModel.Updated = appointmentEntity.Updated;
+
+            appointmentModel.PickupVagueLatitude = appointmentEntity.PickupVagueLatitude;
+            appointmentModel.PickupVagueLongitude = appointmentEntity.PickupVagueLongitude;
+            appointmentModel.DropoffVagueLatitude = appointmentEntity.DropoffVagueLatitude;
+            appointmentModel.DropoffVagueLongitude = appointmentEntity.DropoffVagueLongitude;
+
+            if (driveToEntity != null)
+            {
+                driveToModel.Id = driveToEntity.Id;
+                driveToModel.Created = driveToEntity.Created;
+                driveToModel.Updated = driveToEntity.Updated;
+            }
+
+            if (driveFromEntity != null)
+            {
+                driveFromModel.Id = driveFromEntity.Id;
+                driveFromModel.Created = driveFromEntity.Created;
+                driveFromModel.Updated = driveFromEntity.Updated;
+            }
+
+            return new ObjectResult(appointmentDTO);
         }
+
     }
 }
