@@ -1,8 +1,9 @@
 ﻿using System;
+using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Volunteer
+    public partial class Volunteer : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public string GetAddress()
         {

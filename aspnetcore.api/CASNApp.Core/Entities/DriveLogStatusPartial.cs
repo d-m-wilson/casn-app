@@ -1,6 +1,8 @@
-﻿namespace CASNApp.Core.Entities
+﻿using CASNApp.Core.Interfaces;
+
+namespace CASNApp.Core.Entities
 {
-    public partial class DriveLogStatus
+    public partial class DriveLogStatus : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public const int APPLIED = 1;
         public const int CANCELED = 2;

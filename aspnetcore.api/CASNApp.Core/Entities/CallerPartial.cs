@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Caller
+    public partial class Caller : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public Caller(Models.Caller e)
         {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data.SqlClient;
 using CASNApp.Core.Extensions;
+using CASNApp.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CASNApp.Core.Entities
 {
@@ -661,6 +663,37 @@ namespace CASNApp.Core.Entities
         public SqlConnection GetSqlConnection()
         {
             return (SqlConnection)Database.GetDbConnection();
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (EntityEntry entry in ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Modified && entry.Entity is IUpdatedDate updatedEntity)
+                {
+                    updatedEntity.Updated = DateTime.UtcNow;
+
+                    var createdProperty = entry.Property(nameof(IUpdatedDate.Created));
+                    if (createdProperty != null && createdProperty.IsModified)
+                    {
+                        createdProperty.CurrentValue = createdProperty.OriginalValue;
+                        createdProperty.IsModified = false;
+                    }
+                }
+
+                if (entry.State == EntityState.Added && entry.Entity is ICreatedDate createdEntity)
+                {
+                    createdEntity.Created = DateTime.UtcNow;
+                }
+
+                if (entry.State == EntityState.Deleted && entry.Entity is ISoftDelete deletedEntity)
+                {
+                    deletedEntity.IsActive = false;
+                    entry.State = EntityState.Modified;
+                }
+            }
+
+            return base.SaveChanges();
         }
 
     }

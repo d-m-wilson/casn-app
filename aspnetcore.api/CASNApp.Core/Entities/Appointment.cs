@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Appointment
+    public partial class Appointment : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public Appointment()
         {

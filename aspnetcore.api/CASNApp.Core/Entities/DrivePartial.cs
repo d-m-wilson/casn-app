@@ -1,8 +1,9 @@
 ﻿using System;
+using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Drive
+    public partial class Drive : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public string GetCallerAddress()
         {
