@@ -106,9 +106,8 @@
           </agm-polyline>
         </ng-container>
         <!--====== Map Markers for Service Providers ========-->
-        <!-- TODO: Do we want a courthouse marker? -->
         <agm-marker *ngFor="let s of serviceProviders"
-                    iconUrl="assets/img/marker_clinic.png"
+                    [iconUrl]="s.serviceProviderTypeId === 1 ? 'assets/img/marker_clinic.png' : 'assets/img/marker_court.png'"
                     [latitude]="s.latitude"
                     [longitude]="s.longitude"
                     [animation]="'DROP'">
