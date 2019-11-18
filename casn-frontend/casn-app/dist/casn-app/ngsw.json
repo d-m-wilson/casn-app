@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1573496883754,
+  "timestamp": 1574121417099,
   "index": "/app/index.html",
   "assetGroups": [
     {
@@ -10,11 +10,11 @@
       "urls": [
         "/app/favicon.ico",
         "/app/index.html",
-        "/app/main.5c1364ea9e4c3a8380d5.js",
+        "/app/main.980dd4ad52c267c0bbe9.js",
         "/app/polyfills-es5.6a9f5fde365a77ab7943.js",
         "/app/polyfills.eb122b81ceab8935e738.js",
         "/app/runtime.1375ccab199dabc5ab5a.js",
-        "/app/styles.2954339f298746520120.css"
+        "/app/styles.e7022d28e08ae8cc9dbe.css"
       ],
       "patterns": []
     },
@@ -64,6 +64,7 @@
         "/app/assets/img/casn-logo.png",
         "/app/assets/img/casn_logo_vert.gif",
         "/app/assets/img/marker_clinic.png",
+        "/app/assets/img/marker_court.png",
         "/app/assets/img/marker_dropoff.png",
         "/app/assets/img/marker_pickup.png",
         "/app/assets/img/no_rides.png",
@@ -151,6 +152,7 @@
     "/app/assets/img/casn-logo.png": "2dc6d17f5fa1a625f625a38b5ecde695ec59c65b",
     "/app/assets/img/casn_logo_vert.gif": "369a96a15ddd08542800d213e272fff6b123c506",
     "/app/assets/img/marker_clinic.png": "48e4c3938c276734e606115d196deb1a7ac79bd5",
+    "/app/assets/img/marker_court.png": "c6b7e372f832dc7d1c53163aec0d1b9781a31e56",
     "/app/assets/img/marker_dropoff.png": "3cd5da0cf03ffcb1b05554682407f95ea90ed0b5",
     "/app/assets/img/marker_pickup.png": "2afcd1cb2adb9ae221e6b9eacbb1e2283eb54a6c",
     "/app/assets/img/no_rides.png": "2b69dcc94416bb48b849d409dfae3b68ec7f8a2b",
@@ -167,12 +169,12 @@
     "/app/assets/splashscreens/iphonexsmax_splash.png": "74530dd676947fc76838265720d9599dd664c44a",
     "/app/blank_profile_pic.f5ef4263a9c36adac595.png": "63d727a3e1bd82b55be329a0f47698e244899f89",
     "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/app/index.html": "2790f50f881627e408cd773f8025f28182e70ac3",
-    "/app/main.5c1364ea9e4c3a8380d5.js": "93e434b29c148acfed847688acbd1618ef143d29",
+    "/app/index.html": "dc52fd8721f888028bc9971c73d38e82324f6553",
+    "/app/main.980dd4ad52c267c0bbe9.js": "1b6bfa6da600d0bea3ede06b913da865adab2afc",
     "/app/polyfills-es5.6a9f5fde365a77ab7943.js": "934e86a8280c34ce3ce10f75db1de79822362f1e",
     "/app/polyfills.eb122b81ceab8935e738.js": "64fb64b29afde90ab0c58514c0cf754f2d092bc0",
     "/app/runtime.1375ccab199dabc5ab5a.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
-    "/app/styles.2954339f298746520120.css": "94e5dc7006818b1bdef2378eb999646c886e812c"
+    "/app/styles.e7022d28e08ae8cc9dbe.css": "f395808785d3e27e5689435f0030ca7410dc9ca5"
   },
   "navigationUrls": [
     {
