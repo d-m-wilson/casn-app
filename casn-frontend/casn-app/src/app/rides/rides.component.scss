@@ -66,12 +66,9 @@ p {
 ********************************************************************/
 .date-sidebar {
   display: flex;
-  // flex-direction: column;
-  // height: calc(100vh - 100px);
-  // width: 65px;
   height: 50px;
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   z-index: 1;
 }
