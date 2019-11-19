@@ -13,31 +13,28 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CiviContactId)
+                First Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                Last Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                Mobile Phone
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MobilePhone)
+                Google Account
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GoogleAccount)
+                Driver
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsDriver)
+                Dispatcher
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsDispatcher)
+                Text Consent
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HasTextConsent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
+                Active
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Address)
@@ -49,13 +46,13 @@
                 @Html.DisplayNameFor(model => model.State)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PostalCode)
+                Postal Code
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Latitude)
+                Lat
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Longitude)
+                Long
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Geocoded)
@@ -72,9 +69,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CiviContactId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
             </td>
@@ -118,13 +112,13 @@
                 @Html.DisplayFor(modelItem => item.Longitude)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Geocoded)
+                @(item.Geocoded?.Date.ToString("M/d/yyyy"))
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Created)
+                @(item.Created.Date.ToString("M/d/yyyy"))
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Updated)
+                @(item.Updated?.Date.ToString("M/d/yyyy"))
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
