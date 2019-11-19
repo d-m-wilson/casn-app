@@ -725,6 +725,8 @@ namespace CASNApp.API.Controllers
                 return BadRequest(appointmentDTO);
             }
 
+            callerEntity.UpdateFromModel(callerModel);
+
             var appointmentEntity = await dbContext.Appointment
                 .Include(a => a.Drives)
                 .Where(a => a.Id == appointmentModel.Id && a.IsActive)
