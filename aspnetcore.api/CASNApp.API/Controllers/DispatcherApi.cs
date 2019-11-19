@@ -584,7 +584,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">GAH IT IS SO BROKEN</response>
         /// <response code="404">caller not found frownies</response>
         [HttpGet]
-        [Route("api/caller")]
+        [Route("api/dispatcher/caller")]
         [ValidateModelState]
         [SwaggerOperation("GetCallerByCallerIdentifier")]
         [SwaggerResponse(statusCode: 200, type: typeof(Caller), description: "search results matching criteria")]
