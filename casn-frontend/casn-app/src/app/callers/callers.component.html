@@ -14,6 +14,7 @@
       [formControl]="callerIdentifierSearch">
       <mat-error *ngIf="callerIdentifierSearch.errors?.required">This field is required.</mat-error>
       <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
+      <mat-error *ngIf="callerIdentifierSearch.errors?.callerIdentifierExists">This ID is already taken.</mat-error>
     </mat-form-field>
 
     <button class="form-btn btn-cta"

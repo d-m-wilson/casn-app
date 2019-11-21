@@ -6,6 +6,7 @@ import { AppointmentDataService } from "../appointment-data.service";
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { startWith, map } from 'rxjs/operators';
+import { CallerIdentifierValidator } from './caller-identifier.validator';
 
 @Component({
   selector: 'app-callers',
@@ -27,6 +28,7 @@ export class CallersComponent implements OnInit {
   constructor( private ds: DispatcherApiService,
                private sharedApptDataService: AppointmentDataService,
                private fb: FormBuilder,
+               private validator: CallerIdentifierValidator,
                private location: Location,
                private route: ActivatedRoute,
                private router: Router ) { }
@@ -56,11 +58,19 @@ export class CallersComponent implements OnInit {
   contactMethods: any[] = [ {value: 1, displayValue: 'Text'},
                             {value: 2, displayValue: 'Call'} ];
 
-  callerIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
+  callerIdentifierSearch = new FormControl(
+    '',
+    {
+      validators: [ Validators.required, Validators.minLength(4), Validators.maxLength(6) ],
+      asyncValidators: [ this.validator.validate.bind(this) ],
+      updateOn: 'blur'
+    }
+  )
 
   callerForm = this.fb.group({
-    callerIdentifier: ['', [Validators.required, Validators.minLength(4),
-                        Validators.maxLength(6)]],
+    callerIdentifier: ['', [ Validators.required,
+                             Validators.minLength(4),
+                             Validators.maxLength(6) ]],
     firstName: ['', Validators.required],
     lastName: [''],
     phone: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
