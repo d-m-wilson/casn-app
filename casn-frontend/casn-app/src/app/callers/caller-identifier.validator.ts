@@ -19,8 +19,8 @@ export class CallerIdentifierValidator implements AsyncValidator {
     // change the callerIdentifier to one that is already in use.
     return this.ds.getCallerByCallerIdentifier(callerIdentifier.value).pipe(
       tap(res => console.log("callerIdentifier validator got response:", res)),
-      map(res => (res.callerIdentifier ? { callerIdentifierExists: true } : null)),
-      catchError(() => null)
+      map(res => res.callerIdentifier ? { callerIdentifierExists: true } : null),
+      catchError(() => of(null))
     );
   }
 }
