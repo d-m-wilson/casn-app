@@ -1,6 +1,6 @@
 <main *ngIf="appointmentTypes && serviceProviders">
   <h1>Create an Appointment</h1>
-  <mat-vertical-stepper mat-vertical-stepper #stepper class="candy-stepper">
+  <mat-vertical-stepper mat-vertical-stepper #stepper class="candy-stepper" (selectionChange)="onStepperChange($event)">
 <!--********************************************************************
                                 STEP 1
                             Appointment Form

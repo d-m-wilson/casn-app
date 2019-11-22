@@ -213,17 +213,23 @@ export class AppointmentFormComponent implements OnInit {
 
     // Set driveTo form values
     const dt = this.appointmentToEdit.driveTo;
-    this.formPickup.pickupAddress.setValue(dt.startAddress);
-    this.formPickup.pickupCity.setValue(dt.startCity);
-    this.formPickup.pickupState.setValue(dt.startState);
-    this.formPickup.pickupPostalCode.setValue(dt.startPostalCode);
+    if(dt && !!dt.startAddress) {
+      this.callerNeedsPickup = true;
+      this.formPickup.pickupAddress.setValue(dt.startAddress);
+      this.formPickup.pickupCity.setValue(dt.startCity);
+      this.formPickup.pickupState.setValue(dt.startState);
+      this.formPickup.pickupPostalCode.setValue(dt.startPostalCode);
+    }
 
     // Set driveFrom form values
     const df = this.appointmentToEdit.driveFrom;
-    this.formDropoff.dropoffAddress.setValue(df.endAddress);
-    this.formDropoff.dropoffCity.setValue(df.endCity);
-    this.formDropoff.dropoffState.setValue(df.endState);
-    this.formDropoff.dropoffPostalCode.setValue(df.endPostalCode);
+    if(df && !!df.endAddress) {
+      this.callerNeedsDropoff = true;
+      this.formDropoff.dropoffAddress.setValue(df.endAddress);
+      this.formDropoff.dropoffCity.setValue(df.endCity);
+      this.formDropoff.dropoffState.setValue(df.endState);
+      this.formDropoff.dropoffPostalCode.setValue(df.endPostalCode);
+    }
   }
 
 
@@ -341,6 +347,12 @@ export class AppointmentFormComponent implements OnInit {
     // Scroll to top of current step when form fields hide/show
     const stepElement = document.getElementsByClassName('mat-drawer-content')[0];
     stepElement.scrollTop = 0;
+  }
+
+  onStepperChange(step: any): void {
+    // Every time user "restarts" a step, ask if they need pickup/dropoff.
+    if(step.selectedIndex === 1) this.callerNeedsPickup = false;
+    if(step.selectedIndex === 2) this.callerNeedsDropoff = false;
   }
 
 }
