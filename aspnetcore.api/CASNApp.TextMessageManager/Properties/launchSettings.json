@@ -1,8 +1,7 @@
 {
   "profiles": {
     "CASNApp.TextMessageManager": {
-      "commandName": "Project",
-      "commandLineArgs": "F"
+      "commandName": "Project"
     }
   }
 }

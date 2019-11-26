@@ -120,7 +120,15 @@ namespace CASNApp.Core.Entities
                     .HasForeignKey(d => d.DispatcherId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Appointment_DispatcherId");
-            });
+
+				entity.Property(e => e.Tier1MessageCount).HasColumnType("integer");
+
+				entity.Property(e => e.Tier2MessageCount).HasColumnType("integer");
+
+				entity.Property(e => e.Tier3MessageCount).HasColumnType("integer");
+
+				entity.Property(e => e.BroadcastMessageCount).HasColumnType("integer");
+			});
 
             modelBuilder.Entity<AppointmentType>(entity =>
             {

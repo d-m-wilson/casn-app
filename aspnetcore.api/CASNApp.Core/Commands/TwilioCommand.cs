@@ -126,7 +126,7 @@ namespace CASNApp.Core.Commands
 			}
 		}
 
-		public void SendAppointmentMessage(Appointment appointment, Drive driveTo, Drive driveFrom, MessageType messageType)
+		public void SendAppointmentMessage(Appointment appointment, Drive driveTo, Drive driveFrom, MessageType messageType, bool isCronJob)
 		{
 			//determine type of meesage that would be displayed
 			//if (appointment.AppointmentDate.Date == DateTime.UtcNow.Date)
@@ -168,7 +168,7 @@ namespace CASNApp.Core.Commands
 					{
 						double distanceTo = GeocoderQuery.LatLng.GetDistance((double)driveTo.StartLatitude, (double)driveTo.StartLongitude, (double)driveTo.EndLatitude, (double)driveTo.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
 						double distanceFrom = GeocoderQuery.LatLng.GetDistance((double)driveFrom.StartLatitude, (double)driveFrom.StartLongitude, (double)driveFrom.EndLatitude, (double)driveFrom.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
-						driveDistance = (distanceTo > distanceFrom ? distanceTo : distanceFrom);
+						driveDistance = distanceTo > distanceFrom ? distanceTo : distanceFrom;
 						initialLatitude = (double)driveTo.StartLatitude;
 						initialLongitude = (double)driveTo.StartLongitude;
 					}
@@ -184,6 +184,14 @@ namespace CASNApp.Core.Commands
 				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
 				var drivers = volunteerQuery.GetAllActiveDriversWithTextConsent(true);
 
+				//calculate hours difference and initialize mesage count
+				int messageCount = 0;
+				int hours = 0;
+				if ((DateTime.UtcNow - appointment.Created).Days != 0)
+					hours = ((DateTime.UtcNow - appointment.Created).Days * 24) + (DateTime.UtcNow - appointment.Created).Hours;
+				else
+					hours = (DateTime.UtcNow - appointment.Created).Hours;
+
 				//send message to appropriate drivers
 				foreach (Volunteer driver in drivers)
 				{
@@ -193,28 +201,43 @@ namespace CASNApp.Core.Commands
 						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, 0, 0);
 
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
-						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
+						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday && !appointment.BroadcastMessageCount.HasValue)
+						{ 
 							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
+							messageCount++;
+						}
 						else
 						{
-							//calculate hours difference
-							int hours = 0;
-							if (((TimeSpan)(DateTime.UtcNow - appointment.Created)).Days != 0)
-								hours = ((int)((TimeSpan)(DateTime.UtcNow - appointment.Created)).Days * 24) + (int)((TimeSpan)(DateTime.UtcNow - appointment.Created)).Hours;
-							else
-								hours = (int)((TimeSpan)(DateTime.UtcNow - appointment.Created)).Hours;
-
-							//end message to driver based on time since appointment creation and distnace from driver
+							//send message to driver based on time since appointment creation and distnace from driver
 							double radius = GeocoderQuery.LatLng.GetDistance(initialLatitude, initialLongitude, (double)driver.Latitude, (double)driver.Longitude, GeocoderQuery.LatLng.UnitType.Miles);
-							if (hours < 2 && radius <= 5)
+							if (!isCronJob && radius <= 5 && !appointment.Tier1MessageCount.HasValue)
+							{
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
-							else if (hours >= 2 && hours < 3 && radius > 5 && radius <= 15)
+								messageCount++;
+							}
+							else if (hours >= 2 && hours < 3 && radius > 5 && radius <= 15 && !appointment.Tier2MessageCount.HasValue)
+							{
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
-							else if (hours >= 3 && radius > 15)
+								messageCount++;
+							}
+							else if (hours >= 3 && radius > 15 && !appointment.Tier3MessageCount.HasValue)
+							{ 
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
+								messageCount++;
+							}
 						}
 					}
 				}
+
+				//set the proper tier message count value on the appointment
+				if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday && !appointment.BroadcastMessageCount.HasValue)
+					appointment.BroadcastMessageCount = messageCount;
+				else if (!isCronJob && !appointment.Tier1MessageCount.HasValue)
+					appointment.Tier1MessageCount = messageCount;
+				else if (hours >= 2 && hours < 3 && !appointment.Tier2MessageCount.HasValue)
+					appointment.Tier2MessageCount = messageCount;
+				else if (hours >= 3 && !appointment.Tier3MessageCount.HasValue)
+					appointment.Tier3MessageCount = messageCount;
 			}
 		}
 
@@ -223,7 +246,7 @@ namespace CASNApp.Core.Commands
 			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
 				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "")
-				.Replace("{timeDate}", (appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : ""))
+				.Replace("{timeDate}", appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : "")
 				.Replace("{dayOfTheWeek}", appointment?.AppointmentDate.DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{driveCount}", driveCount.ToString())

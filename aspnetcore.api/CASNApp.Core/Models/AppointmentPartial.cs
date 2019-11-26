@@ -20,7 +20,11 @@
             PickupLocationVague = a.PickupLocationVague;
             PickupVagueLatitude = a.PickupVagueLatitude;
             PickupVagueLongitude = a.PickupVagueLongitude;
-            Updated = a.Updated;
+			Tier1MessageCount = a.Tier1MessageCount;
+			Tier2MessageCount = a.Tier2MessageCount;
+			Tier3MessageCount = a.Tier3MessageCount;
+			BroadcastMessageCount = a.BroadcastMessageCount;
+			Updated = a.Updated;
         }
 
         public bool Validate()

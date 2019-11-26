@@ -111,10 +111,15 @@ namespace CASNApp.TextMessageManager
                             dbContext, userTimeZoneName);
 						foreach (Appointment appointment in openAppointments)
 						{
+							//get each drive objetc (to and from) and send messages to appropriate drives
 							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
 							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
 							if (driveTo != null || driveFrom != null)
-								appointmentSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType);
+								appointmentSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
+
+							//update the appointment values in the database
+							dbContext.Appointment.Update(appointment);
+							dbContext.SaveChanges();
 						}
 					}
 				}

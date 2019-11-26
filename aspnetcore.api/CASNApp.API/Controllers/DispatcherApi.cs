@@ -302,7 +302,8 @@ namespace CASNApp.API.Controllers
                     //send initial text message to drivers
                     var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
                         dbContext, userTimeZoneName);
-                    twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown);
+                    twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown, false);
+					await dbContext.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
