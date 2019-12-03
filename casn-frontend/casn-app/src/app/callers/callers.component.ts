@@ -8,6 +8,9 @@ import { Location } from '@angular/common';
 import { startWith, map } from 'rxjs/operators';
 import { CallerIdentifierValidator } from './caller-identifier.validator';
 
+/* TODO: Disable caller form for edits if user is
+creating new appt w/ existing caller */
+
 @Component({
   selector: 'app-callers',
   templateUrl: './callers.component.html',
@@ -107,6 +110,7 @@ export class CallersComponent implements OnInit {
 
   handleNoClick(): void {
     this.displayCallerFoundModal = false;
+    this.existingCaller = {};
     this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
   }
 
@@ -152,6 +156,7 @@ export class CallersComponent implements OnInit {
         }
       },
       err => {
+        // TODO: Check status code & handle 500 errors differently.
         console.log("404 - No existing caller was found");
         this.displayCallerForm = true;
         this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
@@ -166,8 +171,8 @@ export class CallersComponent implements OnInit {
   }
 
   updateCaller(): void {
-    // NOTE: The caller & appt will be updated in a single API call once the
-    // appt form is completed.
+    /* NOTE: The caller & appt will be updated in a single API call once the
+       appt form is completed. */
     this.appointmentToEdit.caller = this.callerForm.value;
     this.appointmentToEdit.caller.id = this.existingCallerId;
     this.sharedApptDataService.changeMessage(this.appointmentToEdit);
