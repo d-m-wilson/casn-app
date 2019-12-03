@@ -27,6 +27,9 @@ using NLog.Extensions.Logging;
 using NLog.Web;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 
 namespace CASNApp.API
 {
@@ -35,7 +38,7 @@ namespace CASNApp.API
     /// </summary>
     public class Startup
     {
-        private readonly IHostingEnvironment _hostingEnv;
+        private readonly IWebHostEnvironment _hostingEnv;
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace CASNApp.API
         /// </summary>
         /// <param name="env"></param>
         /// <param name="configuration"></param>
-        public Startup(IHostingEnvironment env, IConfiguration configuration)
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
             _hostingEnv = env;
             _configuration = configuration;
@@ -55,16 +58,13 @@ namespace CASNApp.API
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(loggingBuilder => 
+            {
+                loggingBuilder.AddNLog();
+            });
+
             // Add framework services.
             services
-                //.AddDbContextPool<casn_appContext>(options =>
-                //{
-                //    options.UseMySql(_configuration["DbConnectionString"], mysqlOptions =>
-                //    {
-                //        mysqlOptions.ServerVersion(new Version(5, 7, 22), ServerType.MySql)
-                //            .EnableRetryOnFailure(2);
-                //    });
-                //})
                 .AddDbContext<casn_appContext>(options =>
                     {
                         options.UseSqlServer(_configuration[Core.Constants.DbConnectionString], sqlOptions =>
@@ -82,15 +82,13 @@ namespace CASNApp.API
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services
-                .AddMvc()
-                .AddJsonOptions(opts =>
+                .AddControllers()
+                .AddNewtonsoftJson(opts =>
                 {
                     opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    opts.SerializerSettings.Converters.Add(new StringEnumConverter
-                    {
-                        NamingStrategy = new CamelCaseNamingStrategy(),
-                    });
                 });
+
+            services.AddRazorPages();
 
             var dispatchersRole = _configuration[Constants.DispatchersRoleName];
             var driversRole = _configuration[Constants.DriversRoleName];
@@ -147,38 +145,56 @@ namespace CASNApp.API
             services
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("1.0.0", new Info
+                    c.SwaggerDoc("1.0.0", new OpenApiInfo
                     {
                         Version = "1.0.0",
-                        Title = "CASN API",
-                        Description = "CASN API (ASP.NET Core 2.1)",
-                        Contact = new Contact()
+                        Title = "CASN App API",
+                        Description = "CASN App API (ASP.NET Core 3.0)",
+                        Contact = new OpenApiContact
                         {
                            Name = "CASN App Contributors",
-                           Url = "https://github.com/d-m-wilson/casn-app",
+                           Url = new Uri("https://github.com/clinicaccess/casn-app"),
                            Email = "katie@clinicaccess.org"
                         },
-                        TermsOfService = ""
+                        License = new OpenApiLicense
+                        {
+                            Name = "Apache 2.0",
+                            Url = new Uri("https://github.com/clinicaccess/casn-app/blob/master/LICENSE"),
+                        },
                     });
-                    c.CustomSchemaIds(type => type.FriendlyId(true));
-                    c.DescribeAllEnumsAsStrings();
+
+                    // TODO: Doesn't compile now. No idea if we need it. :/
+                    //
+                    //c.CustomSchemaIds(type => type.FriendlyId(true));
+
                     c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{_hostingEnv.ApplicationName}.xml");
-                    // Sets the basePath property in the Swagger document generated
-                    c.DocumentFilter<BasePathFilter>("/api");
 
                     // Include DataAnnotation attributes on Controller Action parameters as Swagger validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
 
-                    c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                     {
                         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                         Name = "Authorization",
-                        In = "header",
-                        Type = "apiKey"
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
                     });
 
-                    c.AddSecurityRequirement(new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> { { "Bearer", new string[] { } } });
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                    {
+                        {
+                            new OpenApiSecurityScheme()
+                            {
+                                Reference = new OpenApiReference() 
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer",
+                                }
+                            },
+                            new string[] { }
+                        }
+                    });
                 });
         }
 
@@ -187,10 +203,12 @@ namespace CASNApp.API
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        /// <param name="loggerFactory"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            loggerFactory.AddNLog();
+            app
+                .UseStaticFiles()
+                .UseDefaultFiles()
+                .UseRouting();
 
             if (_hostingEnv.IsDevelopment())
             {
@@ -205,12 +223,14 @@ namespace CASNApp.API
 
             app
                 .UseAuthentication()
-                .UseMvc()
-                .UseDefaultFiles()
-                .UseStaticFiles()
+                .UseAuthorization()
                 .UseSwagger(c =>
                 {
                     c.RouteTemplate = "swagger/{documentName}/openapi.json";
+                    c.PreSerializeFilters.Add((swaggerDoc, httpRequest) => 
+                    {
+                        swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpRequest.Scheme}://{httpRequest.Host.Value}" } };
+                    });
                 })
                 .UseSwaggerUI(c =>
                 {
@@ -219,6 +239,11 @@ namespace CASNApp.API
 
                     //TODO: Or alternatively use the original Swagger contract that's included in the static files
                     // c.SwaggerEndpoint("/openapi-original.json", "CASN API Original");
+                })
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                    endpoints.MapRazorPages();
                 });
 
             if (_hostingEnv.IsDevelopment())

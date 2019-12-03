@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
@@ -21,7 +22,7 @@ namespace CASNApp.API
 
             try
             {
-                BuildWebHost(args).Run();
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
@@ -35,19 +36,22 @@ namespace CASNApp.API
         }
 
         /// <summary>
-        /// Build Web Host
+        /// Create Host Builder
         /// </summary>
         /// <param name="args"></param>
-        /// <returns>Webhost</returns>
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .ConfigureLogging(logging =>
+        /// <returns cref="IHostBuilder" />
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+                webBuilder.ConfigureLogging(loggingBuilder => 
                 {
-                    logging.ClearProviders();
-                })
-                .UseNLog()
-                .UseUrls("http://0.0.0.0:5000/")
-                .Build();
+                    loggingBuilder.ClearProviders();
+                });
+                webBuilder.UseNLog();
+                webBuilder.UseUrls("http://0.0.0.0:5000");
+            });
+
     }
 }

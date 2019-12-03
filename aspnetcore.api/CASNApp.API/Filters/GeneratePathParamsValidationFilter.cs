@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -16,7 +17,7 @@ namespace CASNApp.API.Filters
         /// </summary>
         /// <param name="operation">Operation</param>
         /// <param name="context">OperationFilterContext</param>
-        public void Apply(Operation operation, OperationFilterContext context)
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             var pars = context.ApiDescription.ParameterDescriptions;
 
@@ -35,16 +36,18 @@ namespace CASNApp.API.Filters
                         swaggerParam.Required = true;
                     }
 
+                    // TODO: Fix this if we ever use attribute-based regex validation
+                    //
                     // Regex Pattern [RegularExpression]
-                    var regexAttr = attributes.FirstOrDefault(p => p.AttributeType == typeof(RegularExpressionAttribute));
-                    if (regexAttr != null)
-                    {
-                        string regex = (string)regexAttr.ConstructorArguments[0].Value;
-                        if (swaggerParam is NonBodyParameter)
-                        {
-                            ((NonBodyParameter)swaggerParam).Pattern = regex;
-                        }
-                    }
+                    //var regexAttr = attributes.FirstOrDefault(p => p.AttributeType == typeof(RegularExpressionAttribute));
+                    //if (regexAttr != null)
+                    //{
+                    //    string regex = (string)regexAttr.ConstructorArguments[0].Value;
+                    //    if (swaggerParam is NonBodyParameter)
+                    //    {
+                    //        ((NonBodyParameter)swaggerParam).Pattern = regex;
+                    //    }
+                    //}
 
                     // String Length [StringLength]
                     int? minLenght = null, maxLength = null;
@@ -70,25 +73,29 @@ namespace CASNApp.API.Filters
                         maxLength = (int)maxLengthAttr.ConstructorArguments[0].Value;
                     }
 
-                    if (swaggerParam is NonBodyParameter)
-                    {
-                        ((NonBodyParameter)swaggerParam).MinLength = minLenght;
-                        ((NonBodyParameter)swaggerParam).MaxLength = maxLength;
-                    }
+                    // TODO: Fix this if we ever use attribute-based min/max length validation
+                    //
+                    //if (swaggerParam is NonBodyParameter)
+                    //{
+                    //    ((NonBodyParameter)swaggerParam).MinLength = minLenght;
+                    //    ((NonBodyParameter)swaggerParam).MaxLength = maxLength;
+                    //}
 
+                    // TODO: Fix this if we ever use attribute-based range validation
+                    //
                     // Range [Range]
-                    var rangeAttr = attributes.FirstOrDefault(p => p.AttributeType == typeof(RangeAttribute));
-                    if (rangeAttr != null)
-                    {
-                        int rangeMin = (int)rangeAttr.ConstructorArguments[0].Value;
-                        int rangeMax = (int)rangeAttr.ConstructorArguments[1].Value;
+                    //var rangeAttr = attributes.FirstOrDefault(p => p.AttributeType == typeof(RangeAttribute));
+                    //if (rangeAttr != null)
+                    //{
+                    //    int rangeMin = (int)rangeAttr.ConstructorArguments[0].Value;
+                    //    int rangeMax = (int)rangeAttr.ConstructorArguments[1].Value;
 
-                        if (swaggerParam is NonBodyParameter)
-                        {
-                            ((NonBodyParameter)swaggerParam).Minimum = rangeMin;
-                            ((NonBodyParameter)swaggerParam).Maximum = rangeMax;
-                        }
-                    }
+                    //    if (swaggerParam is NonBodyParameter)
+                    //    {
+                    //        ((NonBodyParameter)swaggerParam).Minimum = rangeMin;
+                    //        ((NonBodyParameter)swaggerParam).Maximum = rangeMax;
+                    //    }
+                    //}
                 }
             }
         }
