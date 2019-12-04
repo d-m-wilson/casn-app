@@ -9,13 +9,15 @@
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-ALTER TABLE [admin].[AspNetUserClaims]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY([UserId])
+
+ALTER TABLE [admin].[AspNetUserClaims] ADD CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY([UserId])
 REFERENCES [admin].[AspNetUsers] ([Id])
 ON DELETE CASCADE
 GO
 
 ALTER TABLE [admin].[AspNetUserClaims] CHECK CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId]
 GO
+
 CREATE NONCLUSTERED INDEX [IX_AspNetUserClaims_UserId] ON [admin].[AspNetUserClaims]
 (
 	[UserId] ASC

@@ -8,20 +8,23 @@
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-ALTER TABLE [admin].[AspNetUserRoles]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
+
+ALTER TABLE [admin].[AspNetUserRoles] ADD CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY([RoleId])
 REFERENCES [admin].[AspNetRoles] ([Id])
 ON DELETE CASCADE
 GO
 
 ALTER TABLE [admin].[AspNetUserRoles] CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId]
 GO
-ALTER TABLE [admin].[AspNetUserRoles]  WITH CHECK ADD  CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY([UserId])
+
+ALTER TABLE [admin].[AspNetUserRoles] ADD CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY([UserId])
 REFERENCES [admin].[AspNetUsers] ([Id])
 ON DELETE CASCADE
 GO
 
 ALTER TABLE [admin].[AspNetUserRoles] CHECK CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId]
 GO
+
 CREATE NONCLUSTERED INDEX [IX_AspNetUserRoles_RoleId] ON [admin].[AspNetUserRoles]
 (
 	[RoleId] ASC
