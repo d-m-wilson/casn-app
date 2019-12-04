@@ -40,4 +40,9 @@
     <ProjectReference Include="..\CASNApp.Core\CASNApp.Core.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\qrcodejs\" />
+  </ItemGroup>
+
 </Project>
