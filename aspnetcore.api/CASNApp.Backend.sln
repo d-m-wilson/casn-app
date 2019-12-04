@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CASNApp.TextMessageManager"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CASNAppDB", "CASNAppDB\CASNAppDB.sqlproj", "{3A615B87-C1FB-4CFF-8754-A14A87D7FCF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CASNApp.Admin", "CASNApp.Admin\CASNApp.Admin.csproj", "{67CD26A4-E03B-4659-B2E6-653D6B4779A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CASNApp.Admin", "CASNApp.Admin\CASNApp.Admin.csproj", "{67CD26A4-E03B-4659-B2E6-653D6B4779A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

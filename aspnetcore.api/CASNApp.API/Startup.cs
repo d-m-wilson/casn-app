@@ -221,10 +221,10 @@ namespace CASNApp.API
                 });
             }
 
-            app
-                .UseAuthentication()
-                .UseAuthorization()
-                .UseSwagger(c =>
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseSwagger(c =>
                 {
                     c.RouteTemplate = "swagger/{documentName}/openapi.json";
                     c.PreSerializeFilters.Add((swaggerDoc, httpRequest) => 
