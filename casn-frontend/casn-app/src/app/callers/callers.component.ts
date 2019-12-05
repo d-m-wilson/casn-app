@@ -8,9 +8,6 @@ import { Location } from '@angular/common';
 import { startWith, map } from 'rxjs/operators';
 import { CallerIdentifierValidator } from './caller-identifier.validator';
 
-/* TODO: Disable caller form for edits if user is
-creating new appt w/ existing caller */
-
 @Component({
   selector: 'app-callers',
   templateUrl: './callers.component.html',
@@ -102,7 +99,7 @@ export class CallersComponent implements OnInit {
   /*********************************************************************
                               Click Handlers
   **********************************************************************/
-  handleYesClick(): void {    
+  handleYesClick(): void {
     // TODO: Fix this behavior in v2
     // For now, the user cannot edit an existing caller unless
     // they are editing an already existing appointment.
