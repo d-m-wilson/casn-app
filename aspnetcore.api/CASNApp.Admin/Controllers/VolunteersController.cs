@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,21 +12,33 @@ namespace CASNApp.Admin
     public class VolunteersController : Controller
     {
         private readonly casn_appContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public VolunteersController(casn_appContext context)
+        public VolunteersController(casn_appContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Volunteers
         public async Task<IActionResult> Index()
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             return View(await _context.Volunteer.ToListAsync());
         }
 
         // GET: Volunteers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -42,8 +55,13 @@ namespace CASNApp.Admin
         }
 
         // GET: Volunteers/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             return View();
         }
 
@@ -52,8 +70,13 @@ namespace CASNApp.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode,Latitude,Longitude,Geocoded,Created,Updated")] Volunteer volunteer)
+        public async Task<IActionResult> Create([Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(volunteer);
@@ -66,6 +89,11 @@ namespace CASNApp.Admin
         // GET: Volunteers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -84,8 +112,13 @@ namespace CASNApp.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode,Latitude,Longitude,Geocoded,Created,Updated")] Volunteer volunteer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             if (id != volunteer.Id)
             {
                 return NotFound();
@@ -117,6 +150,11 @@ namespace CASNApp.Admin
         // GET: Volunteers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -137,6 +175,11 @@ namespace CASNApp.Admin
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (!await UserHas2FA())
+            {
+                return Forbid();
+            }
+
             var volunteer = await _context.Volunteer.FindAsync(id);
             _context.Volunteer.Remove(volunteer);
             await _context.SaveChangesAsync();
@@ -147,5 +190,12 @@ namespace CASNApp.Admin
         {
             return _context.Volunteer.Any(e => e.Id == id);
         }
+
+        private async Task<bool> UserHas2FA()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return user.TwoFactorEnabled;
+        }
+
     }
 }
