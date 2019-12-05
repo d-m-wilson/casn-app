@@ -102,7 +102,22 @@ export class CallersComponent implements OnInit {
   /*********************************************************************
                               Click Handlers
   **********************************************************************/
-  handleYesClick(): void {
+  handleYesClick(): void {    
+    // TODO: Fix this behavior in v2
+    // For now, the user cannot edit an existing caller unless
+    // they are editing an already existing appointment.
+    if(!this.editingCaller) {
+      this.router.navigate(
+        [
+          '/appointment',
+          {
+            callerIdentifier: this.existingCaller.callerIdentifier,
+            callerId: this.existingCallerId
+          }
+        ]
+      );
+    }
+
     this.displayCallerFoundModal = false;
     this.displayCallerForm = true;
     this.callerForm.setValue(this.existingCaller);
@@ -152,7 +167,6 @@ export class CallersComponent implements OnInit {
         } else {
           this.displayCallerForm = true;
           this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
-
         }
       },
       err => {
