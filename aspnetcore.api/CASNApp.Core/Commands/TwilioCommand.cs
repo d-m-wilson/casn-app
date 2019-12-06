@@ -250,7 +250,8 @@ namespace CASNApp.Core.Commands
 				.Replace("{dayOfTheWeek}", appointment?.AppointmentDate.DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{driveCount}", driveCount.ToString())
-				.Replace("{driveId}", driveId.ToString()); 
+				.Replace("{driveId}", driveId.ToString())
+				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier);
 		}
 
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)
