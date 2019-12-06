@@ -54,7 +54,7 @@ namespace CASNApp.Core.Commands
 
 			//get the appointment by id
 			AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
-			var appointment = appointmentQuery.GetAppointmentById(drive.AppointmentId, true);
+			var appointment = appointmentQuery.GetAppointmentByIdWithCaller(drive.AppointmentId, true);
 
 			//check the message type to see if the message is being sent to the driver or the dispatchers
 			if (messageType == MessageType.DriverAppliedForDrive)

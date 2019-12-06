@@ -35,9 +35,10 @@ namespace CASNApp.Core.Queries
 			return result;
 		}
 
-		public Appointment GetAppointmentById(int appointmentId, bool readOnly)
+		public Appointment GetAppointmentByIdWithCaller(int appointmentId, bool readOnly)
 		{
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
+				.Include(a => a.Caller)
 				.Where(a => a.Id == appointmentId)
 				.SingleOrDefault();
 			return result;
