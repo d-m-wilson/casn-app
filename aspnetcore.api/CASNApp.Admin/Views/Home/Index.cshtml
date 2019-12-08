@@ -4,5 +4,20 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+@if (User != null && User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <div class="row">
+        <ul>
+            @{
+                foreach (var controllerName in Startup.ControllerNames)
+                {
+                    @if (string.Equals(controllerName, "Home", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    <li>
+                        <a href="/@controllerName">@controllerName</a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+}

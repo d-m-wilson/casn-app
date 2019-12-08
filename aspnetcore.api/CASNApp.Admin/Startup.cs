@@ -1,8 +1,7 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using CASNApp.Admin.Data;
 using CASNApp.Core.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -16,9 +15,21 @@ namespace CASNApp.Admin
 {
     public class Startup
     {
+        public static IReadOnlyList<string> ControllerNames { get; private set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var controllerNames = System.Reflection.Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(Microsoft.AspNetCore.Mvc.Controller))
+                    && t.GetMethod("Index") != null)
+                .Select(t => t.Name.Replace("Controller", ""))
+                .OrderBy(x => x)
+                .ToList();
+
+            ControllerNames = controllerNames;
         }
 
         public IConfiguration Configuration { get; }
