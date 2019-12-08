@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -53,7 +51,9 @@ namespace CASNApp.Admin.Areas.Identity.Pages.Account
             }
 
             ReturnUrl = returnUrl;
-            RememberMe = rememberMe;
+
+            // For this application, we want to always do 2FA
+            RememberMe = false;
 
             return Page();
         }
@@ -75,7 +75,7 @@ namespace CASNApp.Admin.Areas.Identity.Pages.Account
 
             var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, false, Input.RememberMachine);
 
             if (result.Succeeded)
             {
