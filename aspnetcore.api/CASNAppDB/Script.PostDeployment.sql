@@ -19,6 +19,8 @@ GO
 GO
 :r .\dbo\Tables\Data\DriveStatus.data.sql
 GO
+:r .\dbo\Tables\Data\MessageType.data.sql
+GO
 :r .\dbo\Tables\Data\Message.data.sql
 GO
 :r .\dbo\Tables\Data\ServiceProviderType.data.sql

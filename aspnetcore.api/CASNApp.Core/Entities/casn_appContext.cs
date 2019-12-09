@@ -30,6 +30,7 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<DriveStatus> DriveStatus { get; set; }
         public virtual DbSet<Message> Message { get; set; }
         public virtual DbSet<MessageLog> MessageLog { get; set; }
+        public virtual DbSet<MessageType> MessageType { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProvider { get; set; }
         public virtual DbSet<ServiceProviderType> ServiceProviderType { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
@@ -397,6 +398,9 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Message>(entity =>
             {
+                entity.HasIndex(e => e.MessageTypeId)
+                    .HasName("FK_Message_MessageTypeId_idx");
+
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
@@ -413,6 +417,13 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.HasOne(d => d.MessageType)
+                    .WithMany(p => p.Messages)
+                    .HasForeignKey(d => d.MessageTypeId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Message_MessageTypeId");
+
             });
 
             modelBuilder.Entity<MessageLog>(entity =>
@@ -444,6 +455,33 @@ namespace CASNApp.Core.Entities
 				entity.Property(e => e.VolunteerId)
 					.IsRequired();
 			});
+
+            modelBuilder.Entity<MessageType>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .HasName("UQ_MessageType_Name")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(0x01)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Updated)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+            });
 
             modelBuilder.Entity<ServiceProvider>(entity =>
             {
@@ -505,7 +543,7 @@ namespace CASNApp.Core.Entities
             modelBuilder.Entity<ServiceProviderType>(entity =>
             {
                 entity.HasIndex(e => e.Name)
-                    .HasName("UQ_AppointmentType_Name")
+                    .HasName("UQ_ServiceProviderType_Name")
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();

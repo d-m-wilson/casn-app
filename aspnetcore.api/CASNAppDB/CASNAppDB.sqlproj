@@ -98,6 +98,7 @@
     <Build Include="admin\Tables\AspNetUsers.sql" />
     <Build Include="admin\Tables\AspNetUserTokens.sql" />
     <Build Include="Security\admin.sql" />
+    <Build Include="dbo\Tables\MessageType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
@@ -113,5 +114,6 @@
     <None Include="dbo\Tables\Data\DriveCancelReason.data.sql" />
     <None Include="dbo\Tables\Data\Message.data.sql" />
     <Build Include="dbo\Stored Procedures\uspRedactionPlan.sql" />
+    <None Include="dbo\Tables\Data\MessageType.data.sql" />
   </ItemGroup>
 </Project>
