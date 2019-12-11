@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Extensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace CASNApp.Core.Commands

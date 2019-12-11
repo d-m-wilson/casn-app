@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Data.SqlClient;
 using CASNApp.Core.Extensions;
 using CASNApp.Core.Interfaces;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
