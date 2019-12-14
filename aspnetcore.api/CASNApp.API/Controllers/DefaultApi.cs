@@ -29,7 +29,7 @@ namespace CASNApp.API.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = Constants.IsDispatcherOrDriverPolicy)]
+    [Authorize]
     public class DefaultApiController : Controller
     {
         private readonly casn_appContext dbContext;

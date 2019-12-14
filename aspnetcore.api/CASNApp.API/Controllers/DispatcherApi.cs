@@ -32,7 +32,7 @@ namespace CASNApp.API.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = Constants.IsDispatcherPolicy)]
+    [Authorize]
     public class DispatcherApiController : Controller
     {
         private readonly Core.Entities.casn_appContext dbContext;

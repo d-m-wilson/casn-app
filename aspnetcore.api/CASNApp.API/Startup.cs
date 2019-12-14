@@ -9,27 +9,22 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using CASNApp.Core.Entities;
 using CASNApp.API.Filters;
+using CASNApp.Core.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Converters;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 
 namespace CASNApp.API
 {
@@ -90,46 +85,8 @@ namespace CASNApp.API
 
             services.AddRazorPages();
 
-            var dispatchersRole = _configuration[Constants.DispatchersRoleName];
-            var driversRole = _configuration[Constants.DriversRoleName];
-
-            if (string.IsNullOrWhiteSpace(dispatchersRole))
-            {
-                throw new Exception($"{nameof(Constants.DispatchersRoleName)} is not configured.");
-            }
-
-            if (string.IsNullOrWhiteSpace(driversRole))
-            {
-                throw new Exception($"{nameof(Constants.DriversRoleName)} is not configured.");
-            }
-
-            var isDispatcherPolicy = new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .RequireRole(dispatchersRole)
-                .Build();
-
-            var isDriverPolicy = new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .RequireRole(driversRole)
-                .Build();
-
-            var isDispatcherOrDriverPolicy = new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .RequireAssertion(ctx => 
-                    ctx.User.IsInRole(dispatchersRole) ||
-                    ctx.User.IsInRole(driversRole))
-                .Build();
-
             services
-                .AddAuthorization(options =>
-                {
-                    options.AddPolicy(Constants.IsDispatcherPolicy, isDispatcherPolicy);
-                    options.AddPolicy(Constants.IsDriverPolicy, isDriverPolicy);
-                    options.AddPolicy(Constants.IsDispatcherOrDriverPolicy, isDispatcherOrDriverPolicy);
-                })
+                .AddAuthorization()
                 .AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

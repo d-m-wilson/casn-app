@@ -13,23 +13,23 @@ using System.Collections.Generic;
 using System.Linq;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
+using CASNApp.Core.Commands;
+using CASNApp.Core.Misc;
 using CASNApp.Core.Models;
 using CASNApp.Core.Queries;
-using CASNApp.Core.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.Extensions.Logging;
-using CASNApp.Core.Misc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CASNApp.API.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = Constants.IsDriverPolicy)]
+    [Authorize]
     public class DriverApiController : Controller
     {
         private readonly Core.Entities.casn_appContext dbContext;
