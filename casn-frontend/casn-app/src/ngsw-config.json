@@ -27,7 +27,7 @@
   "dataGroups": [
       {
         "name": "api-freshness",
-        "urls": ["https://test.casn.app/api/appointments/**"],
+        "urls": ["https://testapi.casn.app/api/appointments/**"],
         "cacheConfig": {
           "maxSize": 3,
           "maxAge": "1d",
@@ -37,10 +37,10 @@
       {
         "name": "api-performance",
         "urls": [
-          "https://test.casn.app/api/serviceprovider/**",
-          "https://test.casn.app/api/appointmentType/**",
-          "https://test.casn.app/api/driveCancelReason/**",
-          "https://test.casn.app/api/driveStatus/**",
+          "https://testapi.casn.app/api/serviceprovider/**",
+          "https://testapi.casn.app/api/appointmentType/**",
+          "https://testapi.casn.app/api/driveCancelReason/**",
+          "https://testapi.casn.app/api/driveStatus/**",
           "https://test.casn.app/appconfig.json"
         ],
         "cacheConfig": {

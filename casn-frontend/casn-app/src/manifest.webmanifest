@@ -4,8 +4,8 @@
   "theme_color": "#6972b3",
   "background_color": "#fafafa",
   "display": "standalone",
-  "scope": "/app/",
-  "start_url": "https://test.casn.app/app/",
+  "scope": "/",
+  "start_url": "https://test.casn.app/",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
