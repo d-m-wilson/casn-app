@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CASNApp.Admin.Data;
+using CASNApp.Core;
 using CASNApp.Core.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,15 +44,18 @@ namespace CASNApp.Admin
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DbConnectionString")));
+                options.UseSqlServer(Configuration.GetConnectionString(Constants.DbConnectionString), sqlOptions =>
+                {
+                    sqlOptions
+                        .EnableRetryOnFailure(int.Parse(Configuration[Constants.DBRetryCount]));
+                }), ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 
             services.AddDbContext<casn_appContext>(options =>
                 {
-                    options.UseSqlServer(Configuration[Core.Constants.DbConnectionString], sqlOptions =>
+                    options.UseSqlServer(Configuration.GetConnectionString(Constants.DbConnectionString), sqlOptions =>
                     {
                         sqlOptions
-                            .EnableRetryOnFailure(int.Parse(Configuration[Core.Constants.DBRetryCount]));
+                            .EnableRetryOnFailure(int.Parse(Configuration[Constants.DBRetryCount]));
                     });
                 }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 

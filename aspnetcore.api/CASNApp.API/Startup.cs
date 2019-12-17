@@ -62,7 +62,7 @@ namespace CASNApp.API
             services
                 .AddDbContext<casn_appContext>(options =>
                     {
-                        options.UseSqlServer(_configuration[Core.Constants.DbConnectionString], sqlOptions =>
+                        options.UseSqlServer(_configuration.GetConnectionString(Core.Constants.DbConnectionString), sqlOptions =>
                             {
                                 sqlOptions
                                     .EnableRetryOnFailure(int.Parse(_configuration[Core.Constants.DBRetryCount]));
