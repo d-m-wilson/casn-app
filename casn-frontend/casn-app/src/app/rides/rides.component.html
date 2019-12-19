@@ -40,8 +40,9 @@
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
           <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
-      <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
-        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)">
+      <ng-container *ngFor="let r of ridesToDisplay">
+        <div *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)"
+             class="appointment-drive-wrapper">
           <mat-card class="appointment-card candy-card mat-elevation-z0">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
@@ -99,8 +100,8 @@
               </div>
             </mat-card>
           </div>
-        </ng-container>
-      </div>
+        </div>
+      </ng-container>
     </section>
   </div>
 </ng-container>
