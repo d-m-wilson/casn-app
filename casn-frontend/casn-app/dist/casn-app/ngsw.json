@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1575590201913,
+  "timestamp": 1576780633882,
   "index": "/app/index.html",
   "assetGroups": [
     {
@@ -10,7 +10,7 @@
       "urls": [
         "/app/favicon.ico",
         "/app/index.html",
-        "/app/main.135e7a9ba072f4b35e1e.js",
+        "/app/main.0e634b88fc6db47a97fd.js",
         "/app/polyfills-es5.6a9f5fde365a77ab7943.js",
         "/app/polyfills.eb122b81ceab8935e738.js",
         "/app/runtime.1375ccab199dabc5ab5a.js",
@@ -88,7 +88,7 @@
     {
       "name": "api-freshness",
       "patterns": [
-        "https:\\/\\/test\\.casn\\.app\\/api\\/appointments\\/.*"
+        "https:\\/\\/testapi\\.casn\\.app\\/api\\/appointments\\/.*"
       ],
       "strategy": "freshness",
       "maxSize": 3,
@@ -98,10 +98,10 @@
     {
       "name": "api-performance",
       "patterns": [
-        "https:\\/\\/test\\.casn\\.app\\/api\\/serviceprovider\\/.*",
-        "https:\\/\\/test\\.casn\\.app\\/api\\/appointmentType\\/.*",
-        "https:\\/\\/test\\.casn\\.app\\/api\\/driveCancelReason\\/.*",
-        "https:\\/\\/test\\.casn\\.app\\/api\\/driveStatus\\/.*",
+        "https:\\/\\/testapi\\.casn\\.app\\/api\\/serviceprovider\\/.*",
+        "https:\\/\\/testapi\\.casn\\.app\\/api\\/appointmentType\\/.*",
+        "https:\\/\\/testapi\\.casn\\.app\\/api\\/driveCancelReason\\/.*",
+        "https:\\/\\/testapi\\.casn\\.app\\/api\\/driveStatus\\/.*",
         "https:\\/\\/test\\.casn\\.app\\/appconfig\\.json"
       ],
       "strategy": "performance",
@@ -169,8 +169,8 @@
     "/app/assets/splashscreens/iphonexsmax_splash.png": "74530dd676947fc76838265720d9599dd664c44a",
     "/app/blank_profile_pic.f5ef4263a9c36adac595.png": "63d727a3e1bd82b55be329a0f47698e244899f89",
     "/app/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/app/index.html": "3f23c6be5e4d18a77eaf97c156508d2b020ca3a7",
-    "/app/main.135e7a9ba072f4b35e1e.js": "6dcceff826ce00e70b6c22dfed14f889a97f0861",
+    "/app/index.html": "9eb1e098fbe037797226575adb9233a703b55642",
+    "/app/main.0e634b88fc6db47a97fd.js": "5c45d636d7fafb2ff7d305c0c73e553782686d76",
     "/app/polyfills-es5.6a9f5fde365a77ab7943.js": "934e86a8280c34ce3ce10f75db1de79822362f1e",
     "/app/polyfills.eb122b81ceab8935e738.js": "64fb64b29afde90ab0c58514c0cf754f2d092bc0",
     "/app/runtime.1375ccab199dabc5ab5a.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
