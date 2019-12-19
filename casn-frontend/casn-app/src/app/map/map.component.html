@@ -13,7 +13,9 @@
                [zoom]="mapCenter.zoom">
         <!--====== Map Markers for driveTo ========-->
         <ng-container *ngFor="let r of rides">
-          <agm-marker *ngIf="r.driveTo && r.driveTo.statusId !== 3"
+          <!-- TODO: Provide filters for dispatchers, but show same drives by default -->
+          <!-- Status ID's 2 and 3 (approved/cancelled) are hidden from map -->
+          <agm-marker *ngIf="r.driveTo && r.driveTo.statusId < 2"
                       iconUrl="assets/img/marker_pickup.png"
                       [latitude]="r.driveTo.startLatitude"
                       [longitude]="r.driveTo.startLongitude"
@@ -60,7 +62,9 @@
         </ng-container>
         <!--====== Map Markers for driveFrom ========-->
         <ng-container *ngFor="let r of rides">
-          <agm-marker *ngIf="r.driveFrom && r.driveFrom.statusId !== 3"
+          <!-- TODO: Provide filters for dispatchers, but show same drives by default -->
+          <!-- Status ID's 2 and 3 (approved/cancelled) are hidden from map -->
+          <agm-marker *ngIf="r.driveFrom && r.driveFrom.statusId < 2"
                       iconUrl="assets/img/marker_dropoff.png"
                       [latitude]="r.driveFrom.endLatitude"
                       [longitude]="r.driveFrom.endLongitude"

@@ -31,9 +31,9 @@ export class MapComponent implements OnInit {
     this.ds.getServiceProviders().subscribe(s => this.serviceProviders = s);
   }
 
-/*********************************************************************
-                            Click Handlers
-**********************************************************************/
+  /*********************************************************************
+                              Click Handlers
+  **********************************************************************/
   handleCloseModalClick() {
     this.closeMapModalClick.emit(true);
   }
