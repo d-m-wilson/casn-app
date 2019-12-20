@@ -281,7 +281,7 @@
            class="appt-form-group">
         <mat-card class="review-card candy-card">
           <h4>Caller {{ formAppt.callerIdentifier.value }}'s {{ apptType }}</h4>
-          <span class="bold">{{ formAppt.appointmentDate.value | date:'short'}} at {{ apptServiceProvider }}</span>
+          <span class="bold">{{ formAppt.appointmentDate.value | date:'short'}}<br><br>{{ apptServiceProvider }}</span>
         </mat-card>
         <mat-card class="review-card candy-card">
           <h4>Drive To {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</h4>
