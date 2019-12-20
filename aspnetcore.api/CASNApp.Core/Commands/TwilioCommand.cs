@@ -201,10 +201,13 @@ namespace CASNApp.Core.Commands
 						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, 0, 0);
 
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
-						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday && !appointment.BroadcastMessageCount.HasValue)
-						{ 
-							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
-							messageCount++;
+						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
+						{
+							if (!appointment.BroadcastMessageCount.HasValue)
+							{
+								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
+								messageCount++;
+							}
 						}
 						else
 						{
