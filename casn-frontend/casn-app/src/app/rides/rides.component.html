@@ -53,7 +53,7 @@
             </div>
           </mat-card>
           <div class="drive-container">
-            <mat-card *ngIf="displayRides[r.driveTo?.statusId]; else emptyCard"
+            <mat-card *ngIf="displayRides[r.driveTo?.statusId]; else emptyPickup"
                       (click)="toggleRideModal(r, true)"
                       class="drive-card candy-card"
                       [ngClass]="{ 'open': r.driveTo.statusId === 0,
@@ -76,7 +76,7 @@
                 </p>
               </div>
             </mat-card>
-            <mat-card *ngIf="displayRides[r.driveFrom?.statusId]; else emptyCard"
+            <mat-card *ngIf="displayRides[r.driveFrom?.statusId]; else emptyDropoff"
                       (click)="toggleRideModal(r)"
                       class="drive-card candy-card"
                       [ngClass]="{ 'open': r.driveFrom.statusId === 0,
@@ -99,9 +99,14 @@
                 </p>
               </div>
             </mat-card>
-            <ng-template #emptyCard>
-              <mat-card class="drive-card candy-card">
-                <em>One-way drive</em>
+            <ng-template #emptyPickup>
+              <mat-card class="drive-card candy-card no-drive">
+                <em>No Pick Up</em>
+              </mat-card>
+            </ng-template>
+            <ng-template #emptyDropoff>
+              <mat-card class="drive-card candy-card no-drive">
+                <em>No Drop Off</em>
               </mat-card>
             </ng-template>
           </div>

@@ -194,6 +194,14 @@ p {
   align-items: center;
 }
 
+.no-drive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  border: 1px solid #999;
+}
+
 /********************************************************************
                       Footer - Settings/Controls
 ********************************************************************/
