@@ -1,10 +1,10 @@
 <div class="modal">
   <div class="modal-content">
     <!--=========== Modal Actions ============-->
-      <span class="close"
-            (click)="handleCloseModalClick()">x</span>
-      <div class="modal-title">
-        <h2>Active Rides<br>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h2>
+    <span class="close"
+          (click)="handleCloseModalClick()">x</span>
+    <div class="modal-title">
+      <h2>Active Rides<br>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMM d') + ' - ' + (this.endDate | date:'MMM d') }}</h2>
     </div>
     <mat-card class="candy-card">
       <!--========== Map =========-->
@@ -13,9 +13,7 @@
                [zoom]="mapCenter.zoom">
         <!--====== Map Markers for driveTo ========-->
         <ng-container *ngFor="let r of rides">
-          <!-- TODO: Provide filters for dispatchers, but show same drives by default -->
-          <!-- Status ID's 2 and 3 (approved/cancelled) are hidden from map -->
-          <agm-marker *ngIf="r.driveTo && r.driveTo.statusId < 2"
+          <agm-marker *ngIf="r.driveTo && displayRides[r.driveTo.statusId]"
                       iconUrl="assets/img/marker_pickup.png"
                       [latitude]="r.driveTo.startLatitude"
                       [longitude]="r.driveTo.startLongitude"
@@ -62,9 +60,7 @@
         </ng-container>
         <!--====== Map Markers for driveFrom ========-->
         <ng-container *ngFor="let r of rides">
-          <!-- TODO: Provide filters for dispatchers, but show same drives by default -->
-          <!-- Status ID's 2 and 3 (approved/cancelled) are hidden from map -->
-          <agm-marker *ngIf="r.driveFrom && r.driveFrom.statusId < 2"
+          <agm-marker *ngIf="r.driveFrom && displayRides[r.driveFrom.statusId]"
                       iconUrl="assets/img/marker_dropoff.png"
                       [latitude]="r.driveFrom.endLatitude"
                       [longitude]="r.driveFrom.endLongitude"
@@ -129,5 +125,16 @@
         </agm-marker>
       </agm-map>
     </mat-card>
+    <div *ngIf="userRole === '1'">
+      <mat-slide-toggle value="approved"
+                        [checked]="displayRides[2]"
+                        (change)="displayRides[2] = $event.source.checked"
+                        color="primary">Show Approved Drives</mat-slide-toggle>
+      <br><br>
+      <mat-slide-toggle value="cancelled"
+                        [checked]="displayRides[3]"
+                        (change)="displayRides[3] = $event.source.checked"
+                        color="primary">Show Cancelled Drives</mat-slide-toggle>
+    </div>
   </div>
 </div>

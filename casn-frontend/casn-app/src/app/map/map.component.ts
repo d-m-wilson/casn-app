@@ -17,11 +17,15 @@ export class MapComponent implements OnInit {
   houstonLongitude: number = -95.3698;
   mapCenter: any = { latitude: 29.7604, longitude: -95.3698, zoom: 9 };
   serviceProviders: any;
+  userRole: string;
+  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
+  displayRides: boolean[] = [true, true, false, false];
 
   constructor( private ds: DefaultApiService ) { }
 
   ngOnInit() {
-    this.getServiceProviders()
+    this.getServiceProviders();
+    this.userRole = localStorage.getItem('userRole');
   }
 
   /*********************************************************************
