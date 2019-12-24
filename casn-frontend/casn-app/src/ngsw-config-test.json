@@ -1,0 +1,53 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+      {
+        "name": "api-freshness",
+        "urls": ["https://testapi.casn.app/api/appointments/**"],
+        "cacheConfig": {
+          "maxSize": 3,
+          "maxAge": "1d",
+          "strategy": "freshness"
+        }
+      },
+      {
+        "name": "api-performance",
+        "urls": [
+          "https://testapi.casn.app/api/serviceprovider/**",
+          "https://testapi.casn.app/api/appointmentType/**",
+          "https://testapi.casn.app/api/driveCancelReason/**",
+          "https://testapi.casn.app/api/driveStatus/**",
+          "https://test.casn.app/appconfig.json"
+        ],
+        "cacheConfig": {
+          "maxSize": 3,
+          "maxAge": "1d",
+          "strategy": "performance"
+        }
+      }
+    ]
+}
