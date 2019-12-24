@@ -157,7 +157,7 @@ export class DispatcherApiService implements DispatcherApiServiceInterface {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.post<any>(`${this.basePath}/caller`,
+        return this.httpClient.post<any>(`${this.basePath}/dispatcher/caller`,
             caller,
             {
                 withCredentials: this.configuration.withCredentials,
@@ -310,7 +310,7 @@ export class DispatcherApiService implements DispatcherApiServiceInterface {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<CASNAppCoreModelsCaller>(`${this.basePath}/caller`,
+        return this.httpClient.get<CASNAppCoreModelsCaller>(`${this.basePath}/dispatcher/caller`,
             {
                 params: queryParameters,
                 withCredentials: this.configuration.withCredentials,

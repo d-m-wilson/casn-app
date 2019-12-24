@@ -40,8 +40,9 @@
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
           <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
-      <div *ngFor="let r of ridesToDisplay" class="appointment-drive-wrapper">
-        <ng-container *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)">
+      <ng-container *ngFor="let r of ridesToDisplay">
+        <div *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)"
+             class="appointment-drive-wrapper">
           <mat-card class="appointment-card candy-card mat-elevation-z0">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
@@ -52,7 +53,7 @@
             </div>
           </mat-card>
           <div class="drive-container">
-            <mat-card *ngIf="displayRides[r.driveTo?.statusId]"
+            <mat-card *ngIf="displayRides[r.driveTo?.statusId]; else emptyPickup"
                       (click)="toggleRideModal(r, true)"
                       class="drive-card candy-card"
                       [ngClass]="{ 'open': r.driveTo.statusId === 0,
@@ -63,6 +64,7 @@
               <div class="drive-card-header">
                 <mat-icon *ngIf="r.driveTo.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
                 <span *ngIf="r.driveTo.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
+                <!-- TODO: For v2, show driver name instead of driver ID -->
                 <span class="status-text bolder">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
@@ -74,7 +76,7 @@
                 </p>
               </div>
             </mat-card>
-            <mat-card *ngIf="displayRides[r.driveFrom?.statusId]"
+            <mat-card *ngIf="displayRides[r.driveFrom?.statusId]; else emptyDropoff"
                       (click)="toggleRideModal(r)"
                       class="drive-card candy-card"
                       [ngClass]="{ 'open': r.driveFrom.statusId === 0,
@@ -85,6 +87,7 @@
               <div class="drive-card-header">
                 <mat-icon *ngIf="r.driveFrom.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
                 <span *ngIf="r.driveFrom.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
+                <!-- TODO: For v2, show driver name instead of driver ID -->
                 <span class="status-text bolder">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
               </div>
               <div class="drive-card-content">
@@ -96,9 +99,19 @@
                 </p>
               </div>
             </mat-card>
+            <ng-template #emptyPickup>
+              <mat-card class="drive-card candy-card no-drive">
+                <em>No Pick Up</em>
+              </mat-card>
+            </ng-template>
+            <ng-template #emptyDropoff>
+              <mat-card class="drive-card candy-card no-drive">
+                <em>No Drop Off</em>
+              </mat-card>
+            </ng-template>
           </div>
-        </ng-container>
-      </div>
+        </div>
+      </ng-container>
     </section>
   </div>
 </ng-container>

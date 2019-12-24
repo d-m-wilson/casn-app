@@ -28,6 +28,9 @@
             <mat-panel-title>Caller Information</mat-panel-title>
           </mat-expansion-panel-header>
           <mat-list>
+            <mat-list-item *ngIf="userRole === '2' && !ride.caller.phone">
+              <em>The caller's contact info will be available once you are approved for the drive!</em>
+            </mat-list-item>
             <mat-list-item *ngIf="ride.caller.firstName">
               <mat-icon mat-list-icon>account_circle</mat-icon>
               <h4 mat-line>{{ ride.caller.firstName }} {{ ride.caller.lastName }}</h4>

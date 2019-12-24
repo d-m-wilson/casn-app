@@ -66,12 +66,9 @@ p {
 ********************************************************************/
 .date-sidebar {
   display: flex;
-  // flex-direction: column;
-  // height: calc(100vh - 100px);
-  // width: 65px;
   height: 50px;
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   z-index: 1;
 }
@@ -107,6 +104,7 @@ p {
   // Fallback for browsers that do not support custom properties
   height: calc(100vh - 75px); // header-55px, footer-20px
   height: calc(var(--vh, 1vh) * 100 - 75px);
+  min-height: -webkit-fill-available;
   overflow: auto;
 }
 
@@ -194,6 +192,14 @@ p {
 .drive-card-content {
   display: flex;
   align-items: center;
+}
+
+.no-drive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  border: 1px solid #999;
 }
 
 /********************************************************************

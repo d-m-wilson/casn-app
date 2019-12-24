@@ -49,7 +49,6 @@ export class RideDetailModalComponent implements OnInit {
 
   getAppointmentTypes(): void {
     this.ds.getAppointmentTypes().subscribe(a => {
-      console.log("appt TYPESSSS", a)
       this.apptTypes = a.reduce((acc, cur) => {
         acc[cur.id] = { title: cur.title };
         return acc;

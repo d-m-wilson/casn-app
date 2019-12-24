@@ -6,6 +6,7 @@ import { AppointmentDataService } from "../appointment-data.service";
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { startWith, map } from 'rxjs/operators';
+import { CallerIdentifierValidator } from './caller-identifier.validator';
 
 @Component({
   selector: 'app-callers',
@@ -27,6 +28,7 @@ export class CallersComponent implements OnInit {
   constructor( private ds: DispatcherApiService,
                private sharedApptDataService: AppointmentDataService,
                private fb: FormBuilder,
+               private validator: CallerIdentifierValidator,
                private location: Location,
                private route: ActivatedRoute,
                private router: Router ) { }
@@ -56,11 +58,16 @@ export class CallersComponent implements OnInit {
   contactMethods: any[] = [ {value: 1, displayValue: 'Text'},
                             {value: 2, displayValue: 'Call'} ];
 
-  callerIdentifierSearch = new FormControl('', [Validators.required, Validators.minLength(4), Validators.maxLength(6)])
+  callerIdentifierSearch = new FormControl('', [ Validators.required, Validators.minLength(4), Validators.maxLength(6) ])
 
   callerForm = this.fb.group({
-    callerIdentifier: ['', [Validators.required, Validators.minLength(4),
-                        Validators.maxLength(6)]],
+    callerIdentifier: [
+      '',
+      {
+        validators: [ Validators.required, Validators.minLength(4), Validators.maxLength(6) ],
+        asyncValidators: [ this.validator.validate.bind(this) ]
+      }
+    ],
     firstName: ['', Validators.required],
     lastName: [''],
     phone: ['', Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
@@ -93,6 +100,21 @@ export class CallersComponent implements OnInit {
                               Click Handlers
   **********************************************************************/
   handleYesClick(): void {
+    // TODO: Fix this behavior in v2
+    // For now, the user cannot edit an existing caller unless
+    // they are editing an already existing appointment.
+    if(!this.editingCaller) {
+      this.router.navigate(
+        [
+          '/appointment',
+          {
+            callerIdentifier: this.existingCaller.callerIdentifier,
+            callerId: this.existingCallerId
+          }
+        ]
+      );
+    }
+
     this.displayCallerFoundModal = false;
     this.displayCallerForm = true;
     this.callerForm.setValue(this.existingCaller);
@@ -100,6 +122,7 @@ export class CallersComponent implements OnInit {
 
   handleNoClick(): void {
     this.displayCallerFoundModal = false;
+    this.existingCaller = {};
     this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
   }
 
@@ -141,10 +164,10 @@ export class CallersComponent implements OnInit {
         } else {
           this.displayCallerForm = true;
           this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
-
         }
       },
       err => {
+        // TODO: Check status code & handle 500 errors differently.
         console.log("404 - No existing caller was found");
         this.displayCallerForm = true;
         this.f.callerIdentifier.setValue(this.callerIdentifierSearch.value);
@@ -159,8 +182,8 @@ export class CallersComponent implements OnInit {
   }
 
   updateCaller(): void {
-    // NOTE: The caller & appt will be updated in a single API call once the
-    // appt form is completed.
+    /* NOTE: The caller & appt will be updated in a single API call once the
+       appt form is completed. */
     this.appointmentToEdit.caller = this.callerForm.value;
     this.appointmentToEdit.caller.id = this.existingCallerId;
     this.sharedApptDataService.changeMessage(this.appointmentToEdit);
