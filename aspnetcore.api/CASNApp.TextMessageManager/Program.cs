@@ -36,12 +36,12 @@ namespace CASNApp.TextMessageManager
             userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
         }
 
-        private static Microsoft.Extensions.DependencyInjection.ServiceProvider BuildDi()
+        private static IServiceProvider BuildDi()
 		{
 			return new ServiceCollection()
 				.AddDbContext<casn_appContext>(options =>
 				{
-					options.UseSqlServer(configuration[Core.Constants.DbConnectionString], sqlOptions =>
+					options.UseSqlServer(configuration.GetConnectionString(Core.Constants.DbConnectionString), sqlOptions =>
 					{
 						sqlOptions
 							.EnableRetryOnFailure(2);
@@ -63,19 +63,22 @@ namespace CASNApp.TextMessageManager
 		{
 			//set the mesage priority from the command line
 			TwilioCommand.MessageType messageType = TwilioCommand.MessageType.Unknown;
+
 			if (args.Length > 0)
 			{
-				switch (args[0].ToUpper().Substring(0,1))
+				var firstArgument = args[0];
+
+				if (firstArgument.Contains("friendly", StringComparison.InvariantCultureIgnoreCase))
 				{
-					case "F":
-						messageType = TwilioCommand.MessageType.FriendlyReminder;
-						break;
-					case "S":
-						messageType = TwilioCommand.MessageType.SeriousRequest;
-						break;
-					case "D":
-						messageType = TwilioCommand.MessageType.DesperatePlea;
-						break;
+					messageType = TwilioCommand.MessageType.FriendlyReminder;
+				}
+				else if (firstArgument.Contains("serious", StringComparison.InvariantCultureIgnoreCase))
+				{
+					messageType = TwilioCommand.MessageType.SeriousRequest;
+				}
+				else if (firstArgument.Contains("desperate", StringComparison.InvariantCultureIgnoreCase))
+				{
+					messageType = TwilioCommand.MessageType.DesperatePlea;
 				}
 			}
 
