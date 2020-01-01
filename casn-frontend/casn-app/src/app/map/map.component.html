@@ -10,6 +10,7 @@
       <!--========== Map =========-->
       <agm-map [latitude]="mapCenter.latitude"
                [longitude]="mapCenter.longitude"
+               [fitBounds]="true"
                [zoom]="mapCenter.zoom">
         <!--====== Map Markers for driveTo ========-->
         <ng-container *ngFor="let r of rides">
@@ -18,6 +19,7 @@
                       [latitude]="r.driveTo.startLatitude"
                       [longitude]="r.driveTo.startLongitude"
                       (markerClick)="showPolylinesForMarker(r)"
+                      [agmFitBounds]="true"
                       [animation]="'DROP'">
             <agm-snazzy-info-window [closeWhenOthersOpen]="true"
                                     [maxHeight]="250"
@@ -66,6 +68,7 @@
                       [latitude]="r.driveFrom.endLatitude"
                       [longitude]="r.driveFrom.endLongitude"
                       (markerClick)="showPolylinesForMarker(r)"
+                      [agmFitBounds]="true"
                       [animation]="'DROP'">
             <agm-snazzy-info-window [closeWhenOthersOpen]="true"
                                     [maxHeight]="250"
@@ -112,6 +115,7 @@
                     [iconUrl]="s.serviceProviderTypeId === 1 ? 'assets/img/marker_clinic.png' : 'assets/img/marker_court.png'"
                     [latitude]="s.latitude"
                     [longitude]="s.longitude"
+                    [agmFitBounds]="true"
                     [animation]="'DROP'">
           <agm-snazzy-info-window [closeWhenOthersOpen]="true"
                                   [maxHeight]="250">
