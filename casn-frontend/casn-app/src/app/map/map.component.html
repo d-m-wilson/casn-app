@@ -47,7 +47,8 @@
               </ng-template>
             </agm-snazzy-info-window>
           </agm-marker>
-          <agm-polyline strokeWeight="2"
+          <agm-polyline *ngIf="r.driveTo && displayRides[r.driveTo.statusId]"
+                        strokeWeight="2"
                         strokeColor="#00f"
                         [visible]="r.showPolylines || false">
             <agm-polyline-point [latitude]="r.driveTo?.startLatitude"
@@ -94,7 +95,8 @@
               </ng-template>
             </agm-snazzy-info-window>
           </agm-marker>
-          <agm-polyline strokeWeight="2"
+          <agm-polyline *ngIf="r.driveFrom && displayRides[r.driveFrom.statusId]"
+                        strokeWeight="2"
                         strokeColor="#00f"
                         [visible]="r.showPolylines || false">
             <agm-polyline-point [latitude]="r.driveFrom?.startLatitude"
