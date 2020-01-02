@@ -1,1 +1,1 @@
-﻿CASNApp.CallerDataManager.exe
+CASNApp.CallerDataManager.exe
