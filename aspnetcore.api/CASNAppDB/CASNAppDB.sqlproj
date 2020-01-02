@@ -105,9 +105,6 @@
     <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <RefactorLog Include="CASNAppDB.refactorlog" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="dbo\Tables\Data\ServiceProviderType.data.sql" />
     <None Include="dbo\Tables\Data\Badge.data.sql" />
     <None Include="dbo\Tables\Data\AppointmentType.data.sql" />
