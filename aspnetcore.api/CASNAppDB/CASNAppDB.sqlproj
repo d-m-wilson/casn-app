@@ -99,6 +99,7 @@
     <Build Include="admin\Tables\AspNetUserTokens.sql" />
     <Build Include="Security\admin.sql" />
     <Build Include="dbo\Tables\MessageType.sql" />
+    <Build Include="dbo\Stored Procedures\uspCancelExpiredDrives.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
