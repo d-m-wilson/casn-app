@@ -56,6 +56,7 @@ namespace CASNApp.TextMessageManager
 						CaptureMessageProperties = true
 					});
 				})
+				.AddSingleton(configuration)
 				.BuildServiceProvider();
 		}
 

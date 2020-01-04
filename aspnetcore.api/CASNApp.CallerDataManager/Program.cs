@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -10,6 +11,8 @@ namespace CASNApp.CallerDataManager
         private static readonly IConfiguration configuration;
         private static readonly string callerDataProcedureName;
         private static readonly int callerDataDaysToKeep;
+        private static readonly bool dbUseManagedIdentity;
+        private static readonly string dbManagedIdentityTenantId;
 
         static Program()
         {
@@ -22,6 +25,10 @@ namespace CASNApp.CallerDataManager
 
             callerDataDaysToKeep = int.Parse(configuration["CallerDataDaysToKeep"]);
             callerDataProcedureName = configuration["CallerDataProcedureName"];
+            dbUseManagedIdentity = bool.Parse(configuration["DBUseManagedIdentity"]);
+
+            var tenantId = configuration["DBManagedIdentityTenantId"];
+            dbManagedIdentityTenantId = string.IsNullOrWhiteSpace(tenantId) ? null : tenantId;
         }
 
         static void Main(string[] args)
@@ -30,6 +37,12 @@ namespace CASNApp.CallerDataManager
             {
                 using (var sqlConnection = new SqlConnection(configuration.GetConnectionString("DbConnectionString")))
                 {
+                    if (dbUseManagedIdentity)
+                    {
+                        sqlConnection.AccessToken = new AzureServiceTokenProvider()
+                            .GetAccessTokenAsync("https://database.windows.net/", dbManagedIdentityTenantId).Result;
+                    }
+
                     sqlConnection.Open();
 
                     using (var sqlCommand = new SqlCommand(callerDataProcedureName, sqlConnection))

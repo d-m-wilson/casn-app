@@ -6,6 +6,9 @@ namespace CASNApp.Core
     {
         public const string DbConnectionString = nameof(DbConnectionString);
         public const string DBRetryCount = nameof(DBRetryCount);
+        public const string DBUseManagedIdentity = nameof(DBUseManagedIdentity);
+        public const string AzureSqlDatabaseResource = "https://database.windows.net/";
+        public const string DBManagedIdentityTenantId = nameof(DBManagedIdentityTenantId);
         public const string GoogleApiKey = nameof(GoogleApiKey);
         public const string VagueLocationMinOffset = nameof(VagueLocationMinOffset);
         public const string VagueLocationMaxOffset = nameof(VagueLocationMaxOffset);

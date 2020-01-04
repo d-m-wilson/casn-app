@@ -1,9 +1,11 @@
 ﻿using System;
 using CASNApp.Core.Extensions;
 using CASNApp.Core.Interfaces;
+using CASNApp.Core.Misc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
 
 namespace CASNApp.Core.Entities
 {
@@ -14,10 +16,24 @@ namespace CASNApp.Core.Entities
             ChangeTracker.LazyLoadingEnabled = false;
         }
 
-        public casn_appContext(DbContextOptions<casn_appContext> options)
+        public casn_appContext(DbContextOptions<casn_appContext> options, IConfiguration configuration)
             : base(options)
         {
             ChangeTracker.LazyLoadingEnabled = false;
+
+            if (bool.Parse(configuration[Constants.DBUseManagedIdentity]))
+            {
+                var tenantId = configuration[Constants.DBManagedIdentityTenantId];
+
+                if (string.IsNullOrWhiteSpace(tenantId))
+                {
+                    tenantId = null;
+                }
+
+                var sqlConnection = GetSqlConnection();
+
+                sqlConnection.AccessToken = ManagedIdentity.GetAccessTokenAsync(Constants.AzureSqlDatabaseResource, null, tenantId).Result;
+            }
         }
 
         public virtual DbSet<Appointment> Appointment { get; set; }
