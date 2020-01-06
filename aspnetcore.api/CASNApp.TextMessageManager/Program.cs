@@ -20,6 +20,7 @@ namespace CASNApp.TextMessageManager
 		private static readonly string twilioAuthKey;
 		private static readonly string twilioPhoneNumber;
         private static readonly string userTimeZoneName;
+		private static readonly string appUrl;
 
         static Program()
 		{
@@ -34,6 +35,7 @@ namespace CASNApp.TextMessageManager
 			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
             userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
+			appUrl = configuration[Core.Constants.CASNAppURL];
         }
 
         private static IServiceProvider BuildDi()
@@ -102,7 +104,7 @@ namespace CASNApp.TextMessageManager
 				{
 					//send out a single reminder message for all open appointments
 					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
+                        dbContext, userTimeZoneName, appUrl);
 					reminderSMS.SendAppointmentReminderMessage(openAppointments, messageType);
 				}
 				else
@@ -112,7 +114,7 @@ namespace CASNApp.TextMessageManager
 					{
 						DriveQuery driveQuery = new DriveQuery(dbContext);
 						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                            dbContext, userTimeZoneName);
+                            dbContext, userTimeZoneName, appUrl);
 						foreach (Appointment appointment in openAppointments)
 						{
 							//get each drive objetc (to and from) and send messages to appropriate drives

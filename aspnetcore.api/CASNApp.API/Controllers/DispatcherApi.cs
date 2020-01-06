@@ -47,6 +47,7 @@ namespace CASNApp.API.Controllers
 		private readonly string twilioPhoneNumber;
         private readonly bool badgesAreEnabled;
         private readonly string userTimeZoneName;
+        private readonly string appUrl;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -62,6 +63,7 @@ namespace CASNApp.API.Controllers
 			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
             badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
             userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
+            appUrl = configuration[Core.Constants.CASNAppURL];
         }
 
         /// <summary>
@@ -301,7 +303,7 @@ namespace CASNApp.API.Controllers
                 {
                     //send initial text message to drivers
                     var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
+                        dbContext, userTimeZoneName, appUrl);
                     twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown, false);
 					await dbContext.SaveChangesAsync();
                 }
@@ -388,7 +390,7 @@ namespace CASNApp.API.Controllers
 				{
 					//send initial text message to drivers
 					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
+                        dbContext, userTimeZoneName, appUrl);
 					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
 				}
 				catch (Exception ex)
@@ -468,7 +470,7 @@ namespace CASNApp.API.Controllers
 					DriveQuery driveQuery = new DriveQuery(dbContext);
 					var drive = await driveQuery.GetDriveAsync(driveId);
 					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
+                        dbContext, userTimeZoneName, appUrl);
 					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
 				}
 				catch (Exception ex)

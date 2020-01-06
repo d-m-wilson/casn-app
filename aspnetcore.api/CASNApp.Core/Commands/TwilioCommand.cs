@@ -17,6 +17,7 @@ namespace CASNApp.Core.Commands
 		private string accountPhoneNumber;
 		private ILogger<TwilioCommand> logger;
 		private TimeZoneInfo timeZone;
+		private readonly string appUrl;
 
 		public enum MessageType
 		{
@@ -35,7 +36,7 @@ namespace CASNApp.Core.Commands
 		}
 
 		public TwilioCommand(string accountSid, string authToken, string accountPhoneNumber, ILogger<TwilioCommand> logger,
-            casn_appContext dbContext, string timeZoneName)
+            casn_appContext dbContext, string timeZoneName, string appUrl)
 		{
 			this.accountSid = accountSid;
 			this.authToken = authToken;
@@ -44,6 +45,7 @@ namespace CASNApp.Core.Commands
 			this.dbContext = dbContext;
             timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
                 throw new ArgumentException($"Time zone not found: \"{timeZoneName}\"", nameof(timeZoneName));
+			this.appUrl = appUrl;
 		}
 
 		public void SendDispatcherMessage(Drive drive, Volunteer driver, MessageType messageType)
@@ -254,7 +256,8 @@ namespace CASNApp.Core.Commands
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{driveCount}", driveCount.ToString())
 				.Replace("{driveId}", driveId.ToString())
-				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier);
+				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier)
+				.Replace("{appUrl}", appUrl ?? "");
 		}
 
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)
