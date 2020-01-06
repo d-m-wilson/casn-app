@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +15,7 @@ namespace CASNApp.Core.Queries
 			this.dbContext = dbContext;
 		}
 
-		public List<Appointment> GetAllAppointmentsWithOpenDrives(bool readOnly)
+		public List<Appointment> GetAllNextDayAppointmentsWithOpenDrives(bool readOnly)
 		{
 			var openAppointmentIds = (readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive)
 				.Where(d => d.IsActive && d.StatusId == Models.Drive.StatusOpen 
@@ -26,9 +25,12 @@ namespace CASNApp.Core.Queries
 				.Distinct()
 				.ToList();
 
+			var tomorrowBeginsUTC = DateTime.Today.AddDays(1).ToUniversalTime();
+			var tomorrowEndsUTC = DateTime.Today.AddDays(1).AddMilliseconds(-1).ToUniversalTime();
+
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Drives)
-				.Where(a => a.IsActive && DateTime.Compare(a.AppointmentDate, DateTime.UtcNow) >= 0 
+				.Where(a => a.IsActive && a.AppointmentDate >= tomorrowBeginsUTC && a.AppointmentDate <= tomorrowEndsUTC
 					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
 			

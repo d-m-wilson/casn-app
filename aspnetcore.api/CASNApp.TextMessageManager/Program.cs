@@ -97,7 +97,7 @@ namespace CASNApp.TextMessageManager
 			{
 				//get a list of all the appointments with open drives
 				AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
-				var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
+				var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(true);
 				loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
 
 				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
