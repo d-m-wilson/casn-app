@@ -95,13 +95,20 @@ namespace CASNApp.TextMessageManager
 			//connect to the database
 			using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
 			{
-				//get a list of all the appointments with open drives
 				AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
-				var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(true);
 				loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
 
 				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
 				{
+					//get a list of all NEXT DAY appointments with open drives
+					var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(true);
+
+					if (openAppointments.Count == 0)
+					{
+						logger?.LogWarning("There are no matching appointments, so no need to text anyone!");
+						return;
+					}
+
 					//send out a single reminder message for all open appointments
 					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
                         dbContext, userTimeZoneName, appUrl);
@@ -109,6 +116,9 @@ namespace CASNApp.TextMessageManager
 				}
 				else
 				{
+					//get a list of all the appointments with open drives
+					var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
+
 					//loop thru the appointments and send the assoicated text message
 					if (openAppointments != null && openAppointments.Count > 0)
 					{

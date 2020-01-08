@@ -15,6 +15,25 @@ namespace CASNApp.Core.Queries
 			this.dbContext = dbContext;
 		}
 
+		public List<Appointment> GetAllAppointmentsWithOpenDrives(bool readOnly)
+		{
+			var openAppointmentIds = (readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive)
+				.Where(d => d.IsActive && d.StatusId == Models.Drive.StatusOpen
+						&& d.StartLatitude != null && d.StartLongitude != null
+						&& d.EndLatitude != null && d.EndLongitude != null)
+				.Select(d => d.AppointmentId)
+				.Distinct()
+				.ToList();
+
+			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
+				.Include(a => a.Drives)
+				.Where(a => a.IsActive && DateTime.Compare(a.AppointmentDate, DateTime.UtcNow) >= 0
+					&& openAppointmentIds.Contains(a.Id))
+				.ToList();
+
+			return result;
+		}
+
 		public List<Appointment> GetAllNextDayAppointmentsWithOpenDrives(bool readOnly)
 		{
 			var openAppointmentIds = (readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive)
