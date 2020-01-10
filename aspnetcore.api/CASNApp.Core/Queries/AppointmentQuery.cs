@@ -45,7 +45,7 @@ namespace CASNApp.Core.Queries
 				.ToList();
 
 			var tomorrowBeginsUTC = DateTime.Today.AddDays(1).ToUniversalTime();
-			var tomorrowEndsUTC = DateTime.Today.AddDays(1).AddMilliseconds(-1).ToUniversalTime();
+			var tomorrowEndsUTC = DateTime.Today.AddDays(2).AddMilliseconds(-1).ToUniversalTime();
 
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Drives)
