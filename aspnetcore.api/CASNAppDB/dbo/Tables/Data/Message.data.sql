@@ -60,8 +60,8 @@
     INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (57, 3, N'Hi, {volunteerFirstName}! There''s a new round trip drive from {vagueTo} to {clinic} on {timeDate} that needs an abortion access hero! Our callers are always so scared they won''t get a ride.', 1, @utcNow, NULL)
     INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (58, 3, N'Hi, {volunteerFirstName}!  Did you know our app rewards people who snap drives up quickly? There''s a new round trip drive from {vagueTo} to {clinic} on {timeDate}, so apply now and get rewarded!', 1, @utcNow, NULL)
     INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (60, 9, N'{volunteerFirstName} has applied for a drive for caller {callerIdentifier} on {timeDate}. Open the CASN app to approve this drive.', 1, @utcNow, NULL)
-    INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (62, 10, N'Your caller cancelled their drive {driveId}, so no need to pick up the patient. Thank you so much for volunteering anyway!', 1, @utcNow, NULL)
-    INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (64, 11, N'Congratulations! You have been approved for drive {driveId}. Thank you so much for volunteering.', 1, @utcNow, NULL)
+    INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (62, 10, N'Your caller ({callerIdentifier}) cancelled their drive, so no need to pick them up. Thank you so much for volunteering anyway!', 1, @utcNow, NULL)
+    INSERT [dbo].[Message] ([Id], [MessageTypeId], [MessageText], [IsActive], [Created], [Updated]) VALUES (64, 11, N'Congratulations! You have been approved to drive caller {callerIdentifier} on {timeDate}. Thank you so much for volunteering.', 1, @utcNow, NULL)
     SET IDENTITY_INSERT [dbo].[Message] OFF
     COMMIT TRANSACTION
 END TRY
