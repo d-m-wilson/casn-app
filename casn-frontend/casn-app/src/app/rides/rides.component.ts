@@ -8,6 +8,7 @@ import { Constants } from '../app.constants';
   styleUrls: ['./rides.component.scss']
 })
 export class RidesComponent implements OnInit {
+  loading: boolean = false;
   objectKeys: any = Object.keys;
   userRole: string;
   startDate: string;
@@ -88,13 +89,22 @@ export class RidesComponent implements OnInit {
   }
 
   getRides(): void {
-    this.ds.getAppointments(this.startDate, this.endDate).subscribe(appts => {
-      appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
-      this.rides = appts;
-      this.ridesToDisplay = appts;
-      this.updateDateFilterProperties();
-      console.log("Rides:", this.rides);
-    });
+    this.loading = true;
+    this.ds.getAppointments(this.startDate, this.endDate).subscribe(
+      appts => {
+        this.loading = false
+        appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
+        this.rides = appts;
+        this.ridesToDisplay = appts;
+        this.updateDateFilterProperties();
+        console.log("Rides:", this.rides);
+      },
+      err => {
+        this.loading = false;
+        // TODO: Handle Error
+        console.error("Error fetching rides", err);
+      }
+    );
   }
 
   getServiceProviders(): void {

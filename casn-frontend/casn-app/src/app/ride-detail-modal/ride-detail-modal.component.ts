@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./ride-detail-modal.component.scss']
 })
 export class RideDetailModalComponent implements OnInit {
+  loading: boolean = false;
   userRole: string;
   @Input() ride: any = {};
   @Input() isDriveTo: boolean; // show driveTo or driveFrom details
@@ -91,12 +92,15 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleApplyClick() {
+    this.loading = true;
     const id = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.driverService.addDriveApplicant({"driveId": id}).subscribe(
       res => {
+        this.loading = false;
         this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {
+        this.loading = false;
         if(err.status === 409) {
           alert("Our records show you've already applied for this drive. We'll contact you soon to let you know if you're approved.")
         }
@@ -106,11 +110,14 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleApproveClick(volunteerId: number) {
+    this.loading = true;
     this.dispatcherService.addDriver({volunteerDriveId: volunteerId}).subscribe(
       res => {
+        this.loading = false;
         this.closeRideModalAndUpdateClick.emit(true);
       },
       err => {
+        this.loading = false;
         // TODO: Handle error
         console.error("ERROR:", err);
       }

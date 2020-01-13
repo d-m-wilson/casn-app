@@ -17,6 +17,7 @@ import { AppointmentDataService } from '../appointment-data.service';
   styleUrls: ['./appointment-form.component.scss']
 })
 export class AppointmentFormComponent implements OnInit {
+  loading: boolean = false;
   /*
   NOTE:
   "callerId" is the actual database ID for communication w/ API
@@ -114,14 +115,17 @@ export class AppointmentFormComponent implements OnInit {
   }
 
   saveNewAppt(): void {
+    this.loading = true;
     console.log("Saving your appt!", this.appointmentDTO);
     this.ds.addAppointment(this.appointmentDTO).subscribe(
       data => {
+        this.loading = false;
         console.log("Save appt response is", data);
         alert('Success! Your appointment has been saved.');
         this.router.navigate(['']);
       },
       err => {
+        this.loading = false;
         console.error("--Error saving appt data...", err);
         alert('An error occurred, and your appointment was not saved.');
       }
@@ -129,17 +133,17 @@ export class AppointmentFormComponent implements OnInit {
   }
 
   updateAppt(): void {
-    // TODO: Should I be editing only those fields which have changed and
-    // returning all other fields as-is? E.g. I'm not resetting addresses if
-    // user changes service provider. Check w/ David.
+    this.loading = true;
     console.log("Updating your appt!", this.appointmentDTO);
     this.ds.updateAppointment(this.appointmentToEdit.appointment.id, this.appointmentToEdit).subscribe(
       data => {
+        this.loading = false;
         console.log("Save appt response is", data);
         alert('Success! Your appointment has been updated.');
         this.router.navigate(['']);
       },
       err => {
+        this.loading = false;
         console.error("--Error saving appt data...", err);
         alert('An error occurred, and your appointment was not updated.');
       }
