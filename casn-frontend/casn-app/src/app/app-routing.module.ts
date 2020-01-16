@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'view-schedule', component: RidesComponent, canActivate: [ AuthGuard ] },
   { path: 'stats', component: UserStatsComponent, canActivate: [ AuthGuard ] },
   { path: 'message', component: MassTextComponent, canActivate: [ AuthGuard ] },
-  { path: '**', component: DashboardComponent, canActivate: [ AuthGuard ] }
+  { path: '**', component: ErrorPageComponent }
 ];
 
 @NgModule({
