@@ -131,7 +131,7 @@
         </agm-marker>
       </agm-map>
     </mat-card>
-    <div *ngIf="userRole === '1'">
+    <div *ngIf="userRole === '1'" class="map-filter-container">
       <mat-slide-toggle value="approved"
                         [checked]="displayRides[2]"
                         (change)="displayRides[2] = $event.source.checked"
