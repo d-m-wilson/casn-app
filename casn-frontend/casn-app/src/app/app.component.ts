@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
   menuItems: any[];
   // A2HS
   deferredPrompt: any;
-  showButton: boolean = false;
+  showButton: boolean = true;
   isOpen: boolean = true;
   userRole: string;
 
