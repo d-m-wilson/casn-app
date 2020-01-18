@@ -264,22 +264,48 @@ namespace CASNApp.Core.Commands
 		{
 			//initialize twilio client
 			TwilioClient.Init(accountSid, authToken);
+			MessageResource messageResource;
 
-			//send requested message
-			var message = MessageResource.Create(body: messageText,
-												 from: new Twilio.Types.PhoneNumber(fromPhone),
-												 to: new Twilio.Types.PhoneNumber(toPhone));
+			try
+			{
+				//send requested message
+				messageResource = MessageResource.Create(body: messageText,
+					from: new Twilio.Types.PhoneNumber(fromPhone),
+					to: new Twilio.Types.PhoneNumber(toPhone));
 
-			//log message sent to database (from number, to number, message text, date sent)
-			var messageLogEntity = new Core.Entities.MessageLog();
-			messageLogEntity.FromPhone = fromPhone;
-			messageLogEntity.ToPhone = toPhone;
-			messageLogEntity.Body = messageText;
-			messageLogEntity.DateSent = DateTime.UtcNow;
-			messageLogEntity.AppointmentId = appointmentId;
-			messageLogEntity.VolunteerId = driverId;
-			dbContext.MessageLog.Add(messageLogEntity);
-			dbContext.SaveChanges();
+				//log message sent to database (from number, to number, message text, date sent)
+				var messageLogEntity = new MessageLog
+				{
+					FromPhone = fromPhone,
+					ToPhone = toPhone,
+					Body = messageText,
+					DateSent = DateTime.UtcNow,
+					AppointmentId = appointmentId,
+					VolunteerId = driverId
+				};
+
+				dbContext.MessageLog.Add(messageLogEntity);
+				dbContext.SaveChanges();
+			}
+			catch (Twilio.Exceptions.ApiException apiException)
+			{
+				var messageErrorLogEntity = new MessageErrorLog
+				{
+					FromPhone = fromPhone,
+					ToPhone = toPhone,
+					Body = messageText,
+					DateSent = DateTime.UtcNow,
+					AppointmentId = appointmentId,
+					VolunteerId = driverId,
+					ErrorCode = apiException.Code.ToString(),
+					ErrorMessage = apiException.Message,
+					ErrorDetails = apiException.ToString()
+				};
+
+				dbContext.MessageErrorLog.Add(messageErrorLogEntity);
+				dbContext.SaveChanges();
+			}
 		}
+
 	}
 }

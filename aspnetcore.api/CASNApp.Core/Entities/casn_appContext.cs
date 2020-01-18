@@ -45,6 +45,7 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<DriveLogStatus> DriveLogStatus { get; set; }
         public virtual DbSet<DriveStatus> DriveStatus { get; set; }
         public virtual DbSet<Message> Message { get; set; }
+        public virtual DbSet<MessageErrorLog> MessageErrorLog { get; set; }
         public virtual DbSet<MessageLog> MessageLog { get; set; }
         public virtual DbSet<MessageType> MessageType { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProvider { get; set; }
@@ -440,6 +441,42 @@ namespace CASNApp.Core.Entities
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Message_MessageTypeId");
 
+            });
+
+            modelBuilder.Entity<MessageErrorLog>(entity =>
+            {
+                entity.HasIndex(e => e.DateSent);
+
+                entity.Property(e => e.AppointmentId);
+
+                entity.Property(e => e.Body)
+                    .IsRequired()
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.DateSent)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.FromPhone)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Subject)
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.ToPhone)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.VolunteerId)
+                    .IsRequired();
+
+                entity.Property(e => e.ErrorCode)
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ErrorMessage)
+                    .HasMaxLength(1000);
             });
 
             modelBuilder.Entity<MessageLog>(entity =>
