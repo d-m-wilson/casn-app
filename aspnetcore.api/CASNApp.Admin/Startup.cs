@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CASNApp.Admin.Data;
@@ -66,6 +67,13 @@ namespace CASNApp.Admin
                 options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.ConfigureApplicationCookie(cookieAuthOptions =>
+            {
+                cookieAuthOptions.ExpireTimeSpan = TimeSpan.Parse(Configuration["ApplicationCookieExpireTimeSpan"]);
+                cookieAuthOptions.SlidingExpiration = bool.Parse(Configuration["ApplicationCookieSlidingExpiration"]);
+                cookieAuthOptions.Cookie.HttpOnly = bool.Parse(Configuration["ApplicationCookieHttpOnly"]);
+            });
 
             services.AddAuthentication()
                 .AddGoogle(options =>
