@@ -141,12 +141,28 @@ namespace CASNApp.Core.Entities
 
 				entity.Property(e => e.Tier1MessageCount).HasColumnType("integer");
 
-				entity.Property(e => e.Tier2MessageCount).HasColumnType("integer");
+                entity.Property(e => e.Tier1MessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
-				entity.Property(e => e.Tier3MessageCount).HasColumnType("integer");
+                entity.Property(e => e.Tier2MessageCount).HasColumnType("integer");
 
-				entity.Property(e => e.BroadcastMessageCount).HasColumnType("integer");
-			});
+                entity.Property(e => e.Tier2MessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Tier3MessageCount).HasColumnType("integer");
+
+                entity.Property(e => e.Tier3MessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.BroadcastMessageCount).HasColumnType("integer");
+
+                entity.Property(e => e.BroadcastMessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+            });
 
             modelBuilder.Entity<AppointmentType>(entity =>
             {

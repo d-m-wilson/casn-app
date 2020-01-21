@@ -236,13 +236,25 @@ namespace CASNApp.Core.Commands
 
 				//set the proper tier message count value on the appointment
 				if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday && !appointment.BroadcastMessageCount.HasValue)
+				{
 					appointment.BroadcastMessageCount = messageCount;
+					appointment.BroadcastMessageDate = DateTime.UtcNow;
+				}
 				else if (!isCronJob && !appointment.Tier1MessageCount.HasValue)
+				{
 					appointment.Tier1MessageCount = messageCount;
+					appointment.Tier1MessageDate = DateTime.UtcNow;
+				}
 				else if (hours >= 2 && hours < 3 && !appointment.Tier2MessageCount.HasValue)
+				{
 					appointment.Tier2MessageCount = messageCount;
+					appointment.Tier2MessageDate = DateTime.UtcNow;
+				}
 				else if (hours >= 3 && !appointment.Tier3MessageCount.HasValue)
+				{
 					appointment.Tier3MessageCount = messageCount;
+					appointment.Tier3MessageDate = DateTime.UtcNow;
+				}
 			}
 		}
 
