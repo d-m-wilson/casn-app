@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CASNApp.Core.Entities.MessageErrorLog>
+﻿@model IEnumerable<MessageErrorLogIndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,10 +19,7 @@
                 @Html.DisplayNameFor(model => model.DateSent)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AppointmentId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VolunteerId)
+                @Html.DisplayNameFor(model => model.VolunteerName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ErrorCode)
@@ -49,10 +46,7 @@
                 @Html.DisplayFor(modelItem => item.DateSent)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AppointmentId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VolunteerId)
+                @Html.DisplayFor(modelItem => item.VolunteerName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ErrorCode)

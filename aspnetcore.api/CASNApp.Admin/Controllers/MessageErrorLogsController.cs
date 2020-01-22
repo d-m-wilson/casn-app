@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using CASNApp.Admin.Models;
 using CASNApp.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -28,12 +29,33 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            return View(await _context.MessageErrorLog
+            var allVolunteerNames = await _context.Volunteer
+                .AsNoTracking()
+                .Select(v => new { v.Id, Name = $"{v.FirstName} {v.LastName}" })
+                .ToDictionaryAsync(x => x.Id, x => x.Name);
+
+            var messageErrorLogs = await _context.MessageErrorLog
                 .AsNoTracking()
                 .OrderByDescending(mel => mel.DateSent)
                 .Take(50)
-                .OrderBy(ml => ml.DateSent)
-                .ToListAsync());
+                .OrderBy(mel => mel.DateSent)
+                .ToListAsync();
+
+            var results = messageErrorLogs
+                .Select(mel => new MessageErrorLogIndexViewModel
+                {
+                    Id = mel.Id,
+                    FromPhone = mel.FromPhone,
+                    ToPhone = mel.ToPhone,
+                    DateSent = mel.DateSent,
+                    VolunteerName = (mel.VolunteerId.HasValue && allVolunteerNames.ContainsKey(mel.VolunteerId.Value)) ? allVolunteerNames[mel.VolunteerId.Value] : $"{mel.VolunteerId}",
+                    ErrorCode = mel.ErrorCode,
+                    ErrorMessage = mel.ErrorMessage,
+                    Body = mel.Body
+                })
+                .ToList();
+
+            return View(results);
         }
 
         // GET: MessageErrorLogs/Details/5
@@ -50,13 +72,46 @@ namespace CASNApp.Admin.Controllers
             }
 
             var messageErrorLog = await _context.MessageErrorLog
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (messageErrorLog == null)
             {
                 return NotFound();
             }
 
-            return View(messageErrorLog);
+            var result = new MessageErrorLogDetailsViewModel
+            {
+                Id = messageErrorLog.Id,
+                FromPhone = messageErrorLog.FromPhone,
+                ToPhone = messageErrorLog.ToPhone,
+                Subject = messageErrorLog.Subject,
+                Body = messageErrorLog.Body,
+                DateSent = messageErrorLog.DateSent,
+                AppointmentId = messageErrorLog.AppointmentId,
+                VolunteerId = messageErrorLog.VolunteerId,
+                ErrorCode = messageErrorLog.ErrorCode,
+                ErrorMessage = messageErrorLog.ErrorMessage,
+                ErrorDetails = messageErrorLog.ErrorDetails,
+            };
+
+            if (messageErrorLog.VolunteerId.HasValue)
+            {
+                var volunteer = await _context.Volunteer
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(v => v.Id == messageErrorLog.VolunteerId.Value);
+
+                if (volunteer != null)
+                {
+                    result.VolunteerName = $"{volunteer.FirstName} {volunteer.LastName}";
+                }
+                else
+                {
+                    result.VolunteerName = $"{messageErrorLog.VolunteerId}";
+                }
+            }
+
+            return View(result);
         }
 
         private async Task<bool> UserHas2FA()
