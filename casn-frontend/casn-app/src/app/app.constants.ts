@@ -8,6 +8,12 @@ export class Constants {
         dispatcherOnly: false
       },
       {
+        name: "My Drives",
+        address: "/",
+        icon: "local_taxi",
+        dispatcherOnly: false
+      },
+      {
         name: "My Achievements",
         address: "/stats",
         icon: "grade",
