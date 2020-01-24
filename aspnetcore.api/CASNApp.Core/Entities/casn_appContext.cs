@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using CASNApp.Core.Extensions;
 using CASNApp.Core.Interfaces;
 using CASNApp.Core.Misc;
@@ -782,6 +784,18 @@ namespace CASNApp.Core.Entities
 
         public override int SaveChanges()
         {
+            UpdateEntities();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            UpdateEntities();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void UpdateEntities()
+        {
             foreach (EntityEntry entry in ChangeTracker.Entries())
             {
                 if (entry.State == EntityState.Modified && entry.Entity is IUpdatedDate updatedEntity)
@@ -796,6 +810,13 @@ namespace CASNApp.Core.Entities
                     }
                 }
 
+                if (entry.State == EntityState.Modified && entry.Entity is ICreatedDate updatedEntity2 &&
+                    updatedEntity2.Created == DateTime.MinValue)
+                {
+                    // Don't upate Created datetime if it's the .NET default as SQL Server won't take it
+                    entry.Property(nameof(updatedEntity2.Created)).IsModified = false;
+                }
+
                 if (entry.State == EntityState.Added && entry.Entity is ICreatedDate createdEntity)
                 {
                     createdEntity.Created = DateTime.UtcNow;
@@ -807,8 +828,6 @@ namespace CASNApp.Core.Entities
                     entry.State = EntityState.Modified;
                 }
             }
-
-            return base.SaveChanges();
         }
 
     }
