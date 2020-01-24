@@ -38,32 +38,24 @@ namespace CASNApp.API.Controllers
         private readonly Core.Entities.casn_appContext dbContext;
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger<DispatcherApiController> logger;
+        private readonly IConfiguration configuration;
         private readonly string googleApiKey;
         private readonly double vagueLocationMinOffset;
         private readonly double vagueLocationMaxOffset;
         private readonly bool twilioIsEnabled;
-		private readonly string twilioAccountSID;
-		private readonly string twilioAuthKey;
-		private readonly string twilioPhoneNumber;
         private readonly bool badgesAreEnabled;
-        private readonly string userTimeZoneName;
-        private readonly string appUrl;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
+            this.configuration = configuration;
+            this.loggerFactory = loggerFactory;
+            logger = loggerFactory.CreateLogger<DispatcherApiController>();
             googleApiKey = configuration[Core.Constants.GoogleApiKey];
             vagueLocationMinOffset = double.Parse(configuration[Core.Constants.VagueLocationMinOffset]);
             vagueLocationMaxOffset = double.Parse(configuration[Core.Constants.VagueLocationMaxOffset]);
-            this.loggerFactory = loggerFactory;
-            logger = loggerFactory.CreateLogger<DispatcherApiController>();
             twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
-            twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
-			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
-			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
             badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
-            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
-            appUrl = configuration[Core.Constants.CASNAppURL];
         }
 
         /// <summary>
@@ -302,8 +294,7 @@ namespace CASNApp.API.Controllers
                 try
                 {
                     //send initial text message to drivers
-                    var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName, appUrl);
+                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
                     twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown, false);
 					await dbContext.SaveChangesAsync();
                 }
@@ -389,8 +380,7 @@ namespace CASNApp.API.Controllers
 				try
 				{
 					//send initial text message to drivers
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName, appUrl);
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
 					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
 				}
 				catch (Exception ex)
@@ -469,8 +459,7 @@ namespace CASNApp.API.Controllers
 					//send initial text message to driver
 					DriveQuery driveQuery = new DriveQuery(dbContext);
 					var drive = await driveQuery.GetDriveAsync(driveId);
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName, appUrl);
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
 					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
 				}
 				catch (Exception ex)

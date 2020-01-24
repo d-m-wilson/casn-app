@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Queries;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -11,12 +12,12 @@ namespace CASNApp.Core.Commands
 
     public class TwilioCommand
 	{
-		private readonly Core.Entities.casn_appContext dbContext;
-		private string accountSid;
-		private string authToken;
-		private string accountPhoneNumber;
-		private ILogger<TwilioCommand> logger;
-		private TimeZoneInfo timeZone;
+		private readonly casn_appContext dbContext;
+		private readonly string accountSid;
+		private readonly string authToken;
+		private readonly string accountPhoneNumber;
+		private readonly ILogger<TwilioCommand> logger;
+		private readonly TimeZoneInfo timeZone;
 		private readonly string appUrl;
 
 		public enum MessageType
@@ -35,17 +36,19 @@ namespace CASNApp.Core.Commands
 			DriverApprovedForDrive = 11,
 		}
 
-		public TwilioCommand(string accountSid, string authToken, string accountPhoneNumber, ILogger<TwilioCommand> logger,
-            casn_appContext dbContext, string timeZoneName, string appUrl)
+		public TwilioCommand(ILogger<TwilioCommand> logger, casn_appContext dbContext, IConfiguration configuration)
 		{
-			this.accountSid = accountSid;
-			this.authToken = authToken;
-			this.accountPhoneNumber = accountPhoneNumber;
 			this.logger = logger;
 			this.dbContext = dbContext;
-            timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
+
+			this.accountSid = configuration[Constants.TwilioAccountSID];
+			this.authToken = configuration[Constants.TwilioAuthKey];
+			this.accountPhoneNumber = configuration[Constants.TwilioPhoneNumber];
+			this.appUrl = configuration[Constants.CASNAppURL];
+
+			var timeZoneName = configuration[Constants.UserTimeZoneName];
+			timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
                 throw new ArgumentException($"Time zone not found: \"{timeZoneName}\"", nameof(timeZoneName));
-			this.appUrl = appUrl;
 		}
 
 		public void SendDispatcherMessage(Drive drive, Volunteer driver, MessageType messageType)

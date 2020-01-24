@@ -16,11 +16,6 @@ namespace CASNApp.TextMessageManager
 	{
 		private static readonly IConfiguration configuration;
 		private static ILoggerFactory loggerFactory;
-		private static readonly string twilioAccountSID;
-		private static readonly string twilioAuthKey;
-		private static readonly string twilioPhoneNumber;
-        private static readonly string userTimeZoneName;
-		private static readonly string appUrl;
 
         static Program()
 		{
@@ -30,12 +25,6 @@ namespace CASNApp.TextMessageManager
 				.AddUserSecrets<Program>(true)
 				.AddEnvironmentVariables()
 				.Build();
-
-			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
-			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
-			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
-            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
-			appUrl = configuration[Core.Constants.CASNAppURL];
         }
 
         private static IServiceProvider BuildDi()
@@ -95,7 +84,7 @@ namespace CASNApp.TextMessageManager
 			//connect to the database
 			using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
 			{
-				AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
+				var appointmentQuery = new AppointmentQuery(dbContext);
 				loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
 
 				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
@@ -110,9 +99,8 @@ namespace CASNApp.TextMessageManager
 					}
 
 					//send out a single reminder message for all open appointments
-					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName, appUrl);
-					reminderSMS.SendAppointmentReminderMessage(openAppointments, messageType);
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+					twilioCommand.SendAppointmentReminderMessage(openAppointments, messageType);
 				}
 				else
 				{
@@ -122,16 +110,16 @@ namespace CASNApp.TextMessageManager
 					//loop thru the appointments and send the assoicated text message
 					if (openAppointments != null && openAppointments.Count > 0)
 					{
-						DriveQuery driveQuery = new DriveQuery(dbContext);
-						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                            dbContext, userTimeZoneName, appUrl);
+						var driveQuery = new DriveQuery(dbContext);
+						var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
 						foreach (Appointment appointment in openAppointments)
 						{
 							//get each drive objetc (to and from) and send messages to appropriate drives
 							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
 							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
+
 							if (driveTo != null || driveFrom != null)
-								appointmentSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
+								twilioCommand.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
 
 							//update the appointment values in the database
 							dbContext.Appointment.Update(appointment);
