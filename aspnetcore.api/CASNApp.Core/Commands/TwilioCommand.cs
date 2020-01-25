@@ -196,9 +196,8 @@ namespace CASNApp.Core.Commands
 
 				//calculate hours difference and initialize mesage count
 				int messageCount = 0;
-				int minutesSinceAppointmentCreated;
 
-				minutesSinceAppointmentCreated = (int)(DateTime.UtcNow - appointment.Created).TotalHours;
+				int minutesSinceAppointmentCreated = (int)(DateTime.UtcNow - appointment.Created).TotalMinutes;
 
 				//send message to appropriate drivers
 				foreach (Volunteer driver in drivers)
