@@ -12,11 +12,12 @@ namespace CASNApp.Core.Commands
 
     public class TwilioCommand
 	{
+		private readonly ILogger<TwilioCommand> logger;
 		private readonly casn_appContext dbContext;
+		private readonly IConfiguration configuration;
 		private readonly string accountSid;
 		private readonly string authToken;
 		private readonly string accountPhoneNumber;
-		private readonly ILogger<TwilioCommand> logger;
 		private readonly TimeZoneInfo timeZone;
 		private readonly string appUrl;
 
@@ -40,11 +41,12 @@ namespace CASNApp.Core.Commands
 		{
 			this.logger = logger;
 			this.dbContext = dbContext;
+			this.configuration = configuration;
 
-			this.accountSid = configuration[Constants.TwilioAccountSID];
-			this.authToken = configuration[Constants.TwilioAuthKey];
-			this.accountPhoneNumber = configuration[Constants.TwilioPhoneNumber];
-			this.appUrl = configuration[Constants.CASNAppURL];
+			accountSid = configuration[Constants.TwilioAccountSID];
+			authToken = configuration[Constants.TwilioAuthKey];
+			accountPhoneNumber = configuration[Constants.TwilioPhoneNumber];
+			appUrl = configuration[Constants.CASNAppURL];
 
 			var timeZoneName = configuration[Constants.UserTimeZoneName];
 			timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
@@ -133,6 +135,9 @@ namespace CASNApp.Core.Commands
 
 		public void SendAppointmentMessage(Appointment appointment, Drive driveTo, Drive driveFrom, MessageType messageType, bool isCronJob)
 		{
+			int tier2MessageDelayMinutes = int.Parse(configuration["Tier2MessageDelayMinutes"]);
+			int tier3MessageDelayMinutes = int.Parse(configuration["Tier3MessageDelayMinutes"]);
+
 			//determine type of meesage that would be displayed
 			//if (appointment.AppointmentDate.Date == DateTime.UtcNow.Date)
 			if (TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).Date == TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).Date)
@@ -191,11 +196,9 @@ namespace CASNApp.Core.Commands
 
 				//calculate hours difference and initialize mesage count
 				int messageCount = 0;
-				int hours = 0;
-				if ((DateTime.UtcNow - appointment.Created).Days != 0)
-					hours = ((DateTime.UtcNow - appointment.Created).Days * 24) + (DateTime.UtcNow - appointment.Created).Hours;
-				else
-					hours = (DateTime.UtcNow - appointment.Created).Hours;
+				int minutesSinceAppointmentCreated;
+
+				minutesSinceAppointmentCreated = (int)(DateTime.UtcNow - appointment.Created).TotalHours;
 
 				//send message to appropriate drivers
 				foreach (Volunteer driver in drivers)
@@ -223,12 +226,18 @@ namespace CASNApp.Core.Commands
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
 								messageCount++;
 							}
-							else if (hours >= 2 && hours < 3 && radius > 5 && radius <= 15 && !appointment.Tier2MessageCount.HasValue)
+							else if (minutesSinceAppointmentCreated >= tier2MessageDelayMinutes &&
+								minutesSinceAppointmentCreated < tier3MessageDelayMinutes &&
+								radius > 5 &&
+								radius <= 15 &&
+								!appointment.Tier2MessageCount.HasValue)
 							{
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
 								messageCount++;
 							}
-							else if (hours >= 3 && radius > 15 && !appointment.Tier3MessageCount.HasValue)
+							else if (minutesSinceAppointmentCreated >= tier3MessageDelayMinutes &&
+								radius > 15 &&
+								!appointment.Tier3MessageCount.HasValue)
 							{ 
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
 								messageCount++;
@@ -248,12 +257,15 @@ namespace CASNApp.Core.Commands
 					appointment.Tier1MessageCount = messageCount;
 					appointment.Tier1MessageDate = DateTime.UtcNow;
 				}
-				else if (hours >= 2 && hours < 3 && !appointment.Tier2MessageCount.HasValue)
+				else if (minutesSinceAppointmentCreated >= tier2MessageDelayMinutes &&
+					minutesSinceAppointmentCreated < tier3MessageDelayMinutes &&
+					!appointment.Tier2MessageCount.HasValue)
 				{
 					appointment.Tier2MessageCount = messageCount;
 					appointment.Tier2MessageDate = DateTime.UtcNow;
 				}
-				else if (hours >= 3 && !appointment.Tier3MessageCount.HasValue)
+				else if (minutesSinceAppointmentCreated >= tier3MessageDelayMinutes &&
+					!appointment.Tier3MessageCount.HasValue)
 				{
 					appointment.Tier3MessageCount = messageCount;
 					appointment.Tier3MessageDate = DateTime.UtcNow;
