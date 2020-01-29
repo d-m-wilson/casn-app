@@ -72,5 +72,13 @@ namespace CASNApp.Core.Queries
             return result;
         }
 
+        public Task<Volunteer> GetByIdAsync(int volunteerId, bool readOnly)
+        {
+            var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+                .Where(v => v.Id == volunteerId)
+                .SingleOrDefaultAsync();
+            return result;
+        }
+
     }
 }

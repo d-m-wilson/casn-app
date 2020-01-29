@@ -459,8 +459,11 @@ namespace CASNApp.API.Controllers
 					//send initial text message to driver
 					DriveQuery driveQuery = new DriveQuery(dbContext);
 					var drive = await driveQuery.GetDriveAsync(driveId);
+
+                    var driver = await volunteerQuery.GetByIdAsync(drive.DriverId.Value, true);
+
 					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
-					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
+					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriveCanceled);
 				}
 				catch (Exception ex)
 				{
