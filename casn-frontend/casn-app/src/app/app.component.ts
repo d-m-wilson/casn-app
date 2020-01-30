@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   userRole: string;
   // A2HS
   deferredPrompt: any;
-  showButton: boolean = false;
+  showButton: boolean = true;
 
   constructor(
     private _authService: AuthenticationService,
