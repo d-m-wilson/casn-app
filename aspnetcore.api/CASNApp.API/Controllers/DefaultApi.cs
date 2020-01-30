@@ -69,9 +69,9 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets appointments with dispatcher-level details
+        /// gets appointments that fall within the specified date range
         /// </summary>
-        /// <remarks>Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers. </remarks>
+        /// <remarks>Get all appointments within a date range. Appointments include details (e.g. exact location) for all dispatchers and for the approved driver. </remarks>
         /// <param name="startDate">pass a startDate by which to filter</param>
         /// <param name="endDate">pass an endDate by which to filter</param>
         /// <response code="200">all appointments in date range</response>
