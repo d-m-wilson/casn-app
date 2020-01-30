@@ -61,6 +61,7 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { MassTextComponent } from './mass-text/mass-text.component';
 import { LoaderComponent } from './loader/loader.component';
+import { MyDrivesComponent } from './my-drives/my-drives.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { LoaderComponent } from './loader/loader.component';
     ErrorPageComponent,
     MassTextComponent,
     PhonePipe,
-    LoaderComponent
+    LoaderComponent,
+    MyDrivesComponent
   ],
   imports: [
     NgxMaskModule.forRoot(),

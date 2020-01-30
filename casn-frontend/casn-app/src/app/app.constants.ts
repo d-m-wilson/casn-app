@@ -9,7 +9,7 @@ export class Constants {
       },
       {
         name: "My Drives",
-        address: "/",
+        address: "/my-drives",
         icon: "local_taxi",
         dispatcherOnly: false
       },
