@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
 using CASNApp.Core.Commands;
@@ -164,15 +166,20 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets applied-for and approved drives for the current user
+        /// gets approved drives for the current user
         /// </summary>
-        /// <response code="200">Success</response>
+        /// <remarks>Get all appointments within a date range for which the current user is approved.</remarks>
+        /// <param name="startDate">pass a startDate by which to filter</param>
+        /// <param name="endDate">pass an endDate by which to filter</param>
+        /// <response code="200">all appointments in date range</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error - Not Found</response>
         [HttpGet]
         [Route("api/driver/myDrives")]
         [ValidateModelState]
         [SwaggerOperation("GetMyDrives")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<DriverDrive>), description: "Success")]
-        public virtual IActionResult GetMyDrives()
+        [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "success")]
+        public virtual async Task<IActionResult> GetMyDrives([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);
@@ -183,15 +190,57 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var results = dbContext.VolunteerDriveLog
-                .AsNoTracking()
-                .Include(vdl => vdl.Drive.Appointment.Caller)
-                .Where(vdl => vdl.VolunteerId == volunteer.Id &&
-                    vdl.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
-                .Select(vdl => new DriverDrive(vdl))
-                .ToList();
+            var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
+            var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
 
-            return Ok(results);
+            var appointmentEntities = await dbContext.Appointment
+                .AsNoTracking()
+                .Include(a => a.Drives)
+                .Include(a => a.Caller)
+                .Where(a => a.AppointmentDate >= start &&
+                            a.AppointmentDate <= end &&
+                            a.IsActive &&
+                            a.CallerId.HasValue)
+                .ToListAsync();
+
+            var appointmentDTOs = new List<AppointmentDTO>();
+
+            foreach (var a in appointmentEntities)
+            {
+                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive &&
+                    d.Direction == Drive.DirectionToServiceProvider &&
+                    d.DriverId.HasValue &&
+                    d.DriverId.Value == volunteer.Id);
+
+                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive &&
+                    d.Direction == Drive.DirectionFromServiceProvider &&
+                    d.DriverId.HasValue &&
+                    d.DriverId.Value == volunteer.Id);
+
+                if (driveTo == null && driveFrom == null)
+                {
+                    continue;
+                }
+
+                var apptDto = new AppointmentDTO
+                {
+                    Caller = new Caller(a.Caller),
+                    Appointment = new Appointment(a),
+                    DriveTo = driveTo == null ? null : new Drive(driveTo),
+                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
+                };
+
+                if (!volunteer.IsDispatcher)
+                {
+                    apptDto.Redact(volunteer);
+                }
+
+                appointmentDTOs.Add(apptDto);
+            }
+
+            var result = new AllAppointments(appointmentDTOs);
+
+            return new ObjectResult(result);
         }
     }
 }
