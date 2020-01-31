@@ -106,24 +106,6 @@ namespace CASNApp.API.Controllers
                             a.CallerId.HasValue)
                 .ToListAsync();
 
-            var driveIds = new List<long>();
-
-            foreach (var appt in appointmentEntities)
-            {
-                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
-                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
-
-                if (driveTo?.Id != null)
-                {
-                    driveIds.Add(driveTo.Id);
-                }
-
-                if (driveFrom?.Id != null)
-                {
-                    driveIds.Add(driveFrom.Id);
-                }
-            }
-
             var appointmentDTOs = appointmentEntities.Select(a =>
             {
                 var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
