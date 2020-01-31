@@ -106,6 +106,17 @@ namespace CASNApp.API.Controllers
                             a.CallerId.HasValue)
                 .ToListAsync();
 
+            var drivesUserHasAppliedFor = await dbContext.VolunteerDriveLog
+                .AsNoTracking()
+                .Where(vdl => vdl.VolunteerId == volunteer.Id &&
+                    vdl.DriveLogStatusId == DriveLogStatus.APPLIED &&
+                    vdl.IsActive)
+                .Select(vdl => vdl.DriveId)
+                .Distinct()
+                .ToListAsync();
+
+            var appliedDriveIds = new HashSet<int>(drivesUserHasAppliedFor);
+
             var appointmentDTOs = appointmentEntities.Select(a =>
             {
                 var driveTo = a.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
@@ -122,19 +133,32 @@ namespace CASNApp.API.Controllers
                 if (!volunteer.IsDispatcher)
                 {
                     apptDto.Redact(volunteer);
+
+                    if (driveTo != null && driveTo.StatusId == Core.Models.Drive.StatusPending)
+                    {
+                        var userHasApplied = appliedDriveIds.Contains(driveTo.Id);
+
+                        if (!userHasApplied && apptDto != null && apptDto.DriveTo != null)
+                        {
+                            apptDto.DriveTo.StatusId = Core.Models.Drive.StatusOpen;
+                            apptDto.DriveTo.Status = driveTo?.Status?.Name;
+                        }
+                    }
+
+                    if (driveFrom != null && driveFrom.StatusId == Core.Models.Drive.StatusPending)
+                    {
+                        var userHasApplied = appliedDriveIds.Contains(driveFrom.Id);
+
+                        if (!userHasApplied && apptDto != null && apptDto.DriveFrom != null)
+                        {
+                            apptDto.DriveFrom.StatusId = Core.Models.Drive.StatusOpen;
+                            apptDto.DriveFrom.Status = driveFrom?.Status?.Name;
+                        }
+                    }
                 }
 
                 return apptDto;
             }).ToList();
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AllAppointments));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
 
             var result = new AllAppointments(appointmentDTOs);
 
