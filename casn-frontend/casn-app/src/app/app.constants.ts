@@ -31,12 +31,12 @@ export class Constants {
         icon: "event_note",
         dispatcherOnly: false
       },
-      {
-        name: "Message Volunteers",
-        address: "/message",
-        icon: "chat",
-        dispatcherOnly: true
-      },
+      // {
+      //   name: "Message Volunteers",
+      //   address: "/message",
+      //   icon: "chat",
+      //   dispatcherOnly: true
+      // },
     ];
 
   // These routes are only accessible to dispatchers.
