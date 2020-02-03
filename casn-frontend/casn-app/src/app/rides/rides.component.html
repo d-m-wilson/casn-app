@@ -182,18 +182,18 @@
     <mat-card class="mt candy-card">
       <mat-card-subtitle>By Service Provider</mat-card-subtitle>
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">
-        <mat-slide-toggle *ngIf="serviceProviders[s].serviceProviderTypeId === 1"
+        <mat-slide-toggle *ngIf="serviceProviders[s].serviceProviderTypeId !== 2"
+                          class="mb"
                           [checked]="displayServiceProviders[s]"
                           (change)="displayServiceProviders[s] = $event.source.checked"
                           color="primary">{{ serviceProviders[s].name }}
         </mat-slide-toggle>
-        <br><br>
       </ng-container>
       <mat-slide-toggle [checked]="displayServiceProviders['courthouses']"
+                        class="mb"
                         (change)="displayServiceProviders['courthouses'] = $event.source.checked"
                         color="primary">Courthouses
       </mat-slide-toggle>
-      <br><br>
     </mat-card>
     <div class="modal-actions">
       <button type="button"
