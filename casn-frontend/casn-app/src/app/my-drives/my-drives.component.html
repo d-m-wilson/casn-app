@@ -26,6 +26,7 @@
                 (click)="toggleDateFilters()">
           <i class="fas fa-calendar-day clicky"></i>
         </button>
+        <h2>My Drives</h2>
         <button mat-mini-fab
                 color="frosted"
                 (click)="toggleMapModal()">
@@ -38,9 +39,11 @@
         </button> -->
       </header>
       <div class="my-drives-title">
-        <h2>My Drives</h2>
-        <p>You have {{ ridesToDisplay.length }} drive{{ ridesToDisplay.length === 1 ? '' : 's' }} this week!</p>
-        <p>Want to <a routerLink="/rides">sign up for a drive</a>?</p>
+        <!-- <h2>My Drives</h2> -->
+      </div>
+      <div class="my-drives-info">
+        <p>You have <strong>{{ ridesToDisplay.length }}</strong> drive{{ ridesToDisplay.length === 1 ? '' : 's' }} this week!</p>
+        <p>Want to <a routerLink="/view-schedule">apply for a{{ ridesToDisplay.length > 0 ? 'nother' : '' }} drive</a>?</p>
       </div>
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
         <img src="assets/img/no_rides.png" alt="no rides today">
