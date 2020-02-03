@@ -24,6 +24,7 @@ import { CASNAppCoreModelsDriverDrive } from '../model/cASNAppCoreModelsDriverDr
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { DriverApiServiceInterface }                            from './driverApi.serviceInterface';
+import { CASNAppCoreModelsAppointmentDTO } from '..';
 
 
 @Injectable({
@@ -117,10 +118,18 @@ export class DriverApiService implements DriverApiServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getMyDrives(observe?: 'body', reportProgress?: boolean): Observable<Array<CASNAppCoreModelsDriverDrive>>;
-    public getMyDrives(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<CASNAppCoreModelsDriverDrive>>>;
-    public getMyDrives(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<CASNAppCoreModelsDriverDrive>>>;
-    public getMyDrives(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public getMyDrives(startDate?: string, endDate?: string, observe?: 'body', reportProgress?: boolean): Observable<Array<CASNAppCoreModelsAppointmentDTO>>;
+    public getMyDrives(startDate?: string, endDate?: string, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<CASNAppCoreModelsAppointmentDTO>>>;
+    public getMyDrives(startDate?: string, endDate?: string, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<CASNAppCoreModelsAppointmentDTO>>>;
+    public getMyDrives(startDate?: string, endDate?: string, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (startDate !== undefined && startDate !== null) {
+            queryParameters = queryParameters.set('startDate', <any>startDate);
+        }
+        if (endDate !== undefined && endDate !== null) {
+            queryParameters = queryParameters.set('endDate', <any>endDate);
+        }
 
         let headers = this.defaultHeaders;
 
@@ -144,8 +153,9 @@ export class DriverApiService implements DriverApiServiceInterface {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<Array<CASNAppCoreModelsDriverDrive>>(`${this.basePath}/driver/myDrives`,
+        return this.httpClient.get<Array<CASNAppCoreModelsAppointmentDTO>>(`${this.basePath}/driver/myDrives`,
             {
+                params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
