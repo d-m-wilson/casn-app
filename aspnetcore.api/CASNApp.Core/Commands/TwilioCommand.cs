@@ -171,8 +171,8 @@ namespace CASNApp.Core.Commands
 					else if (messageType == MessageType.ApptAddedOneWayFromServiceProvider)
 					{
 						driveDistance = GeocoderQuery.LatLng.GetDistance((double)driveFrom.StartLatitude, (double)driveFrom.StartLongitude, (double)driveFrom.EndLatitude, (double)driveFrom.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
-						initialLatitude = (double)driveFrom.StartLatitude;
-						initialLongitude = (double)driveFrom.StartLongitude;
+						initialLatitude = (double)driveFrom.EndLatitude;
+						initialLongitude = (double)driveFrom.EndLongitude;
 					}
 					else if (messageType == MessageType.ApptAddedRoundTripDiffAddress)
 					{
