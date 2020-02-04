@@ -12,6 +12,8 @@
 
 
 export interface CASNAppCoreModelsServiceProvider {
+    // TODO: Move icon URL to api?
+    iconUrl?: string;
     id?: number;
     civiContactId?: number;
     serviceProviderTypeId?: number;

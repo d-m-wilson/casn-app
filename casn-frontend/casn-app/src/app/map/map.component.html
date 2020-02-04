@@ -112,7 +112,7 @@
         </ng-container>
         <!--====== Map Markers for Service Providers ========-->
         <agm-marker *ngFor="let s of serviceProviders"
-                    [iconUrl]="s.serviceProviderTypeId === 1 ? 'assets/img/marker_clinic.png' : 'assets/img/marker_court.png'"
+                    [iconUrl]="s.iconUrl"
                     [latitude]="s.latitude"
                     [longitude]="s.longitude"
                     [agmFitBounds]="true"
