@@ -32,15 +32,7 @@
                 (click)="toggleMapModal()">
           <i class="fas fa-map-marked-alt clicky"></i>
         </button>
-        <!-- <button mat-mini-fab
-                color="frosted"
-                (click)="toggleSettingsModal()">
-          <i class="fas fa-filter clicky"></i>
-        </button> -->
       </header>
-      <div class="my-drives-title">
-        <!-- <h2>My Drives</h2> -->
-      </div>
       <div class="my-drives-info">
         <p>You have <strong>{{ ridesToDisplay.length }}</strong> drive{{ ridesToDisplay.length === 1 ? '' : 's' }} this week!</p>
         <p>Want to <a routerLink="/view-schedule">apply for a{{ ridesToDisplay.length > 0 ? 'nother' : '' }} drive</a>?</p>
