@@ -101,6 +101,9 @@
     <Build Include="dbo\Tables\MessageType.sql" />
     <Build Include="dbo\Stored Procedures\uspCancelExpiredDrives.sql" />
     <Build Include="dbo\Tables\MessageErrorLog.sql" />
+    <Build Include="dbo\Stored Procedures\uspCheckBadgeQuickDraw.sql" />
+    <Build Include="dbo\Stored Procedures\uspCheckBadgeEarlyBird.sql" />
+    <Build Include="dbo\Stored Procedures\uspCheckBadgeApprovedDriveCountForApptType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

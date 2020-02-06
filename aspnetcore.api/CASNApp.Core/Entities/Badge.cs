@@ -19,6 +19,8 @@ namespace CASNApp.Core.Entities
         public string ProcedureName { get; set; }
         public int? ServiceProviderId { get; set; }
         public int? CountTarget { get; set; }
+        public bool IncludeVolunteerDriveLogId { get; set; }
+        public int? AppointmentTypeId { get; set; }
         public bool IsActive { get; set; }
         public bool IsHidden { get; set; }
         public DateTime Created { get; set; }

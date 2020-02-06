@@ -36,6 +36,16 @@ namespace CASNApp.Core.Commands
                 sqlParameters.Add(new SqlParameter("CountTarget", badge.CountTarget.Value));
             }
 
+            if (badge.IncludeVolunteerDriveLogId)
+            {
+                sqlParameters.Add(new SqlParameter("VolunteerDriveLogId", volunteerDriveLog.Id));
+            }
+
+            if (badge.AppointmentTypeId.HasValue)
+            {
+                sqlParameters.Add(new SqlParameter("AppointmentTypeId", badge.AppointmentTypeId.Value));
+            }
+
             int returnCode = await sqlConnection.ExecuteStoredProcedureAsync(badge.ProcedureName, sqlParameters.ToArray());
 
             var awardBadge = (returnCode == 1);
