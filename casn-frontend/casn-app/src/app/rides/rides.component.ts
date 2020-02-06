@@ -79,12 +79,16 @@ export class RidesComponent implements OnInit {
       this.apptTypes["6"].estimatedDurationMinutes = 180;
       this.apptTypes["7"].estimatedDurationMinutes = 60;
       this.apptTypes["8"].estimatedDurationMinutes = 30;
+      // this.apptTypes["9"].estimatedDurationMinutes = 480;
+      this.apptTypes["10"].estimatedDurationMinutes = 120;
       //3 Surgical: 3.5 hours (210 minutes)
       //4 Ultrasound: 2.5 hours (150 minutes)
       //5 Lam Insert: 1.5 hours (90 minutes)
       //6 Lam to Complete: 3 hours (180 minutes)
       //7 Courthouse Appointment: 1 hour (60 minutes)
       //8 Follow Up: .5 hours (30 minutes)
+      //9 Lodging: 8 hours (480 minutes)
+      //10 Pill Appt: 2 hours (120 minutes)
     });
   }
 
