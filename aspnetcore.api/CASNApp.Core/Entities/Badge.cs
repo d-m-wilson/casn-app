@@ -14,6 +14,7 @@ namespace CASNApp.Core.Entities
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string MessageText { get; set; }
         public string Path { get; set; }
         public int TriggerType { get; set; }
         public string ProcedureName { get; set; }

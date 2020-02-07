@@ -211,6 +211,9 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Description).HasMaxLength(500);
 
+                entity.Property(e => e.MessageText)
+                    .HasMaxLength(250);
+
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("(0x01)");

@@ -151,7 +151,21 @@ namespace CASNApp.API.Controllers
                         {
                             dbContext.SaveChanges();
 
-                            //if we're going to text the volunteer about the badge they just earned, here's where to do that
+                            //text the volunteer about the badge they just earned
+                            if (twilioIsEnabled)
+                            {
+                                try
+                                {
+                                    //send initial text message to drivers
+                                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                                    twilioCommand.SendBadgeMessage(volunteer, badge);
+                                    dbContext.SaveChanges();
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError(ex, $"{nameof(AddDriveApplicant)}(): Exception");
+                                }
+                            }
                         }
                     }
 

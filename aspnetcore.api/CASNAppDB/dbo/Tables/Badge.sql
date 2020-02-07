@@ -2,6 +2,7 @@
     [Id]          INT            NOT NULL,
     [Title]       NVARCHAR (150) NOT NULL,
     [Description] NVARCHAR (500) NULL,
+    [MessageText] NVARCHAR(250)  NULL,
     [Path]        NVARCHAR (100) NOT NULL,
     [TriggerType] INT            NOT NULL,
     [ProcedureName] NVARCHAR(100) NOT NULL,

@@ -282,6 +282,17 @@ namespace CASNApp.Core.Commands
 			}
 		}
 
+		public void SendBadgeMessage(Volunteer driver, Badge badge)
+		{
+			if (!driver.HasTextConsent || string.IsNullOrWhiteSpace(badge.MessageText))
+			{
+				return;
+			}
+
+			//send text message to driver
+			SMSMessage(badge.MessageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
+		}
+
 		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, int driveCount, int driveId)
 		{
 			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
