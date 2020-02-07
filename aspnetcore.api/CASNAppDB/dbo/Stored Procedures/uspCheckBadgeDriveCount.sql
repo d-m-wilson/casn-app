@@ -12,7 +12,7 @@ BEGIN
         AND vdl.IsActive = 1
         AND vdl.DriveLogStatusId = @approvedDriveLogStatus
 
-    IF (@DriveCount = @CountTarget)
+    IF (@DriveCount >= @CountTarget)
     BEGIN
         RETURN 1
     END

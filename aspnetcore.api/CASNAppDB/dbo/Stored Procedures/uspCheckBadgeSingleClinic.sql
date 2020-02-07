@@ -14,7 +14,7 @@ BEGIN
         AND vdl.IsActive = 1
         AND a.ServiceProviderId = @ServiceProviderId
 
-    IF (@DriveCount = @CountTarget)
+    IF (@DriveCount >= @CountTarget)
     BEGIN
         RETURN 1
     END

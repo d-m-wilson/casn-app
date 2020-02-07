@@ -16,7 +16,7 @@ BEGIN
         AND vdl.DriveLogStatusId = @approvedDriveLogStatus
         AND a.AppointmentTypeId = @AppointmentTypeId
 
-    IF (@DriveCount = @CountTarget)
+    IF (@DriveCount >= @CountTarget)
     BEGIN
         RETURN 1
     END
