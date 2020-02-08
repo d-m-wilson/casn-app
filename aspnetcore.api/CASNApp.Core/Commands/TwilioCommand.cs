@@ -35,6 +35,7 @@ namespace CASNApp.Core.Commands
 			DriverAppliedForDrive = 9,
 			DriveCanceled = 10,
 			DriverApprovedForDrive = 11,
+			BadgeMessageTemplate = 12,
 		}
 
 		public TwilioCommand(ILogger<TwilioCommand> logger, casn_appContext dbContext, IConfiguration configuration)
@@ -289,11 +290,22 @@ namespace CASNApp.Core.Commands
 				return;
 			}
 
+			//get the message by message type
+			var messageQuery = new MessageQuery(dbContext);
+			Message message = messageQuery.GetMessageByType((int)MessageType.BadgeMessageTemplate, true);
+
+			string messageText = BuildMessage(message.MessageText, null, null, driver, badge);
+
 			//send text message to driver
-			SMSMessage(badge.MessageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
+			SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
 		}
 
 		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver)
+		{
+			return BuildMessage(messageText, serviceProvider, appointment, driver, null);
+		}
+
+		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, Badge badge)
 		{
 			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
@@ -302,7 +314,9 @@ namespace CASNApp.Core.Commands
 				.Replace("{dayOfTheWeek}", TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier)
-				.Replace("{appUrl}", appUrl ?? "");
+				.Replace("{appUrl}", appUrl ?? "")
+				.Replace("{badgeName}", badge?.Title ?? "")
+				.Replace("{badgeMessage}", badge?.MessageText ?? "");
 		}
 
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)

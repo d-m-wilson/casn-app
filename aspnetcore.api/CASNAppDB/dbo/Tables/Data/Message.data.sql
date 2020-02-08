@@ -76,7 +76,8 @@
     (69, 7, N'Time is running out to get tomorrow''s callers the help they need. Tap the link to get them there! {appUrl}', 1, @utcNow, NULL),
     (70, 8, N'If you''ve been waiting to sign up for a drive, now is the time. Tap the link and be a hero today! {appUrl}', 1, @utcNow, NULL),
     (71, 8, N'This is your last chance to help someone who desperately needs access to abortion care tomorrow. Tap the link and don''t let them down! {appUrl}', 1, @utcNow, NULL),
-    (72, 8, N'We''re here because we believe in helping people access the care they need. This is your last chance to be someone''s hero tomorrow! {appUrl}', 1, @utcNow, NULL)
+    (72, 8, N'We''re here because we believe in helping people access the care they need. This is your last chance to be someone''s hero tomorrow! {appUrl}', 1, @utcNow, NULL),
+    (73, 12, N'You earned the {badgeName} badge! {badgeMessage} Sign into {appUrl} and open "My Achievements" from the menu to see your badge now.', 1, @utcNow, NULL)
 
     SET IDENTITY_INSERT [dbo].[Message] OFF
 
