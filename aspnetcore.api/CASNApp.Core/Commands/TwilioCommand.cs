@@ -76,7 +76,7 @@ namespace CASNApp.Core.Commands
 					if (!String.IsNullOrEmpty(dispatcher.MobilePhone))
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
+						string messageText = BuildMessage(message.MessageText, null, appointment, driver);
 
 						//send message to all dispatchers
 						SMSMessage(messageText, accountPhoneNumber, dispatcher.MobilePhone, dispatcher.Id, appointment.Id);
@@ -89,7 +89,7 @@ namespace CASNApp.Core.Commands
 				if (!String.IsNullOrEmpty(driver.MobilePhone))
 				{
 					//build the appintment listing
-					string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
+					string messageText = BuildMessage(message.MessageText, null, appointment, driver);
 
 					//send text message to driver
 					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, drive.AppointmentId);
@@ -104,7 +104,7 @@ namespace CASNApp.Core.Commands
 			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
 
 			//build the reminder message text
-			string messageText = BuildMessage(message.MessageText, null, null, null, appointments.Count, 0);
+			string messageText = BuildMessage(message.MessageText, null, null, null);
 
 			//build the appoint list message text
 			string appointmentListText = "";
@@ -216,7 +216,7 @@ namespace CASNApp.Core.Commands
 					if (!String.IsNullOrEmpty(driver.MobilePhone) && driver.Latitude.HasValue && driver.Longitude.HasValue)
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, 0, 0);
+						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver);
 
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
 						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
@@ -293,7 +293,7 @@ namespace CASNApp.Core.Commands
 			SMSMessage(badge.MessageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
 		}
 
-		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, int driveCount, int driveId)
+		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver)
 		{
 			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
@@ -301,8 +301,6 @@ namespace CASNApp.Core.Commands
 				.Replace("{timeDate}", appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : "")
 				.Replace("{dayOfTheWeek}", TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
-				.Replace("{driveCount}", driveCount.ToString())
-				.Replace("{driveId}", driveId.ToString())
 				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier)
 				.Replace("{appUrl}", appUrl ?? "");
 		}
