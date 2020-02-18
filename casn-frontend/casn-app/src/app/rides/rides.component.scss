@@ -158,19 +158,22 @@ p {
 .appointment-card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  // justify-content: center;
   background: $transparent;
   border-radius: 25px;
 }
 
 .date-badge {
   font-weight: bold;
-  font-size: 0.75rem;
+  font-size: 1.75rem;
   border: 2px solid #555;
-  border-top: 5px solid #555;
+  border-top: 8px solid #555;
   box-sizing: border-box;
-  padding: 3px 4px;
+  padding: 3px 5px;
   margin-right: 10px;
+
+  min-width: 45px;
+  text-align: center;
 }
 
 .drive-card {

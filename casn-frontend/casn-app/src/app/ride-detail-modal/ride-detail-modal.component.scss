@@ -12,8 +12,13 @@ h1 {
 .edit-card {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  // justify-content: space-evenly;
+  justify-content: space-between;
   text-align: left;
+}
+
+.edit-btn {
+  margin-left: 10px;
 }
 
 .modal-actions {
