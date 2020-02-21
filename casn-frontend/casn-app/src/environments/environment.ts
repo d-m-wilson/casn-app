@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   apiUrl: 'https://testapi.casn.app/api',
   clientRoot: 'http://localhost:4200/',
-  customConfigUrl: 'https://test.casn.app/customconfig.json',
+  // customConfigUrl: 'https://test.casn.app/customconfig.json',
+  customConfigUrl: 'http://localhost:3000/config',
   get logoutRedirectUrl() { return `${this.clientRoot}assets/oidc-login-redirect.html`; },
 };
 

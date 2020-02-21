@@ -6,17 +6,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AppointmentDataService } from '../appointment-data.service';
 
-/**
-  TODO: Edit Appointment Feature
-  - Save date correctly
-**/
-
 @Component({
   selector: 'app-appointment-form',
   templateUrl: './appointment-form.component.html',
   styleUrls: ['./appointment-form.component.scss']
 })
 export class AppointmentFormComponent implements OnInit {
+  loading: boolean = false;
   /*
   NOTE:
   "callerId" is the actual database ID for communication w/ API
@@ -30,6 +26,7 @@ export class AppointmentFormComponent implements OnInit {
   serviceProviders: any;
   clinicServiceProviders: any;
   courthouseServiceProviders: any;
+  lodgingServiceProviders: any;
   appointmentDTO: any;
   callerNeedsPickup: boolean;
   callerNeedsDropoff: boolean;
@@ -86,6 +83,7 @@ export class AppointmentFormComponent implements OnInit {
 
   getAppointmentTypes(): void {
     this.defaultService.getAppointmentTypes().subscribe(a => {
+      console.log("Appt types", a);
       this.appointmentTypes = a.map(i => {
         return { value: i.id, displayValue: i.title };
       })
@@ -99,10 +97,13 @@ export class AppointmentFormComponent implements OnInit {
     this.formAppt.callerIdentifier.setValue(this.callerIdentifier);
   }
 
+  // TODO: Make this more dynamic in case other service provider types are added in the future.
   getServiceProviders(): void {
     this.defaultService.getServiceProviders().subscribe(
       data => {
         this.serviceProviders = data;
+        console.log("Service Providers", this.serviceProviders);
+        this.lodgingServiceProviders = data.filter(s => s.serviceProviderTypeId === 3);
         this.courthouseServiceProviders = data.filter(s => s.serviceProviderTypeId === 2);
         this.clinicServiceProviders = data.filter(s => s.serviceProviderTypeId === 1);
       },
@@ -114,14 +115,17 @@ export class AppointmentFormComponent implements OnInit {
   }
 
   saveNewAppt(): void {
+    this.loading = true;
     console.log("Saving your appt!", this.appointmentDTO);
     this.ds.addAppointment(this.appointmentDTO).subscribe(
       data => {
+        this.loading = false;
         console.log("Save appt response is", data);
         alert('Success! Your appointment has been saved.');
         this.router.navigate(['']);
       },
       err => {
+        this.loading = false;
         console.error("--Error saving appt data...", err);
         alert('An error occurred, and your appointment was not saved.');
       }
@@ -129,17 +133,17 @@ export class AppointmentFormComponent implements OnInit {
   }
 
   updateAppt(): void {
-    // TODO: Should I be editing only those fields which have changed and
-    // returning all other fields as-is? E.g. I'm not resetting addresses if
-    // user changes service provider. Check w/ David.
+    this.loading = true;
     console.log("Updating your appt!", this.appointmentDTO);
     this.ds.updateAppointment(this.appointmentToEdit.appointment.id, this.appointmentToEdit).subscribe(
       data => {
+        this.loading = false;
         console.log("Save appt response is", data);
         alert('Success! Your appointment has been updated.');
         this.router.navigate(['']);
       },
       err => {
+        this.loading = false;
         console.error("--Error saving appt data...", err);
         alert('An error occurred, and your appointment was not updated.');
       }

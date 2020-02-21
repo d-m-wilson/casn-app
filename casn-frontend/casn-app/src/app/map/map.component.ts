@@ -32,7 +32,25 @@ export class MapComponent implements OnInit {
                           Service Calls
   **********************************************************************/
   getServiceProviders(): void {
-    this.ds.getServiceProviders().subscribe(s => this.serviceProviders = s);
+    this.ds.getServiceProviders().subscribe(s => {
+      this.serviceProviders = s.map(provider => {
+        switch(provider.serviceProviderTypeId) {
+          case 1:
+            provider.iconUrl = 'assets/img/marker_clinic.png';
+            break;
+          case 2:
+            provider.iconUrl = 'assets/img/marker_court.png';
+            break;
+          case 3:
+            provider.iconUrl = 'assets/img/marker_lodging.png';
+            break;
+          default:
+            // TODO: Get a default marker?
+            provider.iconUrl = 'assets/img/marker_cluster.png';
+        }
+        return provider;
+      })
+    });
   }
 
   /*********************************************************************

@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Constants } from '../app.constants';
+import { DriverApiService } from '../api';
 
 @Component({
-  selector: 'app-rides',
-  templateUrl: './rides.component.html',
-  styleUrls: ['./rides.component.scss']
+  selector: 'app-my-drives',
+  templateUrl: './my-drives.component.html',
+  styleUrls: ['./my-drives.component.scss']
 })
-export class RidesComponent implements OnInit {
+export class MyDrivesComponent implements OnInit {
   loading: boolean = false;
   objectKeys: any = Object.keys;
   userRole: string;
@@ -27,7 +28,7 @@ export class RidesComponent implements OnInit {
   // For showing badges on date filter cards
   dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
-  displayRides: boolean[] = [true, true, true, true];
+  displayRides: boolean[] = [false, false, true, true];
   // Display flags for service providers
   displayServiceProviders: any = {};
 
@@ -43,6 +44,7 @@ export class RidesComponent implements OnInit {
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DefaultApiService,
+               private driverService: DriverApiService,
                public constants: Constants ) { }
 
   ngOnInit() {
@@ -80,11 +82,12 @@ export class RidesComponent implements OnInit {
 
   getRides(): void {
     this.loading = true;
-    this.ds.getAppointments(this.startDate, this.endDate).subscribe(
+    this.driverService.getMyDrives(this.startDate, this.endDate).subscribe(
       appts => {
         this.loading = false
         appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
         this.rides = appts;
+        console.log("Rides")
         this.ridesToDisplay = appts;
         this.updateDateFilterProperties();
         console.log("Rides:", this.rides);
@@ -95,6 +98,21 @@ export class RidesComponent implements OnInit {
         console.error("Error fetching rides", err);
       }
     );
+    // this.ds.getAppointments(this.startDate, this.endDate).subscribe(
+    //   appts => {
+    //     this.loading = false
+    //     appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
+    //     this.rides = appts;
+    //     this.ridesToDisplay = appts;
+    //     this.updateDateFilterProperties();
+    //     console.log("Rides:", this.rides);
+    //   },
+    //   err => {
+    //     this.loading = false;
+    //     // TODO: Handle Error
+    //     console.error("Error fetching rides", err);
+    //   }
+    // );
   }
 
   getServiceProviders(): void {

@@ -1,0 +1,9 @@
+.mat-card {
+  text-align: center;
+  height: 100vh;
+}
+
+img {
+  width: 100%;
+  max-width: 500px;
+}

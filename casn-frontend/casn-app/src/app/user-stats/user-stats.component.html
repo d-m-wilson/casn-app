@@ -9,7 +9,7 @@
                  (click)="toggleTapped(b)">
               <div class="front" *ngIf="!b.tapped">
                 <img [src]="b.path"
-                     alt="b.title"
+                     [alt]="b.title"
                      [ngClass]="b.isEarned ? 'active' : 'inactive'"/>
               </div>
               <div class="front back" *ngIf="b.tapped">

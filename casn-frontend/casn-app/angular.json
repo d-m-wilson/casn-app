@@ -38,7 +38,11 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
-                }
+                },
+				{
+				  "replace": "src/manifest.webmanifest",
+				  "with": "src/manifest.prod.webmanifest"
+				}
               ],
               "optimization": true,
               "outputHashing": "all",

@@ -18,6 +18,7 @@
             <span class="bold">at {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
           </div>
             <button *ngIf="userRole === '1'"
+                    class="edit-btn"
                     mat-mini-fab
                     color="accent"
                     (click)="editAppointment()"><mat-icon>edit</mat-icon></button>
@@ -202,3 +203,5 @@
     {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
   </address>
 </ng-template>
+
+<app-loader *ngIf="loading"></app-loader>

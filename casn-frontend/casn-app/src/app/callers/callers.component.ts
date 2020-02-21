@@ -14,6 +14,7 @@ import { CallerIdentifierValidator } from './caller-identifier.validator';
   styleUrls: ['./callers.component.scss']
 })
 export class CallersComponent implements OnInit {
+  loading: boolean = false;
   existingCaller: any = {};
   existingCallerId: Number;
   editingCaller: boolean = false;
@@ -176,9 +177,12 @@ export class CallersComponent implements OnInit {
   }
 
   saveNewCaller(): void {
+    this.loading = true;
     this.ds.addCaller(this.callerForm.value).subscribe(p => {
+      this.loading = false;
       this.router.navigate(['/appointment', { callerIdentifier: p.callerIdentifier, callerId: p.id }]);
     });
+    // TODO: Handle error
   }
 
   updateCaller(): void {

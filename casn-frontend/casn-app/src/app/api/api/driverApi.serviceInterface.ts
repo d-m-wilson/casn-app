@@ -18,24 +18,25 @@ import { CASNAppCoreModelsDriverDrive } from '../model/cASNAppCoreModelsDriverDr
 
 
 import { Configuration }                                     from '../configuration';
+import { CASNAppCoreModelsAppointmentDTO } from '../model/cASNAppCoreModelsAppointmentDTO';
 
 
 export interface DriverApiServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
-    
+
 
     /**
     * applies a volunteer for a drive
     * Adds a volunteer drive application
-    * @param body 
+    * @param body
     */
     addDriveApplicant(body?: CASNAppCoreModelsBody, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
     * gets applied-for and approved drives for the current user
-    * 
+    *
     */
-    getMyDrives(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsDriverDrive>>;
+    getMyDrives(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsAppointmentDTO>>;
 
 }

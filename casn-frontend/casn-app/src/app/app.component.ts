@@ -1,60 +1,23 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Constants } from './app.constants';
 import { AuthenticationService } from './auth-services/auth.service';
-import { Router } from '@angular/router';
+import { Router, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
 import { environment } from '../environments/environment';
-import { trigger, transition, state, animate, style, group } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state('open', style({
-        opacity: 1,
-        width: '100%'
-      })),
-      state('closed', style({
-        // opacity: 0,
-        display: 'none'
-      })),
-      transition('open => closed', [
-        animate('8s')
-      ]),
-      transition('closed => open', [
-        animate('8s')
-      ]),
-      transition('* => closed', [
-        animate('8s')
-      ]),
-      transition('* => open', [
-        animate('8s')
-      ]),
-      transition('open <=> closed', [
-        animate('8s')
-      ]),
-      transition ('* => open', [
-        animate ('8s',
-          style ({ opacity: '*' }),
-        ),
-      ]),
-      transition('* => *', [
-        animate('8s')
-      ]),
-    ]),
-  ]
 })
 export class AppComponent implements OnInit {
   opened: boolean;
   menuItems: any[];
+  userRole: string;
   // A2HS
   deferredPrompt: any;
   showButton: boolean = false;
-  isOpen: boolean = true;
-  userRole: string;
 
   constructor(
     private _authService: AuthenticationService,
@@ -62,7 +25,26 @@ export class AppComponent implements OnInit {
     private constants: Constants,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
-  ) {}
+  ) {
+    this._router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // TODO: Show loading indicator
+      }
+
+      if (event instanceof NavigationEnd) {
+        // When user navigates away, hide a2hs button
+        const onHomePage = event.url.includes('dashboard');
+        if(!onHomePage) this.showButton = false;
+        // TODO: Hide loading indicator
+      }
+
+      if (event instanceof NavigationError) {
+        // TODO: Hide loading indicator
+        // TODO: Present error to user
+        console.error(event.error);
+      }
+  });
+  }
 
   ngOnInit() {
     if (window.location.href.indexOf('?postLogout=true') > 0) {
@@ -74,10 +56,10 @@ export class AppComponent implements OnInit {
         this._router.navigateByUrl(url);
       });
     }
+
     this.menuItems = this.constants.MENU_ITEMS;
     this.userRole = localStorage.getItem("userRole");
     this.registerCustomMaterialIcons();
-    this.isOpen = false;
   }
   /*********************************************************************
                               User Login
@@ -115,7 +97,7 @@ export class AppComponent implements OnInit {
   **********************************************************************/
   @HostListener('window:beforeinstallprompt', ['$event'])
   onbeforeinstallprompt(e) {
-    console.log(e);
+    console.log("Intercepting Browser Install Prompt", e);
     // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
     // Stash the event so it can be triggered later.

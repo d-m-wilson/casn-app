@@ -26,19 +26,19 @@
                 (click)="toggleDateFilters()">
           <i class="fas fa-calendar-day clicky"></i>
         </button>
+        <h2>My Drives</h2>
         <button mat-mini-fab
                 color="frosted"
                 (click)="toggleMapModal()">
           <i class="fas fa-map-marked-alt clicky"></i>
         </button>
-        <button mat-mini-fab
-                color="frosted"
-                (click)="toggleSettingsModal()">
-          <i class="fas fa-filter clicky"></i>
-        </button>
       </header>
+      <div class="my-drives-info">
+        <p>You have <strong>{{ ridesToDisplay.length }}</strong> drive{{ ridesToDisplay.length === 1 ? '' : 's' }} this week!</p>
+        <p>Want to <a routerLink="/view-schedule">apply for a{{ ridesToDisplay.length > 0 ? 'nother' : '' }} drive</a>?</p>
+      </div>
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
-          <img src="assets/img/no_rides.png" alt="no rides today">
+        <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
       <ng-container *ngFor="let r of ridesToDisplay">
         <div *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)"
@@ -64,8 +64,7 @@
               <div class="drive-card-header">
                 <mat-icon *ngIf="r.driveTo.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
                 <span *ngIf="r.driveTo.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
-                <!-- TODO: For v2, show driver name instead of driver ID -->
-                <span class="status-text bolder">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
+                <span class="status-text bolder">{{ getStatusText(r.driveTo.statusId) }}</span>
               </div>
               <div class="drive-card-content">
                 <p>
@@ -87,8 +86,7 @@
               <div class="drive-card-header">
                 <mat-icon *ngIf="r.driveFrom.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
                 <span *ngIf="r.driveFrom.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
-                <!-- TODO: For v2, show driver name instead of driver ID -->
-                <span class="status-text bolder">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
+                <span class="status-text bolder">{{ getStatusText(r.driveFrom.statusId) }}</span>
               </div>
               <div class="drive-card-content">
                 <p>
@@ -182,18 +180,18 @@
     <mat-card class="mt candy-card">
       <mat-card-subtitle>By Service Provider</mat-card-subtitle>
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">
-        <mat-slide-toggle *ngIf="serviceProviders[s].serviceProviderTypeId !== 2"
-                          class="mb"
+        <mat-slide-toggle *ngIf="serviceProviders[s].serviceProviderTypeId === 1"
                           [checked]="displayServiceProviders[s]"
                           (change)="displayServiceProviders[s] = $event.source.checked"
                           color="primary">{{ serviceProviders[s].name }}
         </mat-slide-toggle>
+        <br><br>
       </ng-container>
       <mat-slide-toggle [checked]="displayServiceProviders['courthouses']"
-                        class="mb"
                         (change)="displayServiceProviders['courthouses'] = $event.source.checked"
                         color="primary">Courthouses
       </mat-slide-toggle>
+      <br><br>
     </mat-card>
     <div class="modal-actions">
       <button type="button"

@@ -8,6 +8,12 @@ export class Constants {
         dispatcherOnly: false
       },
       {
+        name: "My Drives",
+        address: "/my-drives",
+        icon: "local_taxi",
+        dispatcherOnly: false
+      },
+      {
         name: "My Achievements",
         address: "/stats",
         icon: "grade",
@@ -25,12 +31,12 @@ export class Constants {
         icon: "event_note",
         dispatcherOnly: false
       },
-      {
-        name: "Message Volunteers",
-        address: "/message",
-        icon: "chat",
-        dispatcherOnly: true
-      },
+      // {
+      //   name: "Message Volunteers",
+      //   address: "/message",
+      //   icon: "chat",
+      //   dispatcherOnly: true
+      // },
     ];
 
   // These routes are only accessible to dispatchers.
