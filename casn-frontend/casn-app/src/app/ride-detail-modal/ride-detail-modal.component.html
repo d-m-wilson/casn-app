@@ -97,15 +97,17 @@
           <span class="bolder">Volunteers</span>
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
-            <button type="button"
-                    mat-raised-button
-                    (click)="handleApproveClick(v.id)"
-                    color="primary">Approve</button>
-            <button type="button"
-                    mat-raised-button
-                    color="warn"
-                    (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
-
+            <div>
+              <button type="button"
+                      mat-raised-button
+                      (click)="handleApproveClick(v.id)"
+                      color="primary">Approve</button>
+              <button type="button"
+                      [style.margin-left.px]="5"
+                      mat-raised-button
+                      color="warn"
+                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+            </div>
           </div>
         </mat-card>
         <mat-card *ngIf="driveIsApproved && userRole === '1'" class="mt candy-card">
@@ -123,6 +125,14 @@
                     color="warn"
                     (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon>Retract {{ v.firstName }}'s Application</button>
           </ng-container>
+        </mat-card>
+        <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">
+          <span class="bolder">This drive has already been approved :).</span>
+        </mat-card>
+        <mat-card *ngIf="userRole === '2' && ride[driveType].statusId === 1" class="mt candy-card">
+          <span class="bolder">Thanks, you've applied for this drive! Your application is awaiting dispatcher approval.</span>
+          <br><br>
+
         </mat-card>
       </mat-tab>
       <!--================ Map ===============-->
@@ -176,7 +186,7 @@
               class="btn-cta warn"
               mat-raised-button
               *ngIf="userRole === '2' && ride[driveType].statusId === 1"
-              (click)="handleApplyClick()"
+              (click)="handleRetractClick(ride[driveType].id)"
               color="primary">Retract Application</button>
     </div>
     <div class="modal-actions-cancel">

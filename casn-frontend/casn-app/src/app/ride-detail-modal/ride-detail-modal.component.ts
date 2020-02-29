@@ -159,6 +159,23 @@ export class RideDetailModalComponent implements OnInit {
     }
   }
 
+  handleRetractClick(driveId: number): void {
+    if(confirm(`If you do this, you will no longer be applied for this drive. Are you sure?`)) {
+      this.loading = true;
+      this.driverService.removeDriveApplicant({driveId}).subscribe(
+        res => {
+          this.loading = false;
+          this.closeRideModalAndUpdateClick.emit(true);
+        },
+        err => {
+          this.loading = false;
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      )
+    }
+  }
+
   editAppointment(): void {
     // Pass the appt data to a data sharing service to populate the edit forms.
     this.sharedApptDataService.changeMessage(this.ride);
