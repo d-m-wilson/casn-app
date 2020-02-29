@@ -99,14 +99,14 @@
             {{ v.firstName }} {{ v.lastName }}
             <div>
               <button type="button"
-                      mat-raised-button
-                      (click)="handleApproveClick(v.id)"
-                      color="primary">Approve</button>
-              <button type="button"
-                      [style.margin-left.px]="5"
+                      [style.margin-right.px]="5"
                       mat-raised-button
                       color="warn"
                       (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+              <button type="button"
+                      mat-raised-button
+                      (click)="handleApproveClick(v.id)"
+                      color="primary">Approve</button>
             </div>
           </div>
         </mat-card>
@@ -118,12 +118,14 @@
               {{ v.firstName }} {{ v.lastName }}
               <span class="approved"><mat-icon>done</mat-icon>Approved</span>
             </div>
-            <button *ngIf="v.volunteerId === ride[driveType].driverId"
-                    [style.margin-top.px]="10"
-                    type="button"
-                    mat-raised-button
-                    color="warn"
-                    (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon>Retract {{ v.firstName }}'s Application</button>
+            <div class="text-center">
+              <button *ngIf="v.volunteerId === ride[driveType].driverId"
+                      [style.margin-top.px]="10"
+                      type="button"
+                      mat-raised-button
+                      color="warn"
+                      (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon> Retract {{ v.firstName }}'s Application</button>
+            </div>
           </ng-container>
         </mat-card>
         <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">

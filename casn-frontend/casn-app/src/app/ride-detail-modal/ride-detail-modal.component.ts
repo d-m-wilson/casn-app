@@ -160,7 +160,7 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleRetractClick(driveId: number): void {
-    if(confirm(`If you do this, you will no longer be applied for this drive. Are you sure?`)) {
+    if(confirm(`If you do this, it will remove your application for this drive. Are you sure you want to remove your application?`)) {
       this.loading = true;
       this.driverService.removeDriveApplicant({driveId}).subscribe(
         res => {
