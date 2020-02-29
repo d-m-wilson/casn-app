@@ -86,4 +86,11 @@ export interface DispatcherApiServiceInterface {
     */
     unapproveDriver(body?: CASNAppCoreModelsBody, extraHttpRequestParams?: any): Observable<{}>;
 
+    /**
+    * denies a volunteer for a drive (who has not yet been approved)
+    * removes volunteerDriverId from list of volunteers
+    * @param body1
+    */
+    denyDriver(body1?: CASNAppCoreModelsBody1, extraHttpRequestParams?: any): Observable<{}>;
+
 }

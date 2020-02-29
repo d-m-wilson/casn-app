@@ -46,6 +46,8 @@
           <mat-card class="appointment-card candy-card mat-elevation-z0">
             <div class="date-badge">
               {{ r.appointment.appointmentDate | date:'d' }}
+              <!--TODO: Add weekdays -->
+              <!-- <span class="weekday" style="font-size:12px">{{ r.appointment.appointmentDate | date:'EEE' }}</span> -->
             </div>
             <div>
               <span class="bolder">{{ r.caller.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>

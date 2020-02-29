@@ -126,11 +126,26 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleUnapproveClick(driveId: number, driverName: string): void {
-    console.log("Unapprove called. DriveId is", driveId);
     if(confirm(`This will remove ${driverName} from this drive. Are you sure?`)) {
-      console.log("Unapprovin'")
       this.loading = true;
       this.dispatcherService.unapproveDriver({driveId}).subscribe(
+        res => {
+          this.loading = false;
+          this.closeRideModalAndUpdateClick.emit(true);
+        },
+        err => {
+          this.loading = false;
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      )
+    }
+  }
+
+  handleDenyClick(volunteerDriveId: number, driverName: string): void {
+    if(confirm(`This will remove ${driverName}'s application from this drive. Are you sure?`)) {
+      this.loading = true;
+      this.dispatcherService.denyDriver({volunteerDriveId}).subscribe(
         res => {
           this.loading = false;
           this.closeRideModalAndUpdateClick.emit(true);

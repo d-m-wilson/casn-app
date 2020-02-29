@@ -538,5 +538,55 @@ export class DispatcherApiService implements DispatcherApiServiceInterface {
         );
     }
 
+    /**
+     * denies a volunteer for a drive (who has not yet been approved)
+     * Removes volunteerDriverId from volunteers for the drive
+     * @param body1
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Bearer) required
+        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
+            headers = headers.set('Authorization', this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json-patch+json',
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.post<any>(`${this.basePath}/drives/deny`,
+            body1,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
 
 }
