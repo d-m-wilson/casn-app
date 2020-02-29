@@ -5,9 +5,7 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>
-      {{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}
-    </h1>
+    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
@@ -112,8 +110,14 @@
             <div *ngIf="v.volunteerId === ride[driveType].driverId"
                  class="volunteer-container">
               {{ v.firstName }} {{ v.lastName }}
-              <span class="approved"><mat-icon>done</mat-icon> Approved</span>
+              <span class="approved"><mat-icon>done</mat-icon>Approved</span>
             </div>
+            <button *ngIf="v.volunteerId === ride[driveType].driverId"
+                    [style.margin-top.px]="10"
+                    type="button"
+                    mat-raised-button
+                    color="warn"
+                    (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon>Retract {{ v.firstName }}'s Application</button>
           </ng-container>
         </mat-card>
       </mat-tab>
@@ -156,14 +160,20 @@
       </mat-tab>
     </mat-tab-group>
     <!--=========== Modal Actions ============-->
-    <!-- TODO: Check if volunteer list includes current user, disable btn -->
     <div class="modal-actions">
       <button type="button"
               class="btn-cta"
               mat-raised-button
+              *ngIf="userRole === '1' || ride[driveType].statusId === 0"
               [disabled]="ride[driveType].statusId === 2"
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
+      <button type="button"
+              class="btn-cta warn"
+              mat-raised-button
+              *ngIf="userRole === '2' && ride[driveType].statusId === 1"
+              (click)="handleApplyClick()"
+              color="primary">Retract Application</button>
     </div>
     <div class="modal-actions-cancel">
       <button type="button"

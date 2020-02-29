@@ -65,6 +65,7 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
         if(res.length > 0) this.volunteers = res;
+        console.log("Volunteers", this.volunteers);
       },
       err => {
         // TODO: Handle error
@@ -122,6 +123,25 @@ export class RideDetailModalComponent implements OnInit {
     this.driveToCancel = null;
     this.showCancelDriveModal = false;
     if(update) this.closeRideModalAndUpdateClick.emit(true);
+  }
+
+  handleUnapproveClick(driveId: number, driverName: string): void {
+    console.log("Unapprove called. DriveId is", driveId);
+    if(confirm(`This will remove ${driverName} from this drive. Are you sure?`)) {
+      console.log("Unapprovin'")
+      this.loading = true;
+      this.dispatcherService.unapproveDriver({driveId}).subscribe(
+        res => {
+          this.loading = false;
+          this.closeRideModalAndUpdateClick.emit(true);
+        },
+        err => {
+          this.loading = false;
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      )
+    }
   }
 
   editAppointment(): void {

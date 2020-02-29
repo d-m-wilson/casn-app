@@ -67,6 +67,10 @@ body {
   height: 65px;
   border-radius: 50px;
   border: 2px solid;
+
+  &.warn {
+    background-color: $error-color;
+  }
 }
 
 /*******************************************************************
