@@ -180,6 +180,115 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
+        /// retracts a volunteer's application for a drive
+        /// </summary>
+        /// <remarks>Retracts a volunteer drive application</remarks>
+        /// <param name="body"></param>
+        /// <response code="200">Success. Retracted applicant record.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
+        [HttpPost]
+        [Route("api/drives/unapply")]
+        [ValidateModelState]
+        [SwaggerOperation(nameof(RetractDriveApplicant))]
+        public virtual async Task<IActionResult> RetractDriveApplicant([FromBody]Body body)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDriverByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var driveId = body.DriveId;
+
+            if (!driveId.HasValue)
+            {
+                return BadRequest(body);
+            }
+
+            var drive = await dbContext.Drive
+                .Where(d => d.Id == driveId.Value && d.IsActive)
+                .SingleOrDefaultAsync();
+
+            if (drive == null)
+            {
+                return NotFound(body);
+            }
+
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+                .Where(vd => vd.DriveId == drive.Id &&
+                    vd.IsActive &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .ToListAsync();
+
+            var volunteerDriveLogsForThisUser = volunteerDriveLogsForThisDrive
+                .Where(vd => vd.VolunteerId == volunteer.Id &&
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED)
+                .OrderBy(vd => vd.Id)
+                .ToList();
+
+            if (!volunteerDriveLogsForThisUser.Any())
+            {
+                // Can't retract your application if you haven't applied
+                return Conflict(body);
+            }
+
+            foreach (var volunteerDriveLog in volunteerDriveLogsForThisUser)
+            {
+                volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.CANCELED;
+                volunteerDriveLog.Canceled = DateTime.UtcNow;
+                volunteerDriveLog.IsActive = false;
+            }
+
+            var volunteerDriveLogsForOtherUsers = volunteerDriveLogsForThisDrive
+                .Where(vd => !volunteerDriveLogsForThisUser.Contains(vd))
+                .ToList();
+
+            if (drive.StatusId == Drive.StatusPending &&
+                !volunteerDriveLogsForOtherUsers.Any())
+            {
+                drive.StatusId = Drive.StatusOpen;
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            var volunteerDriveDTO = new VolunteerDrive(volunteerDriveLogsForThisDrive.First());
+
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    foreach (var volunteerDriveLog in volunteerDriveLogsForThisUser)
+                    {
+                        logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
+
+                        var volunteerBadges = await dbContext.VolunteerBadge
+                            .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
+                            .ToListAsync();
+
+                        foreach (var volunteerBadge in volunteerBadges)
+                        {
+                            logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
+                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(AddDriveApplicant)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
         /// gets approved drives for the current user
         /// </summary>
         /// <remarks>Get all appointments within a date range for which the current user is approved.</remarks>
