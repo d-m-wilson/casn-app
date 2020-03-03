@@ -98,11 +98,11 @@
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
             <div>
-              <button type="button"
+              <!-- <button type="button"
                       [style.margin-right.px]="5"
                       mat-raised-button
                       color="warn"
-                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button> -->
               <button type="button"
                       mat-raised-button
                       (click)="handleApproveClick(v.id)"
@@ -119,17 +119,17 @@
               <span class="approved"><mat-icon>done</mat-icon>Approved</span>
             </div>
             <div class="text-center">
-              <button *ngIf="v.volunteerId === ride[driveType].driverId"
+              <!-- <button *ngIf="v.volunteerId === ride[driveType].driverId"
                       [style.margin-top.px]="10"
                       type="button"
                       mat-raised-button
                       color="warn"
-                      (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon> Retract {{ v.firstName }}'s Application</button>
+                      (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon> Retract {{ v.firstName }}'s Application</button> -->
             </div>
           </ng-container>
         </mat-card>
         <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">
-          <span class="bolder">This drive has already been approved :).</span>
+          <span class="bolder">This drive has already been approved for another driver :).</span>
         </mat-card>
         <mat-card *ngIf="userRole === '2' && ride[driveType].statusId === 1" class="mt candy-card">
           <span class="bolder">Thanks, you've applied for this drive! Your application is awaiting dispatcher approval.</span>
