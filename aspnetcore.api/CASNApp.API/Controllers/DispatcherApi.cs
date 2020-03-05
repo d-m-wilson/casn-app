@@ -435,6 +435,145 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
+        /// Removes the approved driver from a drive
+        /// </summary>
+        /// <remarks>Removes the approved driver from a drive</remarks>
+        /// <param name="body"></param>
+        /// <response code="200">Success. Removed driver from drive.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
+        [HttpPost]
+        [Route("api/drives/unapprove")]
+        [ValidateModelState]
+        [SwaggerOperation("RemoveDriver")]
+        public virtual async Task<IActionResult> RemoveDriver([FromBody]Body body)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            if (!body.DriveId.HasValue)
+            {
+                return BadRequest(body);
+            }
+
+            var driveId = body.DriveId.Value;
+
+            var drive = await dbContext.Drive
+                .Where(d => d.Id == driveId && d.IsActive)
+                .SingleOrDefaultAsync();
+
+            if (drive == null)
+            {
+                return NotFound(body);
+            }
+
+            if (drive.StatusId != Drive.StatusApproved ||
+                !drive.DriverId.HasValue)
+            {
+                // Can't remove the driver if there isn't an approved driver
+                return Conflict(body);
+            }
+
+            var driverId = drive.DriverId.Value;
+
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+                .Where(vd => vd.DriveId == driveId &&
+                    vd.IsActive &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .OrderBy(vd => vd.Id)
+                .ToListAsync();
+
+            var volunteerDriveLogsForDriver = volunteerDriveLogsForThisDrive
+                .Where(vd => vd.DriveId == driveId &&
+                    vd.VolunteerId == driverId &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .OrderBy(vd => vd.Id)
+                .ToList();
+
+            if (!volunteerDriveLogsForDriver.Any())
+            {
+                // Can't remove driver's application if it doesn't exist
+                return Conflict(body);
+            }
+
+            foreach (var volunteerDriveLog in volunteerDriveLogsForDriver)
+            {
+                if (volunteerDriveLog.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED)
+                {
+                    volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.REASSIGNED;
+                    volunteerDriveLog.Reassigned = DateTime.UtcNow;
+                }
+                else
+                {
+                    volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.CANCELED;
+                    volunteerDriveLog.Canceled = DateTime.UtcNow;
+                }
+
+                volunteerDriveLog.IsActive = false;
+            }
+
+            var volunteerDriveLogsForOtherUsers = volunteerDriveLogsForThisDrive
+                .Where(vd => !volunteerDriveLogsForDriver.Contains(vd))
+                .ToList();
+
+            if (volunteerDriveLogsForOtherUsers.Any())
+            {
+                drive.StatusId = Drive.StatusPending;
+            }
+            else
+            {
+                drive.StatusId = Drive.StatusOpen;
+            }
+
+            drive.DriverId = null;
+
+            await dbContext.SaveChangesAsync();
+
+            //send drive denied message
+            if (twilioIsEnabled)
+            {
+                // TODO
+            }
+
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    foreach (var volunteerDriveLog in volunteerDriveLogsForDriver)
+                    {
+                        logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
+
+                        var volunteerBadges = await dbContext.VolunteerBadge
+                            .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
+                            .ToListAsync();
+
+                        foreach (var volunteerBadge in volunteerBadges)
+                        {
+                            logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
+                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(RemoveDriver)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
         /// cancels a drive
         /// </summary>
         /// <remarks>Updates statusId to canceled and applies the given cancelReasonId</remarks>
