@@ -24,6 +24,7 @@ export class RideDetailModalComponent implements OnInit {
   // Details for Cancel Drive Modal
   showCancelDriveModal: boolean = false;
   driveToCancel: string;
+  callerContactLink: string;
 
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
@@ -37,6 +38,7 @@ export class RideDetailModalComponent implements OnInit {
     this.getAppointmentTypes();
     this.getServiceProviders();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
+    this.constructContactNumber();
   }
 
 /*********************************************************************
@@ -212,5 +214,11 @@ export class RideDetailModalComponent implements OnInit {
     const date = new Date(apptTime);
     const minutes = this.apptTypes[apptType].estimatedDurationMinutes;
     return new Date(date.getTime() + minutes*60000);
+  }
+
+  constructContactNumber(): void {
+    if(!this.ride.caller.phone) return;
+    const preferredContactMethod = this.ride.caller.preferredContactMethod === 1 ? 'sms' : 'tel';
+    this.callerContactLink = `${preferredContactMethod}:+1${this.ride.caller.phone}`
   }
 }

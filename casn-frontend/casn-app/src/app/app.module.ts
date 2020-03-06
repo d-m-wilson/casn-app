@@ -46,6 +46,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 /* Custom Directives & Pipes */
 import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
 import { PhonePipe } from './pipes/phone.pipe';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -81,7 +82,8 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     MassTextComponent,
     PhonePipe,
     LoaderComponent,
-    MyDrivesComponent
+    MyDrivesComponent,
+    SafeUrlPipe
   ],
   imports: [
     NgxMaskModule.forRoot(),

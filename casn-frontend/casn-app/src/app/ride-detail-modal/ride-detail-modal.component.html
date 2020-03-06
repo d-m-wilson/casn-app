@@ -37,9 +37,7 @@
             <mat-list-item *ngIf="ride.caller.phone">
               <mat-icon mat-list-icon>{{ ride.caller.preferredContactMethod === 1 ? 'textsms' : 'phone' }}</mat-icon>
               <h4 mat-line>
-                <a href="{{ ride.caller.preferredContactMethod === 1 ? 'sms' : 'tel' }}:+1{{ ride.caller.phone }}">
-                  {{ ride.caller.phone | phone }}
-                </a>
+                <a [href]="callerContactLink | safeUrl">{{ ride.caller.phone | phone }}</a>
               </h4>
             </mat-list-item>
             <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English'">
