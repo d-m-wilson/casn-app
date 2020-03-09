@@ -138,10 +138,11 @@
       <!--================ Map ===============-->
       <mat-tab label="Map View">
         <mat-card class="candy-card">
-          <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
+          <agm-map [latitude]="ride[driveType].startLatitude"
+                   [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
-                        iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'clinic' }}.png">
+                        [iconUrl]="startIconUrl">
               <agm-snazzy-info-window>
                 <ng-template>
                   Start Address:
@@ -156,7 +157,7 @@
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
-                        iconUrl="assets/img/marker_{{ isDriveTo ? 'clinic' : 'dropoff' }}.png">
+                        [iconUrl]="endIconUrl">
               <agm-snazzy-info-window>
                 <ng-template>
                   End Address:

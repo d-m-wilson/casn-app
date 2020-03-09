@@ -4,6 +4,7 @@ import { DriverApiService } from '../api/api/driverApi.service';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 import { AppointmentDataService } from "../appointment-data.service";
 import { Router } from '@angular/router';
+import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-ride-detail-modal',
@@ -30,6 +31,7 @@ export class RideDetailModalComponent implements OnInit {
                private driverService: DriverApiService,
                private dispatcherService: DispatcherApiService,
                private sharedApptDataService: AppointmentDataService,
+               private constants: Constants,
                private router: Router ) { }
 
   ngOnInit() {
@@ -46,7 +48,11 @@ export class RideDetailModalComponent implements OnInit {
 **********************************************************************/
   getServiceProviders(): void {
     this.ds.getServiceProviders().subscribe(s => {
-      this.serviceProviders = s.reduce((map, obj) => (map[obj.id] = obj, map), {});
+      const providersWithIcons = s.map(provider => {
+        provider.iconUrl = this.constants.SERVICE_PROVIDER_MAP_MARKERS[provider.serviceProviderTypeId];
+        return provider;
+      })
+      this.serviceProviders = providersWithIcons.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
 
@@ -220,5 +226,13 @@ export class RideDetailModalComponent implements OnInit {
     if(!this.ride.caller.phone) return;
     const preferredContactMethod = this.ride.caller.preferredContactMethod === 1 ? 'sms' : 'tel';
     this.callerContactLink = `${preferredContactMethod}:+1${this.ride.caller.phone}`
+  }
+
+  get startIconUrl() {
+    return this.isDriveTo ? 'assets/img/marker_pickup.png' : this.serviceProviders[this.ride.appointment.serviceProviderId].iconUrl;
+  }
+
+  get endIconUrl() {
+    return this.isDriveTo ? this.serviceProviders[this.ride.appointment.serviceProviderId].iconUrl : 'assets/img/marker_pickup.png';
   }
 }
