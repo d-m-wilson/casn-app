@@ -574,6 +574,130 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
+        /// Denies a volunteer's application for a drive
+        /// </summary>
+        /// <remarks>Denies a volunteer's application for a drive</remarks>
+        /// <param name="body1"></param>
+        /// <response code="200">Success. User's application was denied.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The volunteerDriveLogId or volunteerId was not found.</response>
+        [HttpPost]
+        [Route("api/drives/deny")]
+        [ValidateModelState]
+        [SwaggerOperation("DenyApplicant")]
+        public virtual async Task<IActionResult> DenyApplicant([FromBody]Body1 body1)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            if (!body1.VolunteerDriveId.HasValue)
+            {
+                return BadRequest(body1);
+            }
+
+            var volunteerDriveLogQuery = new VolunteerDriveLogQuery(dbContext);
+
+            var volunteerDriveLog = await volunteerDriveLogQuery.GetByIdAsync(body1.VolunteerDriveId.Value, false);
+
+            if (volunteerDriveLog == null)
+            {
+                return NotFound(body1);
+            }
+
+            var drive = volunteerDriveLog.Drive;
+
+            if (drive.StatusId != Drive.StatusPending ||
+                drive.DriverId.HasValue)
+            {
+                return Conflict(body1);
+            }
+
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+                .Where(vd => vd.DriveId == drive.Id &&
+                    vd.IsActive &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .ToListAsync();
+
+            var volunteerDriveLogsForDriver = volunteerDriveLogsForThisDrive
+                .Where(vd => vd.VolunteerId == volunteerDriveLog.VolunteerId &&
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED)
+                .OrderBy(vd => vd.Id)
+                .ToList();
+
+            var utcNow = DateTime.UtcNow;
+
+            foreach (var vdl in volunteerDriveLogsForDriver)
+            {
+                vdl.DriveLogStatusId = Core.Entities.DriveLogStatus.CANCELED;
+                vdl.Canceled = utcNow;
+                vdl.IsActive = false;
+            }
+
+            var volunteerDriveLogsForOtherUsers = volunteerDriveLogsForThisDrive
+                .Where(vd => !volunteerDriveLogsForDriver.Contains(vd))
+                .ToList();
+
+            if (drive.StatusId == Drive.StatusPending &&
+                !volunteerDriveLogsForOtherUsers.Any())
+            {
+                drive.StatusId = Drive.StatusOpen;
+            }
+
+
+            dbContext.SaveChanges();
+
+            Core.Entities.Volunteer driver = null;
+
+            if (twilioIsEnabled || badgesAreEnabled)
+            {
+                driver = await volunteerQuery.GetByIdAsync(volunteerDriveLog.VolunteerId, true);
+            }
+
+            //send denied for drive message
+            if (twilioIsEnabled)
+            {
+                // TODO
+            }
+
+            // Remove any badges the volunteer was awarded for applying to drive
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    foreach (var vdl in volunteerDriveLogsForDriver)
+                    {
+                        logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
+
+                        var volunteerBadges = await dbContext.VolunteerBadge
+                            .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
+                            .ToListAsync();
+
+                        foreach (var volunteerBadge in volunteerBadges)
+                        {
+                            logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
+                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(DenyApplicant)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
         /// cancels a drive
         /// </summary>
         /// <remarks>Updates statusId to canceled and applies the given cancelReasonId</remarks>
