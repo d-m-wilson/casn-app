@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Constants } from '../app.constants';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-rides',
@@ -43,7 +44,8 @@ export class RidesComponent implements OnInit {
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DefaultApiService,
-               public constants: Constants ) { }
+               public constants: Constants,
+               private datePipe: DatePipe ) { }
 
   ngOnInit() {
     this.userRole = localStorage.getItem("userRole");
@@ -147,8 +149,8 @@ export class RidesComponent implements OnInit {
   }
 
   handleChangeWeekClick(changeType: string): void {
-    if(changeType === 'prev') this.setDateRange(this.addDays(this.startDate, -7));
-    if(changeType === 'next') this.setDateRange(this.addDays(this.startDate, 7));
+    if(changeType === 'prev') this.setDateRange(this.addDays(this.endDate, -7));
+    if(changeType === 'next') this.setDateRange(this.addDays(this.endDate, 7));
     this.getRides();
   }
 
@@ -162,8 +164,10 @@ export class RidesComponent implements OnInit {
   **********************************************************************/
   setDateRange(date?: any): void {
     const currentDate = date || new Date();
-    this.startDate = this.addDays(currentDate, -currentDate.getDay()).toISOString().slice(0,10);
-    this.endDate = this.addDays(this.startDate, 6).toISOString().slice(0,10);
+    const startDateLong = this.addDays(currentDate, -currentDate.getDay());
+    this.startDate = this.datePipe.transform(startDateLong, 'yyyy-MM-dd');
+    const endDateLong = this.addDays(this.startDate, 7);
+    this.endDate = this.datePipe.transform(endDateLong, 'yyyy-MM-dd');
     this.getDatesForDateRange();
     this.activeDate = null;
   }
@@ -178,7 +182,7 @@ export class RidesComponent implements OnInit {
     this.datesToDisplay = [];
     let currentDate = new Date(this.startDate.valueOf());
     for(let i = 0; i < 7; i++) {
-      this.datesToDisplay.push((new Date(currentDate)).toISOString().slice(0,10));
+      this.datesToDisplay.push(this.datePipe.transform(currentDate, 'yyyy-MM-dd'));
       currentDate.setDate(currentDate.getDate() + 1);
     }
   }

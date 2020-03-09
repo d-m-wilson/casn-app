@@ -8,6 +8,7 @@ import { NgxMaskModule } from 'ngx-mask';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
+import { DatePipe } from '@angular/common';
 /* Angular Material Components */
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -132,7 +133,8 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     // { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapConfigService },
-    { provide: MapsAPILoader, useClass: GoogleMapConfigService }
+    { provide: MapsAPILoader, useClass: GoogleMapConfigService },
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
