@@ -96,11 +96,11 @@
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
             <div>
-              <button type="button"
+              <!-- <button type="button"
                       [style.margin-right.px]="5"
                       mat-raised-button
                       color="warn"
-                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button> -->
               <button type="button"
                       mat-raised-button
                       (click)="handleApproveClick(v.id)"
@@ -116,14 +116,14 @@
               {{ v.firstName }} {{ v.lastName }}
               <span class="approved"><mat-icon>done</mat-icon>Approved</span>
             </div>
-            <div class="text-center">
+            <!-- <div class="text-center">
               <button *ngIf="v.volunteerId === ride[driveType].driverId"
                       [style.margin-top.px]="10"
                       type="button"
                       mat-raised-button
                       color="warn"
                       (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon> Retract {{ v.firstName }}'s Application</button>
-            </div>
+            </div> -->
           </ng-container>
         </mat-card>
         <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">
