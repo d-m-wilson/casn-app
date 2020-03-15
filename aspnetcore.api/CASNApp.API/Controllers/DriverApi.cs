@@ -316,6 +316,13 @@ namespace CASNApp.API.Controllers
             var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
             var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
 
+            // If the end date doesn't have a time specified (i.e. the time part is Midnight)
+            if (end == end.Date)
+            {
+                // Advance it to the end of the day (11:59:59 PM)
+                end = end.Add(new TimeSpan(23, 59, 59));
+            }
+
             var appointmentEntities = await dbContext.Appointment
                 .AsNoTracking()
                 .Include(a => a.Drives)
