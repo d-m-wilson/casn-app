@@ -14,7 +14,8 @@
     (9, N'DriverAppliedForDrive', 1, @utcNow, NULL),
     (10, N'DriveCanceled', 1, @utcNow, NULL),
     (11, N'DriverApprovedForDrive', 1, @utcNow, NULL),
-    (12, N'BadgeMessageTemplate', 1, @utcNow, NULL)
+    (12, N'BadgeMessageTemplate', 1, @utcNow, NULL),
+    (13, N'DriverRetractedApplication', 1, @utcNow, NULL)
     COMMIT TRANSACTION
 END TRY
 BEGIN CATCH

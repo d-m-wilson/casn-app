@@ -36,6 +36,7 @@ namespace CASNApp.Core.Commands
 			DriveCanceled = 10,
 			DriverApprovedForDrive = 11,
 			BadgeMessageTemplate = 12,
+			DriverRetractedApplication = 13,
 		}
 
 		public TwilioCommand(ILogger<TwilioCommand> logger, casn_appContext dbContext, IConfiguration configuration)
@@ -65,7 +66,8 @@ namespace CASNApp.Core.Commands
 			var appointment = appointmentQuery.GetAppointmentByIdWithCaller(drive.AppointmentId, true);
 
 			//check the message type to see if the message is being sent to the driver or the dispatchers
-			if (messageType == MessageType.DriverAppliedForDrive)
+			if (messageType == MessageType.DriverAppliedForDrive ||
+				messageType == MessageType.DriverRetractedApplication)
 			{
 				//select the dispatchers
 				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);

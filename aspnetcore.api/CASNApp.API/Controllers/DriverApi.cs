@@ -256,7 +256,20 @@ namespace CASNApp.API.Controllers
 
             await dbContext.SaveChangesAsync();
 
-            var volunteerDriveDTO = new VolunteerDrive(volunteerDriveLogsForThisDrive.First());
+            //send application retracted message
+            if (twilioIsEnabled)
+            {
+                try
+                {
+                    //send initial text message to drivers
+                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                    twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriverRetractedApplication);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddDriveApplicant)}(): Exception");
+                }
+            }
 
             if (badgesAreEnabled)
             {
