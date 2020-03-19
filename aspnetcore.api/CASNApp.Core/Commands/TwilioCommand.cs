@@ -37,6 +37,7 @@ namespace CASNApp.Core.Commands
 			DriverApprovedForDrive = 11,
 			BadgeMessageTemplate = 12,
 			DriverRetractedApplication = 13,
+			DispatcherDeclinedApplication = 14,
 		}
 
 		public TwilioCommand(ILogger<TwilioCommand> logger, casn_appContext dbContext, IConfiguration configuration)

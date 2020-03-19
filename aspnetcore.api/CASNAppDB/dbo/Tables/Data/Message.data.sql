@@ -78,7 +78,8 @@
     (71, 8, N'This is your last chance to help someone who desperately needs access to abortion care tomorrow. Tap the link and don''t let them down! {appUrl}', 1, @utcNow, NULL),
     (72, 8, N'We''re here because we believe in helping people access the care they need. This is your last chance to be someone''s hero tomorrow! {appUrl}', 1, @utcNow, NULL),
     (73, 12, N'You earned the {badgeName} badge! {badgeMessage} Sign into {appUrl} and open "My Achievements" from the menu to see your badge now.', 1, @utcNow, NULL),
-    (74, 13, N'{volunteerFirstName} has retracted their application for caller {callerIdentifier} on {timeDate}. Darn! {appUrl}', 1, @utcNow, NULL)
+    (74, 13, N'{volunteerFirstName} has retracted their application for caller {callerIdentifier} on {timeDate}. Darn! {appUrl}', 1, @utcNow, NULL),
+    (75, 14, N'Your application to drive caller {callerIdentifier} on {timeDate} has been declined. Why not see if you can take a different drive? {appUrl}', 1, @utcNow, NULL)
 
     SET IDENTITY_INSERT [dbo].[Message] OFF
 

@@ -537,10 +537,30 @@ namespace CASNApp.API.Controllers
 
             await dbContext.SaveChangesAsync();
 
-            //send drive denied message
+            //send Drive Application Declined message
             if (twilioIsEnabled)
             {
-                // TODO
+                try
+                {
+                    var driver = await volunteerQuery.GetByIdAsync(driverId, true);
+
+                    var hasTextConsent = driver?.HasTextConsent;
+
+                    if (!hasTextConsent.HasValue || hasTextConsent.Value)
+                    {
+                        //send initial text message to drivers
+                        var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                        twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DispatcherDeclinedApplication);
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Not sending message to volunteer #{driverId} because {nameof(driver.HasTextConsent)} is {hasTextConsent}.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
+                }
             }
 
             if (badgesAreEnabled)
@@ -653,17 +673,32 @@ namespace CASNApp.API.Controllers
 
             dbContext.SaveChanges();
 
-            Core.Entities.Volunteer driver = null;
-
-            if (twilioIsEnabled || badgesAreEnabled)
-            {
-                driver = await volunteerQuery.GetByIdAsync(volunteerDriveLog.VolunteerId, true);
-            }
-
-            //send denied for drive message
+            //send Drive Application Declined message
             if (twilioIsEnabled)
             {
-                // TODO
+                try
+                {
+                    var driverId = volunteerDriveLog.VolunteerId;
+
+                    var driver = await volunteerQuery.GetByIdAsync(driverId, true);
+
+                    var hasTextConsent = driver?.HasTextConsent;
+
+                    if (!hasTextConsent.HasValue || hasTextConsent.Value)
+                    {
+                        //send initial text message to drivers
+                        var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                        twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DispatcherDeclinedApplication);
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Not sending message to volunteer #{driverId} because {nameof(driver.HasTextConsent)} is {hasTextConsent}.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
+                }
             }
 
             // Remove any badges the volunteer was awarded for applying to drive
