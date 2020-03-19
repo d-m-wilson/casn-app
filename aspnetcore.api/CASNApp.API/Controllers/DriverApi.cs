@@ -338,8 +338,9 @@ namespace CASNApp.API.Controllers
 
             var appointmentEntities = await dbContext.Appointment
                 .AsNoTracking()
-                .Include(a => a.Drives)
                 .Include(a => a.Caller)
+                .Include(a => a.Drives)
+                .ThenInclude(d => d.Driver)
                 .Where(a => a.AppointmentDate >= start &&
                             a.AppointmentDate <= end &&
                             a.IsActive &&
@@ -373,6 +374,56 @@ namespace CASNApp.API.Controllers
                     DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
                 };
 
+                // For the Drive Buddy feature we need to consider both drives even if the current user is not the approved driver
+                // If the DriveTo was excluded earlier, try to find it again
+                if (driveTo == null)
+                {
+                    driveTo = a.Drives.FirstOrDefault(d => d.IsActive &&
+                        d.Direction == Drive.DirectionToServiceProvider &&
+                        d.DriverId.HasValue);
+                }
+
+                // If the DriveFrom was excluded earlier, try to find it again
+                if (driveFrom == null)
+                {
+                    driveFrom = a.Drives.FirstOrDefault(d => d.IsActive &&
+                        d.Direction == Drive.DirectionFromServiceProvider &&
+                        d.DriverId.HasValue);
+                }
+
+                // If driveTo exists, has a status of Approved, and has a non-null DriverId
+                // and if driveFrom exists, has a status of Approved, and has a non-null DriverId
+                if (driveTo != null && driveTo.StatusId == Drive.StatusApproved && driveTo.DriverId.HasValue &&
+                    driveFrom != null && driveFrom.StatusId == Drive.StatusApproved && driveFrom.DriverId.HasValue)
+                {
+                    // If driveTo is not assigned to the same person as driveFrom
+                    // and either driveTo or driveFrom is assigned to the current user
+                    if (driveTo.DriverId != driveFrom.DriverId &&
+                        (driveTo.DriverId.Value == volunteer.Id || driveFrom.DriverId.Value == volunteer.Id))
+                    {
+                        // Then we have a "split drive" scenario, and we should populate the Drive Buddy information
+
+                        if (driveTo.DriverId != volunteer.Id)
+                        {
+                            apptDto.DriveBuddy = new DriveBuddy
+                            {
+                                FirstName = driveTo.Driver.FirstName,
+                                LastName = driveTo.Driver.LastName,
+                                MobilePhone = driveTo.Driver.MobilePhone,
+                            };
+                        }
+                        else
+                        {
+                            apptDto.DriveBuddy = new DriveBuddy
+                            {
+                                FirstName = driveFrom.Driver.FirstName,
+                                LastName = driveFrom.Driver.LastName,
+                                MobilePhone = driveFrom.Driver.MobilePhone,
+                            };
+                        }
+                    }
+                }
+
                 if (!volunteer.IsDispatcher)
                 {
                     apptDto.Redact(volunteer);
@@ -383,7 +434,8 @@ namespace CASNApp.API.Controllers
 
             var result = new AllAppointments(appointmentDTOs);
 
-            return new ObjectResult(result);
+            return Ok(result);
         }
+
     }
 }
