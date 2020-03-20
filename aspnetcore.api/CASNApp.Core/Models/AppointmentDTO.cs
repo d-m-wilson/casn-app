@@ -46,6 +46,12 @@ namespace CASNApp.Core.Models
         public Drive DriveFrom { get; set; }
 
         /// <summary>
+        /// Gets or Sets DriveBuddy
+        /// </summary>
+        [DataMember(Name="driveBuddy")]
+        public DriveBuddy DriveBuddy { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>

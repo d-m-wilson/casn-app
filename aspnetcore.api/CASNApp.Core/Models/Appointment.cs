@@ -105,10 +105,34 @@ namespace CASNApp.Core.Models
         [DataMember(Name = "appointmentType")]
         public string AppointmentType { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Created
-        /// </summary>
-        [DataMember(Name="created")]
+		/// <summary>
+		/// Gets or Sets Tier1MessageCount
+		/// </summary>
+		[DataMember(Name = "tier1MessageCount")]
+		public int? Tier1MessageCount { get; set; }
+
+		/// <summary>
+		/// Gets or Sets Tier2MessageCount
+		/// </summary>
+		[DataMember(Name = "tier2MessageCount")]
+		public int? Tier2MessageCount { get; set; }
+
+		/// <summary>
+		/// Gets or Sets Tier3MessageCount
+		/// </summary>
+		[DataMember(Name = "tier3MessageCount")]
+		public int? Tier3MessageCount { get; set; }
+
+		/// <summary>
+		/// Gets or Sets BroadcastMessageCount
+		/// </summary>
+		[DataMember(Name = "broadcastMessageCount")]
+		public int? BroadcastMessageCount { get; set; }
+
+		/// <summary>
+		/// Gets or Sets Created
+		/// </summary>
+		[DataMember(Name="created")]
         public DateTime? Created { get; set; }
 
         /// <summary>
@@ -133,7 +157,11 @@ namespace CASNApp.Core.Models
             sb.Append("  DropoffLocationVague: ").Append(DropoffLocationVague).Append("\n");
             sb.Append("  AppointmentDate: ").Append(AppointmentDate).Append("\n");
             sb.Append("  AppointmentTypeId: ").Append(AppointmentTypeId).Append("\n");
-            sb.Append("  Created: ").Append(Created).Append("\n");
+			sb.Append("  Tier1MessageCount: ").Append(Tier1MessageCount).Append("\n");
+			sb.Append("  Tier2MessageCount: ").Append(Tier2MessageCount).Append("\n");
+			sb.Append("  Tier3MessageCount: ").Append(Tier3MessageCount).Append("\n");
+			sb.Append("  BroadcastMessageCount: ").Append(BroadcastMessageCount).Append("\n");
+			sb.Append("  Created: ").Append(Created).Append("\n");
             sb.Append("  Updated: ").Append(Updated).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -210,9 +238,29 @@ namespace CASNApp.Core.Models
                     AppointmentTypeId == other.AppointmentTypeId ||
                     AppointmentTypeId != null &&
                     AppointmentTypeId.Equals(other.AppointmentTypeId)
-                ) && 
-                (
-                    Created == other.Created ||
+                ) &&
+				(
+					Tier1MessageCount == other.Tier1MessageCount ||
+					Tier1MessageCount != null &&
+					Tier1MessageCount.Equals(other.Tier1MessageCount)
+				) &&
+				(
+					Tier2MessageCount == other.Tier2MessageCount ||
+					Tier2MessageCount != null &&
+					Tier2MessageCount.Equals(other.Tier2MessageCount)
+				) &&
+				(
+					Tier3MessageCount == other.Tier3MessageCount ||
+					Tier3MessageCount != null &&
+					Tier3MessageCount.Equals(other.Tier3MessageCount)
+				) &&
+				(
+					BroadcastMessageCount == other.BroadcastMessageCount ||
+					BroadcastMessageCount != null &&
+					BroadcastMessageCount.Equals(other.BroadcastMessageCount)
+				) &&
+				(
+					Created == other.Created ||
                     Created != null &&
                     Created.Equals(other.Created)
                 ) && 
@@ -249,7 +297,15 @@ namespace CASNApp.Core.Models
                     hashCode = hashCode * 59 + AppointmentDate.GetHashCode();
                     if (AppointmentTypeId != null)
                     hashCode = hashCode * 59 + AppointmentTypeId.GetHashCode();
-                    if (Created != null)
+                    if (Tier1MessageCount != null)
+                    hashCode = hashCode * 59 + Tier1MessageCount.GetHashCode();
+					if (Tier2MessageCount != null)
+					hashCode = hashCode * 59 + Tier2MessageCount.GetHashCode();
+					if (Tier3MessageCount != null)
+					hashCode = hashCode * 59 + Tier3MessageCount.GetHashCode();
+					if (BroadcastMessageCount != null)
+					hashCode = hashCode * 59 + BroadcastMessageCount.GetHashCode();
+					if (Created != null)
                     hashCode = hashCode * 59 + Created.GetHashCode();
                     if (Updated != null)
                     hashCode = hashCode * 59 + Updated.GetHashCode();

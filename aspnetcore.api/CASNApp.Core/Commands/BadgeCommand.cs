@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Extensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace CASNApp.Core.Commands
@@ -34,6 +34,16 @@ namespace CASNApp.Core.Commands
             if (badge.CountTarget.HasValue)
             {
                 sqlParameters.Add(new SqlParameter("CountTarget", badge.CountTarget.Value));
+            }
+
+            if (badge.IncludeVolunteerDriveLogId)
+            {
+                sqlParameters.Add(new SqlParameter("VolunteerDriveLogId", volunteerDriveLog.Id));
+            }
+
+            if (badge.AppointmentTypeId.HasValue)
+            {
+                sqlParameters.Add(new SqlParameter("AppointmentTypeId", badge.AppointmentTypeId.Value));
             }
 
             int returnCode = await sqlConnection.ExecuteStoredProcedureAsync(badge.ProcedureName, sqlParameters.ToArray());

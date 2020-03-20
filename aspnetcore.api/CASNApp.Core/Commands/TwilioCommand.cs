@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Queries;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -11,12 +12,14 @@ namespace CASNApp.Core.Commands
 
     public class TwilioCommand
 	{
-		private readonly Core.Entities.casn_appContext dbContext;
-		private string accountSid;
-		private string authToken;
-		private string accountPhoneNumber;
-		private ILogger<TwilioCommand> logger;
-		private TimeZoneInfo timeZone;
+		private readonly ILogger<TwilioCommand> logger;
+		private readonly casn_appContext dbContext;
+		private readonly IConfiguration configuration;
+		private readonly string accountSid;
+		private readonly string authToken;
+		private readonly string accountPhoneNumber;
+		private readonly TimeZoneInfo timeZone;
+		private readonly string appUrl;
 
 		public enum MessageType
 		{
@@ -32,17 +35,24 @@ namespace CASNApp.Core.Commands
 			DriverAppliedForDrive = 9,
 			DriveCanceled = 10,
 			DriverApprovedForDrive = 11,
+			BadgeMessageTemplate = 12,
+			DriverRetractedApplication = 13,
+			DispatcherDeclinedApplication = 14,
 		}
 
-		public TwilioCommand(string accountSid, string authToken, string accountPhoneNumber, ILogger<TwilioCommand> logger,
-            casn_appContext dbContext, string timeZoneName)
+		public TwilioCommand(ILogger<TwilioCommand> logger, casn_appContext dbContext, IConfiguration configuration)
 		{
-			this.accountSid = accountSid;
-			this.authToken = authToken;
-			this.accountPhoneNumber = accountPhoneNumber;
 			this.logger = logger;
 			this.dbContext = dbContext;
-            timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
+			this.configuration = configuration;
+
+			accountSid = configuration[Constants.TwilioAccountSID];
+			authToken = configuration[Constants.TwilioAuthKey];
+			accountPhoneNumber = configuration[Constants.TwilioPhoneNumber];
+			appUrl = configuration[Constants.CASNAppURL];
+
+			var timeZoneName = configuration[Constants.UserTimeZoneName];
+			timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneName) ??
                 throw new ArgumentException($"Time zone not found: \"{timeZoneName}\"", nameof(timeZoneName));
 		}
 
@@ -54,10 +64,11 @@ namespace CASNApp.Core.Commands
 
 			//get the appointment by id
 			AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
-			var appointment = appointmentQuery.GetAppointmentById(drive.AppointmentId, true);
+			var appointment = appointmentQuery.GetAppointmentByIdWithCaller(drive.AppointmentId, true);
 
 			//check the message type to see if the message is being sent to the driver or the dispatchers
-			if (messageType == MessageType.DriverAppliedForDrive)
+			if (messageType == MessageType.DriverAppliedForDrive ||
+				messageType == MessageType.DriverRetractedApplication)
 			{
 				//select the dispatchers
 				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
@@ -69,7 +80,7 @@ namespace CASNApp.Core.Commands
 					if (!String.IsNullOrEmpty(dispatcher.MobilePhone))
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
+						string messageText = BuildMessage(message.MessageText, null, appointment, driver);
 
 						//send message to all dispatchers
 						SMSMessage(messageText, accountPhoneNumber, dispatcher.MobilePhone, dispatcher.Id, appointment.Id);
@@ -82,7 +93,7 @@ namespace CASNApp.Core.Commands
 				if (!String.IsNullOrEmpty(driver.MobilePhone))
 				{
 					//build the appintment listing
-					string messageText = BuildMessage(message.MessageText, null, appointment, driver, 0, drive.Id);
+					string messageText = BuildMessage(message.MessageText, null, appointment, driver);
 
 					//send text message to driver
 					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, drive.AppointmentId);
@@ -97,7 +108,7 @@ namespace CASNApp.Core.Commands
 			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
 
 			//build the reminder message text
-			string messageText = BuildMessage(message.MessageText, null, null, null, appointments.Count, 0);
+			string messageText = BuildMessage(message.MessageText, null, null, null);
 
 			//build the appoint list message text
 			string appointmentListText = "";
@@ -126,8 +137,11 @@ namespace CASNApp.Core.Commands
 			}
 		}
 
-		public void SendAppointmentMessage(Appointment appointment, Drive driveTo, Drive driveFrom, MessageType messageType)
+		public void SendAppointmentMessage(Appointment appointment, Drive driveTo, Drive driveFrom, MessageType messageType, bool isCronJob)
 		{
+			int tier2MessageDelayMinutes = int.Parse(configuration["Tier2MessageDelayMinutes"]);
+			int tier3MessageDelayMinutes = int.Parse(configuration["Tier3MessageDelayMinutes"]);
+
 			//determine type of meesage that would be displayed
 			//if (appointment.AppointmentDate.Date == DateTime.UtcNow.Date)
 			if (TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).Date == TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).Date)
@@ -161,14 +175,14 @@ namespace CASNApp.Core.Commands
 					else if (messageType == MessageType.ApptAddedOneWayFromServiceProvider)
 					{
 						driveDistance = GeocoderQuery.LatLng.GetDistance((double)driveFrom.StartLatitude, (double)driveFrom.StartLongitude, (double)driveFrom.EndLatitude, (double)driveFrom.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
-						initialLatitude = (double)driveFrom.StartLatitude;
-						initialLongitude = (double)driveFrom.StartLongitude;
+						initialLatitude = (double)driveFrom.EndLatitude;
+						initialLongitude = (double)driveFrom.EndLongitude;
 					}
 					else if (messageType == MessageType.ApptAddedRoundTripDiffAddress)
 					{
 						double distanceTo = GeocoderQuery.LatLng.GetDistance((double)driveTo.StartLatitude, (double)driveTo.StartLongitude, (double)driveTo.EndLatitude, (double)driveTo.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
 						double distanceFrom = GeocoderQuery.LatLng.GetDistance((double)driveFrom.StartLatitude, (double)driveFrom.StartLongitude, (double)driveFrom.EndLatitude, (double)driveFrom.EndLongitude, GeocoderQuery.LatLng.UnitType.Miles);
-						driveDistance = (distanceTo > distanceFrom ? distanceTo : distanceFrom);
+						driveDistance = distanceTo > distanceFrom ? distanceTo : distanceFrom;
 						initialLatitude = (double)driveTo.StartLatitude;
 						initialLongitude = (double)driveTo.StartLongitude;
 					}
@@ -184,72 +198,176 @@ namespace CASNApp.Core.Commands
 				VolunteerQuery volunteerQuery = new VolunteerQuery(dbContext);
 				var drivers = volunteerQuery.GetAllActiveDriversWithTextConsent(true);
 
+				//calculate hours difference and initialize mesage count
+				int messageCount = 0;
+
+				int minutesSinceAppointmentCreated = (int)(DateTime.UtcNow - appointment.Created).TotalMinutes;
+
+				int minutesSinceTier2Message;
+
+				if (appointment.Tier2MessageDate.HasValue)
+				{
+					minutesSinceTier2Message = (int)(DateTime.UtcNow - appointment.Tier2MessageDate.Value).TotalMinutes;
+				}
+				else
+				{
+					minutesSinceTier2Message = -1;
+				}
+
 				//send message to appropriate drivers
 				foreach (Volunteer driver in drivers)
 				{
 					if (!String.IsNullOrEmpty(driver.MobilePhone) && driver.Latitude.HasValue && driver.Longitude.HasValue)
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, 0, 0);
+						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver);
 
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
 						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
-							SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
+						{
+							if (!appointment.BroadcastMessageCount.HasValue)
+							{
+								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
+								messageCount++;
+							}
+						}
 						else
 						{
-							//calculate hours difference
-							int hours = 0;
-							if (((TimeSpan)(DateTime.UtcNow - appointment.Created)).Days != 0)
-								hours = ((int)((TimeSpan)(DateTime.UtcNow - appointment.Created)).Days * 24) + (int)((TimeSpan)(DateTime.UtcNow - appointment.Created)).Hours;
-							else
-								hours = (int)((TimeSpan)(DateTime.UtcNow - appointment.Created)).Hours;
-
-							//end message to driver based on time since appointment creation and distnace from driver
+							//send message to driver based on time since appointment creation and distnace from driver
 							double radius = GeocoderQuery.LatLng.GetDistance(initialLatitude, initialLongitude, (double)driver.Latitude, (double)driver.Longitude, GeocoderQuery.LatLng.UnitType.Miles);
-							if (hours < 2 && radius <= 5)
+
+							if (!isCronJob && radius <= 5 && !appointment.Tier1MessageCount.HasValue)
+							{
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
-							else if (hours >= 2 && hours < 3 && radius > 5 && radius <= 15)
+								messageCount++;
+							}
+							else if (minutesSinceAppointmentCreated >= tier2MessageDelayMinutes &&
+								radius > 5 &&
+								radius <= 15 &&
+								!appointment.Tier2MessageCount.HasValue)
+							{
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
-							else if (hours >= 3 && radius > 15)
+								messageCount++;
+							}
+							else if (minutesSinceTier2Message >= tier3MessageDelayMinutes &&
+								radius > 15 &&
+								!appointment.Tier3MessageCount.HasValue)
+							{ 
 								SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, appointment.Id);
+								messageCount++;
+							}
 						}
 					}
+				}
+
+				//set the proper tier message count value on the appointment
+				if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday && !appointment.BroadcastMessageCount.HasValue)
+				{
+					appointment.BroadcastMessageCount = messageCount;
+					appointment.BroadcastMessageDate = DateTime.UtcNow;
+				}
+				else if (!isCronJob && !appointment.Tier1MessageCount.HasValue)
+				{
+					appointment.Tier1MessageCount = messageCount;
+					appointment.Tier1MessageDate = DateTime.UtcNow;
+				}
+				else if (minutesSinceAppointmentCreated >= tier2MessageDelayMinutes &&
+					!appointment.Tier2MessageCount.HasValue)
+				{
+					appointment.Tier2MessageCount = messageCount;
+					appointment.Tier2MessageDate = DateTime.UtcNow;
+				}
+				else if (minutesSinceTier2Message >= tier3MessageDelayMinutes &&
+					!appointment.Tier3MessageCount.HasValue)
+				{
+					appointment.Tier3MessageCount = messageCount;
+					appointment.Tier3MessageDate = DateTime.UtcNow;
 				}
 			}
 		}
 
-		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, int driveCount, int driveId)
+		public void SendBadgeMessage(Volunteer driver, Badge badge)
+		{
+			if (!driver.HasTextConsent || string.IsNullOrWhiteSpace(badge.MessageText))
+			{
+				return;
+			}
+
+			//get the message by message type
+			var messageQuery = new MessageQuery(dbContext);
+			Message message = messageQuery.GetMessageByType((int)MessageType.BadgeMessageTemplate, true);
+
+			string messageText = BuildMessage(message.MessageText, null, null, driver, badge);
+
+			//send text message to driver
+			SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
+		}
+
+		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver)
+		{
+			return BuildMessage(messageText, serviceProvider, appointment, driver, null);
+		}
+
+		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, Badge badge)
 		{
 			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
 				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "")
-				.Replace("{timeDate}", (appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : ""))
-				.Replace("{dayOfTheWeek}", appointment?.AppointmentDate.DayOfWeek.ToString() ?? "")
+				.Replace("{timeDate}", appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : "")
+				.Replace("{dayOfTheWeek}", TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
-				.Replace("{driveCount}", driveCount.ToString())
-				.Replace("{driveId}", driveId.ToString()); 
+				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier)
+				.Replace("{appUrl}", appUrl ?? "")
+				.Replace("{badgeName}", badge?.Title ?? "")
+				.Replace("{badgeMessage}", badge?.MessageText ?? "");
 		}
 
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)
 		{
 			//initialize twilio client
 			TwilioClient.Init(accountSid, authToken);
+			MessageResource messageResource;
 
-			//send requested message
-			var message = MessageResource.Create(body: messageText,
-												 from: new Twilio.Types.PhoneNumber(fromPhone),
-												 to: new Twilio.Types.PhoneNumber(toPhone));
+			try
+			{
+				//send requested message
+				messageResource = MessageResource.Create(body: messageText,
+					from: new Twilio.Types.PhoneNumber(fromPhone),
+					to: new Twilio.Types.PhoneNumber(toPhone));
 
-			//log message sent to database (from number, to number, message text, date sent)
-			var messageLogEntity = new Core.Entities.MessageLog();
-			messageLogEntity.FromPhone = fromPhone;
-			messageLogEntity.ToPhone = toPhone;
-			messageLogEntity.Body = messageText;
-			messageLogEntity.DateSent = DateTime.UtcNow;
-			messageLogEntity.AppointmentId = appointmentId;
-			messageLogEntity.VolunteerId = driverId;
-			dbContext.MessageLog.Add(messageLogEntity);
-			dbContext.SaveChanges();
+				//log message sent to database (from number, to number, message text, date sent)
+				var messageLogEntity = new MessageLog
+				{
+					FromPhone = fromPhone,
+					ToPhone = toPhone,
+					Body = messageText,
+					DateSent = DateTime.UtcNow,
+					AppointmentId = appointmentId,
+					VolunteerId = driverId
+				};
+
+				dbContext.MessageLog.Add(messageLogEntity);
+				dbContext.SaveChanges();
+			}
+			catch (Twilio.Exceptions.ApiException apiException)
+			{
+				var messageErrorLogEntity = new MessageErrorLog
+				{
+					FromPhone = fromPhone,
+					ToPhone = toPhone,
+					Body = messageText,
+					DateSent = DateTime.UtcNow,
+					AppointmentId = appointmentId,
+					VolunteerId = driverId,
+					ErrorCode = apiException.Code.ToString(),
+					ErrorMessage = apiException.Message,
+					ErrorDetails = apiException.ToString()
+				};
+
+				dbContext.MessageErrorLog.Add(messageErrorLogEntity);
+				dbContext.SaveChanges();
+			}
 		}
+
 	}
 }

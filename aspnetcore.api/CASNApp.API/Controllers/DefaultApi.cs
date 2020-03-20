@@ -22,14 +22,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CASNApp.API.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = Constants.IsDispatcherOrDriverPolicy)]
+    [Authorize]
     public class DefaultApiController : Controller
     {
         private readonly casn_appContext dbContext;
@@ -69,9 +69,9 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets appointments with dispatcher-level details
+        /// gets appointments that fall within the specified date range
         /// </summary>
-        /// <remarks>Get all appointments within a default date range (possibly adjustable w/ query params). Appointments include details, e.g. exact location, available only to dispatchers. </remarks>
+        /// <remarks>Get all appointments within a date range. Appointments include details (e.g. exact location) for all dispatchers and for the approved driver. </remarks>
         /// <param name="startDate">pass a startDate by which to filter</param>
         /// <param name="endDate">pass an endDate by which to filter</param>
         /// <response code="200">all appointments in date range</response>
@@ -96,6 +96,13 @@ namespace CASNApp.API.Controllers
             var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
             var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
 
+            // If the end date doesn't have a time specified (i.e. the time part is Midnight)
+            if (end == end.Date)
+            {
+                // Advance it to the end of the day (11:59:59 PM)
+                end = end.Add(new TimeSpan(23, 59, 59));
+            }
+
             var appointmentEntities = await dbContext.Appointment
                 .AsNoTracking()
                 .Include(a => a.Drives)
@@ -106,23 +113,16 @@ namespace CASNApp.API.Controllers
                             a.CallerId.HasValue)
                 .ToListAsync();
 
-            var driveIds = new List<long>();
+            var drivesUserHasAppliedFor = await dbContext.VolunteerDriveLog
+                .AsNoTracking()
+                .Where(vdl => vdl.VolunteerId == volunteer.Id &&
+                    vdl.DriveLogStatusId == DriveLogStatus.APPLIED &&
+                    vdl.IsActive)
+                .Select(vdl => vdl.DriveId)
+                .Distinct()
+                .ToListAsync();
 
-            foreach (var appt in appointmentEntities)
-            {
-                var driveTo = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
-                var driveFrom = appt.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
-
-                if (driveTo?.Id != null)
-                {
-                    driveIds.Add(driveTo.Id);
-                }
-
-                if (driveFrom?.Id != null)
-                {
-                    driveIds.Add(driveFrom.Id);
-                }
-            }
+            var appliedDriveIds = new HashSet<int>(drivesUserHasAppliedFor);
 
             var appointmentDTOs = appointmentEntities.Select(a =>
             {
@@ -140,19 +140,32 @@ namespace CASNApp.API.Controllers
                 if (!volunteer.IsDispatcher)
                 {
                     apptDto.Redact(volunteer);
+
+                    if (driveTo != null && driveTo.StatusId == Core.Models.Drive.StatusPending)
+                    {
+                        var userHasApplied = appliedDriveIds.Contains(driveTo.Id);
+
+                        if (!userHasApplied && apptDto != null && apptDto.DriveTo != null)
+                        {
+                            apptDto.DriveTo.StatusId = Core.Models.Drive.StatusOpen;
+                            apptDto.DriveTo.Status = driveTo?.Status?.Name;
+                        }
+                    }
+
+                    if (driveFrom != null && driveFrom.StatusId == Core.Models.Drive.StatusPending)
+                    {
+                        var userHasApplied = appliedDriveIds.Contains(driveFrom.Id);
+
+                        if (!userHasApplied && apptDto != null && apptDto.DriveFrom != null)
+                        {
+                            apptDto.DriveFrom.StatusId = Core.Models.Drive.StatusOpen;
+                            apptDto.DriveFrom.Status = driveFrom?.Status?.Name;
+                        }
+                    }
                 }
 
                 return apptDto;
             }).ToList();
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AllAppointments));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
 
             var result = new AllAppointments(appointmentDTOs);
 

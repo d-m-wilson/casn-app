@@ -1,0 +1,66 @@
+﻿@model IEnumerable<MessageErrorLogIndexViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Most Recent 50 Records</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FromPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ToPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateSent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VolunteerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ErrorMessage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FromPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ToPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VolunteerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ErrorCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ErrorMessage)
+            </td>
+            <td>
+                <span>@(item.Body.Length <= 30 ? item.Body : $"{item.Body.Substring(0, 27)}...")</span>
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

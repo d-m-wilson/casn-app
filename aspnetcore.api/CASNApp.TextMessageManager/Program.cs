@@ -16,10 +16,6 @@ namespace CASNApp.TextMessageManager
 	{
 		private static readonly IConfiguration configuration;
 		private static ILoggerFactory loggerFactory;
-		private static readonly string twilioAccountSID;
-		private static readonly string twilioAuthKey;
-		private static readonly string twilioPhoneNumber;
-        private static readonly string userTimeZoneName;
 
         static Program()
 		{
@@ -29,19 +25,14 @@ namespace CASNApp.TextMessageManager
 				.AddUserSecrets<Program>(true)
 				.AddEnvironmentVariables()
 				.Build();
-
-			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
-			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
-			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
-            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
         }
 
-        private static Microsoft.Extensions.DependencyInjection.ServiceProvider BuildDi()
+        private static IServiceProvider BuildDi()
 		{
 			return new ServiceCollection()
 				.AddDbContext<casn_appContext>(options =>
 				{
-					options.UseSqlServer(configuration[Core.Constants.DbConnectionString], sqlOptions =>
+					options.UseSqlServer(configuration.GetConnectionString(Core.Constants.DbConnectionString), sqlOptions =>
 					{
 						sqlOptions
 							.EnableRetryOnFailure(2);
@@ -56,6 +47,7 @@ namespace CASNApp.TextMessageManager
 						CaptureMessageProperties = true
 					});
 				})
+				.AddSingleton(configuration)
 				.BuildServiceProvider();
 		}
 
@@ -63,19 +55,22 @@ namespace CASNApp.TextMessageManager
 		{
 			//set the mesage priority from the command line
 			TwilioCommand.MessageType messageType = TwilioCommand.MessageType.Unknown;
+
 			if (args.Length > 0)
 			{
-				switch (args[0].ToUpper().Substring(0,1))
+				var firstArgument = args[0];
+
+				if (firstArgument.Contains("friendly", StringComparison.InvariantCultureIgnoreCase))
 				{
-					case "F":
-						messageType = TwilioCommand.MessageType.FriendlyReminder;
-						break;
-					case "S":
-						messageType = TwilioCommand.MessageType.SeriousRequest;
-						break;
-					case "D":
-						messageType = TwilioCommand.MessageType.DesperatePlea;
-						break;
+					messageType = TwilioCommand.MessageType.FriendlyReminder;
+				}
+				else if (firstArgument.Contains("serious", StringComparison.InvariantCultureIgnoreCase))
+				{
+					messageType = TwilioCommand.MessageType.SeriousRequest;
+				}
+				else if (firstArgument.Contains("desperate", StringComparison.InvariantCultureIgnoreCase))
+				{
+					messageType = TwilioCommand.MessageType.DesperatePlea;
 				}
 			}
 
@@ -89,32 +84,46 @@ namespace CASNApp.TextMessageManager
 			//connect to the database
 			using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
 			{
-				//get a list of all the appointments with open drives
-				AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
-				var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
+				var appointmentQuery = new AppointmentQuery(dbContext);
 				loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
 
 				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
 				{
+					//get a list of all NEXT DAY appointments with open drives
+					var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(true);
+
+					if (openAppointments.Count == 0)
+					{
+						logger?.LogWarning("There are no matching appointments, so no need to text anyone!");
+						return;
+					}
+
 					//send out a single reminder message for all open appointments
-					TwilioCommand reminderSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
-					reminderSMS.SendAppointmentReminderMessage(openAppointments, messageType);
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+					twilioCommand.SendAppointmentReminderMessage(openAppointments, messageType);
 				}
 				else
 				{
+					//get a list of all the appointments with open drives
+					var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
+
 					//loop thru the appointments and send the assoicated text message
 					if (openAppointments != null && openAppointments.Count > 0)
 					{
-						DriveQuery driveQuery = new DriveQuery(dbContext);
-						TwilioCommand appointmentSMS = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                            dbContext, userTimeZoneName);
+						var driveQuery = new DriveQuery(dbContext);
+						var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
 						foreach (Appointment appointment in openAppointments)
 						{
+							//get each drive objetc (to and from) and send messages to appropriate drives
 							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
 							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
+
 							if (driveTo != null || driveFrom != null)
-								appointmentSMS.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType);
+								twilioCommand.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
+
+							//update the appointment values in the database
+							dbContext.Appointment.Update(appointment);
+							dbContext.SaveChanges();
 						}
 					}
 				}

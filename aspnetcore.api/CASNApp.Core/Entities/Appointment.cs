@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Appointment
+    public partial class Appointment : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public Appointment()
         {
@@ -25,9 +26,16 @@ namespace CASNApp.Core.Entities
         public DateTime AppointmentDate { get; set; }
         public int AppointmentTypeId { get; set; }
         public bool IsActive { get; set; }
+		public int? Tier1MessageCount { get; set; }
+        public DateTime? Tier1MessageDate { get; set; }
+		public int? Tier2MessageCount { get; set; }
+        public DateTime? Tier2MessageDate { get; set; }
+        public int? Tier3MessageCount { get; set; }
+        public DateTime? Tier3MessageDate { get; set; }
+        public int? BroadcastMessageCount { get; set; }
+        public DateTime? BroadcastMessageDate { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
-
         public AppointmentType AppointmentType { get; set; }
         public ServiceProvider ServiceProvider { get; set; }
         public Volunteer Dispatcher { get; set; }

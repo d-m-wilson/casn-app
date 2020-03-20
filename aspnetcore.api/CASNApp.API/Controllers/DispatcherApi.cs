@@ -25,43 +25,37 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CASNApp.API.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = Constants.IsDispatcherPolicy)]
+    [Authorize]
     public class DispatcherApiController : Controller
     {
         private readonly Core.Entities.casn_appContext dbContext;
         private readonly ILoggerFactory loggerFactory;
         private readonly ILogger<DispatcherApiController> logger;
+        private readonly IConfiguration configuration;
         private readonly string googleApiKey;
         private readonly double vagueLocationMinOffset;
         private readonly double vagueLocationMaxOffset;
         private readonly bool twilioIsEnabled;
-		private readonly string twilioAccountSID;
-		private readonly string twilioAuthKey;
-		private readonly string twilioPhoneNumber;
         private readonly bool badgesAreEnabled;
-        private readonly string userTimeZoneName;
 
         public DispatcherApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
+            this.configuration = configuration;
+            this.loggerFactory = loggerFactory;
+            logger = loggerFactory.CreateLogger<DispatcherApiController>();
             googleApiKey = configuration[Core.Constants.GoogleApiKey];
             vagueLocationMinOffset = double.Parse(configuration[Core.Constants.VagueLocationMinOffset]);
             vagueLocationMaxOffset = double.Parse(configuration[Core.Constants.VagueLocationMaxOffset]);
-            this.loggerFactory = loggerFactory;
-            logger = loggerFactory.CreateLogger<DispatcherApiController>();
             twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
-            twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
-			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
-			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
             badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
-            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
         }
 
         /// <summary>
@@ -300,9 +294,9 @@ namespace CASNApp.API.Controllers
                 try
                 {
                     //send initial text message to drivers
-                    var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
-                    twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown);
+                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                    twilioCommand.SendAppointmentMessage(appointmentEntity, driveToEntity, driveFromEntity, TwilioCommand.MessageType.Unknown, false);
+					await dbContext.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
@@ -386,8 +380,7 @@ namespace CASNApp.API.Controllers
 				try
 				{
 					//send initial text message to drivers
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
 					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriverApprovedForDrive);
 				}
 				catch (Exception ex)
@@ -413,7 +406,21 @@ namespace CASNApp.API.Controllers
                         {
                             dbContext.SaveChanges();
 
-                            //if we're going to text the volunteer about the badge they just earned, here's where to do that
+                            //text the volunteer about the badge they just earned
+                            if (twilioIsEnabled)
+                            {
+                                try
+                                {
+                                    //send initial text message to drivers
+                                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                                    twilioCommand.SendBadgeMessage(driver, badge);
+                                    dbContext.SaveChanges();
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
+                                }
+                            }
                         }
                     }
 
@@ -425,6 +432,304 @@ namespace CASNApp.API.Controllers
             }
 
 			return Ok();
+        }
+
+        /// <summary>
+        /// Removes the approved driver from a drive
+        /// </summary>
+        /// <remarks>Removes the approved driver from a drive</remarks>
+        /// <param name="body"></param>
+        /// <response code="200">Success. Removed driver from drive.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
+        [HttpPost]
+        [Route("api/drives/unapprove")]
+        [ValidateModelState]
+        [SwaggerOperation("RemoveDriver")]
+        public virtual async Task<IActionResult> RemoveDriver([FromBody]Body body)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            if (!body.DriveId.HasValue)
+            {
+                return BadRequest(body);
+            }
+
+            var driveId = body.DriveId.Value;
+
+            var drive = await dbContext.Drive
+                .Where(d => d.Id == driveId && d.IsActive)
+                .SingleOrDefaultAsync();
+
+            if (drive == null)
+            {
+                return NotFound(body);
+            }
+
+            if (drive.StatusId != Drive.StatusApproved ||
+                !drive.DriverId.HasValue)
+            {
+                // Can't remove the driver if there isn't an approved driver
+                return Conflict(body);
+            }
+
+            var driverId = drive.DriverId.Value;
+
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+                .Where(vd => vd.DriveId == driveId &&
+                    vd.IsActive &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .OrderBy(vd => vd.Id)
+                .ToListAsync();
+
+            var volunteerDriveLogsForDriver = volunteerDriveLogsForThisDrive
+                .Where(vd => vd.DriveId == driveId &&
+                    vd.VolunteerId == driverId &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .OrderBy(vd => vd.Id)
+                .ToList();
+
+            if (!volunteerDriveLogsForDriver.Any())
+            {
+                // Can't remove driver's application if it doesn't exist
+                return Conflict(body);
+            }
+
+            foreach (var volunteerDriveLog in volunteerDriveLogsForDriver)
+            {
+                if (volunteerDriveLog.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED)
+                {
+                    volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.REASSIGNED;
+                    volunteerDriveLog.Reassigned = DateTime.UtcNow;
+                }
+                else
+                {
+                    volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.CANCELED;
+                    volunteerDriveLog.Canceled = DateTime.UtcNow;
+                }
+
+                volunteerDriveLog.IsActive = false;
+            }
+
+            var volunteerDriveLogsForOtherUsers = volunteerDriveLogsForThisDrive
+                .Where(vd => !volunteerDriveLogsForDriver.Contains(vd))
+                .ToList();
+
+            if (volunteerDriveLogsForOtherUsers.Any())
+            {
+                drive.StatusId = Drive.StatusPending;
+            }
+            else
+            {
+                drive.StatusId = Drive.StatusOpen;
+            }
+
+            drive.DriverId = null;
+
+            await dbContext.SaveChangesAsync();
+
+            //send Drive Application Declined message
+            if (twilioIsEnabled)
+            {
+                try
+                {
+                    var driver = await volunteerQuery.GetByIdAsync(driverId, true);
+
+                    var hasTextConsent = driver?.HasTextConsent;
+
+                    if (!hasTextConsent.HasValue || hasTextConsent.Value)
+                    {
+                        //send initial text message to drivers
+                        var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                        twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DispatcherDeclinedApplication);
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Not sending message to volunteer #{driverId} because {nameof(driver.HasTextConsent)} is {hasTextConsent}.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
+                }
+            }
+
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    foreach (var volunteerDriveLog in volunteerDriveLogsForDriver)
+                    {
+                        logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
+
+                        var volunteerBadges = await dbContext.VolunteerBadge
+                            .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
+                            .ToListAsync();
+
+                        foreach (var volunteerBadge in volunteerBadges)
+                        {
+                            logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
+                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(RemoveDriver)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Denies a volunteer's application for a drive
+        /// </summary>
+        /// <remarks>Denies a volunteer's application for a drive</remarks>
+        /// <param name="body1"></param>
+        /// <response code="200">Success. User's application was denied.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The volunteerDriveLogId or volunteerId was not found.</response>
+        [HttpPost]
+        [Route("api/drives/deny")]
+        [ValidateModelState]
+        [SwaggerOperation("DenyApplicant")]
+        public virtual async Task<IActionResult> DenyApplicant([FromBody]Body1 body1)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            if (!body1.VolunteerDriveId.HasValue)
+            {
+                return BadRequest(body1);
+            }
+
+            var volunteerDriveLogQuery = new VolunteerDriveLogQuery(dbContext);
+
+            var volunteerDriveLog = await volunteerDriveLogQuery.GetByIdAsync(body1.VolunteerDriveId.Value, false);
+
+            if (volunteerDriveLog == null)
+            {
+                return NotFound(body1);
+            }
+
+            var drive = volunteerDriveLog.Drive;
+
+            if (drive.StatusId != Drive.StatusPending ||
+                drive.DriverId.HasValue)
+            {
+                return Conflict(body1);
+            }
+
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+                .Where(vd => vd.DriveId == drive.Id &&
+                    vd.IsActive &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .ToListAsync();
+
+            var volunteerDriveLogsForDriver = volunteerDriveLogsForThisDrive
+                .Where(vd => vd.VolunteerId == volunteerDriveLog.VolunteerId &&
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED)
+                .OrderBy(vd => vd.Id)
+                .ToList();
+
+            var utcNow = DateTime.UtcNow;
+
+            foreach (var vdl in volunteerDriveLogsForDriver)
+            {
+                vdl.DriveLogStatusId = Core.Entities.DriveLogStatus.CANCELED;
+                vdl.Canceled = utcNow;
+                vdl.IsActive = false;
+            }
+
+            var volunteerDriveLogsForOtherUsers = volunteerDriveLogsForThisDrive
+                .Where(vd => !volunteerDriveLogsForDriver.Contains(vd))
+                .ToList();
+
+            if (drive.StatusId == Drive.StatusPending &&
+                !volunteerDriveLogsForOtherUsers.Any())
+            {
+                drive.StatusId = Drive.StatusOpen;
+            }
+
+
+            dbContext.SaveChanges();
+
+            //send Drive Application Declined message
+            if (twilioIsEnabled)
+            {
+                try
+                {
+                    var driverId = volunteerDriveLog.VolunteerId;
+
+                    var driver = await volunteerQuery.GetByIdAsync(driverId, true);
+
+                    var hasTextConsent = driver?.HasTextConsent;
+
+                    if (!hasTextConsent.HasValue || hasTextConsent.Value)
+                    {
+                        //send initial text message to drivers
+                        var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                        twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DispatcherDeclinedApplication);
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Not sending message to volunteer #{driverId} because {nameof(driver.HasTextConsent)} is {hasTextConsent}.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddDriver)}(): Exception");
+                }
+            }
+
+            // Remove any badges the volunteer was awarded for applying to drive
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    foreach (var vdl in volunteerDriveLogsForDriver)
+                    {
+                        logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
+
+                        var volunteerBadges = await dbContext.VolunteerBadge
+                            .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
+                            .ToListAsync();
+
+                        foreach (var volunteerBadge in volunteerBadges)
+                        {
+                            logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
+                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(DenyApplicant)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok();
         }
 
         /// <summary>
@@ -466,9 +771,11 @@ namespace CASNApp.API.Controllers
 					//send initial text message to driver
 					DriveQuery driveQuery = new DriveQuery(dbContext);
 					var drive = await driveQuery.GetDriveAsync(driveId);
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
-					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriveCanceled);
+
+                    var driver = await volunteerQuery.GetByIdAsync(drive.DriverId.Value, true);
+
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+					twilioCommand.SendDispatcherMessage(drive, driver, TwilioCommand.MessageType.DriveCanceled);
 				}
 				catch (Exception ex)
 				{
@@ -498,7 +805,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">invalid input, object invalid</response>
         /// <response code="409">the item already exists</response>
         [HttpPost]
-        [Route("api/caller")]
+        [Route("api/dispatcher/caller")]
         [ValidateModelState]
         [SwaggerOperation("AddCaller")]
         public virtual async Task<IActionResult> AddCaller([FromBody]Caller caller)
@@ -584,7 +891,7 @@ namespace CASNApp.API.Controllers
         /// <response code="400">GAH IT IS SO BROKEN</response>
         /// <response code="404">caller not found frownies</response>
         [HttpGet]
-        [Route("api/caller")]
+        [Route("api/dispatcher/caller")]
         [ValidateModelState]
         [SwaggerOperation("GetCallerByCallerIdentifier")]
         [SwaggerResponse(statusCode: 200, type: typeof(Caller), description: "search results matching criteria")]
@@ -676,26 +983,253 @@ namespace CASNApp.API.Controllers
         [Route("api/dispatcher/appointments/{appointmentID}")]
         [ValidateModelState]
         [SwaggerOperation("UpdateAppointment")]
-        [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Created appointment.")]
-        public virtual IActionResult UpdateAppointment([FromRoute][Required]string appointmentID, [FromBody]AppointmentDTO appointmentDTO)
+        [SwaggerResponse(statusCode: 200, type: typeof(AppointmentDTO), description: "Success. Updated appointment.")]
+        public virtual async Task<IActionResult> UpdateAppointment([FromRoute][Required]string appointmentID, [FromBody]AppointmentDTO appointmentDTO)
         {
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(AppointmentDTO));
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDispatcherByEmail(userEmail, true);
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
 
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
+            if (!appointmentDTO.Validate())
+            {
+                return BadRequest(appointmentDTO);
+            }
 
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"driveTo\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"caller\" : {\r\n    \"civiContactId\" : 42,\r\n    \"firstName\" : \"Jane\",\r\n    \"lastName\" : \"Smith\",\r\n    \"isMinor\" : true,\r\n    \"callerIdentifier\" : \"JS1234\",\r\n    \"preferredLanguage\" : \"French\",\r\n    \"preferredContactMethod\" : 1,\r\n    \"phone\" : \"5555551234\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  },\r\n  \"driveFrom\" : {\r\n    \"startCity\" : \"Houston\",\r\n    \"startAddress\" : \"11415 Roark Rd\",\r\n    \"endState\" : \"TX\",\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endCity\" : \"Houston\",\r\n    \"driverId\" : 42,\r\n    \"appointmentId\" : 42,\r\n    \"startPostalCode\" : \"77031\",\r\n    \"id\" : 42,\r\n    \"startState\" : \"TX\",\r\n    \"endPostalCode\" : \"77024\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"endAddress\" : \"7373 Old Katy Rd\",\r\n    \"direction\" : 1\r\n  },\r\n  \"appointment\" : {\r\n    \"pickupLocationVague\" : \"US59 S and BW8\",\r\n    \"serviceProviderId\" : 42,\r\n    \"dropoffLocationVague\" : \"I10 W and 610\",\r\n    \"callerId\" : 42,\r\n    \"created\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"id\" : 42,\r\n    \"dispatcherId\" : 42,\r\n    \"appointmentTypeId\" : 1,\r\n    \"appointmentDate\" : \"2000-01-23T04:56:07.000+00:00\",\r\n    \"updated\" : \"2000-01-23T04:56:07.000+00:00\"\r\n  }\r\n}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AppointmentDTO>(exampleJson)
-            : default(AppointmentDTO);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var callerModel = appointmentDTO.Caller;
+
+            if (!ModelState.IsValid ||
+                callerModel == null ||
+                string.IsNullOrWhiteSpace(callerModel.CallerIdentifier) ||
+                (string.IsNullOrWhiteSpace(callerModel.FirstName) && string.IsNullOrWhiteSpace(callerModel.LastName)) ||
+                string.IsNullOrWhiteSpace(callerModel.Phone))
+            {
+                return BadRequest();
+            }
+
+            var appointmentModel = appointmentDTO.Appointment;
+
+            var serviceProvider = await dbContext.ServiceProvider
+                .AsNoTracking()
+                .Where(c => c.Id == appointmentModel.ServiceProviderId && c.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (serviceProvider == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            var callerEntity = await dbContext.Caller
+                .Where(c => c.Id == appointmentModel.CallerId && c.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (callerEntity == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            callerEntity.UpdateFromModel(callerModel);
+
+            var appointmentEntity = await dbContext.Appointment
+                .Include(a => a.Drives)
+                .Where(a => a.Id == appointmentModel.Id && a.IsActive)
+                .FirstOrDefaultAsync();
+
+            if (appointmentEntity == null)
+            {
+                return BadRequest(appointmentDTO);
+            }
+
+            appointmentEntity.DispatcherId = volunteer.Id;
+            appointmentEntity.ServiceProviderId = serviceProvider.Id;
+            appointmentEntity.PickupLocationVague = appointmentModel.PickupLocationVague;
+            appointmentEntity.DropoffLocationVague = appointmentModel.DropoffLocationVague;
+            appointmentEntity.AppointmentDate = appointmentModel.AppointmentDate.Value;
+            appointmentEntity.AppointmentTypeId = appointmentModel.AppointmentTypeId.Value;
+            appointmentEntity.IsActive = true;
+            appointmentEntity.Updated = DateTime.UtcNow;
+
+
+            var driveToEntity = appointmentEntity.Drives
+                .Where(d => d.Direction == Drive.DirectionToServiceProvider && d.IsActive)
+                .SingleOrDefault();
+
+            var driveFromEntity = appointmentEntity.Drives
+                .Where(d => d.Direction == Drive.DirectionFromServiceProvider && d.IsActive)
+                .SingleOrDefault();
+
+
+            var driveToModel = appointmentDTO.DriveTo;
+            var driveFromModel = appointmentDTO.DriveFrom;
+
+            if (driveToModel != null)
+            {
+                if (driveToEntity != null)
+                {
+                    // update it
+                    driveToEntity.UpdateFromModel(driveToModel, serviceProvider);
+                }
+                else
+                {
+                    // add it
+                    driveToEntity = Core.Entities.Drive.CreateFromModel(
+                        driveToModel,
+                        appointmentEntity,
+                        Drive.DirectionToServiceProvider,
+                        serviceProvider);
+
+                    dbContext.Drive.Add(driveToEntity);
+                }
+            }
+            else
+            {
+                if (driveToEntity != null)
+                {
+                    // delete it
+                    driveToEntity.Sanitize();
+                    dbContext.Remove(driveToEntity);
+                }
+                else
+                {
+                    // do nothing
+                }
+            }
+
+            if (driveFromModel != null)
+            {
+                if (driveFromEntity != null)
+                {
+                    // update it
+                    driveFromEntity.UpdateFromModel(driveFromModel, serviceProvider);
+                }
+                else
+                {
+                    // add it
+                    driveFromEntity = Core.Entities.Drive.CreateFromModel(
+                        driveFromModel,
+                        appointmentEntity,
+                        Drive.DirectionFromServiceProvider,
+                        serviceProvider);
+
+                    dbContext.Drive.Add(driveFromEntity);
+                }
+            }
+            else
+            {
+                if (driveFromEntity != null)
+                {
+                    // delete it
+                    driveFromEntity.Sanitize();
+                    dbContext.Remove(driveFromEntity);
+                }
+                else
+                {
+                    // do nothing
+                }
+            }
+
+
+            var geocoder = new GeocoderQuery(googleApiKey, loggerFactory.CreateLogger<GeocoderQuery>());
+
+            var driveToAddress = driveToEntity?.GetCallerAddress();
+            GeocoderQuery.LatLng driveToLocation = null;
+
+            if (driveToAddress != null)
+            {
+                driveToLocation = await geocoder.ForwardLookupAsync(driveToAddress);
+            }
+
+            if (driveToModel != null && driveToLocation == null)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Pickup Address.");
+            }
+
+            driveToEntity?.SetCallerLocation(driveToLocation);
+            driveToModel?.SetCallerLocation(driveToLocation);
+
+            var driveFromAddress = driveFromEntity?.GetCallerAddress();
+            GeocoderQuery.LatLng driveFromLocation = null;
+
+            if (driveFromAddress != null)
+            {
+                if (driveToAddress != null &&
+                    string.Equals(driveToAddress, driveFromAddress, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    driveFromLocation = driveToLocation;
+                }
+                else
+                {
+                    driveFromLocation = await geocoder.ForwardLookupAsync(driveFromAddress);
+                }
+            }
+
+            if (driveFromModel != null && driveFromLocation == null)
+            {
+                return StatusCode((int)System.Net.HttpStatusCode.UnprocessableEntity, "Geocoding failed for Dropoff Address.");
+            }
+
+            driveFromEntity?.SetCallerLocation(driveFromLocation);
+            driveFromModel?.SetCallerLocation(driveFromLocation);
+
+            var random = new Random();
+
+            var pickupVagueLocation = driveToLocation?.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+
+            if (pickupVagueLocation != null)
+            {
+                appointmentEntity.PickupVagueLatitude = pickupVagueLocation.Latitude;
+                appointmentEntity.PickupVagueLongitude = pickupVagueLocation.Longitude;
+            }
+
+            GeocoderQuery.LatLng dropoffVagueLocation;
+
+            if (driveToAddress != null && driveFromAddress != null &&
+                string.Equals(driveToAddress, driveFromAddress, StringComparison.CurrentCultureIgnoreCase))
+            {
+                dropoffVagueLocation = pickupVagueLocation;
+            }
+            else
+            {
+                dropoffVagueLocation = driveFromLocation?.ToVagueLocation(random, vagueLocationMinOffset, vagueLocationMaxOffset);
+            }
+
+            if (dropoffVagueLocation != null)
+            {
+                appointmentEntity.DropoffVagueLatitude = dropoffVagueLocation.Latitude;
+                appointmentEntity.DropoffVagueLongitude = dropoffVagueLocation.Longitude;
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            appointmentModel.Id = appointmentEntity.Id;
+            appointmentModel.Created = appointmentEntity.Created;
+            appointmentModel.Updated = appointmentEntity.Updated;
+
+            appointmentModel.PickupVagueLatitude = appointmentEntity.PickupVagueLatitude;
+            appointmentModel.PickupVagueLongitude = appointmentEntity.PickupVagueLongitude;
+            appointmentModel.DropoffVagueLatitude = appointmentEntity.DropoffVagueLatitude;
+            appointmentModel.DropoffVagueLongitude = appointmentEntity.DropoffVagueLongitude;
+
+            if (driveToEntity != null)
+            {
+                driveToModel.Id = driveToEntity.Id;
+                driveToModel.Created = driveToEntity.Created;
+                driveToModel.Updated = driveToEntity.Updated;
+            }
+
+            if (driveFromEntity != null)
+            {
+                driveFromModel.Id = driveFromEntity.Id;
+                driveFromModel.Created = driveFromEntity.Created;
+                driveFromModel.Updated = driveFromEntity.Updated;
+            }
+
+            return new ObjectResult(appointmentDTO);
         }
+
     }
 }

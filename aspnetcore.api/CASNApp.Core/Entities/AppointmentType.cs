@@ -1,8 +1,9 @@
 ﻿using System;
+using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public class AppointmentType
+    public class AppointmentType : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public int Id { get; set; }
         public string Name { get; set; }

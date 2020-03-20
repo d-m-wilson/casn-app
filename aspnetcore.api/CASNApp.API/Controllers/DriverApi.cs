@@ -10,49 +10,45 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using CASNApp.API.Attributes;
 using CASNApp.API.Extensions;
+using CASNApp.Core.Commands;
+using CASNApp.Core.Misc;
 using CASNApp.Core.Models;
 using CASNApp.Core.Queries;
-using CASNApp.Core.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.Logging;
-using CASNApp.Core.Misc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace CASNApp.API.Controllers
 {
     /// <summary>
     /// 
     /// </summary>
-    [Authorize(Policy = Constants.IsDriverPolicy)]
+    [Authorize]
     public class DriverApiController : Controller
     {
         private readonly Core.Entities.casn_appContext dbContext;
 		private readonly ILoggerFactory loggerFactory;
 		private readonly ILogger<DriverApiController> logger;
+        private readonly IConfiguration configuration;
 		private readonly bool twilioIsEnabled;
-		private readonly string twilioAccountSID;
-		private readonly string twilioAuthKey;
-		private readonly string twilioPhoneNumber;
         private readonly bool badgesAreEnabled;
-        private readonly string userTimeZoneName;
 
         public DriverApiController(Core.Entities.casn_appContext dbContext, IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             this.dbContext = dbContext;
 			this.loggerFactory = loggerFactory;
 			logger = loggerFactory.CreateLogger<DriverApiController>();
+            this.configuration = configuration;
 			twilioIsEnabled = bool.Parse(configuration[Core.Constants.TwilioIsEnabled]);
-			twilioAccountSID = configuration[Core.Constants.TwilioAccountSID];
-			twilioAuthKey = configuration[Core.Constants.TwilioAuthKey];
-			twilioPhoneNumber = configuration[Core.Constants.TwilioPhoneNumber];
             badgesAreEnabled = bool.Parse(configuration[Core.Constants.BadgesAreEnabled]);
-            userTimeZoneName = configuration[Core.Constants.UserTimeZoneName];
         }
 
         /// <summary>
@@ -129,8 +125,7 @@ namespace CASNApp.API.Controllers
 				try
 				{
 					//send initial text message to drivers
-					var twilioCommand = new TwilioCommand(twilioAccountSID, twilioAuthKey, twilioPhoneNumber, loggerFactory.CreateLogger<TwilioCommand>(),
-                        dbContext, userTimeZoneName);
+					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
 					twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriverAppliedForDrive);
 				}
 				catch (Exception ex)
@@ -156,7 +151,21 @@ namespace CASNApp.API.Controllers
                         {
                             dbContext.SaveChanges();
 
-                            //if we're going to text the volunteer about the badge they just earned, here's where to do that
+                            //text the volunteer about the badge they just earned
+                            if (twilioIsEnabled)
+                            {
+                                try
+                                {
+                                    //send initial text message to drivers
+                                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                                    twilioCommand.SendBadgeMessage(volunteer, badge);
+                                    dbContext.SaveChanges();
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError(ex, $"{nameof(AddDriveApplicant)}(): Exception");
+                                }
+                            }
                         }
                     }
 
@@ -171,15 +180,18 @@ namespace CASNApp.API.Controllers
         }
 
         /// <summary>
-        /// gets applied-for and approved drives for the current user
+        /// retracts a volunteer's application for a drive
         /// </summary>
-        /// <response code="200">Success</response>
-        [HttpGet]
-        [Route("api/driver/myDrives")]
+        /// <remarks>Retracts a volunteer drive application</remarks>
+        /// <param name="body"></param>
+        /// <response code="200">Success. Retracted applicant record.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
+        [HttpPost]
+        [Route("api/drives/unapply")]
         [ValidateModelState]
-        [SwaggerOperation("GetMyDrives")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<DriverDrive>), description: "Success")]
-        public virtual IActionResult GetMyDrives()
+        [SwaggerOperation(nameof(RetractDriveApplicant))]
+        public virtual async Task<IActionResult> RetractDriveApplicant([FromBody]Body body)
         {
             var userEmail = HttpContext.GetUserEmail();
             var volunteerQuery = new VolunteerQuery(dbContext);
@@ -190,15 +202,240 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var results = dbContext.VolunteerDriveLog
-                .AsNoTracking()
-                .Include(vdl => vdl.Drive.Appointment.Caller)
-                .Where(vdl => vdl.VolunteerId == volunteer.Id &&
-                    vdl.Drive.Appointment.AppointmentDate > DateTime.Today.ToUniversalTime())
-                .Select(vdl => new DriverDrive(vdl))
+            var driveId = body.DriveId;
+
+            if (!driveId.HasValue)
+            {
+                return BadRequest(body);
+            }
+
+            var drive = await dbContext.Drive
+                .Where(d => d.Id == driveId.Value && d.IsActive)
+                .SingleOrDefaultAsync();
+
+            if (drive == null)
+            {
+                return NotFound(body);
+            }
+
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+                .Where(vd => vd.DriveId == drive.Id &&
+                    vd.IsActive &&
+                    (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPROVED))
+                .ToListAsync();
+
+            var volunteerDriveLogsForThisUser = volunteerDriveLogsForThisDrive
+                .Where(vd => vd.VolunteerId == volunteer.Id &&
+                    vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED)
+                .OrderBy(vd => vd.Id)
                 .ToList();
 
-            return Ok(results);
+            if (!volunteerDriveLogsForThisUser.Any())
+            {
+                // Can't retract your application if you haven't applied
+                return Conflict(body);
+            }
+
+            foreach (var volunteerDriveLog in volunteerDriveLogsForThisUser)
+            {
+                volunteerDriveLog.DriveLogStatusId = Core.Entities.DriveLogStatus.CANCELED;
+                volunteerDriveLog.Canceled = DateTime.UtcNow;
+                volunteerDriveLog.IsActive = false;
+            }
+
+            var volunteerDriveLogsForOtherUsers = volunteerDriveLogsForThisDrive
+                .Where(vd => !volunteerDriveLogsForThisUser.Contains(vd))
+                .ToList();
+
+            if (drive.StatusId == Drive.StatusPending &&
+                !volunteerDriveLogsForOtherUsers.Any())
+            {
+                drive.StatusId = Drive.StatusOpen;
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            //send application retracted message
+            if (twilioIsEnabled)
+            {
+                try
+                {
+                    //send initial text message to drivers
+                    var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+                    twilioCommand.SendDispatcherMessage(drive, volunteer, TwilioCommand.MessageType.DriverRetractedApplication);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"{nameof(AddDriveApplicant)}(): Exception");
+                }
+            }
+
+            if (badgesAreEnabled)
+            {
+                try
+                {
+                    foreach (var volunteerDriveLog in volunteerDriveLogsForThisUser)
+                    {
+                        logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
+
+                        var volunteerBadges = await dbContext.VolunteerBadge
+                            .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
+                            .ToListAsync();
+
+                        foreach (var volunteerBadge in volunteerBadges)
+                        {
+                            logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
+                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                        }
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"{nameof(AddDriveApplicant)}(): Exception: {ex}");
+                }
+            }
+
+            return Ok();
         }
+
+        /// <summary>
+        /// gets approved drives for the current user
+        /// </summary>
+        /// <remarks>Get all appointments within a date range for which the current user is approved.</remarks>
+        /// <param name="startDate">pass a startDate by which to filter</param>
+        /// <param name="endDate">pass an endDate by which to filter</param>
+        /// <response code="200">all appointments in date range</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error - Not Found</response>
+        [HttpGet]
+        [Route("api/driver/myDrives")]
+        [ValidateModelState]
+        [SwaggerOperation("GetMyDrives")]
+        [SwaggerResponse(statusCode: 200, type: typeof(AllAppointments), description: "success")]
+        public virtual async Task<IActionResult> GetMyDrives([FromQuery] [MinLength(4)]string startDate, [FromQuery] [MinLength(4)]string endDate)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveDriverByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var start = DateTime.Parse(startDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
+            var end = DateTime.Parse(endDate, styles: System.Globalization.DateTimeStyles.AssumeLocal);
+
+            // If the end date doesn't have a time specified (i.e. the time part is Midnight)
+            if (end == end.Date)
+            {
+                // Advance it to the end of the day (11:59:59 PM)
+                end = end.Add(new TimeSpan(23, 59, 59));
+            }
+
+            var appointmentEntities = await dbContext.Appointment
+                .AsNoTracking()
+                .Include(a => a.Caller)
+                .Include(a => a.Drives)
+                .ThenInclude(d => d.Driver)
+                .Where(a => a.AppointmentDate >= start &&
+                            a.AppointmentDate <= end &&
+                            a.IsActive &&
+                            a.CallerId.HasValue)
+                .ToListAsync();
+
+            var appointmentDTOs = new List<AppointmentDTO>();
+
+            foreach (var a in appointmentEntities)
+            {
+                var driveTo = a.Drives.FirstOrDefault(d => d.IsActive &&
+                    d.Direction == Drive.DirectionToServiceProvider &&
+                    d.DriverId.HasValue &&
+                    d.DriverId.Value == volunteer.Id);
+
+                var driveFrom = a.Drives.FirstOrDefault(d => d.IsActive &&
+                    d.Direction == Drive.DirectionFromServiceProvider &&
+                    d.DriverId.HasValue &&
+                    d.DriverId.Value == volunteer.Id);
+
+                if (driveTo == null && driveFrom == null)
+                {
+                    continue;
+                }
+
+                var apptDto = new AppointmentDTO
+                {
+                    Caller = new Caller(a.Caller),
+                    Appointment = new Appointment(a),
+                    DriveTo = driveTo == null ? null : new Drive(driveTo),
+                    DriveFrom = driveFrom == null ? null : new Drive(driveFrom)
+                };
+
+                // For the Drive Buddy feature we need to consider both drives even if the current user is not the approved driver
+                // If the DriveTo was excluded earlier, try to find it again
+                if (driveTo == null)
+                {
+                    driveTo = a.Drives.FirstOrDefault(d => d.IsActive &&
+                        d.Direction == Drive.DirectionToServiceProvider &&
+                        d.DriverId.HasValue);
+                }
+
+                // If the DriveFrom was excluded earlier, try to find it again
+                if (driveFrom == null)
+                {
+                    driveFrom = a.Drives.FirstOrDefault(d => d.IsActive &&
+                        d.Direction == Drive.DirectionFromServiceProvider &&
+                        d.DriverId.HasValue);
+                }
+
+                // If driveTo exists, has a status of Approved, and has a non-null DriverId
+                // and if driveFrom exists, has a status of Approved, and has a non-null DriverId
+                if (driveTo != null && driveTo.StatusId == Drive.StatusApproved && driveTo.DriverId.HasValue &&
+                    driveFrom != null && driveFrom.StatusId == Drive.StatusApproved && driveFrom.DriverId.HasValue)
+                {
+                    // If driveTo is not assigned to the same person as driveFrom
+                    // and either driveTo or driveFrom is assigned to the current user
+                    if (driveTo.DriverId != driveFrom.DriverId &&
+                        (driveTo.DriverId.Value == volunteer.Id || driveFrom.DriverId.Value == volunteer.Id))
+                    {
+                        // Then we have a "split drive" scenario, and we should populate the Drive Buddy information
+
+                        if (driveTo.DriverId != volunteer.Id)
+                        {
+                            apptDto.DriveBuddy = new DriveBuddy
+                            {
+                                FirstName = driveTo.Driver.FirstName,
+                                LastName = driveTo.Driver.LastName,
+                                MobilePhone = driveTo.Driver.MobilePhone,
+                            };
+                        }
+                        else
+                        {
+                            apptDto.DriveBuddy = new DriveBuddy
+                            {
+                                FirstName = driveFrom.Driver.FirstName,
+                                LastName = driveFrom.Driver.LastName,
+                                MobilePhone = driveFrom.Driver.MobilePhone,
+                            };
+                        }
+                    }
+                }
+
+                if (!volunteer.IsDispatcher)
+                {
+                    apptDto.Redact(volunteer);
+                }
+
+                appointmentDTOs.Add(apptDto);
+            }
+
+            var result = new AllAppointments(appointmentDTOs);
+
+            return Ok(result);
+        }
+
     }
 }

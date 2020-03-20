@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Caller
+    public partial class Caller : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         public Caller(Models.Caller e)
         {
@@ -35,6 +32,18 @@ namespace CASNApp.Core.Entities
             }
 
             Updated = e.Updated;
+        }
+
+        public void UpdateFromModel(Models.Caller callerModel)
+        {
+            this.CallerIdentifier = callerModel.CallerIdentifier;
+            this.FirstName = callerModel.FirstName;
+            this.IsMinor = callerModel.IsMinor.Value;
+            this.LastName = callerModel.LastName;
+            this.Note = callerModel.Note;
+            this.Phone = callerModel.Phone;
+            this.PreferredContactMethod = (short)callerModel.PreferredContactMethod.Value;
+            this.PreferredLanguage = callerModel.PreferredLanguage;
         }
 
     }

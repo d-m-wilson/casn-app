@@ -50,6 +50,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <SqlTargetName>casnapp</SqlTargetName>
+    <TreatTSqlWarningsAsErrors>True</TreatTSqlWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
@@ -65,6 +66,9 @@
     <Folder Include="dbo\Tables\" />
     <Folder Include="dbo\Stored Procedures" />
     <Folder Include="dbo\Tables\Data" />
+    <Folder Include="admin\" />
+    <Folder Include="admin\Tables\" />
+    <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Volunteer_DriveLog.sql" />
@@ -86,12 +90,23 @@
     <None Include="dbo\Tables\Data\DriveLogStatus.data.sql" />
     <Build Include="dbo\Stored Procedures\uspCheckBadgeAllClinics.sql" />
     <Build Include="dbo\Tables\ServiceProviderType.sql" />
+    <Build Include="admin\Tables\AspNetRoleClaims.sql" />
+    <Build Include="admin\Tables\AspNetRoles.sql" />
+    <Build Include="admin\Tables\AspNetUserClaims.sql" />
+    <Build Include="admin\Tables\AspNetUserLogins.sql" />
+    <Build Include="admin\Tables\AspNetUserRoles.sql" />
+    <Build Include="admin\Tables\AspNetUsers.sql" />
+    <Build Include="admin\Tables\AspNetUserTokens.sql" />
+    <Build Include="Security\admin.sql" />
+    <Build Include="dbo\Tables\MessageType.sql" />
+    <Build Include="dbo\Stored Procedures\uspCancelExpiredDrives.sql" />
+    <Build Include="dbo\Tables\MessageErrorLog.sql" />
+    <Build Include="dbo\Stored Procedures\uspCheckBadgeQuickDraw.sql" />
+    <Build Include="dbo\Stored Procedures\uspCheckBadgeEarlyBird.sql" />
+    <Build Include="dbo\Stored Procedures\uspCheckBadgeApprovedDriveCountForApptType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="CASNAppDB.refactorlog" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dbo\Tables\Data\ServiceProviderType.data.sql" />
@@ -101,5 +116,6 @@
     <None Include="dbo\Tables\Data\DriveCancelReason.data.sql" />
     <None Include="dbo\Tables\Data\Message.data.sql" />
     <Build Include="dbo\Stored Procedures\uspRedactionPlan.sql" />
+    <None Include="dbo\Tables\Data\MessageType.data.sql" />
   </ItemGroup>
 </Project>

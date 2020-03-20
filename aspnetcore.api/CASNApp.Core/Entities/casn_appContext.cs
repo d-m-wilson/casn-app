@@ -1,7 +1,13 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 using CASNApp.Core.Extensions;
+using CASNApp.Core.Interfaces;
+using CASNApp.Core.Misc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
 
 namespace CASNApp.Core.Entities
 {
@@ -12,10 +18,24 @@ namespace CASNApp.Core.Entities
             ChangeTracker.LazyLoadingEnabled = false;
         }
 
-        public casn_appContext(DbContextOptions<casn_appContext> options)
+        public casn_appContext(DbContextOptions<casn_appContext> options, IConfiguration configuration)
             : base(options)
         {
             ChangeTracker.LazyLoadingEnabled = false;
+
+            if (bool.Parse(configuration[Constants.DBUseManagedIdentity]))
+            {
+                var tenantId = configuration[Constants.DBManagedIdentityTenantId];
+
+                if (string.IsNullOrWhiteSpace(tenantId))
+                {
+                    tenantId = null;
+                }
+
+                var sqlConnection = GetSqlConnection();
+
+                sqlConnection.AccessToken = ManagedIdentity.GetAccessTokenAsync(Constants.AzureSqlDatabaseResource, null, tenantId).Result;
+            }
         }
 
         public virtual DbSet<Appointment> Appointment { get; set; }
@@ -27,7 +47,9 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<DriveLogStatus> DriveLogStatus { get; set; }
         public virtual DbSet<DriveStatus> DriveStatus { get; set; }
         public virtual DbSet<Message> Message { get; set; }
+        public virtual DbSet<MessageErrorLog> MessageErrorLog { get; set; }
         public virtual DbSet<MessageLog> MessageLog { get; set; }
+        public virtual DbSet<MessageType> MessageType { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProvider { get; set; }
         public virtual DbSet<ServiceProviderType> ServiceProviderType { get; set; }
         public virtual DbSet<Volunteer> Volunteer { get; set; }
@@ -118,6 +140,30 @@ namespace CASNApp.Core.Entities
                     .HasForeignKey(d => d.DispatcherId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Appointment_DispatcherId");
+
+				entity.Property(e => e.Tier1MessageCount).HasColumnType("integer");
+
+                entity.Property(e => e.Tier1MessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Tier2MessageCount).HasColumnType("integer");
+
+                entity.Property(e => e.Tier2MessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.Tier3MessageCount).HasColumnType("integer");
+
+                entity.Property(e => e.Tier3MessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.BroadcastMessageCount).HasColumnType("integer");
+
+                entity.Property(e => e.BroadcastMessageDate)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<AppointmentType>(entity =>
@@ -164,6 +210,9 @@ namespace CASNApp.Core.Entities
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
 
                 entity.Property(e => e.Description).HasMaxLength(500);
+
+                entity.Property(e => e.MessageText)
+                    .HasMaxLength(250);
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -387,6 +436,9 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Message>(entity =>
             {
+                entity.HasIndex(e => e.MessageTypeId)
+                    .HasName("FK_Message_MessageTypeId_idx");
+
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
@@ -403,6 +455,49 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
                     .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.HasOne(d => d.MessageType)
+                    .WithMany(p => p.Messages)
+                    .HasForeignKey(d => d.MessageTypeId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Message_MessageTypeId");
+
+            });
+
+            modelBuilder.Entity<MessageErrorLog>(entity =>
+            {
+                entity.HasIndex(e => e.DateSent);
+
+                entity.Property(e => e.AppointmentId);
+
+                entity.Property(e => e.Body)
+                    .IsRequired()
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.DateSent)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.FromPhone)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Subject)
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.ToPhone)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.VolunteerId)
+                    .IsRequired();
+
+                entity.Property(e => e.ErrorCode)
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ErrorMessage)
+                    .HasMaxLength(1000);
             });
 
             modelBuilder.Entity<MessageLog>(entity =>
@@ -434,6 +529,33 @@ namespace CASNApp.Core.Entities
 				entity.Property(e => e.VolunteerId)
 					.IsRequired();
 			});
+
+            modelBuilder.Entity<MessageType>(entity =>
+            {
+                entity.HasIndex(e => e.Name)
+                    .HasName("UQ_MessageType_Name")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Created)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getutcdate())")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(0x01)");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Updated)
+                    .HasColumnType("datetime")
+                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+
+            });
 
             modelBuilder.Entity<ServiceProvider>(entity =>
             {
@@ -495,7 +617,7 @@ namespace CASNApp.Core.Entities
             modelBuilder.Entity<ServiceProviderType>(entity =>
             {
                 entity.HasIndex(e => e.Name)
-                    .HasName("UQ_AppointmentType_Name")
+                    .HasName("UQ_ServiceProviderType_Name")
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -661,6 +783,54 @@ namespace CASNApp.Core.Entities
         public SqlConnection GetSqlConnection()
         {
             return (SqlConnection)Database.GetDbConnection();
+        }
+
+        public override int SaveChanges()
+        {
+            UpdateEntities();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            UpdateEntities();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void UpdateEntities()
+        {
+            foreach (EntityEntry entry in ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Modified && entry.Entity is IUpdatedDate updatedEntity)
+                {
+                    updatedEntity.Updated = DateTime.UtcNow;
+
+                    var createdProperty = entry.Property(nameof(IUpdatedDate.Created));
+                    if (createdProperty != null && createdProperty.IsModified)
+                    {
+                        createdProperty.CurrentValue = createdProperty.OriginalValue;
+                        createdProperty.IsModified = false;
+                    }
+                }
+
+                if (entry.State == EntityState.Modified && entry.Entity is ICreatedDate updatedEntity2 &&
+                    updatedEntity2.Created == DateTime.MinValue)
+                {
+                    // Don't upate Created datetime if it's the .NET default as SQL Server won't take it
+                    entry.Property(nameof(updatedEntity2.Created)).IsModified = false;
+                }
+
+                if (entry.State == EntityState.Added && entry.Entity is ICreatedDate createdEntity)
+                {
+                    createdEntity.Created = DateTime.UtcNow;
+                }
+
+                if (entry.State == EntityState.Deleted && entry.Entity is ISoftDelete deletedEntity)
+                {
+                    deletedEntity.IsActive = false;
+                    entry.State = EntityState.Modified;
+                }
+            }
         }
 
     }
