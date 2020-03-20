@@ -91,7 +91,7 @@ namespace CASNApp.Core.Entities
             return drive;
         }
 
-        public void UpdateFromModel(Models.Drive driveModel)
+        public void UpdateFromModel(Models.Drive driveModel, ServiceProvider serviceProvider)
         {
             if (Direction != (byte)driveModel.Direction.Value)
             {
@@ -111,9 +111,23 @@ namespace CASNApp.Core.Entities
                 StartGeocoded = null;
                 StartLatitude = null;
                 StartLongitude = null;
+                EndAddress = serviceProvider.Address;
+                EndCity = serviceProvider.City;
+                EndState = serviceProvider.State;
+                EndPostalCode = serviceProvider.PostalCode;
+                EndLatitude = serviceProvider.Latitude;
+                EndLongitude = serviceProvider.Longitude;
+                EndGeocoded = serviceProvider.Geocoded;
             }
             else if (Direction == Models.Drive.DirectionFromServiceProvider)
             {
+                StartAddress = serviceProvider.Address;
+                StartCity = serviceProvider.City;
+                StartState = serviceProvider.State;
+                StartPostalCode = serviceProvider.PostalCode;
+                StartLatitude = serviceProvider.Latitude;
+                StartLongitude = serviceProvider.Longitude;
+                StartGeocoded = serviceProvider.Geocoded;
                 EndAddress = driveModel.EndAddress;
                 EndCity = driveModel.EndCity;
                 EndState = driveModel.EndState;

@@ -1071,7 +1071,7 @@ namespace CASNApp.API.Controllers
                 if (driveToEntity != null)
                 {
                     // update it
-                    driveToEntity.UpdateFromModel(driveToModel);
+                    driveToEntity.UpdateFromModel(driveToModel, serviceProvider);
                 }
                 else
                 {
@@ -1104,7 +1104,7 @@ namespace CASNApp.API.Controllers
                 if (driveFromEntity != null)
                 {
                     // update it
-                    driveFromEntity.UpdateFromModel(driveFromModel);
+                    driveFromEntity.UpdateFromModel(driveFromModel, serviceProvider);
                 }
                 else
                 {
