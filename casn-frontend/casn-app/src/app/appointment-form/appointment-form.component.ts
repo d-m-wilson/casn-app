@@ -107,7 +107,7 @@ export class AppointmentFormComponent implements OnInit {
         this.lodgingServiceProviders = data.filter(s => s.serviceProviderTypeId === 3);
         this.courthouseServiceProviders = data.filter(s => s.serviceProviderTypeId === 2);
         this.clinicServiceProviders = data.filter(s => s.serviceProviderTypeId === 1);
-        this.flightServiceProviders = data.filter(s => s.serviceProviderId === 4);
+        this.flightServiceProviders = data.filter(s => s.serviceProviderTypeId === 4);
       },
       err => {
         console.error("--Error fetching serviceProviders...", err);
