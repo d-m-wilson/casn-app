@@ -45,7 +45,7 @@
           </mat-form-field>
           <!--********* Conditionally display clinics vs. courthouses vs. hotels based on appt type *****************-->
           <!-- Clinics Only -->
-          <mat-form-field appearance="outline" *ngIf="![7, 9, 10].includes(formAppt.appointmentTypeId.value)">
+          <mat-form-field appearance="outline" *ngIf="![7, 9, 11].includes(formAppt.appointmentTypeId.value)">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
@@ -81,7 +81,7 @@
             <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <!-- Flight Only -->
-          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value === 10">
+          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value === 11">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
