@@ -98,13 +98,37 @@
               </div>
             </mat-card>
             <ng-template #emptyPickup>
-              <mat-card class="drive-card candy-card no-drive">
+              <mat-card *ngIf="!r.driveBuddy" class="drive-card candy-card no-drive">
                 <em>No Pick Up</em>
+              </mat-card>
+              <mat-card *ngIf="r.driveBuddy" class="drive-card candy-card drive-buddy">
+                <div class="drive-card-header">
+                  <mat-icon class="status-text">supervisor_account</mat-icon>
+                  <span class="status-text bolder">Drive Buddy</span>
+                </div>
+                <div class="drive-card-content">
+                  <p>
+                    <span class="bolder text-sm">{{ r.driveBuddy.firstName }} {{ r.driveBuddy.lastName }}</span><br>
+                    <span>{{ r.driveBuddy.mobilePhone | phone }}</span>
+                  </p>
+                </div>
               </mat-card>
             </ng-template>
             <ng-template #emptyDropoff>
-              <mat-card class="drive-card candy-card no-drive">
+              <mat-card *ngIf="!r.driveBuddy" class="drive-card candy-card no-drive">
                 <em>No Drop Off</em>
+              </mat-card>
+              <mat-card *ngIf="r.driveBuddy" class="drive-card candy-card drive-buddy">
+                <div class="drive-card-header">
+                  <mat-icon class="status-text">supervisor_account</mat-icon>
+                  <span class="status-text bolder">Drive Buddy</span>
+                </div>
+                <div class="drive-card-content">
+                  <p>
+                    <span class="bolder text-sm">{{ r.driveBuddy.firstName }} {{ r.driveBuddy.lastName }}</span><br>
+                    <span>{{ r.driveBuddy.mobilePhone | phone }}</span>
+                  </p>
+                </div>
               </mat-card>
             </ng-template>
           </div>
