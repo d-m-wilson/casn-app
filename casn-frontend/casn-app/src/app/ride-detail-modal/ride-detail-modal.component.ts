@@ -4,6 +4,7 @@ import { DriverApiService } from '../api/api/driverApi.service';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
 import { AppointmentDataService } from "../appointment-data.service";
 import { Router } from '@angular/router';
+import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-ride-detail-modal',
@@ -24,11 +25,13 @@ export class RideDetailModalComponent implements OnInit {
   // Details for Cancel Drive Modal
   showCancelDriveModal: boolean = false;
   driveToCancel: string;
+  callerContactLink: string;
 
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
                private dispatcherService: DispatcherApiService,
                private sharedApptDataService: AppointmentDataService,
+               private constants: Constants,
                private router: Router ) { }
 
   ngOnInit() {
@@ -37,6 +40,7 @@ export class RideDetailModalComponent implements OnInit {
     this.getAppointmentTypes();
     this.getServiceProviders();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
+    this.constructContactNumber();
   }
 
 /*********************************************************************
@@ -44,30 +48,23 @@ export class RideDetailModalComponent implements OnInit {
 **********************************************************************/
   getServiceProviders(): void {
     this.ds.getServiceProviders().subscribe(s => {
-      this.serviceProviders = s.reduce((map, obj) => (map[obj.id] = obj, map), {});
+      const providersWithIcons = s.map(provider => {
+        provider.iconUrl = this.constants.SERVICE_PROVIDER_MAP_MARKERS[provider.serviceProviderTypeId];
+        return provider;
+      })
+      this.serviceProviders = providersWithIcons.reduce((map, obj) => (map[obj.id] = obj, map), {});
     });
   }
 
   getAppointmentTypes(): void {
     this.ds.getAppointmentTypes().subscribe(a => {
       this.apptTypes = a.reduce((acc, cur) => {
-        acc[cur.id] = { title: cur.title };
+        acc[cur.id] = {
+          title: cur.title,
+          estimatedDurationMinutes: cur.estimatedDurationMinutes
+        };
         return acc;
       }, {});
-      // TODO: Remove once API is ready.
-      this.apptTypes["3"].estimatedDurationMinutes = 210;
-      this.apptTypes["4"].estimatedDurationMinutes = 150;
-      this.apptTypes["5"].estimatedDurationMinutes = 90;
-      this.apptTypes["6"].estimatedDurationMinutes = 180;
-      this.apptTypes["7"].estimatedDurationMinutes = 60;
-      this.apptTypes["8"].estimatedDurationMinutes = 30;
-      console.log("appt Types", this.apptTypes);
-      //3 Surgical: 3.5 hours (210 minutes)
-      //4 Ultrasound: 2.5 hours (150 minutes)
-      //5 Lam Insert: 1.5 hours (90 minutes)
-      //6 Lam to Complete: 3 hours (180 minutes)
-      //7 Courthouse Appointment: 1 hour (60 minutes)
-      //8 Follow Up: .5 hours (30 minutes)
     });
   }
 
@@ -76,6 +73,7 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
         if(res.length > 0) this.volunteers = res;
+        console.log("Volunteers", this.volunteers);
       },
       err => {
         // TODO: Handle error
@@ -135,6 +133,57 @@ export class RideDetailModalComponent implements OnInit {
     if(update) this.closeRideModalAndUpdateClick.emit(true);
   }
 
+  handleUnapproveClick(driveId: number, driverName: string): void {
+    if(confirm(`This will remove ${driverName} from this drive. Are you sure?`)) {
+      this.loading = true;
+      this.dispatcherService.unapproveDriver({driveId}).subscribe(
+        res => {
+          this.loading = false;
+          this.closeRideModalAndUpdateClick.emit(true);
+        },
+        err => {
+          this.loading = false;
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      )
+    }
+  }
+
+  handleDenyClick(volunteerDriveId: number, driverName: string): void {
+    if(confirm(`This will remove ${driverName}'s application from this drive. Are you sure?`)) {
+      this.loading = true;
+      this.dispatcherService.denyDriver({volunteerDriveId}).subscribe(
+        res => {
+          this.loading = false;
+          this.closeRideModalAndUpdateClick.emit(true);
+        },
+        err => {
+          this.loading = false;
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      )
+    }
+  }
+
+  handleRetractClick(driveId: number): void {
+    if(confirm(`If you do this, it will remove your application for this drive. Are you sure you want to remove your application?`)) {
+      this.loading = true;
+      this.driverService.removeDriveApplicant({driveId}).subscribe(
+        res => {
+          this.loading = false;
+          this.closeRideModalAndUpdateClick.emit(true);
+        },
+        err => {
+          this.loading = false;
+          // TODO: Handle error
+          console.error("ERROR:", err);
+        }
+      )
+    }
+  }
+
   editAppointment(): void {
     // Pass the appt data to a data sharing service to populate the edit forms.
     this.sharedApptDataService.changeMessage(this.ride);
@@ -171,5 +220,19 @@ export class RideDetailModalComponent implements OnInit {
     const date = new Date(apptTime);
     const minutes = this.apptTypes[apptType].estimatedDurationMinutes;
     return new Date(date.getTime() + minutes*60000);
+  }
+
+  constructContactNumber(): void {
+    if(!this.ride.caller.phone) return;
+    const preferredContactMethod = this.ride.caller.preferredContactMethod === 1 ? 'sms' : 'tel';
+    this.callerContactLink = `${preferredContactMethod}:+1${this.ride.caller.phone}`
+  }
+
+  get startIconUrl() {
+    return this.isDriveTo ? 'assets/img/marker_pickup.png' : this.serviceProviders[this.ride.appointment.serviceProviderId].iconUrl;
+  }
+
+  get endIconUrl() {
+    return this.isDriveTo ? this.serviceProviders[this.ride.appointment.serviceProviderId].iconUrl : 'assets/img/marker_pickup.png';
   }
 }

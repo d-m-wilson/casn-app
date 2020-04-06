@@ -19,6 +19,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { CASNAppCoreModelsAppointmentDTO } from '../model/cASNAppCoreModelsAppointmentDTO';
+import { CASNAppCoreModelsBody } from '../model/cASNAppCoreModelsBody';
 import { CASNAppCoreModelsBody1 } from '../model/cASNAppCoreModelsBody1';
 import { CASNAppCoreModelsCaller } from '../model/cASNAppCoreModelsCaller';
 import { CASNAppCoreModelsDeleteSuccessMessage } from '../model/cASNAppCoreModelsDeleteSuccessMessage';
@@ -477,6 +478,108 @@ export class DispatcherApiService implements DispatcherApiServiceInterface {
 
         return this.httpClient.post<any>(`${this.basePath}/drives/${driveId}/cancel?cancelReasonId=${cancelReason}`,
             driveId,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * unapproves a volunteer for a drive
+     * Removes driverId from a drive and updates drive status as needed
+     * @param body
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public unapproveDriver(body?: CASNAppCoreModelsBody, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public unapproveDriver(body?: CASNAppCoreModelsBody, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public unapproveDriver(body?: CASNAppCoreModelsBody, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public unapproveDriver(body?: CASNAppCoreModelsBody, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Bearer) required
+        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
+            headers = headers.set('Authorization', this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json-patch+json',
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.post<any>(`${this.basePath}/drives/unapprove`,
+            body,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * denies a volunteer for a drive (who has not yet been approved)
+     * Removes volunteerDriverId from volunteers for the drive
+     * @param body1
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public denyDriver(body1?: CASNAppCoreModelsBody1, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Bearer) required
+        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
+            headers = headers.set('Authorization', this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json-patch+json',
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.post<any>(`${this.basePath}/drives/deny`,
+            body1,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

@@ -5,9 +5,7 @@
   <div class="modal-content">
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
-    <h1>
-      {{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}
-    </h1>
+    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
     <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
       <mat-tab label="Details">
         <!--=========== Appt Card ============-->
@@ -39,9 +37,7 @@
             <mat-list-item *ngIf="ride.caller.phone">
               <mat-icon mat-list-icon>{{ ride.caller.preferredContactMethod === 1 ? 'textsms' : 'phone' }}</mat-icon>
               <h4 mat-line>
-                <a href="{{ ride.caller.preferredContactMethod === 1 ? 'sms' : 'tel' }}:+1{{ ride.caller.phone }}">
-                  {{ ride.caller.phone | phone }}
-                </a>
+                <a [href]="callerContactLink | safeUrl">{{ ride.caller.phone | phone }}</a>
               </h4>
             </mat-list-item>
             <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English'">
@@ -99,11 +95,17 @@
           <span class="bolder">Volunteers</span>
           <div *ngFor="let v of volunteers" class="volunteer-container">
             {{ v.firstName }} {{ v.lastName }}
-            <button *ngIf="!driveIsApproved"
-                    type="button"
-                    mat-raised-button
-                    (click)="handleApproveClick(v.id)"
-                    color="primary">Approve</button>
+            <div>
+              <button type="button"
+                      [style.margin-right.px]="5"
+                      mat-raised-button
+                      color="warn"
+                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+              <button type="button"
+                      mat-raised-button
+                      (click)="handleApproveClick(v.id)"
+                      color="primary">Approve</button>
+            </div>
           </div>
         </mat-card>
         <mat-card *ngIf="driveIsApproved && userRole === '1'" class="mt candy-card">
@@ -112,18 +114,35 @@
             <div *ngIf="v.volunteerId === ride[driveType].driverId"
                  class="volunteer-container">
               {{ v.firstName }} {{ v.lastName }}
-              <span class="approved"><mat-icon>done</mat-icon> Approved</span>
+              <span class="approved"><mat-icon>done</mat-icon>Approved</span>
+            </div>
+            <div class="text-center">
+              <button *ngIf="v.volunteerId === ride[driveType].driverId"
+                      [style.margin-top.px]="10"
+                      type="button"
+                      mat-raised-button
+                      color="warn"
+                      (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon> Retract {{ v.firstName }}'s Application</button>
             </div>
           </ng-container>
+        </mat-card>
+        <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">
+          <span class="bolder">This drive has already been approved :).</span>
+        </mat-card>
+        <mat-card *ngIf="userRole === '2' && ride[driveType].statusId === 1" class="mt candy-card">
+          <span class="bolder">Thanks, you've applied for this drive! Your application is awaiting dispatcher approval.</span>
+          <br><br>
+
         </mat-card>
       </mat-tab>
       <!--================ Map ===============-->
       <mat-tab label="Map View">
         <mat-card class="candy-card">
-          <agm-map [latitude]="ride[driveType].startLatitude" [longitude]=" ride[driveType].startLongitude">
+          <agm-map [latitude]="ride[driveType].startLatitude"
+                   [longitude]=" ride[driveType].startLongitude">
             <agm-marker [latitude]="ride[driveType].startLatitude"
                         [longitude]="ride[driveType].startLongitude"
-                        iconUrl="assets/img/marker_{{ isDriveTo ? 'pickup' : 'clinic' }}.png">
+                        [iconUrl]="startIconUrl">
               <agm-snazzy-info-window>
                 <ng-template>
                   Start Address:
@@ -138,7 +157,7 @@
             </agm-marker>
             <agm-marker [latitude]="ride[driveType].endLatitude"
                         [longitude]="ride[driveType].endLongitude"
-                        iconUrl="assets/img/marker_{{ isDriveTo ? 'clinic' : 'dropoff' }}.png">
+                        [iconUrl]="endIconUrl">
               <agm-snazzy-info-window>
                 <ng-template>
                   End Address:
@@ -156,14 +175,20 @@
       </mat-tab>
     </mat-tab-group>
     <!--=========== Modal Actions ============-->
-    <!-- TODO: Check if volunteer list includes current user, disable btn -->
     <div class="modal-actions">
       <button type="button"
               class="btn-cta"
               mat-raised-button
+              *ngIf="userRole === '1' || ride[driveType].statusId === 0"
               [disabled]="ride[driveType].statusId === 2"
               (click)="handleApplyClick()"
               color="primary">Apply Now!</button>
+      <button type="button"
+              class="btn-cta warn"
+              mat-raised-button
+              *ngIf="userRole === '2' && ride[driveType].statusId === 1"
+              (click)="handleRetractClick(ride[driveType].id)"
+              color="primary">Retract Application</button>
     </div>
     <div class="modal-actions-cancel">
       <button type="button"

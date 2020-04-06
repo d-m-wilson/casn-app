@@ -1,13 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { AgmCoreModule, LAZY_MAPS_API_CONFIG, MapsAPILoader } from '@agm/core';
 import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
+import { DatePipe } from '@angular/common';
 /* Angular Material Components */
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -46,6 +47,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 /* Custom Directives & Pipes */
 import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
 import { PhonePipe } from './pipes/phone.pipe';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
 /* Custom Components */
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
@@ -81,7 +83,8 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     MassTextComponent,
     PhonePipe,
     LoaderComponent,
-    MyDrivesComponent
+    MyDrivesComponent,
+    SafeUrlPipe
   ],
   imports: [
     NgxMaskModule.forRoot(),
@@ -118,6 +121,7 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     MatTabsModule,
     MatToolbarModule,
     ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
+    HammerModule,
   ],
   providers: [
     AppConfigService,
@@ -130,7 +134,8 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     // { provide: LAZY_MAPS_API_CONFIG, useClass: GoogleMapConfigService },
-    { provide: MapsAPILoader, useClass: GoogleMapConfigService }
+    { provide: MapsAPILoader, useClass: GoogleMapConfigService },
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

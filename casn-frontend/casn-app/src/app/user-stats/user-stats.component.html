@@ -14,7 +14,7 @@
               </div>
               <div class="front back" *ngIf="b.tapped">
                 <h3>{{ !b.isEarned && b.isHidden ? '???' : b.title }}</h3>
-                <p *ngIf="b.isEarned"><em>Earned {{ b.dateEarned }}</em></p>
+                <p *ngIf="b.isEarned"><em>Earned {{ b.dateEarned | date:'shortDate' }}</em></p>
                 <p *ngIf="b.isEarned">{{ b.description }}</p>
                 <p *ngIf="!b.isEarned"><em>{{ b.isHidden ? '???' : b.description }}</em></p>
               </div>

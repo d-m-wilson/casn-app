@@ -44,5 +44,13 @@ export class Constants {
     '/caller',
     '/message',
     '/appointment'
-  ]
+  ];
+
+  public readonly SERVICE_PROVIDER_MAP_MARKERS = {
+    1: 'assets/img/marker_clinic.png',
+    2: 'assets/img/marker_court.png',
+    3: 'assets/img/marker_lodging.png',
+    4: 'assets/img/marker_airport.png',
+    default: 'assets/img/marker_cluster.png'
+  };
 }

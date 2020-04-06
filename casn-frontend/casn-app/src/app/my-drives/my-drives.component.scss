@@ -61,6 +61,14 @@ p {
   color: $poop-color;
 }
 
+.drive-buddy {
+  background-color: $accent-color-2;
+}
+
+.drive-buddy .status-text {
+  color: $primary-color-dark;
+}
+
 /********************************************************************
                         Date Selection Sidebar
 ********************************************************************/

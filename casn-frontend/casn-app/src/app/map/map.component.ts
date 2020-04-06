@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
+import { Constants } from '../app.constants';
 
 @Component({
   selector: 'app-map',
@@ -21,7 +22,8 @@ export class MapComponent implements OnInit {
   // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
   displayRides: boolean[] = [true, true, false, false];
 
-  constructor( private ds: DefaultApiService ) { }
+  constructor( private ds: DefaultApiService,
+               private constants: Constants ) { }
 
   ngOnInit() {
     this.getServiceProviders();
@@ -34,20 +36,7 @@ export class MapComponent implements OnInit {
   getServiceProviders(): void {
     this.ds.getServiceProviders().subscribe(s => {
       this.serviceProviders = s.map(provider => {
-        switch(provider.serviceProviderTypeId) {
-          case 1:
-            provider.iconUrl = 'assets/img/marker_clinic.png';
-            break;
-          case 2:
-            provider.iconUrl = 'assets/img/marker_court.png';
-            break;
-          case 3:
-            provider.iconUrl = 'assets/img/marker_lodging.png';
-            break;
-          default:
-            // TODO: Get a default marker?
-            provider.iconUrl = 'assets/img/marker_cluster.png';
-        }
+        provider.iconUrl = this.constants.SERVICE_PROVIDER_MAP_MARKERS[provider.serviceProviderTypeId];
         return provider;
       })
     });

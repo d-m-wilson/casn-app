@@ -14,6 +14,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { CASNAppCoreModelsAppointmentDTO } from '../model/cASNAppCoreModelsAppointmentDTO';
+import { CASNAppCoreModelsBody } from '../model/cASNAppCoreModelsBody';
 import { CASNAppCoreModelsBody1 } from '../model/cASNAppCoreModelsBody1';
 import { CASNAppCoreModelsCaller } from '../model/cASNAppCoreModelsCaller';
 import { CASNAppCoreModelsDeleteSuccessMessage } from '../model/cASNAppCoreModelsDeleteSuccessMessage';
@@ -26,7 +27,7 @@ import { Configuration }                                     from '../configurat
 export interface DispatcherApiServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
-    
+
 
     /**
     * adds a new appointment
@@ -45,13 +46,13 @@ export interface DispatcherApiServiceInterface {
     /**
     * approves a volunteer for a drive
     * Adds driverId to a drive
-    * @param body1 
+    * @param body1
     */
     addDriver(body1?: CASNAppCoreModelsBody1, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-    * 
-    * 
+    *
+    *
     * @param appointmentID pass an appointmentIdentifier
     */
     deleteAppointment(appointmentID: string, extraHttpRequestParams?: any): Observable<CASNAppCoreModelsDeleteSuccessMessage>;
@@ -65,7 +66,7 @@ export interface DispatcherApiServiceInterface {
 
     /**
     * get list of applicants for a drive
-    * 
+    *
     * @param driveId id of drive
     */
     getVolunteerDrives(driveId: number, extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsVolunteerDrive>>;
@@ -77,5 +78,19 @@ export interface DispatcherApiServiceInterface {
     * @param appointmentDTO appointmentData with updated fields
     */
     updateAppointment(appointmentID: string, appointmentDTO?: CASNAppCoreModelsAppointmentDTO, extraHttpRequestParams?: any): Observable<CASNAppCoreModelsAppointmentDTO>;
+
+    /**
+    * unapproves a volunteer for a drive
+    * removes driverId from a drive and updates status as needed
+    * @param body
+    */
+    unapproveDriver(body?: CASNAppCoreModelsBody, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+    * denies a volunteer for a drive (who has not yet been approved)
+    * removes volunteerDriverId from list of volunteers
+    * @param body1
+    */
+    denyDriver(body1?: CASNAppCoreModelsBody1, extraHttpRequestParams?: any): Observable<{}>;
 
 }

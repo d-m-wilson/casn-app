@@ -34,6 +34,13 @@ export interface DriverApiServiceInterface {
     addDriveApplicant(body?: CASNAppCoreModelsBody, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
+    * unapplies a volunteer for a drive (if not already approved)
+    * Removes a volunteer drive application
+    * @param body
+    */
+    removeDriveApplicant(body?: CASNAppCoreModelsBody, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
     * gets applied-for and approved drives for the current user
     *
     */

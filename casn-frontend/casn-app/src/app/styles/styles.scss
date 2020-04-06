@@ -7,7 +7,7 @@
 /* @import '~@angular/material/prebuilt-themes/indigo-pink.css'; */
 
 /* ng-datetime-picker */
-@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
 @import './variables';
 
 /********************************************************************
@@ -52,6 +52,10 @@ body {
   font-size: 1.2rem;
 }
 
+.text-center {
+  text-align: center;
+}
+
 /*******************************************************************
                         Buttons, Mat-Buttons
 ********************************************************************/
@@ -67,6 +71,10 @@ body {
   height: 65px;
   border-radius: 50px;
   border: 2px solid;
+
+  &.warn {
+    background-color: $error-color;
+  }
 }
 
 /*******************************************************************
