@@ -109,7 +109,7 @@
                 <div class="drive-card-content">
                   <p>
                     <span class="bolder text-sm">{{ r.driveBuddy.firstName }} {{ r.driveBuddy.lastName }}</span><br>
-                    <span>{{ r.driveBuddy.mobilePhone | phone }}</span>
+                    <a [href]="r.driveBuddy.contactLink | safeUrl"><span>{{ r.driveBuddy.mobilePhone | phone }}</span></a>
                   </p>
                 </div>
               </mat-card>
@@ -126,7 +126,7 @@
                 <div class="drive-card-content">
                   <p>
                     <span class="bolder text-sm">{{ r.driveBuddy.firstName }} {{ r.driveBuddy.lastName }}</span><br>
-                    <span>{{ r.driveBuddy.mobilePhone | phone }}</span>
+                    <a [href]="r.driveBuddy.contactLink | safeUrl"><span>{{ r.driveBuddy.mobilePhone | phone }}</span></a>
                   </p>
                 </div>
               </mat-card>

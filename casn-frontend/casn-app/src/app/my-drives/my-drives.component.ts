@@ -90,9 +90,11 @@ export class MyDrivesComponent implements OnInit {
       appts => {
         this.loading = false
         appts = appts.sort((a,b) => new Date(a.appointment.appointmentDate).valueOf() - new Date(b.appointment.appointmentDate).valueOf());
-        this.rides = appts;
-        console.log("Rides")
-        this.ridesToDisplay = appts;
+        this.rides = appts.map(a => {
+          if(a.driveBuddy && a.driveBuddy.mobilePhone) a.driveBuddy.contactLink = `sms:+1${a.driveBuddy.mobilePhone}`;
+          return a;
+        });
+        this.ridesToDisplay = this.rides;
         this.updateDateFilterProperties();
         console.log("Rides:", this.rides);
       },

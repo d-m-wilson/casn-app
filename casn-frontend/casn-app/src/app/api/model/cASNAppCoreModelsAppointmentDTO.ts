@@ -11,10 +11,12 @@
  */
 import { CASNAppCoreModelsAppointment } from './cASNAppCoreModelsAppointment';
 import { CASNAppCoreModelsDrive } from './cASNAppCoreModelsDrive';
+import { CASNAppCoreModelsDriveBuddy } from './cASNAppCoreModelsDriveBuddy'
 
 
-export interface CASNAppCoreModelsAppointmentDTO { 
+export interface CASNAppCoreModelsAppointmentDTO {
     appointment?: CASNAppCoreModelsAppointment;
     driveTo?: CASNAppCoreModelsDrive;
     driveFrom?: CASNAppCoreModelsDrive;
+    driveBuddy?: CASNAppCoreModelsDriveBuddy;
 }

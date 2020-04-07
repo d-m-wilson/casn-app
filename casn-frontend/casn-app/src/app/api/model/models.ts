@@ -12,3 +12,4 @@ export * from './cASNAppCoreModelsDriveCancelReason';
 export * from './cASNAppCoreModelsDriveStatus';
 export * from './cASNAppCoreModelsDriverDrive';
 export * from './cASNAppCoreModelsVolunteerDrive';
+export * from './cASNAppCoreModelsDriveBuddy';
