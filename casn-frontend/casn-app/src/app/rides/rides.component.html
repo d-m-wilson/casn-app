@@ -71,7 +71,7 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <span class="bolder text-sm">Pick Up</span><br>
+                  <span class="bolder text-sm">To {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
                   <span>
                     {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
                   </span>
@@ -94,7 +94,7 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <span class="bolder text-sm">Drop Off</span><br>
+                  <span class="bolder text-sm">From {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
                   <span>
                     {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
                   </span>
@@ -103,12 +103,12 @@
             </mat-card>
             <ng-template #emptyPickup>
               <mat-card class="drive-card candy-card no-drive">
-                <em>No Pick Up</em>
+                <em>No Drive To {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</em>
               </mat-card>
             </ng-template>
             <ng-template #emptyDropoff>
               <mat-card class="drive-card candy-card no-drive">
-                <em>No Drop Off</em>
+                <em>No Drive From {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</em>
               </mat-card>
             </ng-template>
           </div>
