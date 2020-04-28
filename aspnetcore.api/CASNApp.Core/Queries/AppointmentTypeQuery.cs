@@ -25,5 +25,10 @@ namespace CASNApp.Core.Queries
             return result;
         }
 
+        public AppointmentType GetById(int appointmentTypeId)
+        {
+            return dbContext.AppointmentType.Find(appointmentTypeId);
+        }
+
     }
 }

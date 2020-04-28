@@ -27,6 +27,7 @@ namespace CASNApp.Core.Queries
 
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Drives)
+				.Include(a => a.AppointmentType)
 				.Where(a => a.IsActive && DateTime.Compare(a.AppointmentDate, DateTime.UtcNow) >= 0
 					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
@@ -49,6 +50,7 @@ namespace CASNApp.Core.Queries
 
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Drives)
+				.Include(a => a.AppointmentType)
 				.Where(a => a.IsActive && a.AppointmentDate >= tomorrowBeginsUTC && a.AppointmentDate <= tomorrowEndsUTC
 					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
@@ -60,6 +62,7 @@ namespace CASNApp.Core.Queries
 		{
 			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
 				.Include(a => a.Caller)
+				.Include(a => a.AppointmentType)
 				.Where(a => a.Id == appointmentId)
 				.SingleOrDefault();
 			return result;
