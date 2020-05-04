@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Constants } from '../app.constants';
 import { DriverApiService } from '../api';
 import { DatePipe } from '@angular/common';
+import { DateUtilityService } from '../shared/utils/date-utility.service';
 
 @Component({
   selector: 'app-my-drives',
   templateUrl: './my-drives.component.html',
   styleUrls: ['./my-drives.component.scss']
 })
-export class MyDrivesComponent implements OnInit {
+export class MyDrivesComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   objectKeys: any = Object.keys;
   userRole: string;
@@ -43,29 +44,50 @@ export class MyDrivesComponent implements OnInit {
   /*************** Map Modal *************/
   displayMapModal: boolean = false;
 
+  dateUtilSubscription;
+
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
                public constants: Constants,
-               private datePipe: DatePipe ) { }
+               private datePipe: DatePipe,
+               private dateUtils: DateUtilityService ) { }
 
   ngOnInit() {
     this.userRole = localStorage.getItem("userRole");
-    this.setDateRange();
+    this.getDateConfig();
     this.getAppointmentTypes();
     this.getServiceProviders();
-    this.getRides();
     this.getDriveStatuses();
 
     const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters"));
     if(showDateFilters) this.toggleDateFilters();
   }
 
+  ngOnDestroy() {
+    this.dateUtilSubscription.unsubscribe();
+  }
+
   /*********************************************************************
                             Service Calls
   **********************************************************************/
+  getDateConfig(): void {
+    this.dateUtils.setDateRange();
+    // TODO: Put this in a config object & type-check it
+    this.dateUtilSubscription = this.dateUtils.dateConfig.subscribe(d => {
+      this.startDate = d.startDate;
+      this.startDateLong = d.startDateLong;
+      this.endDate = d.endDate;
+      this.endDateLong = d.endDateLong;
+      this.datesToDisplay = d.datesToDisplay;
+      this.activeDate = d.activeDate;
+      console.log("Updated Dates", d);
+      this.getRides();
+    });
+  }
+
   getDriveStatuses(): void {
     this.ds.getDriveStatuses().subscribe(s => {
       this.driveStatuses = s.map(i => i.name);
@@ -156,9 +178,8 @@ export class MyDrivesComponent implements OnInit {
   }
 
   handleChangeWeekClick(changeType: string): void {
-    if(changeType === 'prev') this.setDateRange(this.addDays(this.endDateLong, -7));
-    if(changeType === 'next') this.setDateRange(this.addDays(this.endDateLong, 7));
-    this.getRides();
+    if(changeType === 'prev') this.dateUtils.setDateRange(this.dateUtils.addDays(this.endDateLong, -7));
+    if(changeType === 'next') this.dateUtils.setDateRange(this.dateUtils.addDays(this.endDateLong, 7));
   }
 
   onMapDriveDetailsClick(event: any): void {
@@ -169,31 +190,6 @@ export class MyDrivesComponent implements OnInit {
   /*********************************************************************
                                 Utilities
   **********************************************************************/
-  setDateRange(date?: any): void {
-    const currentDate = date || new Date();
-    this.startDateLong = this.addDays(currentDate, -currentDate.getDay());
-    this.startDate = this.datePipe.transform(this.startDateLong, 'yyyy-MM-dd');
-    this.endDateLong = this.addDays(this.startDate, 7);
-    this.endDate = this.datePipe.transform(this.endDateLong, 'yyyy-MM-dd');
-    this.getDatesForDateRange();
-    this.activeDate = null;
-  }
-
-  private addDays(date, days) {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
-
-  private getDatesForDateRange(): void {
-    this.datesToDisplay = [];
-    let currentDate = new Date(this.startDateLong);
-    for(let i = 0; i < 7; i++) {
-      this.datesToDisplay.push(this.datePipe.transform(currentDate, 'yyyy-MM-dd'));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  }
-
   getStatusIcon(status: number): string {
     switch(status) {
       case 0: return "panorama_fish_eye";
