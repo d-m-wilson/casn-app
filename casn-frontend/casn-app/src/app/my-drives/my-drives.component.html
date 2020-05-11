@@ -68,7 +68,7 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <span class="bolder text-sm">Drive To {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
+                  <span class="bolder text-sm">To {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
                   <span>
                     {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
                   </span>
@@ -90,7 +90,7 @@
               </div>
               <div class="drive-card-content">
                 <p>
-                  <span class="bolder text-sm">Drive From {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
+                  <span class="bolder text-sm">From {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
                   <span>
                     {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
                   </span>
