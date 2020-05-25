@@ -1214,14 +1214,14 @@ namespace CASNApp.API.Controllers
             appointmentModel.DropoffVagueLatitude = appointmentEntity.DropoffVagueLatitude;
             appointmentModel.DropoffVagueLongitude = appointmentEntity.DropoffVagueLongitude;
 
-            if (driveToEntity != null)
+            if (driveToEntity != null && driveToModel != null)
             {
                 driveToModel.Id = driveToEntity.Id;
                 driveToModel.Created = driveToEntity.Created;
                 driveToModel.Updated = driveToEntity.Updated;
             }
 
-            if (driveFromEntity != null)
+            if (driveFromEntity != null && driveFromModel != null)
             {
                 driveFromModel.Id = driveFromEntity.Id;
                 driveFromModel.Created = driveFromEntity.Created;
