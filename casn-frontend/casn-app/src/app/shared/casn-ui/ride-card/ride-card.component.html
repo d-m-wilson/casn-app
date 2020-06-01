@@ -1,0 +1,77 @@
+<!-- Collapsible card -->
+<mat-expansion-panel [expanded]="true"
+                     class="candy-expansion-panel">
+
+  <!-- Card header -->
+  <mat-expansion-panel-header collapsedHeight="45px"
+                              expandedHeight="45px">
+    <mat-panel-title>
+      {{ ride.caller.callerIdentifier }}'s {{ appointmentType }}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <!-- Card body -->
+  <p><mat-icon svgIcon="casn_location">location</mat-icon> {{ serviceProviderName }}
+  <div class="drives-container">
+
+    <!-- Drive to clinic -->
+    <div class="drive-to-clinic"
+         *ngIf="ride.driveTo; else noDriveTo">
+      <span><strong>To {{ serviceProviderType }}:</strong> 9:00am</span>
+      <br/>
+      <address>
+        {{ ride.driveTo.startAddress }}<br/>
+        {{ ride.driveTo.startCity }}
+      </address>
+      <div class="drive-actions">
+        <!-- TODO: How shall we handled canceled btns? -->
+        <button class="drive-btn"
+                [ngClass]="{ 'open': ride.driveTo.statusId === 0,
+                             'pending': ride.driveTo.statusId === 1,
+                             'approved': ride.driveTo.statusId === 2,
+                             'canceled-by-caller': ride.driveTo.cancelReasonId === 1,
+                             'canceled-by-us': ride.driveTo.cancelReasonId === 2 }"
+                type="button"
+                (click)="showRideDetail.emit(true)">
+          <span class="status-text">{{ ride.driveTo.statusId | ridecta }}</span>
+        </button>
+      </div>
+    </div>
+    <ng-template #noDriveTo>
+      <div class="drive-to-clinic">
+        <em>No drive to clinic</em>
+      </div>
+    </ng-template>
+
+    <div class="vertical-divider"></div>
+
+    <!-- Drive from clinic -->
+    <div class="drive-from-clinic"
+         *ngIf="ride.driveFrom; else noDriveFrom">
+      <span><strong>From {{ serviceProviderType }}:</strong> 10:30am</span>
+      <br/>
+      <address>
+        {{ ride.driveFrom.endAddress }}<br/>
+        {{ ride.driveFrom.endCity }}
+      </address>
+      <div class="drive-actions">
+        <button class="drive-btn"
+                [ngClass]="{ 'open': ride.driveFrom.statusId === 0,
+                             'pending': ride.driveFrom.statusId === 1,
+                             'approved': ride.driveFrom.statusId === 2,
+                             'canceled-by-caller': ride.driveFrom.cancelReasonId === 1,
+                             'canceled-by-us': ride.driveFrom.cancelReasonId === 2 }"
+                type="button"
+                (click)="showRideDetail.emit(false)">
+          <span class="status-text">{{ ride.driveFrom.statusId | ridecta }}</span>
+        </button>
+      </div>
+    </div>
+    <ng-template #noDriveFrom>
+      <div class="drive-from-clinic">
+        <em>No drive from clinic</em>
+      </div>
+    </ng-template>
+  </div>
+
+</mat-expansion-panel>

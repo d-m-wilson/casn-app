@@ -16,84 +16,45 @@ p {
   display: flex;
 }
 
-.open {
-  background-color: $error-color-faded;
-  border: 2px solid $error-color;
-}
-
-.open .status-text {
-  color: $error-color;
-}
-
-.pending {
-  background-color: $pending-color-faded;
-  border: 2px solid $pending-color;
-}
-
-.pending .status-text {
-  color: $pending-color;
-}
-
-.approved {
-  background-color: $success-color-faded;
-  border: 2px solid $success-color;
-}
-
-.approved .status-text {
-  color: $success-color;
-}
-
-.canceled-by-caller {
-  background-color: #ccc;
-  border: 2px solid #555;
-}
-
-.canceled-by-caller .status-text {
-  color: #555;
-}
-
-.canceled-by-us {
-  background-color: $poop-color-faded;
-  border: 2px solid $poop-color;
-}
-
-.canceled-by-us .status-text {
-  color: $poop-color;
-}
-
 /********************************************************************
                         Date Selection Sidebar
 ********************************************************************/
 .date-sidebar {
   display: flex;
-  height: 50px;
+  height: 60px;
   width: 100%;
-  position: fixed;
-  bottom: 30px;
-  z-index: 1;
+  background-color: #3245C8;
+  color: $white;
+  font-size: 11px;
+
+  button {
+    font-size: 11px;
+  }
 }
 
 .date-card {
-  background-color: $primary-color;
+  background-color: #3245C8;
   color: white;
-  border: 1px solid $border-color;
   display: flex;
   flex-direction: column;
-  width: 60px;
+  width: 50px;
   flex-grow: 1;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 10px;
+  font-weight: 300;
 }
 
 .date-card.active {
-  background-color: $accent-color-1;
+  background-color: #DB3BB9;
   color: white;
 }
 
 .day {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 16px;
+  margin-top: 8px;
 }
 
 /********************************************************************
@@ -102,31 +63,109 @@ p {
 .ride-container {
   width: 100%;
   // Fallback for browsers that do not support custom properties
-  height: calc(100vh - 75px); // header-55px, footer-20px
-  height: calc(var(--vh, 1vh) * 100 - 75px);
+  height: calc(100vh - 110px); // header-90px, footer-20px
+  height: calc(var(--vh, 1vh) * 100 - 110px);
   min-height: -webkit-fill-available;
   overflow: auto;
 }
 
 .ride-container header {
-  display: flex;
-  background: $primary-color;
-  opacity: 0.8;
-  color: white;
-  justify-content: space-evenly;
-  align-content: center;
-  align-items: center;
+  background: $background-color;
+  opacity: 1;
+  color: $body-color;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0;
   position: fixed;
   width: 100%;
   left: 0;
   z-index: 1;
-  height: 55px;
+  height: 90px;
+
+  .title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    background-color: #3245C8;
+    color: $white;
+
+    .control-btn {
+      width: 28px;
+      height: 28px;
+      line-height: 14px;
+      font-size: 14px;
+      margin-right: 6px;
+
+      &::ng-deep .mat-button-wrapper {
+        line-height: 14px;
+        padding: 0;
+
+         .mat-icon {
+           font-size: 16px;
+           padding-right: 1px;
+           padding-top: 5px;
+        }
+      }
+    }
+
+    .list-view-btn {
+      font-size: 11px;
+      border-radius: 20px;
+      height: 28px;
+      font-weight: normal;
+      display: inline-flex;
+      align-items: center;
+
+      .mat-icon {
+        font-size: 12px;
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+      }
+    }
+  }
+
+  .tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ccc;
+    align-items: flex-end;
+    margin: 20px;
+    color: rgba($body-color, 0.6);
+
+    .tab, .active {
+      margin: 0;
+      padding: 5px 2px;
+    }
+
+    .active {
+      border-bottom: 2px solid #3546C7;
+      font-weight: bold;
+      color: $body-color;
+    }
+  }
 }
 
 .ride-container header + div {
-  margin-top: 55px; /* Clear header */
+  margin-top: 110px; /* Clear header + tabs */
+}
+
+.week-change-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 4px;
+  color: rgba($white, 0.6);
+
+  .mat-icon {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    line-height: 12px;
+  }
 }
 
 .drive-container {
@@ -137,10 +176,11 @@ p {
 }
 
 .appointment-drive-wrapper {
-  background: white;
-  margin: 5px 5px 30px 5px;
+  background: $background-color;
+  margin: 30px 15px;
   border-radius: 5px;
   padding-bottom: 5px;
+  padding-top: 10px;
 }
 
 .no-rides-card {

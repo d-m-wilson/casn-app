@@ -1,8 +1,23 @@
 @import '../styles/variables';
 
+a {
+  text-decoration: none;
+  color: $pending-color;
+}
+
+address {
+  font-style: normal;
+  line-height: 22px;
+}
+
 h1 {
   font-size: 1rem;
   text-align: center;
+}
+
+.title {
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 .appointment-card {
@@ -12,13 +27,24 @@ h1 {
 .edit-card {
   display: flex;
   align-items: center;
-  // justify-content: space-evenly;
   justify-content: space-between;
   text-align: left;
 }
 
 .edit-btn {
-  margin-left: 10px;
+  float: right;
+}
+
+.ride-card {
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
 .modal-actions {

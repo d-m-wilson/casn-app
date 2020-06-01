@@ -17,21 +17,24 @@ $primary-color-dark: #280E9A;
 $accent-color-1: #ae93c9;
 $accent-color-2: #E4E4F1;
 
-$background-color: #F2F7FD;
+$background-color: #EFF0F9;
 $modal-background-color: #E4E4F1;
 $border-color: #949ac9;
 
 $body-color: #3A2B39;
-$error-color: #ef5350;
-$error-color-faded: #ffebee;
+$body-color-light: #BFC5D2;
+$error-color: #DE4DBF;
+$error-color-faded: #FAEFF7;
 $warn-color: #ffca28;
 $warn-color-faded: #fff8e1;
-$pending-color: #29b6f6;
-$pending-color-faded: #e1f5fe;
-$success-color: #66bb6a;
+$pending-color: #5E6DD4;
+$pending-color-faded: #EAECFB;
+$success-color: #0DA247;
 $success-color-faded: #e0f2f1;
 $poop-color: #5d4037;
 $poop-color-faded: #bcaaa4;
+
+$white: #ffffff;
 
 /*****************************************************************************
             Complex Palettes Defined for Angular Material Framework
@@ -39,9 +42,11 @@ $poop-color-faded: #bcaaa4;
 $mat-casnblue: (
     50 : #e5e7f2,
     100 : #bfc2df,
-    200 : #949ac9,
+    // 200 : #949ac9,
+    200 : #3546C7,
     300 : #6972b3,
-    400 : #4853a3,
+    // 400 : #4853a3,
+    400: #495DEE,
     500 : #283593,
     600 : #24308b,
     700 : #1e2880,
@@ -72,7 +77,8 @@ $mat-casnblue: (
 $mat-casnpurple: (
     50 : #ebe5f2,
     100 : #cebedf,
-    200 : #ae93c9,
+    // 200 : #ae93c9,
+    200: #495DEE,
     300 : #8d67b3,
     400 : #7447a3,
     500 : #5c2693,

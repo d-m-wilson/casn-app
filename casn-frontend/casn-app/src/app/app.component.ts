@@ -81,6 +81,7 @@ export class AppComponent implements OnInit {
   /*********************************************************************
                               Custom Icons
   **********************************************************************/
+  // TODO: Use URL constructor instead of strings
   registerCustomMaterialIcons(): void {
     this.matIconRegistry.addSvgIcon(
       `drive_to`,
@@ -89,6 +90,26 @@ export class AppComponent implements OnInit {
     this.matIconRegistry.addSvgIcon(
       `drive_from`,
       this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/drive-to.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_calendar`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/calendar.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_menu`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/menu.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_location`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/location.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_car`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/car.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_list`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/list-view.svg`)
     );
   }
 

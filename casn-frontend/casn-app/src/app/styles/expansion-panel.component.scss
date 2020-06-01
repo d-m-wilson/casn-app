@@ -10,13 +10,21 @@
 
   // Define any styles affected by the theme.
   .candy-expansion-panel {
-    background: $background-color;
+    background: $white;
     color: $body-color;
 
     .mat-expansion-panel-header,
     .mat-expansion-panel-content {
-      background: $background-color;
+      background: $white;
       color: $body-color;
+    }
+
+    .mat-expansion-panel-header {
+      border-bottom: 1px solid #E4E8F0;
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0 16px 10px 16px;
     }
   }
 }

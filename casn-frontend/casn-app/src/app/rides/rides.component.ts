@@ -13,6 +13,7 @@ export class RidesComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   objectKeys: any = Object.keys;
   userRole: string;
+
   startDate: string;
   startDateLong: Date;
   endDate: string;
@@ -32,6 +33,7 @@ export class RidesComponent implements OnInit, OnDestroy {
   dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
   displayRides: boolean[] = [true, true, true, true];
+  activeTab: string = "all";
   // Display flags for service providers
   displayServiceProviders: any = {};
 
@@ -81,7 +83,6 @@ export class RidesComponent implements OnInit, OnDestroy {
       this.endDateLong = d.endDateLong;
       this.datesToDisplay = d.datesToDisplay;
       this.activeDate = d.activeDate;
-      console.log("Updated Dates", d);
       this.getRides();
     });
   }
@@ -182,29 +183,30 @@ export class RidesComponent implements OnInit, OnDestroy {
     this.toggleRideModal(event.ride, isDriveTo);
   }
 
+  setActiveTab(tabName: string) {
+    this.activeTab = tabName;
+    /* Display flags for rides. 0=open/unstaffed, 1=pending, 2=approved, 3=cancelled
+       Though we have a 3 or "cancelled" status, there is no tab to
+       display only cancelled drives. They'll only be shown under "All" */
+    // TODO: Possibly refactor, array may not be most appropriate data structure anymore
+    switch(tabName) {
+      case 'unstaffed':
+        this.displayRides = [true, false, false, false];
+        break;
+      case 'pending':
+        this.displayRides = [false, true, false, false];
+        break;
+      case 'approved':
+        this.displayRides = [false, false, true, false];
+        break;
+      default:
+       this.displayRides = [true, true, true, true];
+    }
+  }
+
   /*********************************************************************
                                 Utilities
   **********************************************************************/
-  getStatusIcon(status: number): string {
-    switch(status) {
-      case 0: return "panorama_fish_eye";
-      case 1: return "timelapse";
-      case 2: return "check_circle";
-      case 3: return "block"
-      default: return "";
-    }
-  }
-
-  getStatusText(status: number): string {
-    switch(status) {
-      case 0: return "Apply Now!";
-      case 1: return "Pending";
-      case 2: return "Approved";
-      case 3: return "Canceled"
-      default: return "";
-    }
-  }
-
   updateDateFilterProperties(): void {
     this.datesToDisplay.forEach(d => {
       this.dateFilterProperties[d] = {};

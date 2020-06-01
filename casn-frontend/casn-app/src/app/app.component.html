@@ -38,15 +38,17 @@
             <mat-icon>home</mat-icon>
             <span class="btn-text">Install CASN on Your Home Screen</span>
     </button>
-    <mat-toolbar class="app-navbar candy-toolbar">
+    <mat-toolbar class="app-navbar candy-toolbar mat-elevation-z2">
+      <mat-icon *ngIf="isLoggedIn()"
+                class="clicky"
+                (click)="sidenav.toggle()"
+                style="width:18px"
+                svgIcon="casn_menu">menu</mat-icon>
       <img class="logo"
            src="assets/img/casn-logo.png"
            alt="CASN logo"
            routerLink="/">
       <span class="fill-remaining-space"></span>
-      <mat-icon *ngIf="isLoggedIn()"
-                class="clicky"
-                (click)="sidenav.toggle()">menu</mat-icon>
     </mat-toolbar>
     <main>
       <router-outlet></router-outlet>

@@ -1,136 +1,95 @@
 <ng-container *ngIf="rides && serviceProviders && apptTypes"
               (swipeleft)="swipe($event.type)"
               (swiperight)="swipe($event.type)">
-  <!--********************************************************************
-                            Date Selection Sidebar
-  **********************************************************************-->
   <div class="dates-rides-wrapper">
-    <nav *ngIf="showDateFilters" class="date-sidebar">
-      <div class="date-card"
-           *ngFor="let d of datesToDisplay"
-           (click)="toggleActiveDate(d)"
-           [ngClass]="{ 'active': d === activeDate }">
-        <span [matBadge]="dateFilterProperties[d]?.numApptsThisDay"
-              [matBadgeHidden]="dateFilterProperties[d]?.numApptsThisDay < 1"
-              matBadgeOverlap="false">{{ d | date:'EEE' }}</span>
-        <span class="day">{{ d | date:'d' }}</span>
-      </div>
-    </nav>
-    <!--********************************************************************
-                                    Ride Cards
-    **********************************************************************-->
     <section class="ride-container">
       <header>
-        <button mat-mini-fab
-                color="frosted"
-                (click)="toggleDateFilters()">
-          <i class="fas fa-calendar-day clicky"></i>
-        </button>
-        <button mat-mini-fab
-                color="frosted"
-                (click)="toggleMapModal()">
-          <i class="fas fa-map-marked-alt clicky"></i>
-        </button>
-        <button mat-mini-fab
-                color="frosted"
-                (click)="toggleSettingsModal()">
-          <i class="fas fa-filter clicky"></i>
-        </button>
+        <div class="title-section">
+          <h4>Schedule</h4>
+          <!--********************************************************************
+                                  Controls (Dates, Filters)
+          **********************************************************************-->
+          <div class="controls">
+            <button mat-mini-fab
+                    color="accent"
+                    class="control-btn"
+                    aria-label="Open map"
+                    (click)="toggleMapModal()">
+              <mat-icon>map</mat-icon>
+            </button>
+            <button mat-mini-fab
+                    color="accent"
+                    class="control-btn"
+                    aria-label="Example icon button with a delete icon"
+                    (click)="toggleDateFilters()">
+              <mat-icon>calendar_today</mat-icon>
+            </button>
+              <button mat-raised-button
+                      color="accent"
+                      class="list-view-btn"
+                      (click)="toggleSettingsModal()">
+              <mat-icon>tune</mat-icon> Filters
+            </button>
+          </div>
+        </div>
+        <!--********************************************************************
+                                Date Filters, Change Weeks
+        **********************************************************************-->
+        <nav *ngIf="showDateFilters" class="date-sidebar">
+          <span class="week-change-btn"
+                (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></span>
+          <div class="date-card"
+               *ngFor="let d of datesToDisplay"
+               (click)="toggleActiveDate(d)"
+               [ngClass]="{ 'active': d === activeDate }">
+            <span>{{ d | date:'EEE' }}</span>
+            <span class="day">{{ d | date:'d' }}</span>
+          </div>
+          <span class="week-change-btn"
+                (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></span>
+        </nav>
+        <!--********************************************************************
+                                  Drive Status Tabs
+        **********************************************************************-->
+        <div class="tabs">
+          <p class="tab"
+             (click)="setActiveTab('all')"
+             [ngClass]="activeTab === 'all' ? 'active' : ''">All</p>
+          <p class="tab"
+             (click)="setActiveTab('approved')"
+             [ngClass]="activeTab === 'approved' ? 'active' : ''">Approved</p>
+          <p class="tab"
+             (click)="setActiveTab('pending')"
+             [ngClass]="activeTab === 'pending' ? 'active' : ''">Pending</p>
+          <p class="tab"
+             (click)="setActiveTab('unstaffed')"
+             [ngClass]="activeTab === 'unstaffed' ? 'active' : ''">Unstaffed</p>
+        </div>
       </header>
+      <!--********************************************************************
+                                No Rides Today Image
+      **********************************************************************-->
       <div *ngIf="ridesToDisplay.length < 1" class="no-rides-card">
           <img src="assets/img/no_rides.png" alt="no rides today">
       </div>
+      <!--********************************************************************
+                                    Ride Cards
+      **********************************************************************-->
       <ng-container *ngFor="let r of ridesToDisplay">
         <div *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)"
-             class="appointment-drive-wrapper">
-          <mat-card class="appointment-card candy-card mat-elevation-z0">
-            <div class="date-badge">
-              {{ r.appointment.appointmentDate | date:'d' }}
-              <!--TODO: Add weekdays -->
-              <!-- <span class="weekday" style="font-size:12px">{{ r.appointment.appointmentDate | date:'EEE' }}</span> -->
-            </div>
-            <div>
-              <span class="bolder">{{ r.caller.callerIdentifier }}'s {{ apptTypes[r.appointment?.appointmentTypeId].title }}</span> <br>
-              <span class="bold text-sm">{{ r.appointment?.appointmentDate | date:'shortTime'}}-{{ getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId) | date:'shortTime' }} <br>{{ serviceProviders[r.appointment?.serviceProviderId].name }}</span> <br>
-            </div>
-          </mat-card>
-          <div class="drive-container">
-            <mat-card *ngIf="displayRides[r.driveTo?.statusId]; else emptyPickup"
-                      (click)="toggleRideModal(r, true)"
-                      class="drive-card candy-card"
-                      [ngClass]="{ 'open': r.driveTo.statusId === 0,
-                                   'pending': r.driveTo.statusId === 1,
-                                   'approved': r.driveTo.statusId === 2,
-                                   'canceled-by-caller': r.driveTo.cancelReasonId === 1,
-                                   'canceled-by-us': r.driveTo.cancelReasonId === 2 }">
-              <div class="drive-card-header">
-                <mat-icon *ngIf="r.driveTo.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveTo.statusId) }}</mat-icon>
-                <span *ngIf="r.driveTo.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
-                <!-- TODO: For v2, show driver name instead of driver ID -->
-                <span class="status-text bolder">{{ getStatusText(r.driveTo.statusId) }} <span *ngIf="r.driveTo.statusId === 2">#{{ r.driveTo.driverId }}</span></span>
-              </div>
-              <div class="drive-card-content">
-                <p>
-                  <span class="bolder text-sm">To {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
-                  <span>
-                    {{ r.driveTo.startAddress }} {{ r.driveTo.startPostalCode }}
-                  </span>
-                </p>
-              </div>
-            </mat-card>
-            <mat-card *ngIf="displayRides[r.driveFrom?.statusId]; else emptyDropoff"
-                      (click)="toggleRideModal(r)"
-                      class="drive-card candy-card"
-                      [ngClass]="{ 'open': r.driveFrom.statusId === 0,
-                                   'pending': r.driveFrom.statusId === 1,
-                                   'approved': r.driveFrom.statusId === 2,
-                                   'canceled-by-caller': r.driveFrom.cancelReasonId === 1,
-                                   'canceled-by-us': r.driveFrom.cancelReasonId === 2 }">
-              <div class="drive-card-header">
-                <mat-icon *ngIf="r.driveFrom.cancelReasonId !== 2" class="status-text">{{ getStatusIcon(r.driveFrom.statusId) }}</mat-icon>
-                <span *ngIf="r.driveFrom.cancelReasonId === 2" style="font-size:1.3rem">💩</span>
-                <!-- TODO: For v2, show driver name instead of driver ID -->
-                <span class="status-text bolder">{{ getStatusText(r.driveFrom.statusId) }} <span *ngIf="r.driveFrom.statusId === 2">#{{ r.driveFrom.driverId }}</span></span>
-              </div>
-              <div class="drive-card-content">
-                <p>
-                  <span class="bolder text-sm">From {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</span><br>
-                  <span>
-                    {{ r.driveFrom.endAddress }} {{ r.driveFrom.endPostalCode }}
-                  </span>
-                </p>
-              </div>
-            </mat-card>
-            <ng-template #emptyPickup>
-              <mat-card class="drive-card candy-card no-drive">
-                <em>No Drive To {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</em>
-              </mat-card>
-            </ng-template>
-            <ng-template #emptyDropoff>
-              <mat-card class="drive-card candy-card no-drive">
-                <em>No Drive From {{ serviceProviders[r.appointment.serviceProviderId].serviceProviderType }}</em>
-              </mat-card>
-            </ng-template>
-          </div>
+             class="appointment-drive-wrapper"
+             [style.marginTop]="showDateFilters ? '170px' : '110px'">
+          <app-ride-card [ride]="r"
+                         [appointmentType]="apptTypes[r.appointment?.appointmentTypeId].title"
+                         [serviceProviderType]="serviceProviders[r.appointment.serviceProviderId].serviceProviderType"
+                         [serviceProviderName]="serviceProviders[r.appointment?.serviceProviderId].name"
+                         (showRideDetail)="toggleRideModal(r, event)">
+          </app-ride-card>
         </div>
       </ng-container>
     </section>
   </div>
 </ng-container>
-<!--********************************************************************
-                        Footer + Week Change Controls
-**********************************************************************-->
-<footer class="fixed-footer mat-elevation-z3">
-  <button type="button"
-          mat-button
-          class="clicky bold"
-          (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></button>
-  <span>{{ this.startDate | date:'MMM d' }} &ndash; {{ this.endDate | date:'MMM d' }}</span>
-  <button type="button"
-          mat-button
-          class="clicky bold"
-          (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></button>
-</footer>
 <!--********************************************************************
                           Ride Detail Modal
 **********************************************************************-->
@@ -150,58 +109,33 @@
           (seeDriveDetailsClick)="onMapDriveDetailsClick($event)"
           (closeMapModalClick)="toggleMapModal()"></app-map>
 <!--********************************************************************
-                        Settings, Display Filters
+                          Display Filters
 **********************************************************************-->
 <div *ngIf="showSettingsModal" class="modal">
   <div class="modal-content">
-    <span class="close"
-          (click)="toggleSettingsModal()">x</span>
     <div class="modal-title">
-      <h2>Filter Drives</h2>
+      <h2>Filter by Service Provider</h2>
+      <span class="close"
+            (click)="toggleSettingsModal()">X</span>
     </div>
-    <mat-card class="mt candy-card">
-      <mat-card-subtitle>By Drive Status</mat-card-subtitle>
-      <mat-slide-toggle value="open"
-                        [checked]="displayRides[0]"
-                        (change)="displayRides[0] = $event.source.checked"
-                        color="primary">Open</mat-slide-toggle>
-      <br><br>
-      <mat-slide-toggle value="pending"
-                        [checked]="displayRides[1]"
-                        (change)="displayRides[1] = $event.source.checked"
-                        color="primary">Pending</mat-slide-toggle>
-      <br><br>
-      <mat-slide-toggle value="approved"
-                        [checked]="displayRides[2]"
-                        (change)="displayRides[2] = $event.source.checked"
-                        color="primary">Approved</mat-slide-toggle>
-      <br><br>
-      <mat-slide-toggle value="canceled"
-                        [checked]="displayRides[3]"
-                        (change)="displayRides[3] = $event.source.checked"
-                        color="primary">Canceled</mat-slide-toggle>
-    </mat-card>
-    <mat-card class="mt candy-card">
-      <mat-card-subtitle>By Service Provider</mat-card-subtitle>
+    <div class="modal-body">
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">
-        <mat-slide-toggle *ngIf="serviceProviders[s].serviceProviderTypeId !== 2"
-                          class="mb"
-                          [checked]="displayServiceProviders[s]"
-                          (change)="displayServiceProviders[s] = $event.source.checked"
-                          color="primary">{{ serviceProviders[s].name }}
-        </mat-slide-toggle>
+        <div class="checkbox-container">
+          <mat-checkbox *ngIf="serviceProviders[s].serviceProviderTypeId !== 2"
+                            class="mb"
+                            [checked]="displayServiceProviders[s]"
+                            (change)="displayServiceProviders[s] = $event.source.checked"
+                            color="primary">{{ serviceProviders[s].name }}
+          </mat-checkbox>
+        </div>
       </ng-container>
-      <mat-slide-toggle [checked]="displayServiceProviders['courthouses']"
-                        class="mb"
-                        (change)="displayServiceProviders['courthouses'] = $event.source.checked"
-                        color="primary">Courthouses
-      </mat-slide-toggle>
-    </mat-card>
-    <div class="modal-actions">
-      <button type="button"
-              mat-raised-button
-              (click)="toggleSettingsModal()"
-              color="primary">Return to Schedule</button>
+      <div class="checkbox-container">
+        <mat-checkbox [checked]="displayServiceProviders['courthouses']"
+                          class="mb"
+                          (change)="displayServiceProviders['courthouses'] = $event.source.checked"
+                          color="primary">Courthouses
+        </mat-checkbox>
+      </div>
     </div>
   </div>
 </div>

@@ -56,6 +56,19 @@ body {
   text-align: center;
 }
 
+.text-small {
+  font-size: 13px;
+}
+
+.text-light {
+  color: rgba($body-color, 0.6);
+}
+
+.checkbox-container {
+  margin-bottom: 10px;
+  font-size: 11px;
+}
+
 /*******************************************************************
                         Buttons, Mat-Buttons
 ********************************************************************/
@@ -111,17 +124,38 @@ body {
   background-color: rgba(0,0,0,0.4);
 }
 
-.modal-title {
-  text-align: center;
-}
-
 .modal-content {
-  border-radius: 15px;
-  background: $modal-background-color;
+  border-radius: 5px;
+  background: $white;
   color: $body-color;
   margin: 5px auto;
-  padding: 10px;
   width: 90%;
+}
+
+.modal-title {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: #F3F5FF;
+  border-bottom: 1px solid rgba(#4758CE, 0.7);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin: 0;
+
+  h2 {
+    margin: 0;
+  }
+
+  h3 {
+    margin: 0;
+    margin-top: 4px;
+  }
+}
+
+.modal-body {
+  padding: 15px 20px;
 }
 
 .modal-ctrl-btns {
@@ -130,10 +164,8 @@ body {
 }
 
 .close {
-  color: $body-color;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+  color: #4758CE;
+  font-size: 12px;
 }
 
 .close:hover, .close:focus {

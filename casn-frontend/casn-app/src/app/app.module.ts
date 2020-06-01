@@ -49,6 +49,7 @@ import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-s
 import { PhonePipe } from './pipes/phone.pipe';
 import { SafeUrlPipe } from './pipes/safe-url.pipe';
 /* Custom Components */
+import { SharedModule } from './shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { CallersComponent } from './callers/callers.component';
@@ -122,6 +123,7 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     MatToolbarModule,
     ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
     HammerModule,
+    SharedModule, // TODO: Remove once modules are broken up
   ],
   providers: [
     AppConfigService,

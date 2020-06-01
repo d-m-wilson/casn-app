@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RoutesRecognized } from '@angular/router';
+import { filter, pairwise } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,12 +9,20 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
   userRole: string;
+  // TODO: initialize false after dev
+  quoteIsDismissed: boolean = true;
 
-  constructor( private router: Router ) { }
+  constructor( private router: Router ) {}
 
   ngOnInit() {
     this.userRole = localStorage.getItem("userRole");
-    if(this.userRole === '2') this.redirectDriverToSchedule();
+
+    // Auto-dismiss intro quote after 7 seconds
+    setTimeout(() => {
+      this.quoteIsDismissed = true;
+      // For drivers, redirect to the schedule page
+      if(this.userRole === '2') this.redirectDriverToSchedule();
+    }, 7000);
   }
 
   redirectDriverToSchedule(): void {
