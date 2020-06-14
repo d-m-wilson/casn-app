@@ -90,7 +90,7 @@ namespace CASNApp.TextMessageManager
 				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
 				{
 					//get a list of all NEXT DAY appointments with open drives
-					var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(true);
+					var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(false);
 
 					if (openAppointments.Count == 0)
 					{
@@ -105,7 +105,7 @@ namespace CASNApp.TextMessageManager
 				else
 				{
 					//get a list of all the appointments with open drives
-					var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(true);
+					var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(false);
 
 					//loop thru the appointments and send the assoicated text message
 					if (openAppointments != null && openAppointments.Count > 0)
@@ -122,7 +122,6 @@ namespace CASNApp.TextMessageManager
 								twilioCommand.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
 
 							//update the appointment values in the database
-							dbContext.Appointment.Update(appointment);
 							dbContext.SaveChanges();
 						}
 					}
