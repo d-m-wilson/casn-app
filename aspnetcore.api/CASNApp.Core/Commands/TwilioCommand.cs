@@ -361,7 +361,7 @@ namespace CASNApp.Core.Commands
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
 				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "");
 
-			if (appointmentType == null && appointment.AppointmentType != null)
+			if (appointmentType == null && appointment?.AppointmentType != null)
 			{
 				appointmentType = appointment.AppointmentType;
 			}
