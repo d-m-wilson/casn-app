@@ -16,7 +16,7 @@ BEGIN
 
         INSERT INTO @oldApptIds ([Id])
         SELECT Id FROM [dbo].[Appointment]
-        WHERE AppointmentDate < @thresholdDate AND AppointmentDate >= DATEADD(DAY, -7, @thresholdDate)
+        WHERE AppointmentDate < @thresholdDate AND IsRedacted = 0
 
         UPDATE [dbo].[Appointment] SET
             PickupLocationVague = NULL,
