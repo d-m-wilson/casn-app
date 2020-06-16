@@ -16,11 +16,9 @@ BEGIN
 
         INSERT INTO @oldApptIds ([Id])
         SELECT Id FROM [dbo].[Appointment]
-        WHERE CallerId IS NOT NULL
-        AND AppointmentDate < @thresholdDate
+        WHERE AppointmentDate < @thresholdDate AND IsRedacted = 0
 
         UPDATE [dbo].[Appointment] SET
-            CallerId = NULL,
             PickupLocationVague = NULL,
             PickupVagueGeocoded = NULL,
             DropoffLocationVague = NULL,
@@ -46,17 +44,24 @@ BEGIN
 
         SELECT @driveCount = @@ROWCOUNT
 
-        DECLARE @oldCallerIds TABLE ([Id] INT NOT NULL PRIMARY KEY)
+        DECLARE @callerIdsToKeep TABLE ([Id] INT NOT NULL PRIMARY KEY)
 
-        INSERT INTO @oldCallerIds ([Id])
-        SELECT DISTINCT c.Id FROM [dbo].[Caller] c
-        LEFT OUTER JOIN [dbo].[Appointment] a ON a.CallerId = c.Id
-        WHERE a.CallerId IS NULL AND
-        c.Created < @thresholdDate AND
-        (c.Updated IS NULL OR c.Updated < @thresholdDate)
+        INSERT INTO @callerIdsToKeep ([Id])
+        SELECT DISTINCT a.CallerId FROM [dbo].[Appointment] a
+        WHERE a.AppointmentDate >= @thresholdDate AND a.IsActive = 1
 
-        DELETE FROM [dbo].[Caller]
-        WHERE Id IN (SELECT Id FROM @oldCallerIds)
+        UPDATE [dbo].[Caller] SET
+            CiviContactId = 0,
+            CallerIdentifier = '',
+            FirstName = '',
+            LastName = '',
+            Phone = '',
+            IsMinor = 0,
+            Note = NULL,
+            IsActive = 0,
+            Created = '2000-01-01',
+            Updated = GETUTCDATE()
+        WHERE Id NOT IN (SELECT Id FROM @callerIdsToKeep) AND CallerIdentifier != ''
 
         SELECT @callerCount = @@ROWCOUNT
 

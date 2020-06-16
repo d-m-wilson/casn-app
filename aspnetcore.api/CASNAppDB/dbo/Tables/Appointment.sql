@@ -24,6 +24,7 @@
     [BroadcastMessageDate]  DATETIME       NULL,
     [Created]               DATETIME       CONSTRAINT [DF_Appointment_Created] DEFAULT (getutcdate()) NOT NULL,
     [Updated]               DATETIME       NULL,
+    [IsRedacted]            BIT            CONSTRAINT [DF_Appointment_IsRedacted] DEFAULT (0) NOT NULL,
     CONSTRAINT [PK_Appointment] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Appointment_AppointmentTypeId] FOREIGN KEY ([AppointmentTypeId]) REFERENCES [dbo].[AppointmentType] ([Id]),
     CONSTRAINT [FK_Appointment_CallerId] FOREIGN KEY ([CallerId]) REFERENCES [dbo].[Caller] ([Id]) ON DELETE SET NULL,
