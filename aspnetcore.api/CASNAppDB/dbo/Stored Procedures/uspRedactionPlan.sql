@@ -22,7 +22,8 @@ BEGIN
             PickupLocationVague = NULL,
             PickupVagueGeocoded = NULL,
             DropoffLocationVague = NULL,
-            DropoffVagueGeocoded = NULL
+            DropoffVagueGeocoded = NULL,
+            IsRedacted = 1
         WHERE Id IN (SELECT Id FROM @oldApptIds)
 
         SELECT @apptCount = @@ROWCOUNT
