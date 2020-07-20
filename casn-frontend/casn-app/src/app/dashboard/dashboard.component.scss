@@ -23,7 +23,8 @@ h1 {
   height: 84px;
   display: flex;
   justify-content: center;
-  align-items: center;}
+  align-items: center;
+}
 
 .btn-dash {
   width: 215px;
@@ -37,6 +38,12 @@ h1 {
 
   &.alt-color {
     background: #A60B84;
+  }
+
+  .flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

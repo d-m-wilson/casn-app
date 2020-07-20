@@ -22,12 +22,16 @@
           color="primary"
           routerLink="/caller"
           [disabled]="userRole === '2'">
-          <mat-icon class="mr-10" svgIcon="casn_car">car</mat-icon> Schedule Ride
+          <div class="flex-container">
+            <mat-icon class="mr-10" svgIcon="casn_car">car</mat-icon> Schedule Ride
+          </div>
   </button>
   <button class="btn-dash alt-color"
           mat-raised-button
           color="primary"
           routerLink="/view-schedule">
-          <mat-icon class="mr-10" svgIcon="casn_calendar">calendar</mat-icon> View Schedule
+          <div class="flex-container">
+            <mat-icon class="mr-10" svgIcon="casn_calendar">calendar</mat-icon> View Schedule
+          </div>
   </button>
 </main>
