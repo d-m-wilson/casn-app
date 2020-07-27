@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using CASNApp.Core;
 using CASNApp.Core.Commands;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Queries;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DependencyCollector;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +18,18 @@ using NLog.Extensions.Logging;
 
 namespace CASNApp.TextMessageManager
 {
-    class Program
+	class Program
 	{
 		private static readonly IConfiguration configuration;
 		private static ILoggerFactory loggerFactory;
+		private static readonly IServiceProvider serviceProvider;
+		private static readonly ILogger logger;
+		private static readonly TelemetryConfiguration telemetryConfiguration;
+		private static readonly DependencyTrackingTelemetryModule dependencyTrackingTelemetryModule;
+		private static readonly TelemetryClient telemetryClient;
+		private static readonly string AppInsightsKey;
 
-        static Program()
+		static Program()
 		{
 			configuration = new ConfigurationBuilder()
 				.SetBasePath(Directory.GetCurrentDirectory())
@@ -25,9 +37,36 @@ namespace CASNApp.TextMessageManager
 				.AddUserSecrets<Program>(true)
 				.AddEnvironmentVariables()
 				.Build();
-        }
 
-        private static IServiceProvider BuildDi()
+			var appInsightsKey = configuration[Constants.WEBJOBS_APPINSIGHTS_INSTRUMENTATIONKEY];
+			AppInsightsKey = string.IsNullOrWhiteSpace(appInsightsKey) ? null : appInsightsKey;
+
+			serviceProvider = BuildDi();
+
+			if (AppInsightsKey != null)
+			{
+				telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+				telemetryConfiguration.InstrumentationKey = AppInsightsKey;
+#pragma warning disable CS0618 // Type or member is obsolete
+				TelemetryConfiguration.Active.InstrumentationKey = AppInsightsKey;
+#pragma warning restore CS0618 // Type or member is obsolete
+				telemetryConfiguration.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());
+				telemetryConfiguration.TelemetryInitializers.Add(new OperationCorrelationTelemetryInitializer());
+				dependencyTrackingTelemetryModule = new DependencyTrackingTelemetryModule();
+				dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
+				telemetryClient = new TelemetryClient(telemetryConfiguration);
+			}
+			else
+			{
+				telemetryConfiguration = null;
+				dependencyTrackingTelemetryModule = null;
+				telemetryClient = null;
+			}
+
+			logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+		}
+
+		private static IServiceProvider BuildDi()
 		{
 			return new ServiceCollection()
 				.AddDbContext<casn_appContext>(options =>
@@ -74,59 +113,87 @@ namespace CASNApp.TextMessageManager
 				}
 			}
 
-			var servicesProvider = BuildDi();
-			var logger = servicesProvider.GetRequiredService<ILogger<Program>>();
+			string requestName = $"{nameof(MessageType)}.{messageType}";
+			string logMessage;
+			var requestStarted = DateTime.UtcNow;
+			var stopwatch = new Stopwatch();
 
-			var logMessage = $"Sending text notifcations for appointments open drives...";
-			Console.WriteLine(logMessage);
-			logger.LogInformation(logMessage);
-
-			//connect to the database
-			using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
+			try
 			{
-				var appointmentQuery = new AppointmentQuery(dbContext);
-				loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
+				logMessage = $"Sending text notifcations for appointments open drives. {nameof(messageType)} = {messageType}";
+				Console.WriteLine(logMessage);
+				logger.LogInformation(logMessage);
 
-				if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
+				//connect to the database
+				using (var dbContext = serviceProvider.GetRequiredService<casn_appContext>())
 				{
-					//get a list of all NEXT DAY appointments with open drives
-					var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(false);
+					var appointmentQuery = new AppointmentQuery(dbContext);
+					loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
 
-					if (openAppointments.Count == 0)
+					if (messageType == TwilioCommand.MessageType.FriendlyReminder || messageType == TwilioCommand.MessageType.SeriousRequest || messageType == TwilioCommand.MessageType.DesperatePlea)
 					{
-						logger?.LogWarning("There are no matching appointments, so no need to text anyone!");
-						return;
-					}
+						//get a list of all NEXT DAY appointments with open drives
+						var openAppointments = appointmentQuery.GetAllNextDayAppointmentsWithOpenDrives(false);
 
-					//send out a single reminder message for all open appointments
-					var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
-					twilioCommand.SendAppointmentReminderMessage(openAppointments, messageType);
-				}
-				else
-				{
-					//get a list of all the appointments with open drives
-					var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(false);
-
-					//loop thru the appointments and send the assoicated text message
-					if (openAppointments != null && openAppointments.Count > 0)
-					{
-						var driveQuery = new DriveQuery(dbContext);
-						var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
-						foreach (Appointment appointment in openAppointments)
+						if (openAppointments.Count == 0)
 						{
-							//get each drive objetc (to and from) and send messages to appropriate drives
-							Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
-							Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
+							logger?.LogWarning("There are no matching appointments, so no need to text anyone!");
+							return;
+						}
 
-							if (driveTo != null || driveFrom != null)
-								twilioCommand.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
+						//send out a single reminder message for all open appointments
+						var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+						twilioCommand.SendAppointmentReminderMessage(openAppointments, messageType);
+					}
+					else
+					{
+						//get a list of all the appointments with open drives
+						var openAppointments = appointmentQuery.GetAllAppointmentsWithOpenDrives(false);
 
-							//update the appointment values in the database
-							dbContext.SaveChanges();
+						//loop thru the appointments and send the assoicated text message
+						if (openAppointments != null && openAppointments.Count > 0)
+						{
+							var driveQuery = new DriveQuery(dbContext);
+							var twilioCommand = new TwilioCommand(loggerFactory.CreateLogger<TwilioCommand>(), dbContext, configuration);
+							foreach (Appointment appointment in openAppointments)
+							{
+								//get each drive objetc (to and from) and send messages to appropriate drives
+								Drive driveTo = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionToServiceProvider);
+								Drive driveFrom = appointment.Drives.FirstOrDefault(d => d.IsActive && d.Direction == Core.Models.Drive.DirectionFromServiceProvider);
+
+								if (driveTo != null || driveFrom != null)
+									twilioCommand.SendAppointmentMessage(appointment, driveTo, driveFrom, messageType, true);
+
+								//update the appointment values in the database
+								dbContext.SaveChanges();
+							}
 						}
 					}
 				}
+
+				stopwatch.Stop();
+				telemetryClient?.TrackRequest(requestName, requestStarted, stopwatch.Elapsed, Constants.ResponseCode_Success, true);
+			}
+			catch (Exception ex)
+			{
+				logMessage = "Abnormal program termination.";
+				telemetryClient?.TrackRequest(requestName, requestStarted, stopwatch.Elapsed, Constants.ResponseCode_Error, false);
+				telemetryClient?.TrackException(ex);
+				logger.LogCritical(ex, logMessage);
+				Console.WriteLine(logMessage);
+			}
+			finally
+			{
+				NLog.LogManager.Shutdown();
+				dependencyTrackingTelemetryModule?.Dispose();
+				telemetryClient?.Flush();
+				if (telemetryClient != null)
+				{
+					Task.Delay(5000).Wait();
+				}
+				telemetryConfiguration?.Dispose();
 			}
 		}
+
 	}
 }
