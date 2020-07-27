@@ -1,6 +1,5 @@
 @import '../../../styles/variables';
 
-
 address {
   margin-top: 4px;
   font-style: normal;
@@ -12,6 +11,7 @@ address {
 
 .drives-container {
   display: flex;
+  padding: 8px 0;
 
   .drive-to-clinic, .drive-from-clinic {
     flex-grow: 1;

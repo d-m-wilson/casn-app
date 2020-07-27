@@ -10,7 +10,8 @@ export class RideCTAPipe implements PipeTransform {
       case 0: return "Apply to Drive";
       case 1: return "Pending";
       case 2: return "Approved";
-      case 3: return "Canceled"
+      case 3: return "Canceled";
+      case 4: return "Canceled";
       default: return "See Details";
     }
   }

@@ -3,8 +3,8 @@ export class Constants {
     public readonly MENU_ITEMS = [
       {
         name: "Home",
-        address: "/",
-        icon: "dashboard",
+        address: "/dashboard",
+        icon: "home",
         dispatcherOnly: false
       },
       {

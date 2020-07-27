@@ -7,22 +7,23 @@
                mode="over"
                [(opened)]="opened">
     <mat-list>
-        <img class="sidenav-logo"
-             src="assets/img/casn-logo.png"
-             alt="CASN logo"
-             routerLink="/">
         <ng-container *ngFor="let m of menuItems">
           <mat-list-item *ngIf="!m.dispatcherOnly || userRole === '1'"
           [routerLink]="m.address"
           (click)="sidenav.close()">
-            <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
-            <h4 mat-line>{{ m.name }}</h4>
+            <div class="icon-container"
+                 [ngClass]="m.address === currentRoute ? 'active' : ''">
+              <mat-icon>{{ m.icon }}</mat-icon>
+            </div>
+            <p class="icon-text"
+               [ngClass]="m.address === currentRoute ? 'active' : ''">{{ m.name }}</p>
             </mat-list-item>
-            <mat-divider></mat-divider>
         </ng-container>
-        <mat-list-item>
-          <mat-icon mat-list-icon>cancel</mat-icon>
-          <h4 mat-line (click)="logout()">Log Out</h4>
+        <mat-list-item (click)="logout()" class="logout-menu-item">
+          <div class="icon-container">
+            <mat-icon>cancel</mat-icon>
+          </div>
+          <p class="icon-text">Log Out</p>
         </mat-list-item>
     </mat-list>
   </mat-sidenav>

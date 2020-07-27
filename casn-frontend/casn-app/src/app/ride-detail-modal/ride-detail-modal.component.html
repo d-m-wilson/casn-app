@@ -1,6 +1,4 @@
-<!-- TODO: Talk abt wording of pickup/dropoff -->
-<!-- TODO: Talk abt volunteers/apply section at bottom of modal -->
-
+<!-- getAppointmentEndTime() ??? -->
 
 <div class="modal" *ngIf="ride && serviceProviders && apptTypes">
   <div class="modal-content">
@@ -19,72 +17,85 @@
       <mat-tab label="Details">
         <div class="modal-body">
           <!--=========== Appt Info ============-->
-          <div class="info-row">
-            <span class="text-small text-light"><mat-icon svgIcon="casn_location">location</mat-icon> {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
+          <div class="info-row text-small">
+            <span class="text-light label">Location</span>
+            <span>{{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
           </div>
           <div class="info-row text-small">
+            <span class="text-light label">Date</span>
             <span>{{ ride.appointment.appointmentDate | date:'MMMM d, y'}}</span>
-            <span class="text-light">Date</span>
           </div>
-          <hr>
           <!--=========== Pick Up Info ============-->
-          <div class="mt ride-card">
-            <mat-icon *ngIf="userRole === '1'"
-                      class="edit-btn"
-                      (click)="editAppointment()">edit</mat-icon>
-            <span class="bold title">Pick up:</span><span *ngIf="!isDriveTo"> {{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }}</span><br>
-            <!-- NOTE: Conditional tests if real address available (exact address is hidden from non-approved drivers for privacy) -->
-            <a *ngIf="ride[driveType].startPostalCode; else startAddress"
-               [href]="startAddressGoogleMapLink"
-               target="_blank">
-              <address>
-                {{ ride[driveType].startAddress }}<br>
-                {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
-              </address>
-            </a>
+          <div class="mt drive-container">
+            <div class="label">
+              <div class="icon-container">
+                <mat-icon>place</mat-icon>
+              </div>
+            </div>
+            <div class="ride-card">
+              <!-- <mat-icon *ngIf="userRole === '1'"
+                        class="edit-btn"
+                        (click)="editAppointment()">edit</mat-icon> -->
+              <span>Pick up </span><span *ngIf="!isDriveTo">&ndash; {{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }}</span><br>
+              <!-- NOTE: Conditional tests if real address available (exact address is hidden from non-approved drivers for privacy) -->
+              <a *ngIf="ride[driveType].startPostalCode; else startAddress"
+                 [href]="startAddressGoogleMapLink"
+                 target="_blank">
+                <address>
+                  {{ ride[driveType].startAddress }}<br>
+                  {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+                </address>
+              </a>
+            </div>
           </div>
           <!--=========== Drop Off Info ============-->
-          <div class="mt ride-card">
-            <mat-icon *ngIf="userRole === '1'"
-                      class="edit-btn"
-                      (click)="editAppointment()">edit</mat-icon>
-            <span class="bold title">Drop off:</span><span *ngIf="isDriveTo">{{ ride.appointment?.appointmentDate | date:'shortTime'}}</span><br>
-            <!-- NOTE: Conditional tests if real address available (exact address is hidden from non-approved drivers for privacy) -->
-            <a *ngIf="ride[driveType].endPostalCode; else endAddress"
-               [href]="endAddressGoogleMapLink"
-               target="_blank">
-              <address>
-                {{ ride[driveType].endAddress }}<br>
-                {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
-              </address>
-            </a>
+          <div class="mt drive-container border-bottom">
+            <div class="label">
+              <div class="icon-container">
+                <mat-icon>place</mat-icon>
+              </div>
+            </div>
+            <div class="ride-card">
+              <!-- <mat-icon *ngIf="userRole === '1'"
+                        class="edit-btn"
+                        (click)="editAppointment()">edit</mat-icon> -->
+              <span>Drop off </span><span *ngIf="isDriveTo">&ndash; {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span><br>
+              <!-- NOTE: Conditional tests if real address available (exact address is hidden from non-approved drivers for privacy) -->
+              <a *ngIf="ride[driveType].endPostalCode; else endAddress"
+                 [href]="endAddressGoogleMapLink"
+                 target="_blank">
+                <address>
+                  {{ ride[driveType].endAddress }}<br>
+                  {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+                </address>
+              </a>
+            </div>
           </div>
-          <hr>
           <!--=========== Caller Info ============-->
-          <span class="bold title">Caller Information</span><br>
             <div class="info-row text-small" *ngIf="userRole === '2' && !ride.caller.phone">
               <em>The caller's contact info will be available once you are approved for the drive!</em>
             </div>
             <div class="info-row text-small" *ngIf="ride.caller.firstName">
+              <span class="text-light label">Caller Name</span>
               <span>{{ ride.caller.firstName }} {{ ride.caller.lastName }}</span>
-              <span class="text-light">Name</span>
             </div>
             <div class="info-row text-small" *ngIf="ride.caller.phone">
+              <span class="text-light label">Phone Number</span>
               <a [href]="callerContactLink | safeUrl">{{ ride.caller.phone | phone }}</a>
-              <span class="text-light">Contact number</span>
             </div>
             <div class="info-row text-small" *ngIf="ride.caller.preferredLanguage !== 'English'">
+              <span class="text-light label">Alert</span>
               <em>Preferred Language is {{ ride.caller.preferredLanguage }}</em>
-              <span class="text-light">Flag</span>
             </div>
             <div class="info-row text-small" *ngIf="ride.caller.isMinor">
+              <span class="text-light label">Alert</span>
               <em>Caller is a minor</em>
-              <span class="text-light">Flag</span>
             </div>
-          <hr>
           <!--=========== Caller Notes ============-->
-          <span class="bold title">Notes from Dispatcher</span><br>
-          <span class="text-light">{{ ride.caller.note || 'N/A'}}</span>
+          <div class="info-row text-small">
+            <span class="text-light label">Notes</span><br>
+            <span class="text-light label">{{ ride.caller.note || 'N/A'}}</span>
+          </div>
           <!--=========== Volunteers ============-->
           <mat-card *ngIf="volunteers && !driveIsApproved && userRole === '1'" class="mt candy-card">
             <span class="bolder">Volunteers</span>

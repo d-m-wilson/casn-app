@@ -3,33 +3,20 @@
 @import '~@angular/material/theming';
 
 // Define a mixin that accepts a theme and outputs the theme-specific styles.
-@mixin candy-tab-group-theme($theme) {
+@mixin candy-sidenav-theme($theme) {
   // Extract the palettes you need from the theme definition.
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
 
   // Define any styles affected by the theme.
-  .candy-tab-group {
+  .mat-sidenav {
+    background: #F0F1F9;
     color: $body-color;
-
-    .mat-tab-header {
-      background-color: #F3F5FF;
-      border-bottom: 1px solid rgba(#4758CE, 0.7);
-    }
-
-    .mat-tab-label {
-      height: 36px;
-    }
-
-    .mat-tab-label-content {
-      color: $body-color;
-      font-size: 11px;
-    }
   }
 }
 
-@mixin candy-tab-group-typography($config) {
-  .candy-tab-group {
+@mixin candy-expansion-panel-typography($config) {
+  .candy-expansion-panel {
     font: {
       family: mat-font-family($config, body-1);
       size: mat-font-size($config, body-1);

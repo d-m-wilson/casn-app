@@ -25,11 +25,7 @@
 .side-menu {
   display: flex;
   flex-direction: column;
-  padding: 20px;
-}
-
-.mat-list-icon {
-  color: $dark-frosted;
+  padding: 20px 20px 0 0;
 }
 
 .add-to-home-btn {
@@ -38,4 +34,32 @@
   z-index: 100;
   background: white;
   margin-top: 65px;
+}
+
+.icon-container {
+  background-color: rgba($primary-color-dark, 0.1);
+  // color: #3245C8;
+  color: #777FAD;
+  border-radius: 5px;
+  margin-right: 16px;
+  padding: 4px 5px;
+
+  &.active {
+    background-color: #3245C8;
+    color: $background-color;
+  }
+}
+
+.icon-text {
+  font-weight: 500;
+  color: #777FAD;
+
+  &.active {
+    color: $dark-frosted;
+  }
+}
+
+.logout-menu-item {
+  position: absolute !important;
+  bottom: 20px;
 }

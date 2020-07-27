@@ -9,7 +9,7 @@ import { filter, pairwise } from 'rxjs/operators';
 })
 export class DashboardComponent implements OnInit {
   userRole: string;
-  // TODO: initialize false after dev
+  // TODO: Turn this back on once we have content for it.
   quoteIsDismissed: boolean = true;
 
   constructor( private router: Router ) {}

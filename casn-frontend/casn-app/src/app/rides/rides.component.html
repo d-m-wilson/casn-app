@@ -51,21 +51,25 @@
         <!--********************************************************************
                                   Drive Status Tabs
         **********************************************************************-->
-        <div class="tabs">
-          <p class="tab"
-             (click)="setActiveTab('all')"
-             [ngClass]="activeTab === 'all' ? 'active' : ''">All</p>
-          <p class="tab"
-             (click)="setActiveTab('approved')"
-             [ngClass]="activeTab === 'approved' ? 'active' : ''">Approved</p>
-          <p class="tab"
-             (click)="setActiveTab('pending')"
-             [ngClass]="activeTab === 'pending' ? 'active' : ''">Pending</p>
-          <p class="tab"
-             (click)="setActiveTab('unstaffed')"
-             [ngClass]="activeTab === 'unstaffed' ? 'active' : ''">Unstaffed</p>
+        <div class="tabs-wrapper">
+          <div class="tabs">
+            <p class="tab"
+               (click)="setActiveTab('all')"
+               [ngClass]="activeTab === 'all' ? 'active' : ''">All</p>
+            <p class="tab"
+               (click)="setActiveTab('approved')"
+               [ngClass]="activeTab === 'approved' ? 'active' : ''">Approved</p>
+            <p class="tab"
+               (click)="setActiveTab('pending')"
+               [ngClass]="activeTab === 'pending' ? 'active' : ''">Pending</p>
+            <p class="tab"
+               (click)="setActiveTab('unstaffed')"
+               [ngClass]="activeTab === 'unstaffed' ? 'active' : ''">Unstaffed</p>
+          </div>
         </div>
       </header>
+      <!-- Spacer so body elements will clear the fixed header -->
+      <div [style.marginTop.px]="showDateFilters ? 170 : 110"></div>
       <!--********************************************************************
                                 No Rides Today Image
       **********************************************************************-->
@@ -77,13 +81,12 @@
       **********************************************************************-->
       <ng-container *ngFor="let r of ridesToDisplay">
         <div *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)"
-             class="appointment-drive-wrapper"
-             [style.marginTop]="showDateFilters ? '170px' : '110px'">
+             class="appointment-drive-wrapper">
           <app-ride-card [ride]="r"
                          [appointmentType]="apptTypes[r.appointment?.appointmentTypeId].title"
                          [serviceProviderType]="serviceProviders[r.appointment.serviceProviderId].serviceProviderType"
                          [serviceProviderName]="serviceProviders[r.appointment?.serviceProviderId].name"
-                         (showRideDetail)="toggleRideModal(r, event)">
+                         (showRideDetail)="toggleRideModal($event, r)">
           </app-ride-card>
         </div>
       </ng-container>

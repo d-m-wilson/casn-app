@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   opened: boolean;
   menuItems: any[];
   userRole: string;
+  currentRoute: string; // The currently active page
   // A2HS
   deferredPrompt: any;
   showButton: boolean = false;
@@ -32,8 +33,9 @@ export class AppComponent implements OnInit {
       }
 
       if (event instanceof NavigationEnd) {
-        // When user navigates away, hide a2hs button
         const onHomePage = event.url.includes('dashboard');
+        this.currentRoute = event.url;
+        // When user navigates away, hide a2hs button
         if(!onHomePage) this.showButton = false;
         // TODO: Hide loading indicator
       }

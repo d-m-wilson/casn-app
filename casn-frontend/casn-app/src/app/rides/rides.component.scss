@@ -125,6 +125,12 @@ p {
     }
   }
 
+  .tabs-wrapper {
+    background-color: inherit;
+    padding: 20px;
+    padding-bottom: 0;
+  }
+
   .tabs {
     display: flex;
     align-items: center;
@@ -133,7 +139,6 @@ p {
     text-transform: uppercase;
     border-bottom: 1px solid #ccc;
     align-items: flex-end;
-    margin: 20px;
     color: rgba($body-color, 0.6);
 
     .tab, .active {
@@ -177,7 +182,7 @@ p {
 
 .appointment-drive-wrapper {
   background: $background-color;
-  margin: 30px 15px;
+  margin: 5px 15px;
   border-radius: 5px;
   padding-bottom: 5px;
   padding-top: 10px;

@@ -15,6 +15,11 @@ h1 {
   text-align: center;
 }
 
+.modal-title {
+  border-bottom: none; /* use tabs border instead */
+  padding-bottom: 0;
+}
+
 .title {
   display: inline-block;
   margin-bottom: 10px;
@@ -36,15 +41,37 @@ h1 {
 }
 
 .ride-card {
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  padding: 15px 20px;
+  width: 100%;
+}
+
+.drive-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.icon-container {
+  background-color: #E2E4F7;
+  color: $primary-color-dark;
+  display: flex;
+  border-radius: 100%;
+  width: 25px;
+  height: 20px;
+  justify-content: center;
+  align-items: center;
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .info-row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
 }
 
 .modal-actions {
@@ -68,6 +95,15 @@ h1 {
 
 .approved {
   color: $success-color;
+}
+
+.label {
+  width: 50px;
+  margin-right: 16px;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #ccc;
 }
 
 agm-map {
