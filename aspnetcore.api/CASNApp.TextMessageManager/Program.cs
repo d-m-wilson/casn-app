@@ -117,6 +117,7 @@ namespace CASNApp.TextMessageManager
 			string logMessage;
 			var requestStarted = DateTime.UtcNow;
 			var stopwatch = new Stopwatch();
+			stopwatch.Start();
 
 			try
 			{
@@ -176,6 +177,7 @@ namespace CASNApp.TextMessageManager
 			}
 			catch (Exception ex)
 			{
+				stopwatch.Stop();
 				logMessage = "Abnormal program termination.";
 				telemetryClient?.TrackRequest(requestName, requestStarted, stopwatch.Elapsed, Constants.ResponseCode_Error, false);
 				telemetryClient?.TrackException(ex);
