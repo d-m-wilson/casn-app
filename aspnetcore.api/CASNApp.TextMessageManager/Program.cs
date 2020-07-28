@@ -181,6 +181,7 @@ namespace CASNApp.TextMessageManager
 				telemetryClient?.TrackException(ex);
 				logger.LogCritical(ex, logMessage);
 				Console.WriteLine(logMessage);
+				throw;
 			}
 			finally
 			{
