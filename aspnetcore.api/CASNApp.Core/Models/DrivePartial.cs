@@ -10,6 +10,7 @@ namespace CASNApp.Core.Models
         public const int StatusPending = 1;
         public const int StatusApproved = 2;
         public const int StatusCanceled = 3;
+        public const int StatusRideshare = 4;
 
         public Drive() { }
 

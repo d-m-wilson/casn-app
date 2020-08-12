@@ -1231,5 +1231,66 @@ namespace CASNApp.API.Controllers
             return new ObjectResult(appointmentDTO);
         }
 
+        /// <summary>
+        /// Used to update the status of a drive
+        /// </summary>
+        /// <remarks>Used to update the status of a drive</remarks>
+        /// <param name="driveId"></param>
+        /// <param name="driveStatusUpdate"></param>
+        /// <response code="200">Success. Added driver to drive.</response>
+        /// <response code="400">Client Error - please check your request format &amp; try again.</response>
+        /// <response code="404">Error. The driveId or volunteerId was not found.</response>
+        [HttpPut]
+        [Route("api/drives/{driveId}/status")]
+        [ValidateModelState]
+        [SwaggerOperation("UpdateDriveStatus")]
+        public virtual async Task<IActionResult> UpdateDriveStatus([FromRoute]int driveId, [FromBody]DriveStatusUpdate driveStatusUpdate)
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = await volunteerQuery.GetActiveDispatcherByEmailAsync(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            if (driveStatusUpdate == null)
+            {
+                return BadRequest();
+            }
+
+            // For now, this method should only be used to set a drive's status to Rideshare.
+            if (driveStatusUpdate.DriveStatusId != Drive.StatusRideshare)
+            {
+                return BadRequest();
+            }
+
+            var driveQuery = new DriveQuery(dbContext);
+            var drive = await driveQuery.GetDriveAsync(driveId);
+
+            if (drive == null)
+            {
+                return NotFound();
+            }
+
+            if ((drive.StatusId != Drive.StatusOpen && drive.StatusId != Drive.StatusPending) ||
+                drive.DriverId.HasValue)
+            {
+                return Conflict();
+            }
+
+            var utcNow = DateTime.UtcNow;
+
+            drive.StatusId = driveStatusUpdate.DriveStatusId;
+            drive.Approved = utcNow;
+            drive.ApprovedById = volunteer.Id;
+            drive.Updated = utcNow;
+
+            await dbContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
     }
 }
