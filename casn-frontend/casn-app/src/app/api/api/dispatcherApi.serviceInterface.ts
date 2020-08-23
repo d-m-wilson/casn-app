@@ -93,4 +93,10 @@ export interface DispatcherApiServiceInterface {
     */
     denyDriver(body1?: CASNAppCoreModelsBody1, extraHttpRequestParams?: any): Observable<{}>;
 
+    /**
+    * used to update the status of a drive
+    * @param driveId
+    * @param driveStatusId
+    */
+    updateDriveStatus(driveId: string, driveStatusId: number, extraHttpRequestParams?: any): Observable<{}>;
 }

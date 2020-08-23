@@ -18,3 +18,13 @@ h1 {
 #cancel-reason .mat-form-field-wrapper {
   padding-bottom: 0;
 }
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+
+  .mat-radio-button {
+    margin: 5px;
+  }
+}

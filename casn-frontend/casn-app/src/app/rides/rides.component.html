@@ -61,6 +61,7 @@
                       [ngClass]="{ 'open': r.driveTo.statusId === 0,
                                    'pending': r.driveTo.statusId === 1,
                                    'approved': r.driveTo.statusId === 2,
+                                   'rideshare': r.driveTo.statusId === 4,
                                    'canceled-by-caller': r.driveTo.cancelReasonId === 1,
                                    'canceled-by-us': r.driveTo.cancelReasonId === 2 }">
               <div class="drive-card-header">
@@ -84,6 +85,7 @@
                       [ngClass]="{ 'open': r.driveFrom.statusId === 0,
                                    'pending': r.driveFrom.statusId === 1,
                                    'approved': r.driveFrom.statusId === 2,
+                                   'rideshare': r.driveFrom.statusId === 4,
                                    'canceled-by-caller': r.driveFrom.cancelReasonId === 1,
                                    'canceled-by-us': r.driveFrom.cancelReasonId === 2 }">
               <div class="drive-card-header">
@@ -180,6 +182,11 @@
                         [checked]="displayRides[3]"
                         (change)="displayRides[3] = $event.source.checked"
                         color="primary">Canceled</mat-slide-toggle>
+      <br><br>
+      <mat-slide-toggle value="rideshare"
+                        [checked]="displayRides[4]"
+                        (change)="displayRides[4] = $event.source.checked"
+                        color="primary">Rideshare</mat-slide-toggle>
     </mat-card>
     <mat-card class="mt candy-card">
       <mat-card-subtitle>By Service Provider</mat-card-subtitle>

@@ -30,8 +30,8 @@ export class RidesComponent implements OnInit, OnDestroy {
   showDateFilters: boolean = false;
   // For showing badges on date filter cards
   dateFilterProperties: any = {};
-  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
-  displayRides: boolean[] = [true, true, true, true];
+  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled, 4=rideshare
+  displayRides: boolean[] = [true, true, true, true, true];
   // Display flags for service providers
   displayServiceProviders: any = {};
 
@@ -190,7 +190,8 @@ export class RidesComponent implements OnInit, OnDestroy {
       case 0: return "panorama_fish_eye";
       case 1: return "timelapse";
       case 2: return "check_circle";
-      case 3: return "block"
+      case 3: return "block";
+      case 4: return "local_taxi";
       default: return "";
     }
   }
@@ -201,6 +202,7 @@ export class RidesComponent implements OnInit, OnDestroy {
       case 1: return "Pending";
       case 2: return "Approved";
       case 3: return "Canceled"
+      case 4: return "Rideshare";
       default: return "";
     }
   }

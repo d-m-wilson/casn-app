@@ -61,6 +61,15 @@ p {
   color: $poop-color;
 }
 
+.rideshare {
+  background-color: $rideshare-color-faded;
+  border: 2px solid $rideshare-color;
+}
+
+.rideshare .status-text {
+  color: $rideshare-color;
+}
+
 /********************************************************************
                         Date Selection Sidebar
 ********************************************************************/

@@ -6,10 +6,14 @@
     <span class="close"
           (click)="handleCloseModalClick()">x</span>
     <h1>Please Provide a Reason</h1>
-    <mat-radio-group aria-label="Drive Cancel Reason"
+    <mat-radio-group class="radio-group"
+                     aria-label="Drive Cancel Reason"
                      [formControl]="cancelReason">
       <mat-radio-button *ngFor="let d of driveCancelReasons" [value]="d.id">
         {{ d.name }}
+      </mat-radio-button>
+      <mat-radio-button value="rideshare">
+        Staffed by rideshare
       </mat-radio-button>
     </mat-radio-group>
     <br><br>

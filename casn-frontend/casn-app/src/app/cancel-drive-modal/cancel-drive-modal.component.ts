@@ -38,17 +38,35 @@ export class CancelDriveModalComponent implements OnInit {
 
     submitDriveCancelRequest() {
       console.log("reason:", this.cancelReason.value)
+      if(this.cancelReason.value === "rideshare") {
+        this.markDriveAsRideshare();
+      } else {
+        this.cancelDrive();
+      }
+    }
+
+    cancelDrive() {
       this.dispatcherService.cancelDrive(this.driveId, this.cancelReason.value).subscribe(
         res => {
           console.log("Success! Canceled drive.");
           this.closeCancelDriveModalAndUpdateClick.emit(true);
         },
         err => {
-          // TODO: Handle error
           console.error("ERROR:", err);
         }
       );
     }
 
+    markDriveAsRideshare() {
+      this.dispatcherService.updateDriveStatus(this.driveId, 4).subscribe(
+        res => {
+          console.log("Success! Updated drive status to rideshare.");
+          this.closeCancelDriveModalAndUpdateClick.emit(true);
+        },
+        err => {
+          console.error("ERROR:", err);
+        }
+      );
+    }
 
 }
