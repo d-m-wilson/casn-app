@@ -325,6 +325,7 @@ export class AppointmentFormComponent implements OnInit {
 
     // Update driveTo values from form
     if(this.callerNeedsPickup) {
+      if(this.appointmentToEdit.driveTo === null) this.appointmentToEdit.driveTo = { direction: 1, endAddress: "", endCity: "", endState: "", endPostalCode: "" };
       this.appointmentToEdit.driveTo.startAddress = this.formPickup.pickupAddress.value;
       this.appointmentToEdit.driveTo.startCity = this.formPickup.pickupCity.value;
       this.appointmentToEdit.driveTo.startState = this.formPickup.pickupState.value;
@@ -336,6 +337,7 @@ export class AppointmentFormComponent implements OnInit {
 
     // Update driveFrom values values from form
     if(this.callerNeedsDropoff) {
+      if(this.appointmentToEdit.driveFrom === null) this.appointmentToEdit.driveFrom = { direction: 2, startAddress: "", startCity: "", startState: "", startPostalCode: "" };
       if(this.dropoffSameAsPickup) {
         this.appointmentToEdit.driveFrom.endAddress = this.formPickup.pickupAddress.value;
         this.appointmentToEdit.driveFrom.endCity = this.formPickup.pickupCity.value;
