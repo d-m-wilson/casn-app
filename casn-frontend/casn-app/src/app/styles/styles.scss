@@ -1,13 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Pre-built Angular Material themes */
-/* @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; */
-/* @import '~@angular/material/prebuilt-themes/purple-green.css'; */
-/* @import '~@angular/material/prebuilt-themes/pink-bluegrey.css'; */
-/* @import '~@angular/material/prebuilt-themes/indigo-pink.css'; */
-
 /* ng-datetime-picker */
 @import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+
 @import './variables';
 
 /********************************************************************
@@ -81,13 +74,23 @@ body {
 }
 
 .mat-raised-button.btn-cta {
-  width: 100%;
-  height: 65px;
+  min-width: 250px;
   border-radius: 50px;
-  border: 2px solid;
+  background-color: $primary-color-dark;
+  color: $white;
+  font-weight: bold;
+  box-shadow: none;
+
+  &.secondary {
+    font-weight: normal;
+    background-color: #F3F5FF;
+    color: #495dee;
+  }
 
   &.warn {
-    background-color: $error-color;
+    font-weight: normal;
+    background-color: $error-color-faded;
+    color: $error-color;
   }
 }
 

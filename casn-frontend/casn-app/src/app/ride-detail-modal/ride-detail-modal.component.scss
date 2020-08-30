@@ -7,7 +7,8 @@ a {
 
 address {
   font-style: normal;
-  line-height: 22px;
+  line-height: 20px;
+  margin-top: 5px;
 }
 
 h1 {
@@ -15,29 +16,12 @@ h1 {
   text-align: center;
 }
 
+/****************************************************************
+                          Modal Styles
+****************************************************************/
 .modal-title {
   border-bottom: none; /* use tabs border instead */
   padding-bottom: 0;
-}
-
-.title {
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-.appointment-card {
-  text-align: center;
-}
-
-.edit-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: left;
-}
-
-.edit-btn {
-  float: right;
 }
 
 .ride-card {
@@ -74,31 +58,13 @@ h1 {
   align-items: center;
 }
 
-.modal-actions {
-  display: flex;
-  justify-content: center;
-  padding-top: 1rem;
-}
-
-.modal-actions-cancel {
-  display: flex;
-  justify-content: space-evenly;
-  padding-top: 1rem;
-}
-
-.volunteer-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-
 .approved {
   color: $success-color;
 }
 
 .label {
-  width: 50px;
+  min-width: 60px;
+  max-width: 60px;
   margin-right: 16px;
 }
 
@@ -108,4 +74,78 @@ h1 {
 
 agm-map {
   height: 400px;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .btn-cta {
+    margin-top: 10px;
+  }
+}
+
+.modal-actions-cancel {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 1rem;
+}
+
+/****************************************************************
+                      Volunteers Section
+****************************************************************/
+.volunteer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  div {
+    display: flex;
+  }
+
+  .approved {
+    background-color: $success-color;
+    color: $white;
+    border-radius: 50px;
+    padding: 10px;
+    margin-right: 5px;
+  }
+
+  .retract {
+    border-radius: 100%;
+    font-weight: 600;
+    background-color: #DC5E71;
+    color: white;
+    width: 25px;
+    height: 25px;
+    padding: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.volunteer-btn {
+  border-radius: 50px;
+  font-weight: normal;
+  font-weight: normal;
+  padding: 0 10px;
+  min-width: 0;
+
+  &.approve {
+    background-color: $success-color-faded;
+    color: $success-color;
+  }
+
+  &.deny {
+    background-color: $error-color-faded;
+    color: $error-color;
+  }
+
+  &.retract {
+    background-color: #A60B84;
+    color: $white;
+  }
 }
