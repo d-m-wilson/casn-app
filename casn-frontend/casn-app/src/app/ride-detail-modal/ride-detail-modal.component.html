@@ -102,6 +102,7 @@
           <div *ngIf="volunteers && !driveIsApproved && userRole === '1'"
                class="info-row text-small">
             <span class="text-light label">Volunteers</span>
+            <div style="display:flex;">
             <div *ngFor="let v of volunteers" class="volunteer-container">
               {{ v.firstName }} {{ v.lastName }}
               <div>
@@ -116,6 +117,7 @@
                         (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
               </div>
             </div>
+          </div>
           </div>
 
           <!-- Dispatcher view: a volunteer has been approved -->

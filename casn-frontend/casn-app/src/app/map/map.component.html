@@ -5,8 +5,8 @@
         <h2>Active Rides</h2>
         <h3>{{ activeDate ? (activeDate | date:'mediumDate') : (this.startDate | date:'MMMM d') + ' - ' + (this.endDate | date:'MMMM d') }}</h3>
       </div>
-      <span class="close"
-            (click)="handleCloseModalClick()">X</span>
+      <span class="text-light"
+            (click)="handleCloseModalClick()"><i class="fas fa-times"></i></span>
     </div>
     <!--=========== Drive Filters (Dispatchers only) ============-->
     <div *ngIf="userRole === '1'" class="map-filter-container">

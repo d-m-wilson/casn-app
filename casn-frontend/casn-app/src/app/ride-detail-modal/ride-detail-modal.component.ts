@@ -73,7 +73,6 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
         if(res.length > 0) this.volunteers = res;
-        console.log("Volunteers", this.volunteers);
       },
       err => {
         // TODO: Handle error

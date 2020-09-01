@@ -53,4 +53,10 @@ export class Constants {
     4: 'assets/img/marker_airport.png',
     default: 'assets/img/marker_cluster.png'
   };
+
+  public readonly WELCOME_MESSAGES = [
+    "Volunteers do not necessarily have the time; they just have the heart. - Elizabeth Andrew",
+    "Volunteering is the ultimate exercise in democracy.  You vote in elections once a year, but when you volunteer, you vote every day about the kind of community you want to live in.",
+    "I am no longer accepting the things I cannot change. I am changing the things I cannot accept. - Angela Davis",
+  ];
 }

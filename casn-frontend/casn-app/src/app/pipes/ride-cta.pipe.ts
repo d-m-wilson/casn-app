@@ -11,7 +11,7 @@ export class RideCTAPipe implements PipeTransform {
       case 1: return "Pending";
       case 2: return "Approved";
       case 3: return "Canceled";
-      case 4: return "Canceled";
+      case 4: return "Rideshare";
       default: return "See Details";
     }
   }

@@ -29,6 +29,7 @@
                 [ngClass]="{ 'open': ride.driveTo.statusId === 0,
                              'pending': ride.driveTo.statusId === 1,
                              'approved': ride.driveTo.statusId === 2,
+                             'rideshare': ride.driveTo.statusId === 4,
                              'canceled-by-caller': ride.driveTo.cancelReasonId === 1,
                              'canceled-by-us': ride.driveTo.cancelReasonId === 2 }"
                 type="button"
@@ -59,6 +60,7 @@
                 [ngClass]="{ 'open': ride.driveFrom.statusId === 0,
                              'pending': ride.driveFrom.statusId === 1,
                              'approved': ride.driveFrom.statusId === 2,
+                             'rideshare': ride.driveFrom.statusId === 4,
                              'canceled-by-caller': ride.driveFrom.cancelReasonId === 1,
                              'canceled-by-us': ride.driveFrom.cancelReasonId === 2 }"
                 type="button"

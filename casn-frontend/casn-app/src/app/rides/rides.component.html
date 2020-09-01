@@ -118,8 +118,8 @@
   <div class="modal-content">
     <div class="modal-title">
       <h2>Filter by Service Provider</h2>
-      <span class="close"
-            (click)="toggleSettingsModal()">X</span>
+      <span class="text-light"
+            (click)="toggleSettingsModal()"><i class="fas fa-times"></i></span>
     </div>
     <div class="modal-body">
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">

@@ -31,8 +31,8 @@ export class RidesComponent implements OnInit, OnDestroy {
   showDateFilters: boolean = false;
   // For showing badges on date filter cards
   dateFilterProperties: any = {};
-  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
-  displayRides: boolean[] = [true, true, true, true];
+  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled, 4=rideshare
+  displayRides: boolean[] = [true, true, true, true, true];
   activeTab: string = "all";
   // Display flags for service providers
   displayServiceProviders: any = {};
@@ -192,16 +192,16 @@ export class RidesComponent implements OnInit, OnDestroy {
     // TODO: Possibly refactor, array may not be most appropriate data structure anymore
     switch(tabName) {
       case 'unstaffed':
-        this.displayRides = [true, false, false, false];
+        this.displayRides = [true, false, false, false, false];
         break;
       case 'pending':
-        this.displayRides = [false, true, false, false];
+        this.displayRides = [false, true, false, false, false];
         break;
       case 'approved':
-        this.displayRides = [false, false, true, false];
+        this.displayRides = [false, false, true, false, false];
         break;
       default:
-       this.displayRides = [true, true, true, true];
+       this.displayRides = [true, true, true, true, true];
     }
   }
 

@@ -78,3 +78,11 @@ address {
 .canceled-by-us .status-text {
   color: $poop-color;
 }
+
+.rideshare {
+  background-color: $rideshare-color-faded;
+}
+
+.rideshare .status-text {
+  color: $rideshare-color;
+}

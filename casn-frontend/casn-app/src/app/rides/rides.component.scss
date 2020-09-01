@@ -62,10 +62,6 @@ p {
 ********************************************************************/
 .ride-container {
   width: 100%;
-  // Fallback for browsers that do not support custom properties
-  height: calc(100vh - 110px); // header-90px, footer-20px
-  height: calc(var(--vh, 1vh) * 100 - 110px);
-  min-height: -webkit-fill-available;
   overflow: auto;
 }
 
