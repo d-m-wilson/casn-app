@@ -61,6 +61,7 @@ export class AppComponent implements OnInit {
 
     this.menuItems = this.constants.MENU_ITEMS;
     this.userRole = localStorage.getItem("userRole");
+    localStorage.setItem("showWelcomeMessage", "1");
     this.registerCustomMaterialIcons();
   }
   /*********************************************************************

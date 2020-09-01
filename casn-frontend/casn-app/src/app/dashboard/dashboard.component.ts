@@ -10,7 +10,6 @@ import { Constants } from '../app.constants';
 })
 export class DashboardComponent implements OnInit {
   userRole: string;
-  // TODO: Turn this back on once post-login redirect check is in place.
   quoteIsDismissed: boolean = true;
   welcomeMessage: string;
 
@@ -19,12 +18,16 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.userRole = localStorage.getItem("userRole");
-    // Pick a random message from the array of possible messages
-    this.welcomeMessage = this.constants.WELCOME_MESSAGES[Math.floor(Math.random() * this.constants.WELCOME_MESSAGES.length)];
+    const welcome = localStorage.getItem("showWelcomeMessage");
+    if(welcome === "1") {
+      this.quoteIsDismissed = false;
+      // Pick a random message from the array of possible messages
+      this.welcomeMessage = this.constants.WELCOME_MESSAGES[Math.floor(Math.random() * this.constants.WELCOME_MESSAGES.length)];
+    }
 
     // Auto-dismiss intro quote after 7 seconds
     setTimeout(() => {
-      this.quoteIsDismissed = true;
+      this.dismissQuote();
       // For drivers, redirect to the schedule page
       if(this.userRole === '2') this.redirectDriverToSchedule();
     }, 7000);
@@ -32,6 +35,11 @@ export class DashboardComponent implements OnInit {
 
   redirectDriverToSchedule(): void {
     this.router.navigate(['/view-schedule']);
+  }
+
+  dismissQuote(): void {
+    localStorage.setItem("showWelcomeMessage", "0");
+    this.quoteIsDismissed = true;
   }
 
 }
