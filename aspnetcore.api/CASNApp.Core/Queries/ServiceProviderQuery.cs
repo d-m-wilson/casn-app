@@ -15,7 +15,7 @@ namespace CASNApp.Core.Queries
 
 		public ServiceProvider GetServiceProviderById(int serviceProviderId, bool readOnly)
 		{
-			var result = (readOnly ? dbContext.ServiceProvider.AsNoTracking() : dbContext.ServiceProvider)
+			var result = (readOnly ? dbContext.ServiceProviders.AsNoTracking() : dbContext.ServiceProviders)
                 .Include(sp => sp.ServiceProviderType)
 				.Where(m => m.Id == serviceProviderId)
 				.SingleOrDefault();

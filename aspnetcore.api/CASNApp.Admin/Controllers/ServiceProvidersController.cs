@@ -21,7 +21,7 @@ namespace CASNApp.Admin.Controllers
         // GET: ServiceProviders
         public async Task<IActionResult> Index()
         {
-            var casn_appContext = _context.ServiceProvider.Include(s => s.ServiceProviderType);
+            var casn_appContext = _context.ServiceProviders.Include(s => s.ServiceProviderType);
             return View(await casn_appContext.ToListAsync());
         }
 
@@ -33,7 +33,7 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var serviceProvider = await _context.ServiceProvider
+            var serviceProvider = await _context.ServiceProviders
                 .Include(s => s.ServiceProviderType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (serviceProvider == null)
@@ -47,7 +47,7 @@ namespace CASNApp.Admin.Controllers
         // GET: ServiceProviders/Create
         public IActionResult Create()
         {
-            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderType, "Id", "Name");
+            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderTypes, "Id", "Name");
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace CASNApp.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderType, "Id", "Name", serviceProvider.ServiceProviderTypeId);
+            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderTypes, "Id", "Name", serviceProvider.ServiceProviderTypeId);
             return View(serviceProvider);
         }
 
@@ -76,12 +76,12 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var serviceProvider = await _context.ServiceProvider.FindAsync(id);
+            var serviceProvider = await _context.ServiceProviders.FindAsync(id);
             if (serviceProvider == null)
             {
                 return NotFound();
             }
-            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderType, "Id", "Name", serviceProvider.ServiceProviderTypeId);
+            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderTypes, "Id", "Name", serviceProvider.ServiceProviderTypeId);
             return View(serviceProvider);
         }
 
@@ -117,7 +117,7 @@ namespace CASNApp.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderType, "Id", "Name", serviceProvider.ServiceProviderTypeId);
+            ViewData["ServiceProviderTypeId"] = new SelectList(_context.ServiceProviderTypes, "Id", "Name", serviceProvider.ServiceProviderTypeId);
             return View(serviceProvider);
         }
 
@@ -129,7 +129,7 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var serviceProvider = await _context.ServiceProvider
+            var serviceProvider = await _context.ServiceProviders
                 .Include(s => s.ServiceProviderType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (serviceProvider == null)
@@ -145,15 +145,15 @@ namespace CASNApp.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var serviceProvider = await _context.ServiceProvider.FindAsync(id);
-            _context.ServiceProvider.Remove(serviceProvider);
+            var serviceProvider = await _context.ServiceProviders.FindAsync(id);
+            _context.ServiceProviders.Remove(serviceProvider);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ServiceProviderExists(int id)
         {
-            return _context.ServiceProvider.Any(e => e.Id == id);
+            return _context.ServiceProviders.Any(e => e.Id == id);
         }
     }
 }

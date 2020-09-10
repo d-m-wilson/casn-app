@@ -38,23 +38,23 @@ namespace CASNApp.Core.Entities
             }
         }
 
-        public virtual DbSet<Appointment> Appointment { get; set; }
-        public virtual DbSet<AppointmentType> AppointmentType { get; set; }
-        public virtual DbSet<Badge> Badge { get; set; }
-        public virtual DbSet<Caller> Caller { get; set; }
-        public virtual DbSet<Drive> Drive { get; set; }
-        public virtual DbSet<DriveCancelReason> DriveCancelReason { get; set; }
-        public virtual DbSet<DriveLogStatus> DriveLogStatus { get; set; }
-        public virtual DbSet<DriveStatus> DriveStatus { get; set; }
-        public virtual DbSet<Message> Message { get; set; }
-        public virtual DbSet<MessageErrorLog> MessageErrorLog { get; set; }
-        public virtual DbSet<MessageLog> MessageLog { get; set; }
-        public virtual DbSet<MessageType> MessageType { get; set; }
-        public virtual DbSet<ServiceProvider> ServiceProvider { get; set; }
-        public virtual DbSet<ServiceProviderType> ServiceProviderType { get; set; }
-        public virtual DbSet<Volunteer> Volunteer { get; set; }
-        public virtual DbSet<VolunteerBadge> VolunteerBadge { get; set; }
-        public virtual DbSet<VolunteerDriveLog> VolunteerDriveLog { get; set; }
+        public virtual DbSet<Appointment> Appointments { get; set; }
+        public virtual DbSet<AppointmentType> AppointmentTypes { get; set; }
+        public virtual DbSet<Badge> Badges { get; set; }
+        public virtual DbSet<Caller> Callers { get; set; }
+        public virtual DbSet<Drive> Drives { get; set; }
+        public virtual DbSet<DriveCancelReason> DriveCancelReasons { get; set; }
+        public virtual DbSet<DriveLogStatus> DriveLogStatuses { get; set; }
+        public virtual DbSet<DriveStatus> DriveStatuses { get; set; }
+        public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<MessageErrorLog> MessageErrorLogs { get; set; }
+        public virtual DbSet<MessageLog> MessageLogs { get; set; }
+        public virtual DbSet<MessageType> MessageTypes { get; set; }
+        public virtual DbSet<ServiceProvider> ServiceProviders { get; set; }
+        public virtual DbSet<ServiceProviderType> ServiceProviderTypes { get; set; }
+        public virtual DbSet<Volunteer> Volunteers { get; set; }
+        public virtual DbSet<VolunteerBadge> VolunteerBadges { get; set; }
+        public virtual DbSet<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

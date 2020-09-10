@@ -17,7 +17,7 @@ namespace CASNApp.Core.Queries
 
 		public List<Volunteer> GetAllActiveDispatcherssWithTextConsent(bool readOnly)
 		{
-			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+			var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
 				.Where(v => v.IsActive && v.IsDispatcher && v.HasTextConsent)
 				.ToList();
 			return result;
@@ -25,7 +25,7 @@ namespace CASNApp.Core.Queries
 
 		public List<Volunteer> GetAllActiveDriversWithTextConsent(bool readOnly)
 		{
-			var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+			var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
 				.Where(v => v.IsActive && v.IsDriver && v.HasTextConsent)
 				.ToList();
 			return result;
@@ -33,7 +33,7 @@ namespace CASNApp.Core.Queries
 
 		public Volunteer GetActiveVolunteerByEmail(string email, bool readOnly)
         {
-            var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+            var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
                 .Where(v => v.GoogleAccount == email && v.IsActive && (v.IsDriver || v.IsDispatcher))
                 .SingleOrDefault();
             return result;
@@ -53,7 +53,7 @@ namespace CASNApp.Core.Queries
 
         public Task<Volunteer> GetActiveDispatcherByEmailAsync(string email, bool readOnly)
         {
-            var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+            var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
                 .Where(v => v.GoogleAccount == email && v.IsActive && v.IsDispatcher)
                 .SingleOrDefaultAsync();
             return result;
@@ -73,7 +73,7 @@ namespace CASNApp.Core.Queries
 
         public Volunteer GetActiveDriverById(int volunteerId, bool readOnly)
         {
-            var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+            var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
                 .Where(v => v.Id == volunteerId && v.IsActive && (v.IsDriver || v.IsDispatcher))
                 .SingleOrDefault();
 
@@ -82,7 +82,7 @@ namespace CASNApp.Core.Queries
 
         public Task<Volunteer> GetByIdAsync(int volunteerId, bool readOnly)
         {
-            var result = (readOnly ? dbContext.Volunteer.AsNoTracking() : dbContext.Volunteer)
+            var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
                 .Where(v => v.Id == volunteerId)
                 .SingleOrDefaultAsync();
             return result;

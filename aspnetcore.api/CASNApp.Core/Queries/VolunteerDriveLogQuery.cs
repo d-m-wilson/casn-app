@@ -16,7 +16,7 @@ namespace CASNApp.Core.Queries
 
         public Task<VolunteerDriveLog> GetByIdAsync(int driveLogId, bool readOnly)
         {
-            var result = (readOnly ? dbContext.VolunteerDriveLog.AsNoTracking() : dbContext.VolunteerDriveLog)
+            var result = (readOnly ? dbContext.VolunteerDriveLogs.AsNoTracking() : dbContext.VolunteerDriveLogs)
                 .Include(vdl => vdl.Drive)
                 .Where(vdl => vdl.Id == driveLogId && vdl.IsActive)
                 .SingleOrDefaultAsync();
@@ -25,7 +25,7 @@ namespace CASNApp.Core.Queries
 
         public Task<VolunteerDriveLog> GetByVolunteerAndDriveIdAsync(int volunteerId, int driveId, bool readOnly)
         {
-            var result = (readOnly ? dbContext.VolunteerDriveLog.AsNoTracking() : dbContext.VolunteerDriveLog)
+            var result = (readOnly ? dbContext.VolunteerDriveLogs.AsNoTracking() : dbContext.VolunteerDriveLogs)
                 .Include(vdl => vdl.Drive)
                 .Where(vdl => vdl.VolunteerId == volunteerId && vdl.DriveId == driveId && vdl.IsActive)
                 .SingleOrDefaultAsync();

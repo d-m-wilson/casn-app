@@ -28,7 +28,7 @@ namespace CASNApp.Admin
                 return Forbid();
             }
 
-            return View(await _context.Volunteer.ToListAsync());
+            return View(await _context.Volunteers.ToListAsync());
         }
 
         // GET: Volunteers/Details/5
@@ -44,7 +44,7 @@ namespace CASNApp.Admin
                 return NotFound();
             }
 
-            var volunteer = await _context.Volunteer
+            var volunteer = await _context.Volunteers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (volunteer == null)
             {
@@ -99,7 +99,7 @@ namespace CASNApp.Admin
                 return NotFound();
             }
 
-            var volunteer = await _context.Volunteer.FindAsync(id);
+            var volunteer = await _context.Volunteers.FindAsync(id);
             if (volunteer == null)
             {
                 return NotFound();
@@ -160,7 +160,7 @@ namespace CASNApp.Admin
                 return NotFound();
             }
 
-            var volunteer = await _context.Volunteer
+            var volunteer = await _context.Volunteers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (volunteer == null)
             {
@@ -180,15 +180,15 @@ namespace CASNApp.Admin
                 return Forbid();
             }
 
-            var volunteer = await _context.Volunteer.FindAsync(id);
-            _context.Volunteer.Remove(volunteer);
+            var volunteer = await _context.Volunteers.FindAsync(id);
+            _context.Volunteers.Remove(volunteer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VolunteerExists(int id)
         {
-            return _context.Volunteer.Any(e => e.Id == id);
+            return _context.Volunteers.Any(e => e.Id == id);
         }
 
         private async Task<bool> UserHas2FA()

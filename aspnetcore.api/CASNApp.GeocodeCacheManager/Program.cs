@@ -81,7 +81,7 @@ namespace CASNApp.GeocodeCacheManager
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
             {
-                var serviceProviders = dbContext.ServiceProvider;
+                var serviceProviders = dbContext.ServiceProviders;
 
                 foreach (var serviceProvider in serviceProviders)
                 {
@@ -129,7 +129,7 @@ namespace CASNApp.GeocodeCacheManager
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
             {
-                var drives = dbContext.Drive
+                var drives = dbContext.Drives
                     .Include(d => d.Appointment)
                     .ThenInclude(a => a.ServiceProvider)
                     .Where(d => d.StartGeocoded.HasValue || d.EndGeocoded.HasValue);
@@ -203,7 +203,7 @@ namespace CASNApp.GeocodeCacheManager
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
             {
-                var appointments = dbContext.Appointment
+                var appointments = dbContext.Appointments
                     .Where(a => a.PickupVagueGeocoded.HasValue || a.DropoffVagueGeocoded.HasValue);
 
                 foreach (var appointment in appointments)
@@ -254,7 +254,7 @@ namespace CASNApp.GeocodeCacheManager
 
             using (var dbContext = servicesProvider.GetRequiredService<casn_appContext>())
             {
-                var volunteers = dbContext.Volunteer;
+                var volunteers = dbContext.Volunteers;
 
                 foreach (var volunteer in volunteers)
                 {

@@ -17,7 +17,7 @@ namespace CASNApp.Core.Queries
 
         public Task<List<AppointmentType>> GetActiveAppointmentTypesAsync(bool readOnly)
         {
-            var result = (readOnly ? dbContext.AppointmentType.AsNoTracking() : dbContext.AppointmentType)
+            var result = (readOnly ? dbContext.AppointmentTypes.AsNoTracking() : dbContext.AppointmentTypes)
                 .Where(e => e.IsActive)
                 .OrderBy(e => e.Id)
                 .ToListAsync();
@@ -27,7 +27,7 @@ namespace CASNApp.Core.Queries
 
         public AppointmentType GetById(int appointmentTypeId)
         {
-            return dbContext.AppointmentType.Find(appointmentTypeId);
+            return dbContext.AppointmentTypes.Find(appointmentTypeId);
         }
 
     }

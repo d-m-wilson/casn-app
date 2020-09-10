@@ -16,7 +16,7 @@ namespace CASNApp.Core.Queries
 
 		public Message GetMessageByType(int messageType, bool readOnly)
 		{
-			var result = (readOnly ? dbContext.Message.AsNoTracking() : dbContext.Message)
+			var result = (readOnly ? dbContext.Messages.AsNoTracking() : dbContext.Messages)
 				.Where(m => m.MessageTypeId == messageType)
 				.OrderBy(m => Guid.NewGuid())
 				.FirstOrDefault();

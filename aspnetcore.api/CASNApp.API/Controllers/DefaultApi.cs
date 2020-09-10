@@ -59,7 +59,7 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            var serviceProviders = await dbContext.ServiceProvider
+            var serviceProviders = await dbContext.ServiceProviders
                 .AsNoTracking()
                 .Include(sp => sp.ServiceProviderType)
                 .Select(c => new Core.Models.ServiceProvider(c))
@@ -103,7 +103,7 @@ namespace CASNApp.API.Controllers
                 end = end.Add(new TimeSpan(23, 59, 59));
             }
 
-            var appointmentEntities = await dbContext.Appointment
+            var appointmentEntities = await dbContext.Appointments
                 .AsNoTracking()
                 .Include(a => a.Drives)
                 .Include(a => a.Caller)
@@ -113,7 +113,7 @@ namespace CASNApp.API.Controllers
                             a.CallerId.HasValue)
                 .ToListAsync();
 
-            var drivesUserHasAppliedFor = await dbContext.VolunteerDriveLog
+            var drivesUserHasAppliedFor = await dbContext.VolunteerDriveLogs
                 .AsNoTracking()
                 .Where(vdl => vdl.VolunteerId == volunteer.Id &&
                     vdl.DriveLogStatusId == DriveLogStatus.APPLIED &&
@@ -201,7 +201,7 @@ namespace CASNApp.API.Controllers
                 return BadRequest();
             }
 
-            var apptEntity = await dbContext.Appointment
+            var apptEntity = await dbContext.Appointments
                 .AsNoTracking()
                 .Include(a => a.Drives)
                 .Include(a => a.Caller)

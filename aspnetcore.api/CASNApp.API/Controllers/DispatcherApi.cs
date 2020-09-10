@@ -91,7 +91,7 @@ namespace CASNApp.API.Controllers
             var driveTo = appointmentDTO.DriveTo;
             var driveFrom = appointmentDTO.DriveFrom;
 
-            var serviceProvider = await dbContext.ServiceProvider
+            var serviceProvider = await dbContext.ServiceProviders
                 .AsNoTracking()
                 .Where(c => c.Id == appointment.ServiceProviderId)
                 .FirstOrDefaultAsync();
@@ -101,7 +101,7 @@ namespace CASNApp.API.Controllers
                 return BadRequest(appointmentDTO);
             }
 
-            var caller = await dbContext.Caller
+            var caller = await dbContext.Callers
                 .AsNoTracking()
                 .Where(p => p.Id == appointment.CallerId)
                 .FirstOrDefaultAsync();
@@ -247,16 +247,16 @@ namespace CASNApp.API.Controllers
                 appointmentEntity.DropoffVagueLongitude = dropoffVagueLocation.Longitude;
             }
 
-            dbContext.Appointment.Add(appointmentEntity);
+            dbContext.Appointments.Add(appointmentEntity);
 
             if (driveToEntity != null)
             {
-                dbContext.Drive.Add(driveToEntity);
+                dbContext.Drives.Add(driveToEntity);
             }
 
             if (driveFromEntity != null)
             {
-                dbContext.Drive.Add(driveFromEntity);
+                dbContext.Drives.Add(driveFromEntity);
             }
 
             await dbContext.SaveChangesAsync();
@@ -464,7 +464,7 @@ namespace CASNApp.API.Controllers
 
             var driveId = body.DriveId.Value;
 
-            var drive = await dbContext.Drive
+            var drive = await dbContext.Drives
                 .Where(d => d.Id == driveId && d.IsActive)
                 .SingleOrDefaultAsync();
 
@@ -482,7 +482,7 @@ namespace CASNApp.API.Controllers
 
             var driverId = drive.DriverId.Value;
 
-            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLogs
                 .Where(vd => vd.DriveId == driveId &&
                     vd.IsActive &&
                     (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
@@ -571,14 +571,14 @@ namespace CASNApp.API.Controllers
                     {
                         logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
 
-                        var volunteerBadges = await dbContext.VolunteerBadge
+                        var volunteerBadges = await dbContext.VolunteerBadges
                             .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
                             .ToListAsync();
 
                         foreach (var volunteerBadge in volunteerBadges)
                         {
                             logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
-                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                            dbContext.VolunteerBadges.Remove(volunteerBadge);
                         }
                     }
 
@@ -638,7 +638,7 @@ namespace CASNApp.API.Controllers
                 return Conflict(body1);
             }
 
-            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLog
+            var volunteerDriveLogsForThisDrive = await dbContext.VolunteerDriveLogs
                 .Where(vd => vd.DriveId == drive.Id &&
                     vd.IsActive &&
                     (vd.DriveLogStatusId == Core.Entities.DriveLogStatus.APPLIED ||
@@ -710,14 +710,14 @@ namespace CASNApp.API.Controllers
                     {
                         logger.LogInformation($"Checking badges for VolunteerDriveLog #{volunteerDriveLog.Id}");
 
-                        var volunteerBadges = await dbContext.VolunteerBadge
+                        var volunteerBadges = await dbContext.VolunteerBadges
                             .Where(vb => vb.VolunteerDriveLogId == volunteerDriveLog.Id)
                             .ToListAsync();
 
                         foreach (var volunteerBadge in volunteerBadges)
                         {
                             logger.LogInformation($"Removing VolunteerBadge #{volunteerBadge.Id} for badge #{volunteerBadge.BadgeId}");
-                            dbContext.VolunteerBadge.Remove(volunteerBadge);
+                            dbContext.VolunteerBadges.Remove(volunteerBadge);
                         }
                     }
 
@@ -828,7 +828,7 @@ namespace CASNApp.API.Controllers
                 return BadRequest();
             }
 
-            var exists = await dbContext.Caller
+            var exists = await dbContext.Callers
                 .Where(p => p.CallerIdentifier == caller.CallerIdentifier)
                 .AnyAsync();
 
@@ -839,7 +839,7 @@ namespace CASNApp.API.Controllers
 
             var callerEntity = new Core.Entities.Caller(caller);
 
-            dbContext.Caller.Add(callerEntity);
+            dbContext.Callers.Add(callerEntity);
             await dbContext.SaveChangesAsync();
 
             caller.Id = callerEntity.Id;
@@ -912,7 +912,7 @@ namespace CASNApp.API.Controllers
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            var callers = await dbContext.Caller
+            var callers = await dbContext.Callers
                 .AsNoTracking()
                 .Where(p => p.CallerIdentifier == callerIdentifier)
                 .Select(p => new Core.Models.Caller(p))
@@ -954,12 +954,12 @@ namespace CASNApp.API.Controllers
                 return Forbid();
             }
 
-            if (!driveId.HasValue || !dbContext.Drive.Any(d => d.Id == driveId.Value))
+            if (!driveId.HasValue || !dbContext.Drives.Any(d => d.Id == driveId.Value))
             {
                 return BadRequest();
             }
 
-            var results = dbContext.VolunteerDriveLog
+            var results = dbContext.VolunteerDriveLogs
                 .AsNoTracking()
                 .Include(vdl => vdl.Volunteer)
                 .Where(vdl => vdl.DriveId == driveId.Value && vdl.IsActive)
@@ -1013,7 +1013,7 @@ namespace CASNApp.API.Controllers
 
             var appointmentModel = appointmentDTO.Appointment;
 
-            var serviceProvider = await dbContext.ServiceProvider
+            var serviceProvider = await dbContext.ServiceProviders
                 .AsNoTracking()
                 .Where(c => c.Id == appointmentModel.ServiceProviderId && c.IsActive)
                 .FirstOrDefaultAsync();
@@ -1023,7 +1023,7 @@ namespace CASNApp.API.Controllers
                 return BadRequest(appointmentDTO);
             }
 
-            var callerEntity = await dbContext.Caller
+            var callerEntity = await dbContext.Callers
                 .Where(c => c.Id == appointmentModel.CallerId && c.IsActive)
                 .FirstOrDefaultAsync();
 
@@ -1034,7 +1034,7 @@ namespace CASNApp.API.Controllers
 
             callerEntity.UpdateFromModel(callerModel);
 
-            var appointmentEntity = await dbContext.Appointment
+            var appointmentEntity = await dbContext.Appointments
                 .Include(a => a.Drives)
                 .Where(a => a.Id == appointmentModel.Id && a.IsActive)
                 .FirstOrDefaultAsync();
@@ -1082,7 +1082,7 @@ namespace CASNApp.API.Controllers
                         Drive.DirectionToServiceProvider,
                         serviceProvider);
 
-                    dbContext.Drive.Add(driveToEntity);
+                    dbContext.Drives.Add(driveToEntity);
                 }
             }
             else
@@ -1115,7 +1115,7 @@ namespace CASNApp.API.Controllers
                         Drive.DirectionFromServiceProvider,
                         serviceProvider);
 
-                    dbContext.Drive.Add(driveFromEntity);
+                    dbContext.Drives.Add(driveFromEntity);
                 }
             }
             else

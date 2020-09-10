@@ -28,7 +28,7 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            return View(await _context.MessageLog
+            return View(await _context.MessageLogs
                 .OrderByDescending(ml => ml.Id)
                 .Take(50)
                 .OrderBy(ml => ml.Id)
@@ -48,7 +48,7 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var messageLog = await _context.MessageLog
+            var messageLog = await _context.MessageLogs
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (messageLog == null)
             {

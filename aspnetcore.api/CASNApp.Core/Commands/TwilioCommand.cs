@@ -419,7 +419,7 @@ namespace CASNApp.Core.Commands
 					VolunteerId = driverId
 				};
 
-				dbContext.MessageLog.Add(messageLogEntity);
+				dbContext.MessageLogs.Add(messageLogEntity);
 				dbContext.SaveChanges();
 			}
 			catch (Twilio.Exceptions.ApiException apiException)
@@ -437,7 +437,7 @@ namespace CASNApp.Core.Commands
 					ErrorDetails = apiException.ToString()
 				};
 
-				dbContext.MessageErrorLog.Add(messageErrorLogEntity);
+				dbContext.MessageErrorLogs.Add(messageErrorLogEntity);
 				dbContext.SaveChanges();
 			}
 		}

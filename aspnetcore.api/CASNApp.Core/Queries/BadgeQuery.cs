@@ -20,9 +20,9 @@ namespace CASNApp.Core.Queries
 
         public Task<List<BadgeDTO>> GetBadgesForVolunteerIdAsync(int volunteerId, bool readOnly)
         {
-            var result = from b in (readOnly ? dbContext.Badge.AsNoTracking() : dbContext.Badge)
+            var result = from b in (readOnly ? dbContext.Badges.AsNoTracking() : dbContext.Badges)
                          where b.IsActive
-                         join vb in (readOnly ? dbContext.VolunteerBadge.AsNoTracking() : dbContext.VolunteerBadge)
+                         join vb in (readOnly ? dbContext.VolunteerBadges.AsNoTracking() : dbContext.VolunteerBadges)
                          on
                          new { Key1 = b.Id, Key2 = volunteerId }
                          equals
@@ -46,12 +46,12 @@ namespace CASNApp.Core.Queries
 
         public async Task<List<Badge>> GetUnearnedBadgesForVolunteerIdAsync(int volunteerId, bool readOnly)
         {
-            var earnedBadgeIds = await (readOnly ? dbContext.VolunteerBadge.AsNoTracking() : dbContext.VolunteerBadge)
+            var earnedBadgeIds = await (readOnly ? dbContext.VolunteerBadges.AsNoTracking() : dbContext.VolunteerBadges)
                 .Where(vb => vb.VolunteerId == volunteerId)
                 .Select(vb => vb.BadgeId)
                 .ToListAsync();
 
-            var unearnedBadges = (readOnly ? dbContext.Badge.AsNoTracking() : dbContext.Badge)
+            var unearnedBadges = (readOnly ? dbContext.Badges.AsNoTracking() : dbContext.Badges)
                 .Where(b => !earnedBadgeIds.Contains(b.Id) && b.IsActive)
                 .ToListAsync();
 
@@ -60,12 +60,12 @@ namespace CASNApp.Core.Queries
 
         public async Task<List<Badge>> GetRelevantUnearnedBadgesForVolunteerIdAsync(int volunteerId, BadgeTriggerType badgeTriggerType, bool readOnly)
         {
-            var earnedBadgeIds = await(readOnly ? dbContext.VolunteerBadge.AsNoTracking() : dbContext.VolunteerBadge)
+            var earnedBadgeIds = await(readOnly ? dbContext.VolunteerBadges.AsNoTracking() : dbContext.VolunteerBadges)
                 .Where(vb => vb.VolunteerId == volunteerId)
                 .Select(vb => vb.BadgeId)
                 .ToListAsync();
 
-            var unearnedBadges = (readOnly ? dbContext.Badge.AsNoTracking() : dbContext.Badge)
+            var unearnedBadges = (readOnly ? dbContext.Badges.AsNoTracking() : dbContext.Badges)
                 .Where(b => !earnedBadgeIds.Contains(b.Id) && b.TriggerType == (int)badgeTriggerType && b.IsActive)
                 .ToListAsync();
 
