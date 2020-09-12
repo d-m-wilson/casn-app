@@ -1,42 +1,10 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CASNApp.Core.Extensions;
-using CASNApp.Core.Interfaces;
-using CASNApp.Core.Misc;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Configuration;
 
 namespace CASNApp.Core.Entities
 {
     public partial class casn_appContext : DbContext
     {
-        public casn_appContext()
-        {
-            ChangeTracker.LazyLoadingEnabled = false;
-        }
-
-        public casn_appContext(DbContextOptions<casn_appContext> options, IConfiguration configuration)
-            : base(options)
-        {
-            ChangeTracker.LazyLoadingEnabled = false;
-
-            if (bool.Parse(configuration[Constants.DBUseManagedIdentity]))
-            {
-                var tenantId = configuration[Constants.DBManagedIdentityTenantId];
-
-                if (string.IsNullOrWhiteSpace(tenantId))
-                {
-                    tenantId = null;
-                }
-
-                var sqlConnection = GetSqlConnection();
-
-                sqlConnection.AccessToken = ManagedIdentity.GetAccessTokenAsync(Constants.AzureSqlDatabaseResource, null, tenantId).Result;
-            }
-        }
 
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<AppointmentType> AppointmentTypes { get; set; }
@@ -83,18 +51,18 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.AppointmentDate)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.DropoffLocationVague).HasMaxLength(255);
 
                 entity.Property(e => e.DropoffVagueGeocoded)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.DropoffVagueLatitude).HasColumnType("decimal(9, 6)");
 
@@ -108,7 +76,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.PickupVagueGeocoded)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.PickupVagueLatitude).HasColumnType("decimal(9, 6)");
 
@@ -116,7 +84,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.HasOne(d => d.AppointmentType)
                     .WithMany()
@@ -145,25 +113,25 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Tier1MessageDate)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.Tier2MessageCount).HasColumnType("integer");
 
                 entity.Property(e => e.Tier2MessageDate)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.Tier3MessageCount).HasColumnType("integer");
 
                 entity.Property(e => e.Tier3MessageDate)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.BroadcastMessageCount).HasColumnType("integer");
 
                 entity.Property(e => e.BroadcastMessageDate)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<AppointmentType>(entity =>
@@ -177,7 +145,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.Description).HasMaxLength(255);
 
@@ -197,7 +165,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<Badge>(entity =>
@@ -207,7 +175,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.Description).HasMaxLength(500);
 
@@ -232,7 +200,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.TriggerType)
                     .IsRequired()
@@ -259,7 +227,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -283,7 +251,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<Drive>(entity =>
@@ -305,12 +273,12 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Approved)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.EndAddress).HasMaxLength(100);
 
@@ -318,7 +286,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.EndGeocoded)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.EndLatitude).HasColumnType("decimal(9, 6)");
 
@@ -338,7 +306,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.StartGeocoded)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.StartLatitude).HasColumnType("decimal(9, 6)");
 
@@ -350,7 +318,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.HasOne(d => d.Appointment)
                     .WithMany(p => p.Drives)
@@ -391,7 +359,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.Description).HasMaxLength(255);
 
@@ -405,7 +373,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<DriveStatus>(entity =>
@@ -419,7 +387,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -431,7 +399,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<Message>(entity =>
@@ -442,7 +410,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -454,7 +422,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.HasOne(d => d.MessageType)
                     .WithMany(p => p.Messages)
@@ -477,7 +445,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.DateSent)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.FromPhone)
                     .IsRequired()
@@ -513,7 +481,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.DateSent)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.FromPhone)
                     .IsRequired()
@@ -541,7 +509,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -553,7 +521,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
             });
 
@@ -573,11 +541,11 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.Geocoded)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -605,7 +573,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.HasOne(d => d.ServiceProviderType)
                     .WithMany(p => p.ServiceProviders)
@@ -625,7 +593,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -637,7 +605,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
             });
 
@@ -650,7 +618,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -658,7 +626,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Geocoded)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.GoogleAccount)
                     .IsRequired()
@@ -690,7 +658,7 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
             });
 
             modelBuilder.Entity<VolunteerBadge>(entity =>
@@ -709,11 +677,11 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.HasOne(d => d.Badge)
                     .WithMany(p => p.VolunteerBadges)
@@ -745,7 +713,7 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Created)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getutcdate())")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -753,19 +721,19 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.Updated)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.Canceled)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.Approved)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.Property(e => e.Reassigned)
                     .HasColumnType("datetime")
-                    .HasConversion(v => v, v => v.SpecifyKind(DateTimeKind.Utc));
+                    .HasConversion(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
 
                 entity.HasOne(d => d.Drive)
                     .WithMany(p => p.VolunteerDriveLogs)
@@ -778,59 +746,6 @@ namespace CASNApp.Core.Entities
                     .HasConstraintName("FK_Volunteer_Drive_VolunteerId");
             });
 
-        }
-
-        public SqlConnection GetSqlConnection()
-        {
-            return (SqlConnection)Database.GetDbConnection();
-        }
-
-        public override int SaveChanges()
-        {
-            UpdateEntities();
-            return base.SaveChanges();
-        }
-
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            UpdateEntities();
-            return base.SaveChangesAsync(cancellationToken);
-        }
-
-        private void UpdateEntities()
-        {
-            foreach (EntityEntry entry in ChangeTracker.Entries())
-            {
-                if (entry.State == EntityState.Modified && entry.Entity is IUpdatedDate updatedEntity)
-                {
-                    updatedEntity.Updated = DateTime.UtcNow;
-
-                    var createdProperty = entry.Property(nameof(IUpdatedDate.Created));
-                    if (createdProperty != null && createdProperty.IsModified)
-                    {
-                        createdProperty.CurrentValue = createdProperty.OriginalValue;
-                        createdProperty.IsModified = false;
-                    }
-                }
-
-                if (entry.State == EntityState.Modified && entry.Entity is ICreatedDate updatedEntity2 &&
-                    updatedEntity2.Created == DateTime.MinValue)
-                {
-                    // Don't upate Created datetime if it's the .NET default as SQL Server won't take it
-                    entry.Property(nameof(updatedEntity2.Created)).IsModified = false;
-                }
-
-                if (entry.State == EntityState.Added && entry.Entity is ICreatedDate createdEntity)
-                {
-                    createdEntity.Created = DateTime.UtcNow;
-                }
-
-                if (entry.State == EntityState.Deleted && entry.Entity is ISoftDelete deletedEntity)
-                {
-                    deletedEntity.IsActive = false;
-                    entry.State = EntityState.Modified;
-                }
-            }
         }
 
     }
