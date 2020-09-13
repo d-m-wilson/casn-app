@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-	public class MessageLog
+	public partial class MessageLog
 	{
 		public int Id { get; set; }
 		public string FromPhone { get; set; }

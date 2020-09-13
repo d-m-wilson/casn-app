@@ -1,9 +1,9 @@
 ﻿using System;
-using CASNApp.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-	public class Message : ICreatedDate, IUpdatedDate, ISoftDelete
+	public partial class Message
     {
 		public int Id { get; set; }
 		public int MessageTypeId { get; set; }

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-	public class MessageErrorLog
+	public partial class MessageErrorLog
 	{
 		public int Id { get; set; }
 		public string FromPhone { get; set; }

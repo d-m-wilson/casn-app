@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public class Badge : ICreatedDate, IUpdatedDate, ISoftDelete
+    public partial class Badge
     {
         public Badge()
         {

@@ -1,9 +1,9 @@
 ﻿using System;
-using CASNApp.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public class VolunteerBadge : ICreatedDate, IUpdatedDate
+    public partial class VolunteerBadge
     {
         public int Id { get; set; }
         public int VolunteerId { get; set; }

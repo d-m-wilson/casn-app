@@ -1,9 +1,9 @@
 ﻿using System;
-using CASNApp.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public class DriveStatus : ICreatedDate, IUpdatedDate, ISoftDelete
+    public partial class DriveStatus
     {
         public int Id { get; set; }
         public string Name { get; set; }
