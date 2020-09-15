@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CASNApp.Core.Interfaces;
@@ -6,6 +7,7 @@ using CASNApp.Core.Misc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 
 namespace CASNApp.Core.Entities
@@ -86,6 +88,30 @@ namespace CASNApp.Core.Entities
                 {
                     deletedEntity.IsActive = false;
                     entry.State = EntityState.Modified;
+                }
+            }
+        }
+
+        private void ApplyValueConversions(ModelBuilder modelBuilder)
+        {
+            var dateTimeConverter = new ValueConverter<DateTime, DateTime>(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(v => v, v => DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                var properties = entityType.ClrType.GetProperties().Where(p => p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?));
+                foreach (var property in properties)
+                {
+                    if (property.PropertyType == typeof(DateTime))
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name)
+                            .HasConversion(dateTimeConverter);
+                    }
+                    else if (property.PropertyType == typeof(DateTime?))
+                    {
+                        modelBuilder.Entity(entityType.Name).Property(property.Name)
+                            .HasConversion(nullableDateTimeConverter);
+                    }
                 }
             }
         }
