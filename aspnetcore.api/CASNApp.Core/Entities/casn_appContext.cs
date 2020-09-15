@@ -37,6 +37,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Appointment>(entity =>
             {
+                entity.ToTable("Appointment");
+
                 entity.HasIndex(e => e.AppointmentTypeId)
                     .HasName("FK_Appointment_AppointmentTypeId_idx");
 
@@ -136,6 +138,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<AppointmentType>(entity =>
             {
+                entity.ToTable("AppointmentType");
+
                 entity.HasIndex(e => e.Name)
                     .HasName("UQ_AppointmentType_Name")
                     .IsUnique();
@@ -170,6 +174,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Badge>(entity =>
             {
+                entity.ToTable("Badge");
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Created)
@@ -220,6 +226,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Caller>(entity =>
             {
+                entity.ToTable("Caller");
+
                 entity.Property(e => e.CallerIdentifier)
                     .IsRequired()
                     .HasMaxLength(45);
@@ -256,6 +264,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Drive>(entity =>
             {
+                entity.ToTable("Drive");
+
                 entity.HasIndex(e => e.AppointmentId)
                     .HasName("FK_Drive_AppointmentId_idx");
 
@@ -350,6 +360,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<DriveCancelReason>(entity =>
             {
+                entity.ToTable("DriveCancelReason");
+
                 entity.HasIndex(e => e.Name)
                     .HasName("UQ_DriveCancelReason_Name")
                     .IsUnique();
@@ -378,6 +390,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<DriveStatus>(entity =>
             {
+                entity.ToTable("DriveStatus");
+
                 entity.HasIndex(e => e.Name)
                     .HasName("UQ_DriveStatus_Name")
                     .IsUnique();
@@ -404,6 +418,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Message>(entity =>
             {
+                entity.ToTable("Message");
+
                 entity.HasIndex(e => e.MessageTypeId)
                     .HasName("FK_Message_MessageTypeId_idx");
 
@@ -434,6 +450,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<MessageErrorLog>(entity =>
             {
+                entity.ToTable("MessageErrorLog");
+
                 entity.HasIndex(e => e.DateSent);
 
                 entity.Property(e => e.AppointmentId);
@@ -470,6 +488,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<MessageLog>(entity =>
             {
+                entity.ToTable("MessageLog");
+
                 entity.HasIndex(e => e.DateSent);
 
 				entity.Property(e => e.AppointmentId);
@@ -500,6 +520,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<MessageType>(entity =>
             {
+                entity.ToTable("MessageType");
+
                 entity.HasIndex(e => e.Name)
                     .HasName("UQ_MessageType_Name")
                     .IsUnique();
@@ -527,6 +549,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<ServiceProvider>(entity =>
             {
+                entity.ToTable("ServiceProvider");
+
                 entity.HasIndex(e => e.ServiceProviderTypeId)
                     .HasName("FK_ServiceProvider_ServiceProviderTypeId_idx");
 
@@ -584,6 +608,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<ServiceProviderType>(entity =>
             {
+                entity.ToTable("ServiceProviderType");
+
                 entity.HasIndex(e => e.Name)
                     .HasName("UQ_ServiceProviderType_Name")
                     .IsUnique();
@@ -611,6 +637,8 @@ namespace CASNApp.Core.Entities
 
             modelBuilder.Entity<Volunteer>(entity =>
             {
+                entity.ToTable("Volunteer");
+
                 entity.Property(e => e.Address).HasMaxLength(100);
 
                 entity.Property(e => e.City).HasMaxLength(50);
