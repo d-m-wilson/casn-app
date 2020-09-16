@@ -21,13 +21,12 @@ namespace CASNApp.Core.Entities
         public int? CountTarget { get; set; }
         public bool IncludeVolunteerDriveLogId { get; set; }
         public int? AppointmentTypeId { get; set; }
+        public int DisplayOrdinal { get; set; }
         public bool IsActive { get; set; }
         public bool IsHidden { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
-        public int DisplayOrdinal { get; set; }
 
-        public ICollection<VolunteerBadge> VolunteerBadges { get; set; }
-
+        public virtual ICollection<VolunteerBadge> VolunteerBadges { get; set; }
     }
 }

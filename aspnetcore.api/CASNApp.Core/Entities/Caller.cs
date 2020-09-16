@@ -8,6 +8,7 @@ namespace CASNApp.Core.Entities
         public Caller()
         {
             Appointments = new HashSet<Appointment>();
+            Vouchers = new HashSet<Voucher>();
         }
 
         public int Id { get; set; }
@@ -15,6 +16,7 @@ namespace CASNApp.Core.Entities
         public string CallerIdentifier { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string Phone { get; set; }
         public bool IsMinor { get; set; }
         public string PreferredLanguage { get; set; }
@@ -24,6 +26,7 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Voucher> Vouchers { get; set; }
     }
 }

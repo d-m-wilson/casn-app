@@ -92,6 +92,11 @@ namespace CASNApp.Core.Entities
             }
         }
 
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
+        {
+            ApplyValueConversions(modelBuilder);
+        }
+
         private void ApplyValueConversions(ModelBuilder modelBuilder)
         {
             var dateTimeConverter = new ValueConverter<DateTime, DateTime>(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));

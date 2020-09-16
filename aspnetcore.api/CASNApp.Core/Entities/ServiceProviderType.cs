@@ -16,6 +16,6 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public ICollection<ServiceProvider> ServiceProviders { get; set; }
+        public virtual ICollection<ServiceProvider> ServiceProviders { get; set; }
     }
 }

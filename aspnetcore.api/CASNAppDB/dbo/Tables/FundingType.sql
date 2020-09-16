@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[FundingType]
+(
+	[Id] INT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(50) NOT NULL,
+    [IsActive] BIT NOT NULL CONSTRAINT [DF_FundingType_IsActive] DEFAULT (0x01),
+    [Created] DATETIME NOT NULL CONSTRAINT [DF_FundingType_Created] DEFAULT (GETUTCDATE()),
+    [Updated] DATETIME NULL,
+	CONSTRAINT [PK_FundingType] PRIMARY KEY CLUSTERED
+	(
+		[Id] ASC
+	)
+)

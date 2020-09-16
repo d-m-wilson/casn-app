@@ -12,9 +12,8 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public Volunteer Volunteer { get; set; }
-        public Badge Badge { get; set; }
-        public VolunteerDriveLog VolunteerDriveLog { get; set; }
-
+        public virtual Badge Badge { get; set; }
+        public virtual Volunteer Volunteer { get; set; }
+        public virtual VolunteerDriveLog VolunteerDriveLog { get; set; }
     }
 }

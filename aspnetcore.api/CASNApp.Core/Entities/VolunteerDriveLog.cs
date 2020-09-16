@@ -17,14 +17,13 @@ namespace CASNApp.Core.Entities
         public DateTime? Canceled { get; set; }
         public DateTime? Approved { get; set; }
         public DateTime? Reassigned { get; set; }
+        public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
-        public bool IsActive { get; set; }
 
-        public Drive Drive { get; set; }
-        public DriveLogStatus DriveLogStatus { get; set; }
-        public Volunteer Volunteer { get; set; }
-        public ICollection<VolunteerBadge> VolunteerBadges { get; set; }
-
+        public virtual Drive Drive { get; set; }
+        public virtual DriveLogStatus DriveLogStatus { get; set; }
+        public virtual Volunteer Volunteer { get; set; }
+        public virtual ICollection<VolunteerBadge> VolunteerBadges { get; set; }
     }
 }

@@ -104,6 +104,13 @@
     <Build Include="dbo\Stored Procedures\uspCheckBadgeQuickDraw.sql" />
     <Build Include="dbo\Stored Procedures\uspCheckBadgeEarlyBird.sql" />
     <Build Include="dbo\Stored Procedures\uspCheckBadgeApprovedDriveCountForApptType.sql" />
+    <Build Include="dbo\Tables\Voucher.sql" />
+    <Build Include="dbo\Tables\VoucherItem.sql" />
+    <Build Include="dbo\Tables\FundingType.sql" />
+    <Build Include="dbo\Tables\FundingSource.sql" />
+    <Build Include="dbo\Tables\VoucherStatus.sql" />
+    <Build Include="dbo\Tables\PaymentMethod.sql" />
+    <Build Include="dbo\Tables\NullReason.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

@@ -4,6 +4,7 @@
     [CallerIdentifier]       NVARCHAR (45)  NOT NULL,
     [FirstName]              NVARCHAR (50)  NOT NULL,
     [LastName]               NVARCHAR (50)  NULL,
+    [DateOfBirth]            DATE NULL,
     [Phone]                  NVARCHAR (20)  NOT NULL,
     [IsMinor]                BIT            NOT NULL,
     [PreferredLanguage]      NVARCHAR (25)  NOT NULL,

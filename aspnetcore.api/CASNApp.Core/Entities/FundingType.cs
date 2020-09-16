@@ -3,20 +3,19 @@ using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class DriveCancelReason
+    public partial class FundingType
     {
-        public DriveCancelReason()
+        public FundingType()
         {
-            Drives = new HashSet<Drive>();
+            VoucherItems = new HashSet<VoucherItem>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public virtual ICollection<Drive> Drives { get; set; }
+        public virtual ICollection<VoucherItem> VoucherItems { get; set; }
     }
 }
