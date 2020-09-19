@@ -39,8 +39,20 @@
       </div>
     </div>
     <ng-template #noDriveTo>
-      <div class="drive-to-clinic">
-        <em>No drive to clinic</em>
+      <div *ngIf="!ride.driveBuddy" class="drive-to-clinic">
+        <em>No drive to {{ serviceProviderType }}</em>
+      </div>
+      <div *ngIf="ride.driveBuddy" class="drive-to-clinic">
+        <div class="drive-card-header">
+          <mat-icon class="status-text">supervisor_account</mat-icon>
+          <span class="status-text bolder">Drive Buddy</span>
+        </div>
+        <div class="drive-card-content">
+          <p>
+            <span class="bolder text-sm">{{ ride.driveBuddy.firstName }} {{ ride.driveBuddy.lastName }}</span><br>
+            <a [href]="ride.driveBuddy.contactLink | safeUrl"><span>{{ ride.driveBuddy.mobilePhone | phone }}</span></a>
+          </p>
+        </div>
       </div>
     </ng-template>
 
@@ -70,8 +82,20 @@
       </div>
     </div>
     <ng-template #noDriveFrom>
-      <div class="drive-from-clinic">
-        <em>No drive from clinic</em>
+      <div *ngIf="!ride.driveBuddy" class="drive-from-clinic">
+        <em>No drive from {{ serviceProviderType }}</em>
+      </div>
+      <div *ngIf="ride.driveBuddy" class="drive-from-clinic">
+        <div class="drive-card-header">
+          <mat-icon class="status-text">supervisor_account</mat-icon>
+          <span class="status-text bolder">Drive Buddy</span>
+        </div>
+        <div class="drive-card-content">
+          <p>
+            <span class="bolder text-sm">{{ ride.driveBuddy.firstName }} {{ ride.driveBuddy.lastName }}</span><br>
+            <a [href]="ride.driveBuddy.contactLink | safeUrl"><span>{{ ride.driveBuddy.mobilePhone | phone }}</span></a>
+          </p>
+        </div>
       </div>
     </ng-template>
   </div>

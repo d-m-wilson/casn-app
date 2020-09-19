@@ -81,6 +81,14 @@ body {
   font-weight: bold;
   box-shadow: none;
 
+  &.flex {
+    min-width: 0;
+    display: flex;
+    flex-grow: 1;
+    margin: 0 10px;
+    justify-content: center;
+  }
+
   &.secondary {
     font-weight: normal;
     background-color: #F3F5FF;
@@ -91,6 +99,22 @@ body {
     font-weight: normal;
     background-color: $error-color-faded;
     color: $error-color;
+
+    &.no-bg {
+      background: none;
+    }
+  }
+
+  &.cancel {
+    background-color: #DC5E71;
+    color: $white;
+  }
+
+  &.outline {
+    font-weight: normal;
+    background: none;
+    border: 1px solid rgba($body-color, 0.5);
+    color: rgba($body-color, 0.5);
   }
 }
 
@@ -147,6 +171,11 @@ body {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   margin: 0;
+
+  &.no-bg {
+    background: none;
+    border: none;
+  }
 
   h2 {
     margin: 0;

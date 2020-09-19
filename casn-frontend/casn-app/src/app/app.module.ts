@@ -46,8 +46,6 @@ import { ApiModule } from './api/api.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 /* Custom Directives & Pipes */
 import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
-import { PhonePipe } from './pipes/phone.pipe';
-import { SafeUrlPipe } from './pipes/safe-url.pipe';
 /* Custom Components */
 import { SharedModule } from './shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -82,10 +80,8 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     LeaderboardComponent,
     ErrorPageComponent,
     MassTextComponent,
-    PhonePipe,
     LoaderComponent,
     MyDrivesComponent,
-    SafeUrlPipe
   ],
   imports: [
     NgxMaskModule.forRoot(),

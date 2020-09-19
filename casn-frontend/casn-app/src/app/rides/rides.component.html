@@ -4,50 +4,16 @@
   <div class="dates-rides-wrapper">
     <section class="ride-container">
       <header>
-        <div class="title-section">
-          <h4>Schedule</h4>
-          <!--********************************************************************
-                                  Controls (Dates, Filters)
-          **********************************************************************-->
-          <div class="controls">
-            <button mat-mini-fab
-                    color="accent"
-                    class="control-btn"
-                    aria-label="Open map"
-                    (click)="toggleMapModal()">
-              <mat-icon>map</mat-icon>
-            </button>
-            <button mat-mini-fab
-                    color="accent"
-                    class="control-btn"
-                    aria-label="Example icon button with a delete icon"
-                    (click)="toggleDateFilters()">
-              <mat-icon>calendar_today</mat-icon>
-            </button>
-              <button mat-raised-button
-                      color="accent"
-                      class="list-view-btn"
-                      (click)="toggleSettingsModal()">
-              <mat-icon>tune</mat-icon> Filters
-            </button>
-          </div>
-        </div>
-        <!--********************************************************************
-                                Date Filters, Change Weeks
-        **********************************************************************-->
-        <nav *ngIf="showDateFilters" class="date-sidebar">
-          <span class="week-change-btn"
-                (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></span>
-          <div class="date-card"
-               *ngFor="let d of datesToDisplay"
-               (click)="toggleActiveDate(d)"
-               [ngClass]="{ 'active': d === activeDate }">
-            <span>{{ d | date:'EEE' }}</span>
-            <span class="day">{{ d | date:'d' }}</span>
-          </div>
-          <span class="week-change-btn"
-                (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></span>
-        </nav>
+        <app-rides-header title="Schedule"
+                          (mapClick)="toggleMapModal()"
+                          (calendarClick)="toggleDateFilters()"
+                          (filtersClick)="toggleSettingsModal()"
+                          [showDates]="showDateFilters"
+                          [activeDate]="activeDate"
+                          [datesToDisplay]="datesToDisplay"
+                          (dateClick)="toggleActiveDate($event)"
+                          (changeWeekClick)="handleChangeWeekClick($event)">
+        </app-rides-header>
         <!--********************************************************************
                                   Drive Status Tabs
         **********************************************************************-->

@@ -78,8 +78,8 @@ agm-map {
 
 .modal-actions {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   .btn-cta {
     margin-top: 10px;
@@ -90,6 +90,7 @@ agm-map {
   display: flex;
   justify-content: space-evenly;
   padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 /****************************************************************

@@ -140,7 +140,6 @@ export class RidesComponent implements OnInit, OnDestroy {
                               Click Handlers
   **********************************************************************/
   toggleRideModal(isDriveTo?: boolean, ride?: any): void {
-    console.log("event", isDriveTo);
     this.displayRideModal = !this.displayRideModal;
     ride ? this.rideModalContent = ride : this.rideModalContent = null;
     this.showRideModalDriveTo = isDriveTo;

@@ -131,8 +131,8 @@
                 <div>
                   <span class="approved">Approved</span>
                   <span *ngIf="v.volunteerId === ride[driveType].driverId"
-                          class="clicky retract text-small"
-                          (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><i class="fas fa-times"></i></span>
+                        class="clicky retract text-small"
+                        (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><i class="fas fa-times"></i></span>
                 </div>
               </div>
             </ng-container>
@@ -201,30 +201,30 @@
     <div class="modal-actions">
       <!-- Apply -->
       <button type="button"
-              class="btn-cta"
+              class="flex btn-cta"
+              [ngClass]="{ 'secondary': userRole === 1 }"
               mat-raised-button
               *ngIf="userRole === '1' || ride[driveType].statusId === 0"
               [disabled]="ride[driveType].statusId === 2"
               (click)="handleApplyClick()">Apply Now!</button>
       <!-- Edit Appt (Dispatcher Only) -->
       <button type="button"
-              class="btn-cta secondary"
+              class="flex btn-cta"
               mat-raised-button
               *ngIf="userRole === '1' || ride[driveType].statusId === 0"
-              [disabled]="ride[driveType].statusId === 2"
-              (click)="handleApplyClick()">Edit Appointment Details</button>
+              (click)="handleApplyClick()">Edit Appointment</button>
       <!-- Un-Apply (Driver Only, Dispatchers can do this via volunteer list) -->
       <button type="button"
-              class="btn-cta warn"
+              class="flex btn-cta warn"
               mat-raised-button
               *ngIf="userRole === '2' && ride[driveType].statusId === 1"
-              (click)="handleRetractClick(ride[driveType].id)">Retract Application</button>
+              (click)="handleRetractClick(ride[driveType].id)">Retract My Application</button>
     </div>
     <div class="modal-actions-cancel">
       <button type="button"
               *ngIf="userRole === '1' && ride[driveType].statusId !== 3"
               mat-raised-button
-              class="btn-cta warn"
+              class="btn-cta warn no-bg"
               (click)="handleCancelDriveClick()">Cancel This Drive</button>
     </div>
   </div>

@@ -16,50 +16,6 @@ p {
   display: flex;
 }
 
-.open {
-  background-color: $error-color-faded;
-  border: 2px solid $error-color;
-}
-
-.open .status-text {
-  color: $error-color;
-}
-
-.pending {
-  background-color: $pending-color-faded;
-  border: 2px solid $pending-color;
-}
-
-.pending .status-text {
-  color: $pending-color;
-}
-
-.approved {
-  background-color: $success-color-faded;
-  border: 2px solid $success-color;
-}
-
-.approved .status-text {
-  color: $success-color;
-}
-
-.canceled-by-caller {
-  background-color: #ccc;
-  border: 2px solid #555;
-}
-
-.canceled-by-caller .status-text {
-  color: #555;
-}
-
-.canceled-by-us {
-  background-color: $poop-color-faded;
-  border: 2px solid $poop-color;
-}
-
-.canceled-by-us .status-text {
-  color: $poop-color;
-}
 
 .drive-buddy {
   background-color: $accent-color-2;
@@ -70,50 +26,8 @@ p {
 }
 
 /********************************************************************
-                        Date Selection Sidebar
-********************************************************************/
-.date-sidebar {
-  display: flex;
-  height: 50px;
-  width: 100%;
-  position: fixed;
-  bottom: 30px;
-  z-index: 1;
-}
-
-.date-card {
-  background-color: $primary-color;
-  color: white;
-  border: 1px solid $border-color;
-  display: flex;
-  flex-direction: column;
-  width: 60px;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-}
-
-.date-card.active {
-  background-color: $accent-color-1;
-  color: white;
-}
-
-.day {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/********************************************************************
                 Appointment/Drive Display Section
 ********************************************************************/
-.my-drives-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .my-drives-info {
   text-align: center;
   background: white;
@@ -123,32 +37,23 @@ p {
 
 .ride-container {
   width: 100%;
-  // Fallback for browsers that do not support custom properties
-  height: calc(100vh - 75px); // header-55px, footer-20px
-  height: calc(var(--vh, 1vh) * 100 - 75px);
-  min-height: -webkit-fill-available;
   overflow: auto;
 }
 
 .ride-container header {
-  display: flex;
-  background: $primary-color;
-  opacity: 0.8;
-  color: white;
-  justify-content: space-evenly;
-  align-content: center;
-  align-items: center;
+  background: $background-color;
+  opacity: 1;
+  color: $body-color;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0;
   position: fixed;
   width: 100%;
   left: 0;
   z-index: 1;
-  height: 55px;
 }
 
 .ride-container header + div {
-  margin-top: 55px; /* Clear header */
+  margin-top: 60px; /* Clear header */
 }
 
 .drive-container {
@@ -175,79 +80,4 @@ p {
     width: 100%;
     max-width: 500px;
   }
-}
-
-.appointment-card {
-  display: flex;
-  align-items: center;
-  background: $transparent;
-  border-radius: 25px;
-}
-
-.date-badge {
-  font-weight: bold;
-  font-size: 1.75rem;
-  border: 2px solid #555;
-  border-top: 8px solid #555;
-  box-sizing: border-box;
-  padding: 3px 5px;
-  margin-right: 10px;
-
-  min-width: 45px;
-  text-align: center;
-}
-
-.drive-card {
-  display: flex;
-  border-radius: 35px;
-  margin: 5px;
-  @media only screen and (min-device-width : 350px) {
-    width: 100%;
-    flex-direction: column;
-  }
-}
-
-.drive-card-header {
-  display: flex;
-  align-items: center;
-  min-width: 40%;
-}
-
-.drive-card-content {
-  display: flex;
-  align-items: center;
-}
-
-.no-drive {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  border: 1px solid #999;
-  text-align: center;
-}
-
-/********************************************************************
-                      Footer - Settings/Controls
-********************************************************************/
-.fixed-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: 20;
-  background-color: $primary-color;
-  // opacity: 0.8;
-  color: white;
-  padding: 5px;
-  height: 20px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 1rem;
 }

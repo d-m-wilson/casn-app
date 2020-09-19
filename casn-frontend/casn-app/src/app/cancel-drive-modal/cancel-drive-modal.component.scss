@@ -3,16 +3,11 @@ h1 {
   text-align: center;
 }
 
-.cancel-card {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 35px;
-}
-
 .modal-actions {
   display: flex;
   justify-content: space-between;
   padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 #cancel-reason .mat-form-field-wrapper {
