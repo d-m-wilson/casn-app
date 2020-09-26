@@ -202,17 +202,17 @@
       <!-- Apply -->
       <button type="button"
               class="flex btn-cta"
-              [ngClass]="{ 'secondary': userRole === 1 }"
+              [ngClass]="{ 'secondary': userRole === '1' }"
               mat-raised-button
               *ngIf="userRole === '1' || ride[driveType].statusId === 0"
-              [disabled]="ride[driveType].statusId === 2"
+              [disabled]="ride[driveType].statusId === 2 || ride[driveType].cancelReasonId"
               (click)="handleApplyClick()">Apply Now!</button>
       <!-- Edit Appt (Dispatcher Only) -->
       <button type="button"
               class="flex btn-cta"
               mat-raised-button
-              *ngIf="userRole === '1' || ride[driveType].statusId === 0"
-              (click)="handleApplyClick()">Edit Appointment</button>
+              *ngIf="userRole === '1'"
+              (click)="editAppointment()">Edit Appointment</button>
       <!-- Un-Apply (Driver Only, Dispatchers can do this via volunteer list) -->
       <button type="button"
               class="flex btn-cta warn"
