@@ -25,7 +25,9 @@ namespace CASNApp.Core.Entities
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
+        public int? StateOfResidenceId { get; set; }
 
+        public virtual State StateOfResidence { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<Voucher> Vouchers { get; set; }
     }

@@ -3,7 +3,6 @@
 	[Id] INT NOT NULL IDENTITY(1,1),
 	[CallerId] INT NOT NULL,
 	[VoucherStatusId] INT NOT NULL,
-	[CallerStateOfResidenceId] INT NOT NULL,
 	[ClinicId] INT NOT NULL,
 	[CreatedById] INT NOT NULL,
     [IsActive] BIT NOT NULL CONSTRAINT [DF_Voucher_IsActive] DEFAULT (0x01),

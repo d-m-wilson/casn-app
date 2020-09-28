@@ -13,7 +13,6 @@ namespace CASNApp.Core.Entities
         public int Id { get; set; }
         public int CallerId { get; set; }
         public int VoucherStatusId { get; set; }
-        public int CallerStateOfResidenceId { get; set; }
         public int ClinicId { get; set; }
         public int CreatedById { get; set; }
         public bool IsActive { get; set; }

@@ -25,6 +25,7 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProviders { get; set; }
         public virtual DbSet<ServiceProviderType> ServiceProviderTypes { get; set; }
+        public virtual DbSet<State> States { get; set; }
         public virtual DbSet<Volunteer> Volunteers { get; set; }
         public virtual DbSet<VolunteerBadge> VolunteerBadges { get; set; }
         public virtual DbSet<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
@@ -193,6 +194,11 @@ namespace CASNApp.Core.Entities
                     .HasMaxLength(25);
 
                 entity.Property(e => e.Updated).HasColumnType("datetime");
+
+                entity.HasOne(d => d.StateOfResidence)
+                    .WithMany(p => p.Callers)
+                    .HasForeignKey(d => d.StateOfResidenceId)
+                    .HasConstraintName("FK_Caller_State");
             });
 
             modelBuilder.Entity<Drive>(entity =>
@@ -540,6 +546,23 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(45);
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<State>(entity =>
+            {
+                entity.ToTable("State");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("UQ_State_Name")
+                    .IsUnique();
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Updated).HasColumnType("datetime");
             });

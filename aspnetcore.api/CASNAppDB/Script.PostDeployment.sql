@@ -25,3 +25,5 @@ GO
 GO
 :r .\dbo\Tables\Data\ServiceProviderType.data.sql
 GO
+:r .\dbo\Tables\Data\State.data.sql
+GO
