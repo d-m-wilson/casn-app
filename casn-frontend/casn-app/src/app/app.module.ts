@@ -63,6 +63,7 @@ import { ErrorPageComponent } from './error-page/error-page.component';
 import { MassTextComponent } from './mass-text/mass-text.component';
 import { LoaderComponent } from './loader/loader.component';
 import { MyDrivesComponent } from './my-drives/my-drives.component';
+import { RideshareModalComponent } from './rideshare-modal/rideshare-modal.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { MyDrivesComponent } from './my-drives/my-drives.component';
     MassTextComponent,
     LoaderComponent,
     MyDrivesComponent,
+    RideshareModalComponent,
   ],
   imports: [
     NgxMaskModule.forRoot(),

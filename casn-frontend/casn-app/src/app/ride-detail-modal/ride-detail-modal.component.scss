@@ -96,6 +96,11 @@ agm-map {
 /****************************************************************
                       Volunteers Section
 ****************************************************************/
+.volunteer-wrapper {
+  display: flex;
+  flex: 1;
+}
+
 .volunteer-container {
   display: flex;
   align-items: center;
@@ -149,4 +154,22 @@ agm-map {
     background-color: #A60B84;
     color: $white;
   }
+}
+
+.rideshare {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+
+  span {
+    font-size: 0.8em;
+    font-weight: normal;
+    margin-right: 6px;
+  }
+}
+
+.rideshare-text {
+  color: $rideshare-color;
+  font-weight: bold;
 }

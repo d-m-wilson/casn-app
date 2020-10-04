@@ -99,31 +99,38 @@
 
           <!--=========== Volunteer Info ============-->
           <!-- Dispatcher view: volunteer(s), but no one approved yet -->
-          <div *ngIf="volunteers && !driveIsApproved && userRole === '1'"
+          <div *ngIf="!driveIsApproved && userRole === '1'"
                class="info-row text-small">
             <span class="text-light label">Volunteers</span>
-            <div style="display:flex;">
-            <div *ngFor="let v of volunteers" class="volunteer-container">
-              {{ v.firstName }} {{ v.lastName }}
-              <div>
-                <button type="button"
-                        class="volunteer-btn approve text-small"
-                        mat-button
-                        [style.margin-right.px]="5"
-                        (click)="handleApproveClick(v.id)">Approve</button>
-                <button type="button"
-                        class="volunteer-btn deny text-small"
-                        mat-button
-                        (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+            <div class="volunteer-wrapper">
+              <div *ngFor="let v of volunteers" class="volunteer-container">
+                {{ v.firstName }} {{ v.lastName }}
+                <div>
+                  <button type="button"
+                          class="volunteer-btn approve text-small"
+                          mat-button
+                          [style.margin-right.px]="5"
+                          (click)="handleApproveClick(v.id)">Approve</button>
+                  <button type="button"
+                          class="volunteer-btn deny text-small"
+                          mat-button
+                          (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+                </div>
+              </div>
+              <div class="rideshare text-small text-light">
+                <span>Set as rideshare</span> <mat-slide-toggle [(ngModel)]="showRideshareModal"></mat-slide-toggle>
               </div>
             </div>
-          </div>
           </div>
 
           <!-- Dispatcher view: a volunteer has been approved -->
           <div *ngIf="driveIsApproved && userRole === '1'"
                class="info-row text-small">
             <span class="text-light label">Volunteers</span>
+            <div *ngIf="ride[driveType].statusId === 4"
+                 class="volunteer-container">
+              <span class="rideshare-text">Rideshare</span>
+            </div>
             <ng-container *ngFor="let v of volunteers">
               <div *ngIf="v.volunteerId === ride[driveType].driverId"
                    class="volunteer-container">
@@ -234,11 +241,17 @@
                           Drive Cancel Modal
 **********************************************************************-->
 <app-cancel-drive-modal *ngIf="showCancelDriveModal"
-                        (closeCancelDriveModalClick)="hideCancelDriveModal()"
-                        (closeCancelDriveModalAndUpdateClick)="hideCancelDriveModal(true)"
-                        [driveId]="driveToCancel"></app-cancel-drive-modal>
+                        (closeCancelDriveModalClick)="hideModal()"
+                        (closeCancelDriveModalAndUpdateClick)="hideModal(true)"
+                        [driveId]="driveId"></app-cancel-drive-modal>
 
-
+<!--********************************************************************
+                            Rideshare Modal
+**********************************************************************-->
+<app-rideshare-modal *ngIf="showRideshareModal"
+                     (closeRideshareModalClick)="hideModal()"
+                     (closeRideshareModalAndUpdateClick)="hideModal(true)"
+                     [driveId]="driveId"></app-rideshare-modal>
 
 <ng-template #startAddress>
   <address>
