@@ -8,7 +8,7 @@ namespace CASNApp.Core.Entities
         public ServiceProvider()
         {
             Appointments = new HashSet<Appointment>();
-            Vouchers = new HashSet<Voucher>();
+            FundingOffers = new HashSet<FundingOffer>();
         }
 
         public int Id { get; set; }
@@ -29,6 +29,6 @@ namespace CASNApp.Core.Entities
 
         public virtual ServiceProviderType ServiceProviderType { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; }
-        public virtual ICollection<Voucher> Vouchers { get; set; }
+        public virtual ICollection<FundingOffer> FundingOffers { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace CASNApp.Core.Entities
     {
         public FundingSource()
         {
-            VoucherItems = new HashSet<VoucherItem>();
+            FundingOfferItems = new HashSet<FundingOfferItem>();
         }
 
         public int Id { get; set; }
@@ -17,6 +17,6 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public virtual ICollection<VoucherItem> VoucherItems { get; set; }
+        public virtual ICollection<FundingOfferItem> FundingOfferItems { get; set; }
     }
 }

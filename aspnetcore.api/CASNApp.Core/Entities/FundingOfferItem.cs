@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class VoucherItem
+    public partial class FundingOfferItem
     {
         public int Id { get; set; }
-        public int VoucherId { get; set; }
+        public int FundingOfferId { get; set; }
         public int FundingSourceId { get; set; }
         public int? FundingTypeId { get; set; }
         public decimal Amount { get; set; }
@@ -18,6 +18,6 @@ namespace CASNApp.Core.Entities
         public virtual FundingSource FundingSource { get; set; }
         public virtual FundingType FundingType { get; set; }
         public virtual PaymentMethod PaymentMethod { get; set; }
-        public virtual Voucher Voucher { get; set; }
+        public virtual FundingOffer FundingOffer { get; set; }
     }
 }

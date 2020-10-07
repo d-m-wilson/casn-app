@@ -25,13 +25,12 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProviders { get; set; }
         public virtual DbSet<ServiceProviderType> ServiceProviderTypes { get; set; }
-        public virtual DbSet<State> States { get; set; }
         public virtual DbSet<Volunteer> Volunteers { get; set; }
         public virtual DbSet<VolunteerBadge> VolunteerBadges { get; set; }
         public virtual DbSet<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
-        public virtual DbSet<Voucher> Vouchers { get; set; }
-        public virtual DbSet<VoucherItem> VoucherItems { get; set; }
-        public virtual DbSet<VoucherStatus> VoucherStatuses { get; set; }
+        public virtual DbSet<FundingOffer> FundingOffers { get; set; }
+        public virtual DbSet<FundingOfferItem> FundingOfferItems { get; set; }
+        public virtual DbSet<FundingOfferStatus> FundingOfferStatuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -193,12 +192,9 @@ namespace CASNApp.Core.Entities
                     .IsRequired()
                     .HasMaxLength(25);
 
-                entity.Property(e => e.Updated).HasColumnType("datetime");
+                entity.Property(e => e.ResidencePostalCode).HasMaxLength(10);
 
-                entity.HasOne(d => d.StateOfResidence)
-                    .WithMany(p => p.Callers)
-                    .HasForeignKey(d => d.StateOfResidenceId)
-                    .HasConstraintName("FK_Caller_State");
+                entity.Property(e => e.Updated).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Drive>(entity =>
@@ -550,23 +546,6 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<State>(entity =>
-            {
-                entity.ToTable("State");
-
-                entity.HasIndex(e => e.Name)
-                    .HasName("UQ_State_Name")
-                    .IsUnique();
-
-                entity.Property(e => e.Created).HasColumnType("datetime");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Updated).HasColumnType("datetime");
-            });
-
             modelBuilder.Entity<Volunteer>(entity =>
             {
                 entity.ToTable("Volunteer");
@@ -680,9 +659,9 @@ namespace CASNApp.Core.Entities
                     .HasConstraintName("FK_Volunteer_DriveLog_VolunteerId");
             });
 
-            modelBuilder.Entity<Voucher>(entity =>
+            modelBuilder.Entity<FundingOffer>(entity =>
             {
-                entity.ToTable("Voucher");
+                entity.ToTable("FundingOffer");
 
                 entity.Property(e => e.Created).HasColumnType("datetime");
 
@@ -695,33 +674,33 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Caller)
-                    .WithMany(p => p.Vouchers)
+                    .WithMany(p => p.FundingOffers)
                     .HasForeignKey(d => d.CallerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Voucher_Caller");
+                    .HasConstraintName("FK_FundingOffer_Caller");
 
                 entity.HasOne(d => d.Clinic)
-                    .WithMany(p => p.Vouchers)
+                    .WithMany(p => p.FundingOffers)
                     .HasForeignKey(d => d.ClinicId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Voucher_ServiceProvider");
+                    .HasConstraintName("FK_FundingOffer_ServiceProvider");
 
                 entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.Vouchers)
+                    .WithMany(p => p.FundingOffers)
                     .HasForeignKey(d => d.CreatedById)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Voucher_Volunteer");
+                    .HasConstraintName("FK_FundingOffer_Volunteer");
 
-                entity.HasOne(d => d.VoucherStatus)
-                    .WithMany(p => p.Vouchers)
-                    .HasForeignKey(d => d.VoucherStatusId)
+                entity.HasOne(d => d.FundingOfferStatus)
+                    .WithMany(p => p.FundingOffers)
+                    .HasForeignKey(d => d.FundingOfferStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Voucher_VoucherStatus");
+                    .HasConstraintName("FK_FundingOffer_FundingOfferStatus");
             });
 
-            modelBuilder.Entity<VoucherItem>(entity =>
+            modelBuilder.Entity<FundingOfferItem>(entity =>
             {
-                entity.ToTable("VoucherItem");
+                entity.ToTable("FundingOfferItem");
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
 
@@ -730,31 +709,31 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated).HasColumnType("datetime");
 
                 entity.HasOne(d => d.FundingSource)
-                    .WithMany(p => p.VoucherItems)
+                    .WithMany(p => p.FundingOfferItems)
                     .HasForeignKey(d => d.FundingSourceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VoucherItem_FundingSource");
+                    .HasConstraintName("FK_FundingOfferItem_FundingSource");
 
                 entity.HasOne(d => d.FundingType)
-                    .WithMany(p => p.VoucherItems)
+                    .WithMany(p => p.FundingOfferItems)
                     .HasForeignKey(d => d.FundingTypeId)
-                    .HasConstraintName("FK_VoucherItem_FundingType");
+                    .HasConstraintName("FK_FundingOfferItem_FundingType");
 
                 entity.HasOne(d => d.PaymentMethod)
-                    .WithMany(p => p.VoucherItems)
+                    .WithMany(p => p.FundingOfferItems)
                     .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK_VoucherItem_PaymentMethod");
+                    .HasConstraintName("FK_FundingOfferItem_PaymentMethod");
 
-                entity.HasOne(d => d.Voucher)
-                    .WithMany(p => p.VoucherItems)
-                    .HasForeignKey(d => d.VoucherId)
+                entity.HasOne(d => d.FundingOffer)
+                    .WithMany(p => p.FundingOfferItems)
+                    .HasForeignKey(d => d.FundingOfferId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VoucherItem_Voucher");
+                    .HasConstraintName("FK_FundingOfferItem_FundingOffer");
             });
 
-            modelBuilder.Entity<VoucherStatus>(entity =>
+            modelBuilder.Entity<FundingOfferStatus>(entity =>
             {
-                entity.ToTable("VoucherStatus");
+                entity.ToTable("FundingOfferStatus");
 
                 entity.Property(e => e.Created).HasColumnType("datetime");
 

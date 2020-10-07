@@ -104,14 +104,13 @@
     <Build Include="dbo\Stored Procedures\uspCheckBadgeQuickDraw.sql" />
     <Build Include="dbo\Stored Procedures\uspCheckBadgeEarlyBird.sql" />
     <Build Include="dbo\Stored Procedures\uspCheckBadgeApprovedDriveCountForApptType.sql" />
-    <Build Include="dbo\Tables\Voucher.sql" />
-    <Build Include="dbo\Tables\VoucherItem.sql" />
+    <Build Include="dbo\Tables\FundingOffer.sql" />
+    <Build Include="dbo\Tables\FundingOfferItem.sql" />
     <Build Include="dbo\Tables\FundingType.sql" />
     <Build Include="dbo\Tables\FundingSource.sql" />
-    <Build Include="dbo\Tables\VoucherStatus.sql" />
+    <Build Include="dbo\Tables\FundingOfferStatus.sql" />
     <Build Include="dbo\Tables\PaymentMethod.sql" />
     <Build Include="dbo\Tables\NullReason.sql" />
-    <Build Include="dbo\Tables\State.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
@@ -125,6 +124,8 @@
     <None Include="dbo\Tables\Data\Message.data.sql" />
     <Build Include="dbo\Stored Procedures\uspRedactionPlan.sql" />
     <None Include="dbo\Tables\Data\MessageType.data.sql" />
-    <None Include="dbo\Tables\Data\State.data.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="CASNAppDB.refactorlog" />
   </ItemGroup>
 </Project>

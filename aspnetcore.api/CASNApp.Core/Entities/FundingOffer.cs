@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class Voucher
+    public partial class FundingOffer
     {
-        public Voucher()
+        public FundingOffer()
         {
-            VoucherItems = new HashSet<VoucherItem>();
+            FundingOfferItems = new HashSet<FundingOfferItem>();
         }
 
         public int Id { get; set; }
         public int CallerId { get; set; }
-        public int VoucherStatusId { get; set; }
+        public int FundingOfferStatusId { get; set; }
         public int ClinicId { get; set; }
         public int CreatedById { get; set; }
         public bool IsActive { get; set; }
@@ -25,7 +25,7 @@ namespace CASNApp.Core.Entities
         public virtual Caller Caller { get; set; }
         public virtual ServiceProvider Clinic { get; set; }
         public virtual Volunteer CreatedBy { get; set; }
-        public virtual VoucherStatus VoucherStatus { get; set; }
-        public virtual ICollection<VoucherItem> VoucherItems { get; set; }
+        public virtual FundingOfferStatus FundingOfferStatus { get; set; }
+        public virtual ICollection<FundingOfferItem> FundingOfferItems { get; set; }
     }
 }

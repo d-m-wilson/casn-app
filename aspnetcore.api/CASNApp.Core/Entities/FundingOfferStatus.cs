@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public partial class VoucherStatus
+    public partial class FundingOfferStatus
     {
-        public VoucherStatus()
+        public FundingOfferStatus()
         {
-            Vouchers = new HashSet<Voucher>();
+            FundingOffers = new HashSet<FundingOffer>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public virtual ICollection<Voucher> Vouchers { get; set; }
+        public virtual ICollection<FundingOffer> FundingOffers { get; set; }
     }
 }
