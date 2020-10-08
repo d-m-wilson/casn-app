@@ -15,6 +15,9 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<DriveCancelReason> DriveCancelReasons { get; set; }
         public virtual DbSet<DriveLogStatus> DriveLogStatuses { get; set; }
         public virtual DbSet<DriveStatus> DriveStatuses { get; set; }
+        public virtual DbSet<FundingOffer> FundingOffers { get; set; }
+        public virtual DbSet<FundingOfferItem> FundingOfferItems { get; set; }
+        public virtual DbSet<FundingOfferStatus> FundingOfferStatuses { get; set; }
         public virtual DbSet<FundingSource> FundingSources { get; set; }
         public virtual DbSet<FundingType> FundingTypes { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
@@ -28,9 +31,6 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<Volunteer> Volunteers { get; set; }
         public virtual DbSet<VolunteerBadge> VolunteerBadges { get; set; }
         public virtual DbSet<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
-        public virtual DbSet<FundingOffer> FundingOffers { get; set; }
-        public virtual DbSet<FundingOfferItem> FundingOfferItems { get; set; }
-        public virtual DbSet<FundingOfferStatus> FundingOfferStatuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -333,6 +333,103 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(45);
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<FundingOffer>(entity =>
+            {
+                entity.ToTable("FundingOffer");
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.Issued).HasColumnType("datetime");
+
+                entity.Property(e => e.Paid).HasColumnType("datetime");
+
+                entity.Property(e => e.Redeemed).HasColumnType("datetime");
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Caller)
+                    .WithMany(p => p.FundingOffers)
+                    .HasForeignKey(d => d.CallerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOffer_Caller");
+
+                entity.HasOne(d => d.Clinic)
+                    .WithMany(p => p.FundingOffers)
+                    .HasForeignKey(d => d.ClinicId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOffer_ServiceProvider");
+
+                entity.HasOne(d => d.CreatedBy)
+                    .WithMany(p => p.FundingOffers)
+                    .HasForeignKey(d => d.CreatedById)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOffer_Volunteer");
+
+                entity.HasOne(d => d.FundingOfferStatus)
+                    .WithMany(p => p.FundingOffers)
+                    .HasForeignKey(d => d.FundingOfferStatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOffer_FundingOfferStatus");
+            });
+
+            modelBuilder.Entity<FundingOfferItem>(entity =>
+            {
+                entity.ToTable("FundingOfferItem");
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.FundingAmount).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.NeedAmount).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+
+                entity.HasOne(d => d.FundingAmountNullReason)
+                    .WithMany(p => p.FundingOfferItemFundingAmountNullReasons)
+                    .HasForeignKey(d => d.FundingAmountNullReasonId)
+                    .HasConstraintName("FK_FundingOfferItem_FundingAmountNullReason");
+
+                entity.HasOne(d => d.FundingOffer)
+                    .WithMany(p => p.FundingOfferItems)
+                    .HasForeignKey(d => d.FundingOfferId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOfferItem_FundingOffer");
+
+                entity.HasOne(d => d.FundingSource)
+                    .WithMany(p => p.FundingOfferItems)
+                    .HasForeignKey(d => d.FundingSourceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOfferItem_FundingSource");
+
+                entity.HasOne(d => d.FundingType)
+                    .WithMany(p => p.FundingOfferItems)
+                    .HasForeignKey(d => d.FundingTypeId)
+                    .HasConstraintName("FK_FundingOfferItem_FundingType");
+
+                entity.HasOne(d => d.NeedAmountNullReason)
+                    .WithMany(p => p.FundingOfferItemNeedAmountNullReasons)
+                    .HasForeignKey(d => d.NeedAmountNullReasonId)
+                    .HasConstraintName("FK_FundingOfferItem_NeedAmountNullReason");
+
+                entity.HasOne(d => d.PaymentMethod)
+                    .WithMany(p => p.FundingOfferItems)
+                    .HasForeignKey(d => d.PaymentMethodId)
+                    .HasConstraintName("FK_FundingOfferItem_PaymentMethod");
+            });
+
+            modelBuilder.Entity<FundingOfferStatus>(entity =>
+            {
+                entity.ToTable("FundingOfferStatus");
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Updated).HasColumnType("datetime");
             });
@@ -657,91 +754,6 @@ namespace CASNApp.Core.Entities
                     .WithMany(p => p.VolunteerDriveLogs)
                     .HasForeignKey(d => d.VolunteerId)
                     .HasConstraintName("FK_Volunteer_DriveLog_VolunteerId");
-            });
-
-            modelBuilder.Entity<FundingOffer>(entity =>
-            {
-                entity.ToTable("FundingOffer");
-
-                entity.Property(e => e.Created).HasColumnType("datetime");
-
-                entity.Property(e => e.Issued).HasColumnType("datetime");
-
-                entity.Property(e => e.Paid).HasColumnType("datetime");
-
-                entity.Property(e => e.Redeemed).HasColumnType("datetime");
-
-                entity.Property(e => e.Updated).HasColumnType("datetime");
-
-                entity.HasOne(d => d.Caller)
-                    .WithMany(p => p.FundingOffers)
-                    .HasForeignKey(d => d.CallerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOffer_Caller");
-
-                entity.HasOne(d => d.Clinic)
-                    .WithMany(p => p.FundingOffers)
-                    .HasForeignKey(d => d.ClinicId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOffer_ServiceProvider");
-
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.FundingOffers)
-                    .HasForeignKey(d => d.CreatedById)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOffer_Volunteer");
-
-                entity.HasOne(d => d.FundingOfferStatus)
-                    .WithMany(p => p.FundingOffers)
-                    .HasForeignKey(d => d.FundingOfferStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOffer_FundingOfferStatus");
-            });
-
-            modelBuilder.Entity<FundingOfferItem>(entity =>
-            {
-                entity.ToTable("FundingOfferItem");
-
-                entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
-
-                entity.Property(e => e.Created).HasColumnType("datetime");
-
-                entity.Property(e => e.Updated).HasColumnType("datetime");
-
-                entity.HasOne(d => d.FundingSource)
-                    .WithMany(p => p.FundingOfferItems)
-                    .HasForeignKey(d => d.FundingSourceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOfferItem_FundingSource");
-
-                entity.HasOne(d => d.FundingType)
-                    .WithMany(p => p.FundingOfferItems)
-                    .HasForeignKey(d => d.FundingTypeId)
-                    .HasConstraintName("FK_FundingOfferItem_FundingType");
-
-                entity.HasOne(d => d.PaymentMethod)
-                    .WithMany(p => p.FundingOfferItems)
-                    .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK_FundingOfferItem_PaymentMethod");
-
-                entity.HasOne(d => d.FundingOffer)
-                    .WithMany(p => p.FundingOfferItems)
-                    .HasForeignKey(d => d.FundingOfferId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOfferItem_FundingOffer");
-            });
-
-            modelBuilder.Entity<FundingOfferStatus>(entity =>
-            {
-                entity.ToTable("FundingOfferStatus");
-
-                entity.Property(e => e.Created).HasColumnType("datetime");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Updated).HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);

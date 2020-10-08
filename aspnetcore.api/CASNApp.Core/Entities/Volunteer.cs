@@ -10,9 +10,9 @@ namespace CASNApp.Core.Entities
             Appointments = new HashSet<Appointment>();
             Approvals = new HashSet<Drive>();
             Drives = new HashSet<Drive>();
+            FundingOffers = new HashSet<FundingOffer>();
             VolunteerBadges = new HashSet<VolunteerBadge>();
             VolunteerDriveLogs = new HashSet<VolunteerDriveLog>();
-            FundingOffers = new HashSet<FundingOffer>();
         }
 
         public int Id { get; set; }
@@ -38,8 +38,8 @@ namespace CASNApp.Core.Entities
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<Drive> Approvals { get; set; }
         public virtual ICollection<Drive> Drives { get; set; }
+        public virtual ICollection<FundingOffer> FundingOffers { get; set; }
         public virtual ICollection<VolunteerBadge> VolunteerBadges { get; set; }
         public virtual ICollection<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
-        public virtual ICollection<FundingOffer> FundingOffers { get; set; }
     }
 }
