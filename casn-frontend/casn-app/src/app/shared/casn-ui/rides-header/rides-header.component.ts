@@ -13,7 +13,7 @@ export class RidesHeaderComponent implements OnInit {
   @Output() calendarClick = new EventEmitter<void>();
   @Output() filtersClick = new EventEmitter<void>();
 
-  @Input() showDates: boolean = false;
+  @Input() showDates: boolean = true;
   @Input() datesToDisplay: string[];
   @Input() activeDate: string;
   @Output() changeWeekClick = new EventEmitter<string>();
