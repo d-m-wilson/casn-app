@@ -50,7 +50,31 @@
 /********************************************************************
                         Date Selection Nav
 ********************************************************************/
-.date-sidebar {
+.date-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3245C8;
+
+  .month {
+    margin: 0;
+    padding: 0 8px;
+    background: #3245C8;
+    color: $white;
+  }
+
+  hr {
+    border: none;
+    border-top: 4px dotted rgba($white, 0.8);
+    color: #3245C8;
+    background-color: #3245C8;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.date-bar {
   display: flex;
   height: 60px;
   width: 100%;

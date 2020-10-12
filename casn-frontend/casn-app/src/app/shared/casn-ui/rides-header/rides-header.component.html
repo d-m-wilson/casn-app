@@ -24,7 +24,12 @@
     </button>
   </div>
 </div>
-<nav *ngIf="showDates" class="date-sidebar">
+<div *ngIf="showDates" class="date-header">
+  <hr [style.width.px]="24">
+  <h5 *ngIf="showDates" class="month">{{ datesToDisplay[0] | date:'MMMM' }}</h5>
+  <hr>
+</div>
+<nav *ngIf="showDates" class="date-bar">
   <span class="week-change-btn"
         (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></span>
   <div class="date-card"
