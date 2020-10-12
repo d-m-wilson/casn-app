@@ -125,7 +125,4 @@
     <Build Include="dbo\Stored Procedures\uspRedactionPlan.sql" />
     <None Include="dbo\Tables\Data\MessageType.data.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="CASNAppDB.refactorlog" />
-  </ItemGroup>
 </Project>
