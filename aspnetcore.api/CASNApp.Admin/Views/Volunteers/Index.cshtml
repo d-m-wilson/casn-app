@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                First Name
+                Last Name
             </th>
             <th>
-                Last Name
+                First Name
             </th>
             <th>
                 Mobile Phone
@@ -70,10 +70,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                @Html.DisplayFor(modelItem => item.FirstName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MobilePhone)

@@ -28,7 +28,7 @@ namespace CASNApp.Admin
                 return Forbid();
             }
 
-            return View(await _context.Volunteers.ToListAsync());
+            return View(await _context.Volunteers.OrderBy(m => m.LastName).ThenBy(m => m.FirstName).ToListAsync());
         }
 
         // GET: Volunteers/Details/5
