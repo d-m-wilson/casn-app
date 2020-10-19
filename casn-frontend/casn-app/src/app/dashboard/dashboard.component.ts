@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RoutesRecognized } from '@angular/router';
+import { Router } from '@angular/router';
 import { Constants } from '../app.constants';
 
 @Component({
