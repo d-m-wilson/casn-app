@@ -21,7 +21,11 @@ p {
 ********************************************************************/
 .ride-container {
   width: 100%;
-  overflow: auto;
+  // Deal with hammerjs swipe weirdness
+  overflow-y: auto;
+  overflow-x: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
 }
 
 .ride-container header {

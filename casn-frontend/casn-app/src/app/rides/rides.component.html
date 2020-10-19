@@ -1,7 +1,7 @@
-<ng-container *ngIf="rides && serviceProviders && apptTypes"
-              (swipeleft)="swipe($event.type)"
-              (swiperight)="swipe($event.type)">
-  <div class="dates-rides-wrapper">
+<ng-container *ngIf="rides && serviceProviders && apptTypes">
+  <div class="dates-rides-wrapper"
+       (swipeleft)="swipe($event.type)"
+       (swiperight)="swipe($event.type)">
     <section class="ride-container">
       <header>
         <app-rides-header title="Schedule"
