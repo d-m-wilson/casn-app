@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
-import { filter, pairwise } from 'rxjs/operators';
 import { Constants } from '../app.constants';
 
 @Component({
