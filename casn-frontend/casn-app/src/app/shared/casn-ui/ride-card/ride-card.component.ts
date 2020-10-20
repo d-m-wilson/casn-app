@@ -11,6 +11,7 @@ export class RideCardComponent implements OnInit {
   @Input() appointmentType: string = "None provided";
   @Input() serviceProviderType: string = "None provided";
   @Input() serviceProviderName: string = "None provided";
+  @Input() appointmentEndTime: Date;
   // TODO: Refactor boolean
   @Output() showRideDetail = new EventEmitter<boolean>();
 

@@ -50,6 +50,7 @@
              class="appointment-drive-wrapper">
           <app-ride-card [ride]="r"
                          [appointmentType]="apptTypes[r.appointment?.appointmentTypeId].title"
+                         [appointmentEndTime]="getAppointmentEndTime(r.appointment?.appointmentDate, r.appointment?.appointmentTypeId)"
                          [serviceProviderType]="serviceProviders[r.appointment.serviceProviderId].serviceProviderType"
                          [serviceProviderName]="serviceProviders[r.appointment?.serviceProviderId].name"
                          (showRideDetail)="toggleRideModal($event, r)">

@@ -17,7 +17,7 @@
     <!-- Drive to clinic -->
     <div class="drive-to-clinic"
          *ngIf="ride.driveTo; else noDriveTo">
-      <span><strong>To {{ serviceProviderType }}:</strong> 9:00am</span>
+      <span><strong>To {{ serviceProviderType }}:</strong> {{ ride.appointment.appointmentDate | date:'shortTime' }}</span>
       <br/>
       <address>
         {{ ride.driveTo.startAddress }}<br/>
@@ -61,7 +61,7 @@
     <!-- Drive from clinic -->
     <div class="drive-from-clinic"
          *ngIf="ride.driveFrom; else noDriveFrom">
-      <span><strong>From {{ serviceProviderType }}:</strong> 10:30am</span>
+      <span><strong>From {{ serviceProviderType }}:</strong> {{ appointmentEndTime | date:'shortTime' }}</span>
       <br/>
       <address>
         {{ ride.driveFrom.endAddress }}<br/>
