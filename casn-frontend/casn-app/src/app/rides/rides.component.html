@@ -92,18 +92,20 @@
       <ng-container *ngFor="let s of objectKeys(serviceProviders)">
         <div class="checkbox-container">
           <mat-checkbox *ngIf="serviceProviders[s].serviceProviderTypeId !== 2"
-                            class="mb"
-                            [checked]="displayServiceProviders[s]"
-                            (change)="displayServiceProviders[s] = $event.source.checked"
-                            color="primary">{{ serviceProviders[s].name }}
+                        class="mb"
+                        [checked]="displayServiceProviders[s]"
+                        (change)="displayServiceProviders[s] = $event.source.checked"
+                        color="primary">
+            {{ serviceProviders[s].name }}
           </mat-checkbox>
         </div>
       </ng-container>
       <div class="checkbox-container">
         <mat-checkbox [checked]="displayServiceProviders['courthouses']"
-                          class="mb"
-                          (change)="displayServiceProviders['courthouses'] = $event.source.checked"
-                          color="primary">Courthouses
+                      class="mb"
+                      (change)="displayServiceProviders['courthouses'] = $event.source.checked"
+                      color="primary">
+          Courthouses
         </mat-checkbox>
       </div>
     </div>
