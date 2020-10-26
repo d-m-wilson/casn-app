@@ -16,7 +16,8 @@
 
     <!-- Drive to clinic -->
     <div class="drive-to-clinic"
-         *ngIf="ride.driveTo; else noDriveTo">
+         *ngIf="ride.driveTo; else noDriveTo"
+         (click)="showRideDetail.emit(true)">
       <span><strong>To {{ serviceProviderType }}:</strong> {{ ride.appointment.appointmentDate | date:'shortTime' }}</span>
       <br/>
       <address>
@@ -32,8 +33,7 @@
                              'rideshare': ride.driveTo.statusId === 4,
                              'canceled-by-caller': ride.driveTo.cancelReasonId === 1,
                              'canceled-by-us': ride.driveTo.cancelReasonId === 2 }"
-                type="button"
-                (click)="showRideDetail.emit(true)">
+                type="button">
           <span class="status-text">{{ ride.driveTo.statusId | ridecta }}</span>
         </button>
       </div>
@@ -60,7 +60,8 @@
 
     <!-- Drive from clinic -->
     <div class="drive-from-clinic"
-         *ngIf="ride.driveFrom; else noDriveFrom">
+         *ngIf="ride.driveFrom; else noDriveFrom"
+         (click)="showRideDetail.emit(false)">
       <span><strong>From {{ serviceProviderType }}:</strong> {{ appointmentEndTime | date:'shortTime' }}</span>
       <br/>
       <address>
@@ -75,8 +76,7 @@
                              'rideshare': ride.driveFrom.statusId === 4,
                              'canceled-by-caller': ride.driveFrom.cancelReasonId === 1,
                              'canceled-by-us': ride.driveFrom.cancelReasonId === 2 }"
-                type="button"
-                (click)="showRideDetail.emit(false)">
+                type="button">
           <span class="status-text">{{ ride.driveFrom.statusId | ridecta }}</span>
         </button>
       </div>
