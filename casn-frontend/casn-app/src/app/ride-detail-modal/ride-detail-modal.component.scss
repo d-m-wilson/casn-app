@@ -98,6 +98,7 @@ agm-map {
 ****************************************************************/
 .volunteer-wrapper {
   display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
@@ -106,6 +107,7 @@ agm-map {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  margin-bottom: 8px;
 
   div {
     display: flex;
