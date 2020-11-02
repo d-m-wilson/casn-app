@@ -45,6 +45,8 @@
       <!--********************************************************************
                                     Ride Cards
       **********************************************************************-->
+      <!-- Spacer so body elements will clear the fixed header -->
+      <div [style.height.px]="showDateFilters ? 15 : 0"></div>
       <ng-container *ngFor="let r of ridesToDisplay">
         <div *ngIf="(displayRides[r.driveTo?.statusId] || displayRides[r.driveFrom?.statusId]) && providerIsDisplayed(r.appointment.serviceProviderId)"
              class="appointment-drive-wrapper">
