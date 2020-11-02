@@ -28,7 +28,7 @@ export class RidesComponent implements OnInit, OnDestroy {
 
   /************** Settings Modal **************/
   showSettingsModal: boolean = false;
-  showDateFilters: boolean = false;
+  showDateFilters: boolean;
   // For showing badges on date filter cards
   dateFilterProperties: any = {};
   // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled, 4=rideshare
@@ -62,7 +62,7 @@ export class RidesComponent implements OnInit, OnDestroy {
     this.getServiceProviders();
     this.getDriveStatuses();
 
-    const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters"));
+    const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters")) ?? true;
     if(showDateFilters) this.toggleDateFilters();
   }
 
