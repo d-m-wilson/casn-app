@@ -6,7 +6,11 @@
   <mat-expansion-panel-header collapsedHeight="45px"
                               expandedHeight="45px">
     <mat-panel-title>
-      {{ ride.caller.callerIdentifier }}'s {{ appointmentType }}
+      <p>
+        {{ ride.caller.callerIdentifier }}'s {{ appointmentType }}
+        <br/>
+        <span class="text-small text-light">{{ ride.appointment.appointmentDate | date:'fullDate' }}</span>
+      </p>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
