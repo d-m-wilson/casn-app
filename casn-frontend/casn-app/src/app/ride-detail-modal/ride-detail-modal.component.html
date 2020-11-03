@@ -117,15 +117,6 @@
                           (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
                 </div>
               </div>
-              <div class="volunteer-container">
-                Jane Doe
-                <div>
-                  <button type="button" class="volunteer-btn approve text-small" mat-button [style.margin-right.px]="5"
-                    (click)="handleApproveClick(1)">Approve</button>
-                  <button type="button" class="volunteer-btn deny text-small" mat-button
-                    (click)="handleDenyClick(1, 'v.firstName')">Deny</button>
-                </div>
-              </div>
               <div class="rideshare text-small text-light">
                 <span>Set as rideshare</span> <mat-slide-toggle [(ngModel)]="showRideshareModal"></mat-slide-toggle>
               </div>
