@@ -22,12 +22,14 @@
     <div class="drive-to-clinic"
          *ngIf="ride.driveTo; else noDriveTo"
          (click)="showRideDetail.emit(true)">
-      <span><strong>To {{ serviceProviderType }}:</strong> {{ ride.appointment.appointmentDate | date:'shortTime' }}</span>
-      <br/>
-      <address>
-        {{ ride.driveTo.startAddress }}<br/>
-        {{ ride.driveTo.startCity }}
-      </address>
+      <div class="drive-info">
+        <span><strong>To {{ serviceProviderType }}:</strong> {{ ride.appointment.appointmentDate | date:'shortTime' }}</span>
+        <br/>
+        <address>
+          {{ ride.driveTo.startAddress }}<br/>
+          {{ ride.driveTo.startCity }}
+        </address>
+      </div>
       <div class="drive-actions">
         <!-- TODO: How shall we handled canceled btns? -->
         <button class="drive-btn"
@@ -66,12 +68,14 @@
     <div class="drive-from-clinic"
          *ngIf="ride.driveFrom; else noDriveFrom"
          (click)="showRideDetail.emit(false)">
-      <span><strong>From {{ serviceProviderType }}:</strong> {{ appointmentEndTime | date:'shortTime' }}</span>
-      <br/>
-      <address>
-        {{ ride.driveFrom.endAddress }}<br/>
-        {{ ride.driveFrom.endCity }}
-      </address>
+      <div class="drive-info">
+        <span><strong>From {{ serviceProviderType }}:</strong> {{ appointmentEndTime | date:'shortTime' }}</span>
+        <br/>
+        <address>
+          {{ ride.driveFrom.endAddress }}<br/>
+          {{ ride.driveFrom.endCity }}
+        </address>
+      </div>
       <div class="drive-actions">
         <button class="drive-btn"
                 [ngClass]="{ 'open': ride.driveFrom.statusId === 0,

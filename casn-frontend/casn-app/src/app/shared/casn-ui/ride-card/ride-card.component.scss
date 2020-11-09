@@ -20,6 +20,9 @@ address {
 
   .drive-to-clinic, .drive-from-clinic {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 }
 
@@ -31,6 +34,10 @@ address {
 .vertical-divider {
   border-left: 1px dotted #C3C0C0;
   margin: 0 15px;
+
+  @media (max-width: 330px) {
+    margin: 0 5px;
+  }
 }
 
 .drive-btn {
