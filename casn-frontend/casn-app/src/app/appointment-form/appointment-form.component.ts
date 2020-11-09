@@ -185,6 +185,17 @@ export class AppointmentFormComponent implements OnInit {
     const dropoffInvalid = this.callerNeedsDropoff && !this.dropoffSameAsPickup && !this.driveFromForm.valid;
     const formInvalid = apptInvalid || pickupInvalid || dropoffInvalid;
     if(formInvalid) return;
+
+    // If appt is same-day, display an additional warning/confirmation
+    let today = new Date();
+    const apptDate = this.formAppt.appointmentDate.value;
+    const apptSameDay = today.toDateString() === apptDate.toDateString();
+    if (apptSameDay) {
+      if (!confirm("Are you sure you want to schedule this appointment for today? If you do, this will immediately send an urgent text to all volunteers.")) {
+        return;
+      }
+    }
+
     if(this.editingAppointment) {
       this.editAppointmentDTO();
     } else {
