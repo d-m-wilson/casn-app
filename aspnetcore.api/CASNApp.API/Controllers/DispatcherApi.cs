@@ -838,6 +838,7 @@ namespace CASNApp.API.Controllers
             }
 
             var callerEntity = new Core.Entities.Caller(caller);
+            callerEntity.IsActive = true;
 
             dbContext.Callers.Add(callerEntity);
             await dbContext.SaveChangesAsync();
