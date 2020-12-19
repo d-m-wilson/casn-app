@@ -1,10 +1,28 @@
-﻿@model IEnumerable<CASNApp.Core.Entities.FundingOffer>
+﻿@model CASNApp.Admin.Models.FundingOfferIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h4>Caller Lookup</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CallerLookup">
+            <div class="form-group">
+                <label class="control-label">Add or look up caller information</label>
+                <input asp-for="CallerIdentifier" class="form-control" placeholder="1234" />
+                <span asp-validation-for="CallerIdentifier" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Next" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<h4>List</h4>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,75 +31,64 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IsActive)
+                Caller
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Created)
+                Clinic
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Issued)
+                Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Redeemed)
+                Is Active
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Paid)
+                Created
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Updated)
+                Updated
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Caller)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Clinic)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FundingOfferStatus)
+                Created By
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Issued)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Redeemed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Caller.CallerIdentifier)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Clinic.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;<a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.FundingOffers)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Caller.CallerIdentifier)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Clinic.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Updated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

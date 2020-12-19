@@ -1,47 +1,43 @@
 ﻿@model CASNApp.Core.Entities.FundingOffer
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
 <h4>FundingOffer</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="CallerId" class="control-label"></label>
-                <select asp-for="CallerId" class="form-control" asp-items="ViewBag.CallerId"></select>
-                <span asp-validation-for="CallerId" class="text-danger"></span>
+                <select asp-for="CallerId" class ="form-control" asp-items="ViewBag.CallerId"></select>
+            </div>*@
+            <input asp-for="CallerId" type="hidden" value="@ViewBag.CallerId" />
+            <div class="form-group">
+                <label asp-for="FundingOfferStatusId" class="control-label">Status</label>
+                <select asp-for="FundingOfferStatusId" class ="form-control" asp-items="ViewBag.FundingOfferStatusId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="FundingOfferStatusId" class="control-label"></label>
-                <select asp-for="FundingOfferStatusId" class="form-control" asp-items="ViewBag.FundingOfferStatusId"></select>
-                <span asp-validation-for="FundingOfferStatusId" class="text-danger"></span>
+                <label asp-for="ClinicId" class="control-label">Clinic</label>
+                <select asp-for="ClinicId" class ="form-control" asp-items="ViewBag.ClinicId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="ClinicId" class="control-label"></label>
-                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId"></select>
-                <span asp-validation-for="ClinicId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedById" class="control-label"></label>
-                <select asp-for="CreatedById" class="form-control" asp-items="ViewBag.CreatedById"></select>
-                <span asp-validation-for="CreatedById" class="text-danger"></span>
+                <label asp-for="CreatedById" class="control-label">Created By</label>
+                <select asp-for="CreatedById" class ="form-control" asp-items="ViewBag.CreatedById"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
             </div>
-            <div class="form-group form-check">
+            @*<div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
-            </div>
+            </div>*@
             @*<div class="form-group">
                 <label asp-for="Created" class="control-label"></label>
                 <input asp-for="Created" class="form-control" />
@@ -68,13 +64,13 @@
                 <span asp-validation-for="Updated" class="text-danger"></span>
             </div>*@
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
+    <a asp-action="CallerOffers" asp-route-id="@ViewBag.CurrentCallerId">Back to List</a>
 </div>
 

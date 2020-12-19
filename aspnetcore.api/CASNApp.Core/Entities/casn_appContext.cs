@@ -341,6 +341,8 @@ namespace CASNApp.Core.Entities
             {
                 entity.ToTable("FundingOffer");
 
+                entity.Property(e => e.Note).HasMaxLength(500);
+
                 entity.Property(e => e.Created).HasColumnType("datetime");
 
                 entity.Property(e => e.Issued).HasColumnType("datetime");

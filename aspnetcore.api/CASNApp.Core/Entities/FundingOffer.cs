@@ -15,6 +15,7 @@ namespace CASNApp.Core.Entities
         public int FundingOfferStatusId { get; set; }
         public int ClinicId { get; set; }
         public int CreatedById { get; set; }
+        public string Note { get; set; }
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Issued { get; set; }

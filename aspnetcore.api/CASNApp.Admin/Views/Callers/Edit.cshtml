@@ -1,0 +1,96 @@
+﻿@model CASNApp.Core.Entities.Caller
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Caller</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="CiviContactId" class="control-label"></label>
+                <input asp-for="CiviContactId" class="form-control" />
+                <span asp-validation-for="CiviContactId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CallerIdentifier" class="control-label"></label>
+                <input asp-for="CallerIdentifier" class="form-control" />
+                <span asp-validation-for="CallerIdentifier" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsMinor" /> @Html.DisplayNameFor(model => model.IsMinor)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PreferredLanguage" class="control-label"></label>
+                <input asp-for="PreferredLanguage" class="form-control" />
+                <span asp-validation-for="PreferredLanguage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PreferredContactMethod" class="control-label"></label>
+                <input asp-for="PreferredContactMethod" class="form-control" />
+                <span asp-validation-for="PreferredContactMethod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Note" class="control-label"></label>
+                <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created" class="control-label"></label>
+                <input asp-for="Created" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Updated" class="control-label"></label>
+                <input asp-for="Updated" class="form-control" />
+                <span asp-validation-for="Updated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ResidencePostalCode" class="control-label"></label>
+                <input asp-for="ResidencePostalCode" class="form-control" />
+                <span asp-validation-for="ResidencePostalCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

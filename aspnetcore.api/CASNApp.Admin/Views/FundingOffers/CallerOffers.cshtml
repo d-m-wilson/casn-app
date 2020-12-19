@@ -1,0 +1,65 @@
+﻿@model IEnumerable<CASNApp.Core.Entities.FundingOffer>
+
+@{
+    ViewData["Title"] = "Funding Offers";
+}
+
+<h1>Funding Offers for Caller @ViewBag.CallerIdentifier</h1>
+
+<p>
+    <a asp-action="CallerCreateOffer" asp-route-id="@ViewBag.CallerId">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Status
+            </th>
+            <th>
+                Clinic
+            </th>
+            <th>
+                Created By
+            </th>
+            <th>
+                Is Active
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Updated
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Clinic.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Updated)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
