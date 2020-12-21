@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   menuItems: any[];
   userRole: string;
   currentRoute: string; // The currently active page
+  whiteBg: boolean = false; // A few pages have white bg
   // A2HS
   deferredPrompt: any;
   showButton: boolean = false;
@@ -33,6 +34,9 @@ export class AppComponent implements OnInit {
       }
 
       if (event instanceof NavigationEnd) {
+        // Check if white bg page
+        this.whiteBg = event.url.includes('caller') || event.url.includes('appointment');
+
         const onHomePage = event.url.includes('dashboard');
         this.currentRoute = event.url;
         // When user navigates away, hide a2hs button
