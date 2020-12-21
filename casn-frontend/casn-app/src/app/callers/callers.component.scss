@@ -1,7 +1,20 @@
+@import "../styles/variables";
+
+h2 {
+  margin-bottom: 0;
+  margin-top: 50px;
+}
+
+p {
+  margin-top: 0;
+}
+
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: $white;
+  min-height: 100vh;
 }
 
 form {
@@ -10,20 +23,32 @@ form {
   margin: 10px;
 }
 
-.caller-form-group {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-}
-
-.mat-form-field, .mat-checkbox {
-  margin: 5px 0;
-}
-
-.form-btn {
-  margin: 10px 0;
+footer {
+  height: 60px;
+  background: $white;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ccc;
 }
 
 .hide {
   display: none;
+}
+
+.next-btn {
+  margin: 8px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.back-btn {
+  margin: 8px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  min-width: 0;
 }

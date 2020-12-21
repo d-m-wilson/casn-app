@@ -2,10 +2,10 @@
 <!--********************************************************************
                         Caller Search Field
 **********************************************************************-->
-  <h2>{{ editingCaller ? 'Edit' : 'Schedule' }} A Ride</h2>
-  <p *ngIf="!editingCaller"><em>Add or look up caller information</em></p>
+  <h2>{{ editingCaller ? 'Edit' : 'Schedule' }} a Ride</h2>
+  <p *ngIf="!editingCaller" class="text-light">Add or look up caller information</p>
   <div class="caller-form-group" *ngIf="!displayCallerForm">
-    <mat-form-field class="example-full-width" appearance="outline">
+    <mat-form-field class="full-width" appearance="outline">
       <mat-label>Caller ID</mat-label>
       <input type="text"
       placeholder="1234"
@@ -16,12 +16,12 @@
       <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
     </mat-form-field>
 
-    <button class="form-btn btn-cta"
-            mat-raised-button
+    <button class="next-btn"
+            mat-mini-fab
             color="primary"
             [disabled]="callerIdentifierSearch.invalid"
             *ngIf="!displayCallerForm"
-            (click)="searchCallerIdentifier()">Next</button>
+            (click)="searchCallerIdentifier()"><mat-icon>keyboard_arrow_right</mat-icon></button>
   </div>
 
 <!--********************************************************************
@@ -31,7 +31,7 @@
         (ngSubmit)="onSubmit()"
         *ngIf="displayCallerForm">
     <div class="caller-form-group">
-      <mat-form-field class="example-full-width" appearance="outline">
+      <mat-form-field class="full-width" appearance="standard">
         <mat-label>Caller ID</mat-label>
         <input type="text"
         placeholder="1234"
@@ -45,7 +45,7 @@
     </div>
 
   <div class="caller-form-group">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="standard">
         <mat-label>First Name</mat-label>
         <input matInput
               type="text"
@@ -54,7 +54,7 @@
               placeholder="Jane">
         <mat-error *ngIf="submitted && f.firstName.errors?.required">This field is required.</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="standard">
         <mat-label>Last Name</mat-label>
         <input matInput
                type="text"
@@ -62,7 +62,7 @@
                aria-label="Last Name"
                placeholder="Doe">
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="standard">
         <mat-label>Phone Number</mat-label>
         <input matInput
                type="text"
@@ -74,7 +74,7 @@
       </mat-form-field>
       <mat-checkbox formControlName="isMinor"
                     aria-label="Minor">Minor?</mat-checkbox>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="standard">
         <mat-label>Preferred Language</mat-label>
         <input type="text"
                placeholder="Language"
@@ -90,7 +90,7 @@
         </mat-autocomplete>
         <mat-error *ngIf="f.preferredLanguage.errors?.required">This field is required.</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="standard">
         <mat-label>Preferred Contact Method</mat-label>
         <mat-select placeholder="Contact Method"
                     aria-label="Preferred Contact Method"
@@ -101,7 +101,7 @@
         </mat-select>
         <mat-error *ngIf="f.preferredContactMethod.errors?.required">This field is required.</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="standard">
         <mat-label>Notes</mat-label>
         <textarea matInput
                   maxlength="500"
@@ -111,17 +111,23 @@
                   placeholder="Optional, please include any notes here."></textarea>
         <mat-hint align="end">{{ callerNotes.value.length }} / 500</mat-hint>
       </mat-form-field>
-      <button class="form-btn btn-cta"
-              mat-raised-button
+      <button class="next-btn"
+              mat-mini-fab
               color="primary"
               type="submit"
-              [disabled]="!callerForm.valid">Next</button>
-      <button mat-button
+              [disabled]="!callerForm.valid"><mat-icon>keyboard_arrow_right</mat-icon></button>
+      <button class="back-btn btn-cta warn"
+              mat-raised-button
               color="warn"
-              class="form-btn"
               (click)="handleCancelClick()">Cancel</button>
     </div>
   </form>
+
+  <!--********************************************************************
+                                Footer
+  **********************************************************************-->
+  <!-- NOTE: Form buttons are positioned within here via fixed positioning -->
+  <footer></footer>
 
   <!--********************************************************************
                               Form Debug
