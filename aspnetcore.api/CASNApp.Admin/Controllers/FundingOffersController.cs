@@ -21,8 +21,6 @@ namespace CASNApp.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //return RedirectToAction(nameof(CallerLookup));
-
             var casn_appContext = _context.FundingOffers
                 .AsNoTracking()
                 .Include(f => f.Caller)
@@ -103,16 +101,6 @@ namespace CASNApp.Admin.Controllers
             return View(fundingOfferItem);
         }
 
-        // GET: FundingOffers/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["CallerId"] = new SelectList(_context.Callers, "Id", "CallerIdentifier");
-        //    ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, "Id", "Address");
-        //    ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "FirstName");
-        //    ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name");
-        //    return View();
-        //}
-
         // POST: FundingOffers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -123,7 +111,7 @@ namespace CASNApp.Admin.Controllers
             if (ModelState.IsValid)
             {
                 // prevent user from creating a FundingOffer in any status but Draft
-                var draftStatus = await _context.FundingOfferStatuses.AsNoTracking().SingleAsync(d => d.Id == 1);
+                var draftStatus = await _context.FundingOfferStatuses.AsNoTracking().SingleAsync(d => d.Id == FundingOfferStatus.Draft);
                 fundingOffer.FundingOfferStatusId = draftStatus.Id;
 
                 // prevent user from creating a FundingOffer marked as inactive
@@ -136,12 +124,10 @@ namespace CASNApp.Admin.Controllers
 
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
-            //ViewData["CallerId"] = new SelectList(_context.Callers, "Id", "CallerIdentifier", fundingOffer.CallerId);
             ViewBag.CallerId = fundingOffer.CallerId;
             ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "Name", fundingOffer.CreatedById);
-            //ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
-            ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses.Where(s => s.Id == 1), nameof(Caller.Id), nameof(Caller.Name));
+            ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses.Where(s => s.Id == FundingOfferStatus.Draft), nameof(Caller.Id), nameof(Caller.Name));
             ViewBag.CurrentCallerId = fundingOffer.CallerId;
             return View(fundingOffer);
         }
@@ -226,7 +212,6 @@ namespace CASNApp.Admin.Controllers
             }
 
             ViewData["FundingAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.FundingAmountNullReasonId);
-            //ViewData["FundingOfferId"] = new SelectList(_context.FundingOffers, "Id", "Id", fundingOfferItem.FundingOfferId);
             ViewData["FundingSourceId"] = new SelectList(_context.FundingSources, "Id", "Name", fundingOfferItem.FundingSourceId);
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, "Id", "Name", fundingOfferItem.FundingTypeId);
             ViewData["NeedAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.NeedAmountNullReasonId);
@@ -234,7 +219,7 @@ namespace CASNApp.Admin.Controllers
             return View(fundingOfferItem);
         }
 
-        // POST: FundingOfferItems/Edit/5
+        // POST: FundingOffers/EditItem/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -277,7 +262,6 @@ namespace CASNApp.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FundingAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.FundingAmountNullReasonId);
-            //ViewData["FundingOfferId"] = new SelectList(_context.FundingOffers, "Id", "Id", fundingOfferItem.FundingOfferId);
             ViewData["FundingSourceId"] = new SelectList(_context.FundingSources, "Id", "Name", fundingOfferItem.FundingSourceId);
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, "Id", "Name", fundingOfferItem.FundingTypeId);
             ViewData["NeedAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.NeedAmountNullReasonId);
@@ -318,7 +302,7 @@ namespace CASNApp.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: FundingOfferItems/DeleteItem/5
+        // GET: FundingOffers/DeleteItem/5
         public async Task<IActionResult> DeleteItem(int? id)
         {
             if (id == null)
@@ -342,7 +326,7 @@ namespace CASNApp.Admin.Controllers
             return View(fundingOfferItem);
         }
 
-        // POST: FundingOfferItems/DeleteItem/5
+        // POST: FundingOffers/DeleteItem/5
         [HttpPost, ActionName("DeleteItem")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteItemConfirmed(int id)
@@ -468,12 +452,10 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            //ViewData["CallerId"] = new SelectList(new Caller[] { caller }, nameof(Caller.Id), nameof(Caller.CallerIdentifier));
             ViewBag.CallerId = caller.Id;
             ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, nameof(Caller.Id), nameof(Caller.Name));
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, nameof(Caller.Id), nameof(Caller.Name));
-            //ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, nameof(Caller.Id), nameof(Caller.Name));
-            ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses.Where(s => s.Id == 1), nameof(Caller.Id), nameof(Caller.Name));
+            ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses.Where(s => s.Id == FundingOfferStatus.Draft), nameof(Caller.Id), nameof(Caller.Name));
 
             ViewBag.CurrentCallerId = caller.Id;
 
@@ -493,7 +475,6 @@ namespace CASNApp.Admin.Controllers
             }
 
             ViewData["FundingAmountNullReasonId"] = new SelectList(_context.NullReasons, nameof(NullReason.Id), nameof(NullReason.Name));
-            //ViewData["FundingOfferId"] = new SelectList(new FundingOffer[] { fundingOffer }, nameof(FundingOffer.Id), nameof(FundingOffer.Id));
             ViewBag.FundingOfferId = fundingOffer.Id;
             ViewData["FundingSourceId"] = new SelectList(_context.FundingSources, nameof(FundingSource.Id), nameof(FundingSource.Name));
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, nameof(FundingType.Id), nameof(FundingType.Name));
@@ -522,7 +503,6 @@ namespace CASNApp.Admin.Controllers
             var fundingOffer = await _context.FundingOffers.Where(fo => fo.Id == fundingOfferItem.FundingOfferId).SingleOrDefaultAsync();
 
             ViewData["FundingAmountNullReasonId"] = new SelectList(_context.NullReasons, nameof(NullReason.Id), nameof(NullReason.Name), fundingOfferItem.FundingAmountNullReasonId);
-            //ViewData["FundingOfferId"] = new SelectList(new FundingOffer[] { fundingOffer }, nameof(FundingOffer.Id), nameof(FundingOffer.Id), fundingOfferItem.FundingOfferId);
             ViewBag.FundingOfferId = fundingOffer.Id;
             ViewData["FundingSourceId"] = new SelectList(_context.FundingSources, nameof(FundingSource.Id), nameof(FundingSource.Name), fundingOfferItem.FundingSourceId);
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, nameof(FundingType.Id), nameof(FundingType.Name), fundingOfferItem.FundingTypeId);
