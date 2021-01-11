@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.Admin.Models;
 using CASNApp.Core.Entities;
+using CASNApp.Core.Queries;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,12 +17,32 @@ namespace CASNApp.Admin.Controllers
     public class FundingOffersController : Controller
     {
         private readonly casn_appContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public FundingOffersController(casn_appContext context)
+        public FundingOffersController(casn_appContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
+        // if the user is not authenticated OR they don't have 2FA set up, deny them access
+        public async override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var userHas2FA = await UserHas2FAAsync();
+
+                if (userHas2FA)
+                {
+                    await base.OnActionExecutionAsync(context, next);
+                    return;
+                }
+            }
+
+            context.Result = Forbid();
+        }
+
+        // GET FundingOffers
         public async Task<IActionResult> Index()
         {
             var casn_appContext = _context.FundingOffers
@@ -36,7 +60,7 @@ namespace CASNApp.Admin.Controllers
             return View(viewModel);
         }
 
-        // GET: FundingOffers
+        // GET: FundingOffers/List
         public async Task<IActionResult> List()
         {
             var casn_appContext = _context.FundingOffers
@@ -60,11 +84,16 @@ namespace CASNApp.Admin.Controllers
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
             var fundingOffer = await _context.FundingOffers
-                .Include(f => f.Caller)
-                .Include(f => f.Clinic)
-                .Include(f => f.CreatedBy)
-                .Include(f => f.FundingOfferStatus)
-                .Include(f => f.FundingOfferItems)
+                .Include(fo => fo.Caller)
+                .Include(fo => fo.Clinic)
+                .Include(fo => fo.CreatedBy)
+                .Include(fo => fo.UpdatedBy)
+                .Include(fo => fo.FundingOfferStatus)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingSource)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingType)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.PaymentMethod)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.NeedAmountNullReason)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingAmountNullReason)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (fundingOffer == null)
@@ -101,37 +130,6 @@ namespace CASNApp.Admin.Controllers
             return View(fundingOfferItem);
         }
 
-        // POST: FundingOffers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CallerId,FundingOfferStatusId,ClinicId,CreatedById,Note")] FundingOffer fundingOffer)
-        {
-            if (ModelState.IsValid)
-            {
-                // prevent user from creating a FundingOffer in any status but Draft
-                var draftStatus = await _context.FundingOfferStatuses.AsNoTracking().SingleAsync(d => d.Id == FundingOfferStatus.Draft);
-                fundingOffer.FundingOfferStatusId = draftStatus.Id;
-
-                // prevent user from creating a FundingOffer marked as inactive
-                fundingOffer.IsActive = true;
-
-                _context.Add(fundingOffer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(CallerOffers), new { id = fundingOffer.CallerId });
-            }
-
-            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-
-            ViewBag.CallerId = fundingOffer.CallerId;
-            ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
-            ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "Name", fundingOffer.CreatedById);
-            ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses.Where(s => s.Id == FundingOfferStatus.Draft), nameof(Caller.Id), nameof(Caller.Name));
-            ViewBag.CurrentCallerId = fundingOffer.CallerId;
-            return View(fundingOffer);
-        }
-
         // GET: FundingOffers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -150,7 +148,11 @@ namespace CASNApp.Admin.Controllers
             }
 
             ViewData["CallerId"] = new SelectList(_context.Callers, "Id", "CallerIdentifier", fundingOffer.CallerId);
-            ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, "Id", "Name", fundingOffer.ClinicId);
+
+            var serviceProviderQuery = new ServiceProviderQuery(_context);
+            var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
+            ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
+
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "Name", fundingOffer.CreatedById);
             ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
             return View(fundingOffer);
@@ -161,8 +163,15 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CallerId,FundingOfferStatusId,ClinicId,CreatedById,Note,IsActive")] FundingOffer fundingOffer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ClinicId,Note,IsActive")] FundingOffer fundingOffer)
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (id != fundingOffer.Id)
             {
                 return NotFound();
@@ -172,7 +181,30 @@ namespace CASNApp.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(fundingOffer);
+                    var existingFundingOffer = await _context.FundingOffers.FindAsync(id);
+
+                    if (existingFundingOffer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if (!existingFundingOffer.AllowsEdits)
+                    {
+                        return Conflict();
+                    }
+
+                    // prevent user from directly editing the status
+                    fundingOffer.FundingOfferStatusId = existingFundingOffer.FundingOfferStatusId;
+
+                    // prevent user from changing the CreatedById
+                    fundingOffer.CreatedById = existingFundingOffer.CreatedById;
+
+                    // prevent user from changing the CallerId
+                    fundingOffer.CallerId = existingFundingOffer.CallerId;
+
+                    fundingOffer.UpdatedById = volunteer.Id;
+
+                    _context.Entry(existingFundingOffer).CurrentValues.SetValues(fundingOffer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -190,7 +222,11 @@ namespace CASNApp.Admin.Controllers
             }
 
             ViewData["CallerId"] = new SelectList(_context.Callers, "Id", "CallerIdentifier", fundingOffer.CallerId);
-            ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, "Id", "Address", fundingOffer.ClinicId);
+
+            var serviceProviderQuery = new ServiceProviderQuery(_context);
+            var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
+            ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
+
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "FirstName", fundingOffer.CreatedById);
             ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
             return View(fundingOffer);
@@ -224,8 +260,15 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(int id, [Bind("Id,FundingOfferId,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId,IsActive")] FundingOfferItem fundingOfferItem)
+        public async Task<IActionResult> EditItem(int id, [Bind("Id,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId,IsActive")] FundingOfferItem fundingOfferItem)
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (id != fundingOfferItem.Id)
             {
                 return NotFound();
@@ -242,9 +285,17 @@ namespace CASNApp.Admin.Controllers
                         return NotFound();
                     }
 
+                    var existingFundingOffer = await _context.FundingOffers.FindAsync(existingFundingOfferItem.FundingOfferId);
+
+                    if (!existingFundingOffer.AllowsEdits)
+                    {
+                        return Conflict();
+                    }
+
                     // prevent user from "moving" this item to a different FundingOffer (parent) record
                     fundingOfferItem.FundingOfferId = existingFundingOfferItem.FundingOfferId;
 
+                    existingFundingOffer.UpdatedById = volunteer.Id;
                     _context.Entry(existingFundingOfferItem).CurrentValues.SetValues(fundingOfferItem);
                     await _context.SaveChangesAsync();
                 }
@@ -296,7 +347,15 @@ namespace CASNApp.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             var fundingOffer = await _context.FundingOffers.FindAsync(id);
+            fundingOffer.UpdatedById = volunteer.Id;
             _context.FundingOffers.Remove(fundingOffer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -331,12 +390,39 @@ namespace CASNApp.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteItemConfirmed(int id)
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             var fundingOfferItem = await _context.FundingOfferItems.FindAsync(id);
+
+            if (fundingOfferItem == null)
+            {
+                return NotFound();
+            }
+
+            var existingFundingOffer = await _context.FundingOffers.FindAsync(fundingOfferItem.FundingOfferId);
+
+            if (existingFundingOffer == null)
+            {
+                return NotFound();
+            }
+
+            if (!existingFundingOffer.AllowsEdits)
+            {
+                return Conflict();
+            }
+
+            existingFundingOffer.UpdatedById = volunteer.Id;
             _context.FundingOfferItems.Remove(fundingOfferItem);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // GET FundingOffers/CallerLookup
         public IActionResult CallerLookup()
         {
             return View();
@@ -374,7 +460,7 @@ namespace CASNApp.Admin.Controllers
             return View(caller);
         }
 
-        // POST: GET: FundingOffers/CallerCreate
+        // POST: FundingOffers/CallerCreate
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -390,6 +476,7 @@ namespace CASNApp.Admin.Controllers
             return View(caller);
         }
 
+        // GET: FundingOffers/CallerConfirm/5
         public async Task<IActionResult> CallerConfirm([FromRoute]int id)
         {
             var caller = await _context.Callers.AsNoTracking().Where(c => c.Id == id).SingleAsync();
@@ -402,6 +489,7 @@ namespace CASNApp.Admin.Controllers
             return View(caller);
         }
 
+        // POST FundingOffers/CallerConfirm/5
         [HttpPost, ActionName("CallerConfirm")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CallerConfirmPost([FromRoute]int id)
@@ -416,6 +504,7 @@ namespace CASNApp.Admin.Controllers
             return RedirectToAction(nameof(CallerOffers), new { id = caller.Id });
         }
 
+        // GET: FundingOffers/CallerOffers/5
         public async Task<IActionResult> CallerOffers([FromRoute]int id)
         {
             var caller = await _context.Callers.Where(c => c.Id == id).SingleAsync();
@@ -441,6 +530,7 @@ namespace CASNApp.Admin.Controllers
             return View(offers);
         }
 
+        // GET: FundingOffers/CallerCreateOffer/5
         public async Task<IActionResult> CallerCreateOffer([FromRoute]int id)
         {
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -453,13 +543,52 @@ namespace CASNApp.Admin.Controllers
             }
 
             ViewBag.CallerId = caller.Id;
-            ViewData["ClinicId"] = new SelectList(_context.ServiceProviders, nameof(Caller.Id), nameof(Caller.Name));
-            ViewData["CreatedById"] = new SelectList(_context.Volunteers, nameof(Caller.Id), nameof(Caller.Name));
-            ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses.Where(s => s.Id == FundingOfferStatus.Draft), nameof(Caller.Id), nameof(Caller.Name));
 
-            ViewBag.CurrentCallerId = caller.Id;
+            var serviceProviderQuery = new ServiceProviderQuery(_context);
+            var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
+            ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name));
 
             return View();
+        }
+
+        // POST: FundingOffers/CallerCreateOffer
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CallerCreateOffer([Bind("CallerId,ClinicId,Note")] FundingOffer fundingOffer)
+        {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // prevent user from creating a FundingOffer in any status but Draft
+                fundingOffer.FundingOfferStatusId = FundingOfferStatus.Draft;
+
+                // prevent user from creating a FundingOffer marked as inactive
+                fundingOffer.IsActive = true;
+
+                fundingOffer.CreatedById = volunteer.Id;
+
+                _context.Add(fundingOffer);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new { id = fundingOffer.Id });
+            }
+
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            ViewBag.CallerId = fundingOffer.CallerId;
+
+            var serviceProviderQuery = new ServiceProviderQuery(_context);
+            var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
+            ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
+
+            return View(fundingOffer);
         }
 
         // GET: FundingOffers/CreateItem
@@ -490,8 +619,28 @@ namespace CASNApp.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateItem([Bind("FundingOfferId,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId")] FundingOfferItem fundingOfferItem)
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
             if (ModelState.IsValid)
             {
+                var existingFundingOffer = await _context.FundingOffers.FindAsync(fundingOfferItem.FundingOfferId);
+
+                if (existingFundingOffer == null)
+                {
+                    return NotFound();
+                }
+
+                if (!existingFundingOffer.AllowsEdits)
+                {
+                    return Conflict();
+                }
+
+                existingFundingOffer.UpdatedById = volunteer.Id;
                 fundingOfferItem.IsActive = true;
                 _context.Add(fundingOfferItem);
                 await _context.SaveChangesAsync();
@@ -511,6 +660,147 @@ namespace CASNApp.Admin.Controllers
             return View(fundingOfferItem);
         }
 
+        // GET: FundingOffers/Voucher/5
+        public async Task<IActionResult> Voucher([FromRoute]int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            var fundingOffer = await _context.FundingOffers
+                .Include(fo => fo.Caller)
+                .Include(fo => fo.Clinic)
+                .Include(fo => fo.IssuedBy)
+                .Include(fo => fo.FundingOfferStatus)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingSource)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingType)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.PaymentMethod)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.NeedAmountNullReason)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingAmountNullReason)
+                .SingleOrDefaultAsync(fo => fo.Id == id.Value);
+
+            if (fundingOffer == null)
+            {
+                return NotFound();
+            }
+
+            return View(fundingOffer);
+        }
+
+        // GET: FundingOffers/ChangeStatus/5
+        public async Task<IActionResult> ChangeStatus([FromRoute]int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+            var fundingOffer = await _context.FundingOffers
+                .Include(fo => fo.Caller)
+                .Include(fo => fo.Clinic)
+                .Include(fo => fo.CreatedBy)
+                .Include(fo => fo.FundingOfferStatus)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingSource)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingType)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.PaymentMethod)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.NeedAmountNullReason)
+                .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingAmountNullReason)
+                .SingleOrDefaultAsync(fo => fo.Id == id.Value);
+
+            if (fundingOffer == null)
+            {
+                return NotFound();
+            }
+
+            var validStatuses = await GetValidStatusesAsync(fundingOffer.FundingOfferStatusId);
+            ViewData["FundingOfferStatusId"] = new SelectList(validStatuses, nameof(FundingOfferStatus.Id), nameof(FundingOfferStatus.Name));
+
+            string warningText;
+
+            if (fundingOffer.FundingOfferStatusId == FundingOfferStatus.Draft)
+            {
+                warningText = "Note: Once a Funding Offer's status is changed, no further editing will be permitted.";
+            }
+            else
+            {
+                warningText = "Note: Status changes are not reversible. Please be sure before you proceed.";
+            }
+
+            ViewData["WarningText"] = warningText;
+
+            return View(fundingOffer);
+        }
+
+        // POST: FundingOffers/ChangeStatus/5
+        [HttpPost, ActionName("ChangeStatus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeStatusConfirmed([FromRoute] int id, [FromForm] int FundingOfferStatusId)
+        {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var fundingOffer = await _context.FundingOffers.FindAsync(id);
+
+            if (fundingOffer == null)
+            {
+                return NotFound();
+            }
+
+            if (!FundingOfferStatus.IsValidStateTransition(fundingOffer.FundingOfferStatusId, FundingOfferStatusId))
+            {
+                return Conflict();
+            }
+
+            try
+            {
+                fundingOffer.FundingOfferStatusId = FundingOfferStatusId;
+                fundingOffer.SetVolunteerId(FundingOfferStatusId, volunteer.Id);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FundingOfferExists(fundingOffer.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Details), new { id = fundingOffer.Id });
+        }
+
+        private Task<List<FundingOfferStatus>> GetValidStatusesAsync(int currentFundingOfferStatusId)
+        {
+            if (!FundingOfferStatus.ValidStateTransitions.ContainsKey(currentFundingOfferStatusId))
+            {
+                return Task.FromResult(new List<FundingOfferStatus>());
+            }
+
+            var validStateTransitions = FundingOfferStatus.ValidStateTransitions[currentFundingOfferStatusId];
+
+            if (validStateTransitions == null || validStateTransitions.Count == 0)
+            {
+                return Task.FromResult(new List<FundingOfferStatus>());
+            }
+
+            return _context.FundingOfferStatuses
+                .AsNoTracking()
+                .Where(fos => validStateTransitions.Contains(fos.Id) && fos.IsActive)
+                .ToListAsync();
+        }
+
         private bool FundingOfferExists(int id)
         {
             return _context.FundingOffers.Any(e => e.Id == id);
@@ -519,6 +809,22 @@ namespace CASNApp.Admin.Controllers
         private bool FundingOfferItemExists(int id)
         {
             return _context.FundingOfferItems.Any(e => e.Id == id);
+        }
+
+        private async Task<Volunteer> GetVolunteerForCurrentUserAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var volunteerQuery = new Core.Queries.VolunteerQuery(_context);
+            var volunteer = await volunteerQuery.GetVolunteerByEmailAsync(user.Email, true);
+
+            return volunteer;
+        }
+
+        private async Task<bool> UserHas2FAAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return user.TwoFactorEnabled;
         }
 
     }

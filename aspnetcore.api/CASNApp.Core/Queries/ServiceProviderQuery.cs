@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CASNApp.Core.Queries
 {
-	class ServiceProviderQuery
+	public class ServiceProviderQuery
 	{
 		private readonly casn_appContext dbContext;
 
@@ -21,6 +23,15 @@ namespace CASNApp.Core.Queries
 				.SingleOrDefault();
 			return result;
 		}
+
+		public Task<List<ServiceProvider>> GetActiveClinicsAsync(bool readOnly)
+        {
+			var result = (readOnly ? dbContext.ServiceProviders.AsNoTracking() : dbContext.ServiceProviders)
+				.Include(sp => sp.ServiceProviderType)
+				.Where(sp => sp.ServiceProviderType.Name == "Clinic")
+				.ToListAsync();
+			return result;
+        }
 
 	}
 }

@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\qrcodejs\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 </Project>

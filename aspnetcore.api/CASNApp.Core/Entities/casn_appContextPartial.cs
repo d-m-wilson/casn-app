@@ -95,6 +95,12 @@ namespace CASNApp.Core.Entities
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
             ApplyValueConversions(modelBuilder);
+
+            modelBuilder.Entity<FundingOffer>()
+                .Property(fo => fo.FundingOfferStatusId)
+                .HasField("_FundingOfferStatusId")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+
         }
 
         private void ApplyValueConversions(ModelBuilder modelBuilder)

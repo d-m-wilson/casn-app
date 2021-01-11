@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>FundingOffer</h4>
+    <h4>Funding Offer</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -79,15 +79,15 @@
     </dl>
     <div class="row">
         <!-- BEGIN -->
+        @if (Model.AllowsEdits)
+        {
         <p>
             <a asp-action="CreateItem" asp-route-id="@Model.Id">Create New</a>
         </p>
+        }
         <table class="table">
             <thead>
                 <tr>
-                    @*<th>
-                        @Html.DisplayNameFor(model => model.FundingOfferItems.FirstOrDefault().FundingOffer)
-                    </th>*@
                     <th>
                         Funding Type
                     </th>
@@ -97,15 +97,15 @@
                     <th>
                         Need Amount
                     </th>
-                    <th>
+                    @*<th>
                         Need Amound Null Reason
-                    </th>
+                    </th>*@
                     <th>
                         Funding Amount
                     </th>
-                    <th>
+                    @*<th>
                         Funding Amount Null Reason
-                    </th>
+                    </th>*@
                     <th>
                         Payment Method
                     </th>
@@ -119,9 +119,6 @@
                 @foreach (var item in Model.FundingOfferItems)
                 {
                     <tr>
-                        @*<td>
-                            @Html.DisplayFor(modelItem => item.FundingOffer.Id)
-                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.FundingType.Name)
                         </td>
@@ -130,14 +127,14 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.NeedAmount)
-                        </td>
-                        <td>
+                        @*</td>
+                        <td>*@
                             @Html.DisplayFor(modelItem => item.NeedAmountNullReason.Name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FundingAmount)
-                        </td>
-                        <td>
+                        @*</td>
+                        <td>*@
                             @Html.DisplayFor(modelItem => item.FundingAmountNullReason.Name)
                         </td>
                         <td>
@@ -147,9 +144,17 @@
                             @Html.DisplayFor(modelItem => item.IsActive)
                         </td>
                         <td>
-                            <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="ItemDetails" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="DeleteItem" asp-route-id="@item.Id">Delete</a>
+                            @if (Model.AllowsEdits)
+                            {
+                                <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>
+                            }
+
+                            <a asp-action="ItemDetails" asp-route-id="@item.Id">Details</a>
+
+                            @if (Model.AllowsEdits)
+                            {
+                                <a asp-action="DeleteItem" asp-route-id="@item.Id">Delete</a>
+                            }
                         </td>
                     </tr>
                 }
@@ -159,6 +164,14 @@
     </div>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    @if (Model.AllowsEdits)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="custom-nav-link">Edit</a>
+    }
+    <a asp-action="ChangeStatus" asp-route-id="@Model.Id" class="custom-nav-link">Change Status</a>
     <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
+    @if (!Model.AllowsEdits) 
+    {
+    <a asp-action="Voucher" asp-route-id="@Model.Id" class="btn btn-info float-right" target="_blank">Print Voucher</a>
+    }
 </div>

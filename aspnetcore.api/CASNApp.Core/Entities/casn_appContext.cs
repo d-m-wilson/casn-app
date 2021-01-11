@@ -341,17 +341,19 @@ namespace CASNApp.Core.Entities
             {
                 entity.ToTable("FundingOffer");
 
-                entity.Property(e => e.Note).HasMaxLength(500);
-
                 entity.Property(e => e.Created).HasColumnType("datetime");
 
                 entity.Property(e => e.Issued).HasColumnType("datetime");
+
+                entity.Property(e => e.Note).HasMaxLength(500);
 
                 entity.Property(e => e.Paid).HasColumnType("datetime");
 
                 entity.Property(e => e.Redeemed).HasColumnType("datetime");
 
                 entity.Property(e => e.Updated).HasColumnType("datetime");
+
+                entity.Property(e => e.Voided).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Caller)
                     .WithMany(p => p.FundingOffers)
@@ -366,16 +368,31 @@ namespace CASNApp.Core.Entities
                     .HasConstraintName("FK_FundingOffer_ServiceProvider");
 
                 entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.FundingOffers)
+                    .WithMany(p => p.FundingOfferCreatedBies)
                     .HasForeignKey(d => d.CreatedById)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_FundingOffer_Volunteer");
+                    .HasConstraintName("FK_FundingOffer_Created_Volunteer");
 
                 entity.HasOne(d => d.FundingOfferStatus)
                     .WithMany(p => p.FundingOffers)
                     .HasForeignKey(d => d.FundingOfferStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_FundingOffer_FundingOfferStatus");
+
+                entity.HasOne(d => d.IssuedBy)
+                    .WithMany(p => p.FundingOfferIssuedBies)
+                    .HasForeignKey(d => d.IssuedById)
+                    .HasConstraintName("FK_FundingOffer_Issued_Volunteer");
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.FundingOfferUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById)
+                    .HasConstraintName("FK_FundingOffer_Updated_Volunteer");
+
+                entity.HasOne(d => d.VoidedBy)
+                    .WithMany(p => p.FundingOfferVoidedBies)
+                    .HasForeignKey(d => d.VoidedById)
+                    .HasConstraintName("FK_FundingOffer_Voided_Volunteer");
             });
 
             modelBuilder.Entity<FundingOfferItem>(entity =>

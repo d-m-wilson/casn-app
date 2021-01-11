@@ -7,23 +7,23 @@
 <h1>Details</h1>
 
 <div>
-    <h4>FundingOfferItem</h4>
+    <h4>Funding Offer Item</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NeedAmount)
+            Need Amount
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NeedAmount)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FundingAmount)
+            Funding Amount
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FundingAmount)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.IsActive)
+            Is Active
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsActive)
@@ -41,37 +41,37 @@
             @Html.DisplayFor(model => model.Updated)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FundingAmountNullReason)
+            Funding Amount Null Reason
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FundingAmountNullReason.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FundingOffer)
+            Funding Offer
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FundingOffer.Id)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FundingSource)
+            Funding Source
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FundingSource.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FundingType)
+            Funding Type
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FundingType.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NeedAmountNullReason)
+            Need Amount Null Reason
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NeedAmountNullReason.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PaymentMethod)
+            Payment Method
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PaymentMethod.Name)
@@ -79,6 +79,10 @@
     </dl>
 </div>
 <div>
-    <a asp-action="EditItem" asp-route-id="@Model.Id">Edit</a> |
+    @if (Model.FundingOffer.AllowsEdits)
+    {
+    <a asp-action="EditItem" asp-route-id="@Model.Id">Edit</a> 
+    }
+
     <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Back to List</a>
 </div>

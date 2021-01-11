@@ -39,6 +39,14 @@ namespace CASNApp.Core.Queries
             return result;
         }
 
+        public Task<Volunteer> GetVolunteerByEmailAsync(string email, bool readOnly)
+        {
+            var result = (readOnly ? dbContext.Volunteers.AsNoTracking() : dbContext.Volunteers)
+                .Where(v => v.GoogleAccount == email)
+                .SingleOrDefaultAsync();
+            return result;
+        }
+
         public Volunteer GetActiveDispatcherByEmail(string email, bool readOnly)
         {
             var volunteer = GetActiveVolunteerByEmail(email, readOnly);

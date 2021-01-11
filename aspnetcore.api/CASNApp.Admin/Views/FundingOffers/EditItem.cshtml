@@ -13,11 +13,6 @@
         <form asp-action="EditItem">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            @*<div class="form-group">
-                <label asp-for="FundingOfferId" class="control-label"></label>
-                <select asp-for="FundingOfferId" class="form-control" asp-items="ViewBag.FundingOfferId"></select>
-                <span asp-validation-for="FundingOfferId" class="text-danger"></span>
-            </div>*@
             <input type="hidden" asp-for="FundingOfferId" />
             <div class="form-group">
                 <label asp-for="FundingSourceId" class="control-label">Funding Source</label>
@@ -63,16 +58,6 @@
                     <input class="form-check-input" asp-for="IsActive" /> Is Active
                 </label>
             </div>
-            @*<div class="form-group">
-                <label asp-for="Created" class="control-label"></label>
-                <input asp-for="Created" class="form-control" />
-                <span asp-validation-for="Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Updated" class="control-label"></label>
-                <input asp-for="Updated" class="form-control" />
-                <span asp-validation-for="Updated" class="text-danger"></span>
-            </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
