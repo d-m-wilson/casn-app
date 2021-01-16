@@ -14,13 +14,31 @@
             Need Amount
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NeedAmount)
+            @Html.DisplayFor(model => model.NeedAmount)@Html.DisplayFor(model => model.NeedAmountNullReason.Name)
         </dd>
         <dt class="col-sm-2">
             Funding Amount
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FundingAmount)
+            @Html.DisplayFor(model => model.FundingAmount)@Html.DisplayFor(model => model.FundingAmountNullReason.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Funding Source
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FundingSource.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Funding Type
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FundingType.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Payment Method
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PaymentMethod.Name)
         </dd>
         <dt class="col-sm-2">
             Is Active
@@ -40,49 +58,13 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Updated)
         </dd>
-        <dt class="col-sm-2">
-            Funding Amount Null Reason
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FundingAmountNullReason.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Funding Offer
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FundingOffer.Id)
-        </dd>
-        <dt class="col-sm-2">
-            Funding Source
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FundingSource.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Funding Type
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FundingType.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Need Amount Null Reason
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NeedAmountNullReason.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Payment Method
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.PaymentMethod.Name)
-        </dd>
     </dl>
 </div>
 <div>
     @if (Model.FundingOffer.AllowsEdits)
     {
-    <a asp-action="EditItem" asp-route-id="@Model.Id">Edit</a> 
+    <a asp-action="EditItem" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> 
     }
 
-    <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Back to List</a>
+    <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Back to Funding Offer</a>
 </div>
