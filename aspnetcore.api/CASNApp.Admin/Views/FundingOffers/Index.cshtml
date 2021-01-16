@@ -77,10 +77,6 @@
                     @Html.DisplayFor(modelItem => item.CreatedBy.Name)
                 </td>
                 <td>
-                    @if (item.AllowsEdits)
-                    {
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="custom-nav-link">Edit</a>
-                    }
                     <a asp-action="Details" asp-route-id="@item.Id" class="custom-nav-link">Details</a>
                     @if (item.AllowsEdits)
                     {
