@@ -45,16 +45,18 @@ namespace CASNApp.Admin.Controllers
         // GET FundingOffers
         public async Task<IActionResult> Index()
         {
-            var casn_appContext = _context.FundingOffers
+            var fundingOffers = _context.FundingOffers
                 .AsNoTracking()
                 .Include(f => f.Caller)
                 .Include(f => f.Clinic)
                 .Include(f => f.CreatedBy)
-                .Include(f => f.FundingOfferStatus);
+                .Include(f => f.FundingOfferStatus)
+                .OrderByDescending(f => f.Id)
+                .Take(50);
 
             var viewModel = new FundingOfferIndexViewModel()
             {
-                FundingOffers = await casn_appContext.ToListAsync(),
+                FundingOffers = await fundingOffers.ToListAsync(),
             };
 
             return View(viewModel);
