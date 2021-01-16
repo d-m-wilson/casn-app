@@ -312,7 +312,7 @@ namespace CASNApp.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id = fundingOfferItem.FundingOfferId });
             }
             ViewData["FundingAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.FundingAmountNullReasonId);
             ViewData["FundingSourceId"] = new SelectList(_context.FundingSources, "Id", "Name", fundingOfferItem.FundingSourceId);
