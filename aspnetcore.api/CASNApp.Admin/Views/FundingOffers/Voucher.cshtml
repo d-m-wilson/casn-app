@@ -174,7 +174,7 @@
                         </tr>
                         <tr>
                             <td class="data-label">Valid Through:</td>
-                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@($"{Model.Issued?.AddDays(60):MM/dd/yyyy}")</text> } else { <text>Preview</text> }</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@($"{Model.Issued?.AddDays(30):MM/dd/yyyy}")</text> } else { <text>Preview</text> }</td>
                         </tr>
                     </table>
                 </div>
