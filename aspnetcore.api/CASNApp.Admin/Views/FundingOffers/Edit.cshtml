@@ -19,8 +19,19 @@
                 <span asp-validation-for="ClinicId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="AppointmentTypeId" class="control-label">Appointment Type</label>
+                <select asp-for="AppointmentTypeId" class="form-control" asp-items="ViewBag.AppointmentTypeId"></select>
+                <span asp-validation-for="AppointmentTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
+                <input asp-for="AppointmentDate" class="form-control" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -38,3 +49,6 @@
     <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
 </div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

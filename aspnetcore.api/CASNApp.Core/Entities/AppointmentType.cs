@@ -8,6 +8,7 @@ namespace CASNApp.Core.Entities
         public AppointmentType()
         {
             Appointments = new HashSet<Appointment>();
+            FundingOffers = new HashSet<FundingOffer>();
         }
 
         public int Id { get; set; }
@@ -20,5 +21,6 @@ namespace CASNApp.Core.Entities
         public DateTime? Updated { get; set; }
 
         public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<FundingOffer> FundingOffers { get; set; }
     }
 }

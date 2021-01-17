@@ -161,6 +161,14 @@
                             <td>@Model.Clinic.Name</td>
                         </tr>
                         <tr>
+                            <td class="data-label">Appointment Type:</td>
+                            <td>@Model.AppointmentType.Title</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">Appointment Date:</td>
+                            <td>@($"{Model.AppointmentDate:MM/dd/yyyy h:mm tt}")</td>
+                        </tr>
+                        <tr>
                             <td class="data-label">Voucher #:</td>
                             <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@Model.Id</text> } else { <text>Preview</text> }</td>
                         </tr>
@@ -212,7 +220,7 @@
                 <div id="legal-text-2">
                     For reimbursement, please return to: info@clinicaccess.org<br />
                     <br />
-                    <small>rev. 20210110B</small>
+                    <small>rev. 20210117A</small>
                 </div>
 
             </div> <!-- left column -->

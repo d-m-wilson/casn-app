@@ -15,11 +15,23 @@
             <input asp-for="CallerId" type="hidden" value="@ViewBag.CallerId" />
             <div class="form-group">
                 <label asp-for="ClinicId" class="control-label">Clinic</label>
-                <select asp-for="ClinicId" class ="form-control" asp-items="ViewBag.ClinicId"></select>
+                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId"></select>
+                <span asp-validation-for="ClinicId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentTypeId" class="control-label">Appointment Type</label>
+                <select asp-for="AppointmentTypeId" class="form-control" asp-items="ViewBag.AppointmentTypeId"></select>
+                <span asp-validation-for="AppointmentTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
+                <input asp-for="AppointmentDate" class="form-control" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -32,3 +44,6 @@
     <a asp-action="CallerOffers" asp-route-id="@ViewBag.CallerId">Back to List</a>
 </div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

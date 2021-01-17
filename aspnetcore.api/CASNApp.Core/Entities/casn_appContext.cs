@@ -341,6 +341,8 @@ namespace CASNApp.Core.Entities
             {
                 entity.ToTable("FundingOffer");
 
+                entity.Property(e => e.AppointmentDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Created).HasColumnType("datetime");
 
                 entity.Property(e => e.Issued).HasColumnType("datetime");
@@ -354,6 +356,12 @@ namespace CASNApp.Core.Entities
                 entity.Property(e => e.Updated).HasColumnType("datetime");
 
                 entity.Property(e => e.Voided).HasColumnType("datetime");
+
+                entity.HasOne(d => d.AppointmentType)
+                    .WithMany(p => p.FundingOffers)
+                    .HasForeignKey(d => d.AppointmentTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_FundingOffer_AppointmentType");
 
                 entity.HasOne(d => d.Caller)
                     .WithMany(p => p.FundingOffers)

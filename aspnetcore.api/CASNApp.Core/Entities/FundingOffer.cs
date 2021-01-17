@@ -25,7 +25,10 @@ namespace CASNApp.Core.Entities
         public int? IssuedById { get; set; }
         public int? VoidedById { get; set; }
         public int? UpdatedById { get; set; }
+        public int AppointmentTypeId { get; set; }
+        public DateTime AppointmentDate { get; set; }
 
+        public virtual AppointmentType AppointmentType { get; set; }
         public virtual Caller Caller { get; set; }
         public virtual ServiceProvider Clinic { get; set; }
         public virtual Volunteer CreatedBy { get; set; }

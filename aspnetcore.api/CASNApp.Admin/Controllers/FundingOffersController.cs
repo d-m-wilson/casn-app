@@ -90,6 +90,7 @@ namespace CASNApp.Admin.Controllers
                 .Include(fo => fo.Clinic)
                 .Include(fo => fo.CreatedBy)
                 .Include(fo => fo.UpdatedBy)
+                .Include(fo => fo.AppointmentType)
                 .Include(fo => fo.FundingOfferStatus)
                 .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingSource)
                 .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingType)
@@ -155,6 +156,10 @@ namespace CASNApp.Admin.Controllers
             var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
             ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
 
+            var appointmentTypeQuery = new AppointmentTypeQuery(_context);
+            var activeAppointmentTypes = await appointmentTypeQuery.GetActiveAppointmentTypesAsync(true);
+            ViewData["AppointmentTypeId"] = new SelectList(activeAppointmentTypes, nameof(AppointmentType.Id), nameof(AppointmentType.Title), fundingOffer.AppointmentTypeId);
+
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "Name", fundingOffer.CreatedById);
             ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
             return View(fundingOffer);
@@ -165,7 +170,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ClinicId,Note,IsActive")] FundingOffer fundingOffer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ClinicId,AppointmentTypeId,AppointmentDate,Note,IsActive")] FundingOffer fundingOffer)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -228,6 +233,10 @@ namespace CASNApp.Admin.Controllers
             var serviceProviderQuery = new ServiceProviderQuery(_context);
             var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
             ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
+
+            var appointmentTypeQuery = new AppointmentTypeQuery(_context);
+            var activeAppointmentTypes = await appointmentTypeQuery.GetActiveAppointmentTypesAsync(true);
+            ViewData["AppointmentTypeId"] = new SelectList(activeAppointmentTypes, nameof(AppointmentType.Id), nameof(AppointmentType.Title), fundingOffer.AppointmentTypeId);
 
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "FirstName", fundingOffer.CreatedById);
             ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
@@ -550,6 +559,10 @@ namespace CASNApp.Admin.Controllers
             var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
             ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name));
 
+            var appointmentTypeQuery = new AppointmentTypeQuery(_context);
+            var activeAppointmentTypes = await appointmentTypeQuery.GetActiveAppointmentTypesAsync(true);
+            ViewData["AppointmentTypeId"] = new SelectList(activeAppointmentTypes, nameof(AppointmentType.Id), nameof(AppointmentType.Title));
+
             return View();
         }
 
@@ -558,7 +571,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CallerCreateOffer([Bind("CallerId,ClinicId,Note")] FundingOffer fundingOffer)
+        public async Task<IActionResult> CallerCreateOffer([Bind("CallerId,ClinicId,AppointmentTypeId,AppointmentDate,Note")] FundingOffer fundingOffer)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -589,6 +602,10 @@ namespace CASNApp.Admin.Controllers
             var serviceProviderQuery = new ServiceProviderQuery(_context);
             var activeClinics = await serviceProviderQuery.GetActiveClinicsAsync(true);
             ViewData["ClinicId"] = new SelectList(activeClinics, nameof(ServiceProvider.Id), nameof(ServiceProvider.Name), fundingOffer.ClinicId);
+
+            var appointmentTypeQuery = new AppointmentTypeQuery(_context);
+            var activeAppointmentTypes = await appointmentTypeQuery.GetActiveAppointmentTypesAsync(true);
+            ViewData["AppointmentTypeId"] = new SelectList(activeAppointmentTypes, nameof(AppointmentType.Id), nameof(AppointmentType.Title));
 
             return View(fundingOffer);
         }
@@ -677,6 +694,7 @@ namespace CASNApp.Admin.Controllers
                 .Include(fo => fo.Clinic)
                 .Include(fo => fo.IssuedBy)
                 .Include(fo => fo.FundingOfferStatus)
+                .Include(fo => fo.AppointmentType)
                 .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingSource)
                 .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingType)
                 .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.PaymentMethod)
