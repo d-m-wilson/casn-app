@@ -225,7 +225,7 @@ namespace CASNApp.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(CallerOffers), new { id = fundingOffer.CallerId });
+                return RedirectToAction(nameof(Details), new { id = fundingOffer.Id });
             }
 
             ViewData["CallerId"] = new SelectList(_context.Callers, "Id", "CallerIdentifier", fundingOffer.CallerId);
@@ -532,7 +532,7 @@ namespace CASNApp.Admin.Controllers
                 .Include(f => f.CreatedBy)
                 .Include(f => f.FundingOfferStatus)
                 .Where(fo => fo.CallerId == caller.Id)
-                .OrderBy(fo => fo.Created)
+                .OrderByDescending(fo => fo.Id)
                 .ToListAsync();
 
             ViewBag.CallerId = caller.Id;

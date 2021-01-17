@@ -12,10 +12,6 @@
     <div class="col-md-4">
         <form asp-action="CreateItem">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @*<div class="form-group">
-                <label asp-for="FundingOfferId" class="control-label"></label>
-                <select asp-for="FundingOfferId" class="form-control" asp-items="ViewBag.FundingOfferId"></select>
-            </div>*@
             <input asp-for="FundingOfferId" type="hidden" value="@ViewBag.FundingOfferId" />
             <div class="form-group">
                 <label asp-for="FundingSourceId" class="control-label">Funding Source</label>
@@ -29,9 +25,6 @@
                 <label asp-for="NeedAmount" class="control-label">Need Amount</label>
                 <input asp-for="NeedAmount" class="form-control" />
                 <span asp-validation-for="NeedAmount" class="text-danger"></span>
-            @*</div>
-            <div class="form-group">*@
-                @*<label asp-for="NeedAmountNullReasonId" class="control-label"></label>*@
                 <select asp-for="NeedAmountNullReasonId" class="form-control" asp-items="ViewBag.NeedAmountNullReasonId">
                     <option selected value="">N/A</option>
                 </select>
@@ -41,9 +34,6 @@
                 <label asp-for="FundingAmount" class="control-label">Funding Amount</label>
                 <input asp-for="FundingAmount" class="form-control" />
                 <span asp-validation-for="FundingAmount" class="text-danger"></span>
-            @*</div>
-            <div class="form-group">*@
-                @*<label asp-for="FundingAmountNullReasonId" class="control-label"></label>*@
                 <select asp-for="FundingAmountNullReasonId" class="form-control" asp-items="ViewBag.FundingAmountNullReasonId">
                     <option selected value="">N/A</option>
                 </select>
@@ -52,21 +42,6 @@
             <div class="form-group">
                 <label asp-for="PaymentMethodId" class="control-label">Payment Method</label>
                 <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
-            </div>
-            @*<div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="Created" class="control-label"></label>
-                <input asp-for="Created" class="form-control" />
-                <span asp-validation-for="Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Updated" class="control-label"></label>
-                <input asp-for="Updated" class="form-control" />
-                <span asp-validation-for="Updated" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

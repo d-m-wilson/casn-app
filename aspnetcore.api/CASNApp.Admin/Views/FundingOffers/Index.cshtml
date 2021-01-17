@@ -68,20 +68,16 @@
                     @Html.DisplayFor(modelItem => item.IsActive)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Created)
+                    @($"{item.Created:MM/dd/yyyy}")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Updated)
+                    @($"{item.Updated:MM/dd/yyyy}")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedBy.Name)
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="custom-nav-link">Details</a>
-                    @if (item.AllowsEdits)
-                    {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    }
                 </td>
             </tr>
         }
