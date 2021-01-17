@@ -81,3 +81,28 @@ tr:nth-child(even) {
 a.custom-nav-link {
     padding-right: 10px;
 }
+
+.status-draft {
+    color: #a2a4b6;
+    font-size: 125%;
+}
+
+.status-issued {
+    color: #e9a843;
+    font-size: 125%;
+}
+
+.status-redeemed {
+    color: #3546c7;
+    font-size: 125%;
+}
+
+.status-paid {
+    color: #439149;
+    font-size: 125%;
+}
+
+.status-voided {
+    color: #ca0d45;
+    font-size: 125%;
+}

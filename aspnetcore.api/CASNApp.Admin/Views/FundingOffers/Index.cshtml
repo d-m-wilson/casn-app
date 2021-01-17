@@ -62,6 +62,7 @@
                     @Html.DisplayFor(modelItem => item.Clinic.Name)
                 </td>
                 <td>
+                    @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(item.FundingOfferStatusId))
                     @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
                 </td>
                 <td>
