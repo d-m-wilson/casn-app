@@ -36,6 +36,7 @@ export class RidesComponent implements OnInit, OnDestroy {
   activeTab: string = "all";
   // Display flags for service providers
   displayServiceProviders: any = {};
+  allProvidersDisplayed: boolean = true;
 
   /************** Ride Modal **************/
   displayRideModal: boolean = false;
@@ -171,6 +172,16 @@ export class RidesComponent implements OnInit, OnDestroy {
     // If a date filter was applied, remove it.
     this.activeDate = null;
     this.ridesToDisplay = this.rides;
+  }
+
+  toggleDisplayServiceProviders(showProviders: boolean): void {
+    // NOTE: All courthouses are displayed/hidden with a single toggle.
+    // The rest of the service providers are toggled on/off individually.
+    this.displayServiceProviders['courthouses'] = showProviders;
+    this.objectKeys(this.serviceProviders).forEach(s => {
+      if (s.serviceProviderTypeId !== 2) this.displayServiceProviders[s] = showProviders;
+    });
+    this.allProvidersDisplayed = showProviders;
   }
 
   handleChangeWeekClick(changeType: string): void {
