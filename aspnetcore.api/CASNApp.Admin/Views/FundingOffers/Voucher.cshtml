@@ -203,7 +203,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model.FundingOfferItems.Where(foi => foi.PaymentMethodId == PaymentMethod.Voucher && foi.IsActive))
+                            @foreach (var item in Model.FundingOfferItems.Where(foi => foi.PaymentMethodId == PaymentMethod.Voucher && foi.IsActive && !foi.FundingSource.IsExternal))
                             {
                             <tr>
                                 <td>@item.FundingType.Name</td>
