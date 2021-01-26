@@ -63,14 +63,21 @@
             height: auto;
         }
 
+        .signature-prompt {
+            display: inline-block;
+            width: 1.25in;
+        }
+
         .signature-line {
             display: inline-block;
             border-bottom: 1px solid black;
-            min-width: 3.5in;
+            min-width: 3.25in;
         }
 
-        .signature-prompt {
-            padding-right: 0.1in;
+        .date-line {
+            display: inline-block;
+            border-bottom: 1px solid black;
+            min-width: 2in;
         }
 
         #page-title {
@@ -212,7 +219,9 @@
                 </div>
 
                 <div id="caller-signature-section" class="voucher-section">
-                    <span class="data-label signature-prompt">Patient signature:</span><span class="signature-line"></span>
+                    <span class="data-label signature-prompt">Patient signature:</span><span class="signature-line"></span><br />
+                    <br />
+                    <span class="data-label signature-prompt">Date signed:</span><span class="date-line"></span>
                 </div>
 
                 <br />
