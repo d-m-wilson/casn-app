@@ -89,7 +89,7 @@ namespace CASNApp.Admin.Controllers
                 .Include(fo => fo.Caller)
                 .Include(fo => fo.Clinic)
                 .Include(fo => fo.CreatedBy)
-                .Include(fo => fo.UpdatedBy)
+                .Include(fo => fo.IssuedBy)
                 .Include(fo => fo.AppointmentType)
                 .Include(fo => fo.FundingOfferStatus)
                 .Include(fo => fo.FundingOfferItems).ThenInclude(foi => foi.FundingSource)
