@@ -26,7 +26,7 @@
                 <input asp-for="NeedAmount" class="form-control" />
                 <span asp-validation-for="NeedAmount" class="text-danger"></span>
                 <select asp-for="NeedAmountNullReasonId" class="form-control" asp-items="ViewBag.NeedAmountNullReasonId">
-                    <option selected value="">N/A</option>
+                    <option selected value="">-</option>
                 </select>
                 <span asp-validation-for="NeedAmountNullReasonId" class="text-danger"></span>
             </div>
@@ -35,7 +35,7 @@
                 <input asp-for="FundingAmount" class="form-control" />
                 <span asp-validation-for="FundingAmount" class="text-danger"></span>
                 <select asp-for="FundingAmountNullReasonId" class="form-control" asp-items="ViewBag.FundingAmountNullReasonId">
-                    <option selected value="">N/A</option>
+                    <option selected value="">-</option>
                 </select>
                 <span asp-validation-for="FundingAmountNullReasonId" class="text-danger"></span>
             </div>
