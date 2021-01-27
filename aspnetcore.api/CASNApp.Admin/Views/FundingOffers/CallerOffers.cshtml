@@ -38,6 +38,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(item.FundingOfferStatusId))
                 @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
             </td>
             <td>

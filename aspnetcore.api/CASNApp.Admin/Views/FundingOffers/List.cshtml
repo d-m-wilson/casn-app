@@ -24,15 +24,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Created)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.Issued)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Redeemed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Paid)
-            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
@@ -52,6 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Clinic.Name)
             </td>
             <td>
+                @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(item.FundingOfferStatusId))
                 @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
             </td>
             <td>
@@ -60,15 +52,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
             </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Issued)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Redeemed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paid)
-            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>

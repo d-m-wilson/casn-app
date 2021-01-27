@@ -68,9 +68,10 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FundingOfferStatus)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
+            @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(Model.FundingOfferStatusId))
             @Html.DisplayFor(model => model.FundingOfferStatus.Name)
-        </dd class>
+        </dd>
     </dl>
     
     <form asp-action="Delete">
