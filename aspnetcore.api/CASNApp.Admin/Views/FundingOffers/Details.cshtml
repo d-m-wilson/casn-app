@@ -14,7 +14,6 @@
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="custom-nav-link">Edit Funding Offer</a>
         }
-        <a asp-action="ChangeStatus" asp-route-id="@Model.Id" class="custom-nav-link">Change Status</a>
         <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
         @if (!Model.AllowsEdits)
         {
@@ -159,13 +158,13 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.NeedAmount)
                             @*</td>
-                                <td>*@
+                            <td>*@
                             @Html.DisplayFor(modelItem => item.NeedAmountNullReason.Name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FundingAmount)
                             @*</td>
-                                <td>*@
+                            <td>*@
                             @Html.DisplayFor(modelItem => item.FundingAmountNullReason.Name)
                         </td>
                         <td>
@@ -192,5 +191,6 @@
             </tbody>
         </table>
         <!-- END -->
+        <a asp-action="ChangeStatus" asp-route-id="@Model.Id" class="btn btn-warning">Change Status</a>
     </div>
 </div>
