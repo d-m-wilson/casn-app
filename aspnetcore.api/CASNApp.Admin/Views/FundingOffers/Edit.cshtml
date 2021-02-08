@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="ClinicId" class="control-label">Clinic</label>
-                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId"></select>
+                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId" autofocus></select>
                 <span asp-validation-for="ClinicId" class="text-danger"></span>
             </div>
             <div class="form-group">

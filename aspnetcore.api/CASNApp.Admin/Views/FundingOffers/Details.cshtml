@@ -10,23 +10,27 @@
     <h4>Funding Offer</h4>
 
     <div>
-        @if (Model.AllowsEdits)
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="custom-nav-link">Edit Funding Offer</a>
-        }
         <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
-        @if (!Model.AllowsEdits)
-        {
-            <a asp-action="Voucher" asp-route-id="@Model.Id" class="btn btn-info float-right" target="_blank">Print Voucher</a>
-        }
-        @if (Model.AllowsEdits)
-        {
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger float-right">Delete Funding Offer</a>
-        }
+
+        <div class="float-right">
+            @if (Model.AllowsEdits)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id">Edit Funding Offer</a><text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
+            }
+            <a asp-action="ChangeStatus" asp-route-id="@Model.Id">Change Status</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            @if (!Model.AllowsEdits)
+            {
+                <a asp-action="Voucher" asp-route-id="@Model.Id" class="btn btn-info" target="_blank">Print Voucher</a>
+            }
+            @if (Model.AllowsEdits)
+            {
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="text-danger">Delete Funding Offer</a>
+            }
+        </div>
     </div>
 
     <hr />
-    <dl class="row">
+    <dl class="row" style="margin-bottom: 0; padding-bottom: 0;">
         <dt class="col-sm-3">
             Caller
         </dt>
@@ -106,20 +110,20 @@
         <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Updated)
         </dd>
-        <dt class="col-sm-3">
+        <dt class="col-sm-3" style="margin-bottom: 0; padding-bottom: 0;">
             Is Active
         </dt>
-        <dd class="col-sm-9">
+        <dd class="col-sm-9" style="margin-bottom: 0; padding-bottom: 0;">
             @Html.DisplayFor(model => model.IsActive)
         </dd>
     </dl>
-    <div class="row">
+    <div class="row" style="margin-top: 0; padding-top: 0;">
         <!-- BEGIN -->
         @if (Model.AllowsEdits)
         {
-            <p>
-                <a asp-action="CreateItem" asp-route-id="@Model.Id" class="btn btn-primary">Add Funding</a>
-            </p>
+            <div class="col-sm-12">
+                <a asp-action="CreateItem" asp-route-id="@Model.Id" class="btn btn-primary float-right">Add Funding</a>
+            </div>
         }
         <table class="table">
             <thead>
@@ -157,14 +161,10 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.NeedAmount)
-                            @*</td>
-                            <td>*@
                             @Html.DisplayFor(modelItem => item.NeedAmountNullReason.Name)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FundingAmount)
-                            @*</td>
-                            <td>*@
                             @Html.DisplayFor(modelItem => item.FundingAmountNullReason.Name)
                         </td>
                         <td>
@@ -176,14 +176,16 @@
                         <td>
                             @if (Model.AllowsEdits)
                             {
-                                <a asp-action="EditItem" asp-route-id="@item.Id" class="custom-nav-link">Edit</a>
+                                <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>
+                                <text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
                             }
 
-                            <a asp-action="ItemDetails" asp-route-id="@item.Id" class="custom-nav-link">Details</a>
+                            <a asp-action="ItemDetails" asp-route-id="@item.Id">Details</a>
 
                             @if (Model.AllowsEdits)
                             {
-                                <a asp-action="DeleteItem" asp-route-id="@item.Id">Delete</a>
+                                <text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
+                                <a asp-action="DeleteItem" asp-route-id="@item.Id" class="text-danger">Delete</a>
                             }
                         </td>
                     </tr>
@@ -191,6 +193,5 @@
             </tbody>
         </table>
         <!-- END -->
-        <a asp-action="ChangeStatus" asp-route-id="@Model.Id" class="btn btn-warning">Change Status</a>
     </div>
 </div>

@@ -16,7 +16,7 @@
             <input type="hidden" asp-for="FundingOfferId" />
             <div class="form-group">
                 <label asp-for="FundingSourceId" class="control-label">Funding Source</label>
-                <select asp-for="FundingSourceId" class="form-control" asp-items="ViewBag.FundingSourceId"></select>
+                <select asp-for="FundingSourceId" class="form-control" asp-items="ViewBag.FundingSourceId" autofocus></select>
                 <span asp-validation-for="FundingSourceId" class="text-danger"></span>
             </div>
             <div class="form-group">

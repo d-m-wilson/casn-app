@@ -6,6 +6,7 @@
 
 <div>
     <h4>Change Status</h4>
+    <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -123,19 +124,28 @@
     <br />
     <div class="row">
         <div class="col-sm-6">
-        <form asp-action="ChangeStatus">
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="FundingOfferStatusId" class="control-label">New Status</label>
-                <select asp-for="FundingOfferStatusId" class="form-control" asp-items="ViewBag.FundingOfferStatusId">
-                    <option selected value="">-</option>
-                </select>
-                <span asp-validation-for="FundingOfferStatusId" class="text-danger"></span>
-            </div>
-            <input type="submit" value="Change Status" class="btn btn-danger" /> |
-            <a asp-action="Details" asp-route-id="@Model.Id">Go Back</a>
-        </form>
+            <form asp-action="ChangeStatus">
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="FundingOfferStatusId" class="control-label">New Status</label>
+                    <select asp-for="FundingOfferStatusId" class="form-control" asp-items="ViewBag.FundingOfferStatusId">
+                        <option selected value="">-</option>
+                    </select>
+                    <span asp-validation-for="FundingOfferStatusId" class="text-danger"></span>
+                </div>
+                <input type="submit" value="Change Status" class="btn btn-danger" id="changeStatusButton" disabled />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+            </form>
         </div>
     </div>
 
 </div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#FundingOfferStatusId').on('change', function () {
+            if (this.value != '') $('#changeStatusButton').prop('disabled', false);
+            else $('#changeStatusButton').prop('disabled', true);
+        });
+    });
+</script>

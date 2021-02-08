@@ -592,7 +592,7 @@ namespace CASNApp.Admin.Controllers
 
                 _context.Add(fundingOffer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = fundingOffer.Id });
+                return RedirectToAction(nameof(CreateItem), new { id = fundingOffer.Id });
             }
 
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -636,7 +636,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateItem([Bind("FundingOfferId,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId")] FundingOfferItem fundingOfferItem)
+        public async Task<IActionResult> CreateItem([Bind("FundingOfferId,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId")] FundingOfferItem fundingOfferItem, string saveandnew, string saveonly)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -663,7 +663,15 @@ namespace CASNApp.Admin.Controllers
                 fundingOfferItem.IsActive = true;
                 _context.Add(fundingOfferItem);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = fundingOfferItem.FundingOfferId });
+
+                if (!string.IsNullOrEmpty(saveandnew))
+                {
+                    return RedirectToAction(nameof(CreateItem), new { id = fundingOfferItem.FundingOfferId });
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Details), new { id = fundingOfferItem.FundingOfferId });
+                }
             }
 
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

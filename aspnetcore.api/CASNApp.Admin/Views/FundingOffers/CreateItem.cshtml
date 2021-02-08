@@ -15,7 +15,7 @@
             <input asp-for="FundingOfferId" type="hidden" value="@ViewBag.FundingOfferId" />
             <div class="form-group">
                 <label asp-for="FundingSourceId" class="control-label">Funding Source</label>
-                <select asp-for="FundingSourceId" class="form-control" asp-items="ViewBag.FundingSourceId"></select>
+                <select asp-for="FundingSourceId" class="form-control" asp-items="ViewBag.FundingSourceId" autofocus></select>
             </div>
             <div class="form-group">
                 <label asp-for="FundingTypeId" class="control-label">Funding Type</label>
@@ -44,7 +44,8 @@
                 <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" name="saveandnew" value="Save and Add New" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" name="saveonly" value="Save" class="btn btn-success" />
             </div>
         </form>
     </div>
