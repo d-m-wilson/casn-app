@@ -7,6 +7,9 @@
 <h1>Create</h1>
 
 <h4>Funding Offer</h4>
+<div>
+    <a asp-action="CallerOffers" asp-route-id="@ViewBag.CallerId">Back to List</a>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -38,10 +41,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="CallerOffers" asp-route-id="@ViewBag.CallerId">Back to List</a>
 </div>
 
 @section Scripts {

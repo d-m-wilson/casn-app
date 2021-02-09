@@ -6,7 +6,10 @@
 
 <h1>Create</h1>
 
-<h4>FundingOfferItem</h4>
+<h4>Funding Offer Item</h4>
+<div>
+    <a asp-action="Details" asp-route-id="@ViewBag.FundingOfferId">Back to List</a>
+</div>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -50,8 +53,3 @@
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Details" asp-route-id="@ViewBag.FundingOfferId">Back to List</a>
-</div>
-

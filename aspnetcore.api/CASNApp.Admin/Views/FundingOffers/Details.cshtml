@@ -121,7 +121,7 @@
         <!-- BEGIN -->
         @if (Model.AllowsEdits)
         {
-            <div class="col-sm-12">
+            <div class="col-sm-12" style="padding-bottom: 5px;">
                 <a asp-action="CreateItem" asp-route-id="@Model.Id" class="btn btn-primary float-right">Add Funding</a>
             </div>
         }
@@ -177,14 +177,14 @@
                             @if (Model.AllowsEdits)
                             {
                                 <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>
-                                <text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
+                                <text>&nbsp;&nbsp;&nbsp;</text>
                             }
 
                             <a asp-action="ItemDetails" asp-route-id="@item.Id">Details</a>
 
                             @if (Model.AllowsEdits)
                             {
-                                <text>&nbsp;&nbsp;&nbsp;&nbsp;</text>
+                                <text>&nbsp;&nbsp;&nbsp;</text>
                                 <a asp-action="DeleteItem" asp-route-id="@item.Id" class="text-danger">Delete</a>
                             }
                         </td>

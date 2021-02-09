@@ -482,7 +482,7 @@ namespace CASNApp.Admin.Controllers
             {
                 _context.Add(caller);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(CallerOffers), new { id = caller.Id });
+                return RedirectToAction(nameof(CallerCreateOffer), new { id = caller.Id });
             }
             return View(caller);
         }

@@ -8,6 +8,9 @@
 
 <div>
     <h4>Funding Offer Item</h4>
+    <div>
+        <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Back to Funding Offer</a>
+    </div>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -65,6 +68,4 @@
     {
     <a asp-action="EditItem" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> 
     }
-
-    <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Back to Funding Offer</a>
 </div>
