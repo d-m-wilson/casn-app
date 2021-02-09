@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using CASNApp.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CASNApp.Core.Entities
 {
+    [ModelMetadataType(typeof(CallerMetadata))]
     public partial class Caller : ICreatedDate, IUpdatedDate, ISoftDelete
     {
         [NotMapped]

@@ -51,7 +51,7 @@
                 <span asp-validation-for="ResidencePostalCode" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PreferredLanguage" class="control-label">Preferred Language</label>
+                <label asp-for="PreferredLanguage" class="control-label"></label>
                 <input asp-for="PreferredLanguage" class="form-control" list="languageOptions" autocomplete="off" />
                 <datalist id="languageOptions">
                     <option value="English" />
@@ -81,3 +81,6 @@
     </div>
 </div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
