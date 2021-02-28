@@ -1,13 +1,13 @@
 <main *ngIf="appointmentTypes && serviceProviders">
-  <h1>Create an Appointment</h1>
-  <mat-vertical-stepper mat-vertical-stepper #stepper class="candy-stepper" (selectionChange)="onStepperChange($event)">
+  <mat-horizontal-stepper mat-horizontal-stepper #stepper class="candy-stepper" (selectionChange)="onStepperChange($event)">
 <!--********************************************************************
                                 STEP 1
                             Appointment Form
 **********************************************************************-->
     <mat-step [stepControl]="appointmentForm">
       <form [formGroup]="appointmentForm">
-        <ng-template matStepLabel>Appointment Details</ng-template>
+        <ng-template matStepLabel>App't Details</ng-template>
+        <h1>{{ title }}</h1>
         <div class="appt-form-group">
           <h3>Caller #{{ formAppt.callerIdentifier.value }}</h3>
           <mat-form-field class="example-full-width hide"
@@ -118,8 +118,9 @@
                           Drive To/Pickup Form
 **********************************************************************-->
     <mat-step [stepControl]="driveToForm">
+      <h1>{{ title }}</h1>
       <form [formGroup]="driveToForm">
-        <ng-template matStepLabel>Drive To {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</ng-template>
+        <ng-template matStepLabel>Drive To</ng-template>
         <div class="appt-form-group" *ngIf="!callerNeedsPickup">
           <h3>Does the caller need a drive <em>TO</em> the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}?</h3>
           <button mat-raised-button
@@ -202,8 +203,9 @@
                         Drive From/Dropoff Form
 **********************************************************************-->
     <mat-step [stepControl]="driveFromForm">
+      <h1>{{ title }}</h1>
       <form [formGroup]="driveFromForm">
-        <ng-template matStepLabel>Drive From {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</ng-template>
+        <ng-template matStepLabel>Drive From</ng-template>
         <!-- The caller can skip the driveFrom as long as a driveTo has
         been added. If there is no driveTo, the appointment must have a
         driveFrom -->
@@ -298,7 +300,8 @@
                             Review & Submit
 **********************************************************************-->
     <mat-step>
-      <ng-template matStepLabel>Review &amp; Submit</ng-template>
+      <h1>{{ title }}</h1>
+      <ng-template matStepLabel>Summary</ng-template>
       <div *ngIf="this.appointmentForm.valid &&
                   (!callerNeedsPickup || this.driveToForm.valid) &&
                   (!callerNeedsDropoff || dropoffSameAsPickup || this.driveFromForm.valid)"
@@ -369,7 +372,7 @@
         </div>
       </div>
     </mat-step>
-  </mat-vertical-stepper>
+  </mat-horizontal-stepper>
 </main>
 
 <app-loader *ngIf="loading"></app-loader>

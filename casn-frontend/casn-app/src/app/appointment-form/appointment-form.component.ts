@@ -13,6 +13,7 @@ import { AppointmentDataService } from '../appointment-data.service';
 })
 export class AppointmentFormComponent implements OnInit {
   loading: boolean = false;
+  title: string = "Appointment Details";
   /*
   NOTE:
   "callerId" is the actual database ID for communication w/ API
@@ -69,6 +70,7 @@ export class AppointmentFormComponent implements OnInit {
     if(appointmentId) {
       console.log("Editing Appointment", appointmentId);
       this.editingAppointment = true;
+      this.title = "Edit Appointment";
       this.sharedApptDataService.currentMessage.subscribe(a => this.appointmentToEdit = a);
       this.setFormValuesForEditing();
       console.log("The appointment to edit:", this.appointmentToEdit);
