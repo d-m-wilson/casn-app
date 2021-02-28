@@ -1,8 +1,9 @@
 @import "../styles/variables";
 
+$footer-height: 60px;
+
 h2 {
   margin-bottom: 0;
-  margin-top: 50px;
 }
 
 p {
@@ -13,16 +14,18 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: ($footer-height * 2);
 }
 
 form {
   display: flex;
   flex-direction: column;
-  margin: 10px;
+  align-items: center;
+  width: 100%;
 }
 
 footer {
-  height: 60px;
+  height: $footer-height;
   background: $white;
   position: fixed;
   bottom: 0;
@@ -49,4 +52,18 @@ footer {
   left: 0;
   z-index: 2;
   min-width: 0;
+}
+
+.yes-btn {
+  max-width: 65px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+}
+
+.mat-form-field {
+  width: 300px;
 }
