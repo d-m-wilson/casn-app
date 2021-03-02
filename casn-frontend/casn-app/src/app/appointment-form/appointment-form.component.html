@@ -6,7 +6,7 @@
 **********************************************************************-->
     <mat-step [stepControl]="appointmentForm">
       <form [formGroup]="appointmentForm">
-        <ng-template matStepLabel>App't Details</ng-template>
+        <ng-template matStepLabel>Appointment</ng-template>
         <h1>{{ title }}</h1>
         <div class="appt-form-group">
           <h3>Caller #{{ formAppt.callerIdentifier.value }}</h3>
@@ -104,11 +104,14 @@
                            #dt5></owl-date-time>
           </mat-form-field>
           <div class="form-actions">
-            <button mat-raised-button
+            <!-- Placeholder to ensure flex spacing bumps next button to the right -->
+            <div></div>
+            <button class="next-btn"
+                    mat-mini-fab
                     color="primary"
                     type="button"
                     [disabled]="!this.appointmentForm.valid"
-                    matStepperNext>Next</button>
+                    matStepperNext><mat-icon>keyboard_arrow_right</mat-icon></button>
           </div>
         </div>
       </form>
@@ -184,16 +187,18 @@
             <mat-error *ngIf="formPickup.pickupLocationVague.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <div class="form-actions">
-            <button mat-raised-button
+            <button class="back-btn btn-cta secondary"
+                    mat-raised-button
                     color="accent"
                     type="button"
                     (click)="callerNeedsPickup = false"
                     matStepperPrevious>Back</button>
-            <button mat-raised-button
+            <button class="next-btn"
+                    mat-mini-fab
                     color="primary"
                     type="button"
                     [disabled]="!this.driveToForm.valid"
-                    matStepperNext>Next</button>
+                    matStepperNext><mat-icon>keyboard_arrow_right</mat-icon></button>
           </div>
         </div>
       </form>
@@ -280,17 +285,19 @@
             </mat-form-field>
           </ng-container>
           <div class="form-actions">
-            <button mat-raised-button
+            <button class="back-btn btn-cta secondary"
+                    mat-raised-button
                     color="accent"
                     type="button"
                     (click)="callerNeedsDropoff = false"
                     matStepperPrevious>Back</button>
-            <button mat-raised-button
+            <button class="next-btn"
+                    mat-mini-fab
                     color="primary"
                     type="button"
                     [disabled]="!dropoffSameAsPickup &&
                                 !this.driveFromForm.valid"
-                    matStepperNext>Next</button>
+                    matStepperNext><mat-icon>keyboard_arrow_right</mat-icon></button>
           </div>
         </div>
       </form>
@@ -358,11 +365,13 @@
           </ng-template>
         </mat-card>
         <div class="form-actions">
-          <button mat-raised-button
+          <button class="back-btn btn-cta secondary"
+                  mat-raised-button
                   color="accent"
                   type="button"
                   matStepperPrevious>Back</button>
-          <button mat-raised-button
+          <button class="next-btn"
+                  mat-raised-button
                   color="primary"
                   [disabled]="!this.appointmentForm.valid ||
                               (callerNeedsPickup && !this.driveToForm.valid) ||
