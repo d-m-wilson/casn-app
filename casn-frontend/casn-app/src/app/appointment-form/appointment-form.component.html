@@ -9,7 +9,9 @@
         <ng-template matStepLabel>Appointment</ng-template>
         <h1>{{ title }}</h1>
         <div class="appt-form-group">
-          <h3>Caller #{{ formAppt.callerIdentifier.value }}</h3>
+          <app-pill [value]="formAppt.callerIdentifier.value"
+                    label="Caller ID">
+          </app-pill>
           <mat-form-field class="example-full-width hide"
                           appearance="outline"
                           disabled>

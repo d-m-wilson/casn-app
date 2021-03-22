@@ -28,6 +28,7 @@ import { RideCardComponent } from './casn-ui/ride-card/ride-card.component';
 import { RideCTAPipe } from './pipes/ride-cta.pipe';
 import { RidesHeaderComponent } from './casn-ui/rides-header/rides-header.component';
 import { RideFormStatusComponent } from './casn-ui/ride-form-status/ride-form-status.component';
+import { PillComponent } from './casn-ui/pill/pill.component';
 import { SafeUrlPipe } from './pipes/safe-url.pipe';
 import { PhonePipe } from './pipes/phone.pipe';
 import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-stepper.directive';
@@ -42,6 +43,7 @@ import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-s
     RideCTAPipe,
     RidesHeaderComponent,
     RideFormStatusComponent,
+    PillComponent,
   ],
   imports: [
     CommonModule,
@@ -77,6 +79,7 @@ import { MatVerticalStepperScrollerDirective } from './directives/mat-vertical-s
     RideCardComponent,
     RidesHeaderComponent,
     RideFormStatusComponent,
+    PillComponent,
 
     /* Angular Material */
     MatAutocompleteModule,
