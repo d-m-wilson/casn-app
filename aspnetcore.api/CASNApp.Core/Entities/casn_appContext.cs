@@ -20,12 +20,14 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<FundingOfferStatus> FundingOfferStatuses { get; set; }
         public virtual DbSet<FundingSource> FundingSources { get; set; }
         public virtual DbSet<FundingType> FundingTypes { get; set; }
+        public virtual DbSet<Grant> Grants { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<MessageErrorLog> MessageErrorLogs { get; set; }
         public virtual DbSet<MessageLog> MessageLogs { get; set; }
         public virtual DbSet<MessageType> MessageTypes { get; set; }
         public virtual DbSet<NullReason> NullReasons { get; set; }
         public virtual DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public virtual DbSet<ReferralSource> ReferralSources { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProviders { get; set; }
         public virtual DbSet<ServiceProviderType> ServiceProviderTypes { get; set; }
         public virtual DbSet<Volunteer> Volunteers { get; set; }
@@ -176,6 +178,8 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.DateOfBirth).HasColumnType("date");
 
+                entity.Property(e => e.FirstContactDate).HasColumnType("date");
+
                 entity.Property(e => e.FirstName)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -194,7 +198,14 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.ResidencePostalCode).HasMaxLength(10);
 
+                entity.Property(e => e.ResidenceState).HasMaxLength(2);
+
                 entity.Property(e => e.Updated).HasColumnType("datetime");
+
+                entity.HasOne(d => d.ReferralSource)
+                    .WithMany(p => p.Callers)
+                    .HasForeignKey(d => d.ReferralSourceId)
+                    .HasConstraintName("FK_Caller_ReferralSource");
             });
 
             modelBuilder.Entity<Drive>(entity =>
@@ -343,6 +354,8 @@ namespace CASNApp.Core.Entities
 
                 entity.Property(e => e.AppointmentDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ClinicReferenceNumber).HasMaxLength(20);
+
                 entity.Property(e => e.Created).HasColumnType("datetime");
 
                 entity.Property(e => e.Issued).HasColumnType("datetime");
@@ -437,6 +450,11 @@ namespace CASNApp.Core.Entities
                     .HasForeignKey(d => d.FundingTypeId)
                     .HasConstraintName("FK_FundingOfferItem_FundingType");
 
+                entity.HasOne(d => d.Grant)
+                    .WithMany(p => p.FundingOfferItems)
+                    .HasForeignKey(d => d.GrantId)
+                    .HasConstraintName("FK_FundingOfferItem_Grant");
+
                 entity.HasOne(d => d.NeedAmountNullReason)
                     .WithMany(p => p.FundingOfferItemNeedAmountNullReasons)
                     .HasForeignKey(d => d.NeedAmountNullReasonId)
@@ -477,6 +495,19 @@ namespace CASNApp.Core.Entities
             modelBuilder.Entity<FundingType>(entity =>
             {
                 entity.ToTable("FundingType");
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Grant>(entity =>
+            {
+                entity.ToTable("Grant");
 
                 entity.Property(e => e.Created).HasColumnType("datetime");
 
@@ -593,6 +624,19 @@ namespace CASNApp.Core.Entities
             modelBuilder.Entity<PaymentMethod>(entity =>
             {
                 entity.ToTable("PaymentMethod");
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<ReferralSource>(entity =>
+            {
+                entity.ToTable("ReferralSource");
 
                 entity.Property(e => e.Created).HasColumnType("datetime");
 

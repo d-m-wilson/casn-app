@@ -1,27 +1,24 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using CASNApp.Core.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CASNApp.Admin.Controllers
 {
-    [Authorize]
-    public class CallersController : Controller
+    public class ReferralSourcesController : Controller
     {
         private readonly casn_appContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public CallersController(casn_appContext context, UserManager<IdentityUser> userManager)
+        public ReferralSourcesController(casn_appContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: Callers
+        // GET: ReferralSources
         public async Task<IActionResult> Index()
         {
             if (!await UserHas2FA())
@@ -29,11 +26,10 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            var casn_appContext = _context.Callers.Include(c => c.ReferralSource);
-            return View(await casn_appContext.ToListAsync());
+            return View(await _context.ReferralSources.ToListAsync());
         }
 
-        // GET: Callers/Details/5
+        // GET: ReferralSources/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (!await UserHas2FA())
@@ -46,18 +42,17 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var caller = await _context.Callers
-                .Include(c => c.ReferralSource)
+            var referralSource = await _context.ReferralSources
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (caller == null)
+            if (referralSource == null)
             {
                 return NotFound();
             }
 
-            return View(caller);
+            return View(referralSource);
         }
 
-        // GET: Callers/Create
+        // GET: ReferralSources/Create
         public async Task<IActionResult> Create()
         {
             if (!await UserHas2FA())
@@ -65,16 +60,15 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            ViewData["ReferralSourceId"] = new SelectList(_context.ReferralSources, "Id", "Name");
             return View();
         }
 
-        // POST: Callers/Create
+        // POST: ReferralSources/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CiviContactId,CallerIdentifier,FirstName,LastName,DateOfBirth,Phone,IsMinor,PreferredLanguage,PreferredContactMethod,Note,ResidencePostalCode,HouseholdSize,HouseholdIncome,FirstContactDate,ResidenceState,ReferralSourceId,HousingUnstable")] Caller caller)
+        public async Task<IActionResult> Create([Bind("Id,Name")] ReferralSource referralSource)
         {
             if (!await UserHas2FA())
             {
@@ -83,16 +77,15 @@ namespace CASNApp.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                caller.IsActive = true;
-                _context.Add(caller);
+                referralSource.IsActive = true;
+                _context.Add(referralSource);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = caller.Id });
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["ReferralSourceId"] = new SelectList(_context.ReferralSources, "Id", "Name", caller.ReferralSourceId);
-            return View(caller);
+            return View(referralSource);
         }
 
-        // GET: Callers/Edit/5
+        // GET: ReferralSources/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (!await UserHas2FA())
@@ -105,28 +98,27 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var caller = await _context.Callers.FindAsync(id);
-            if (caller == null)
+            var referralSource = await _context.ReferralSources.FindAsync(id);
+            if (referralSource == null)
             {
                 return NotFound();
             }
-            ViewData["ReferralSourceId"] = new SelectList(_context.ReferralSources, "Id", "Name", caller.ReferralSourceId);
-            return View(caller);
+            return View(referralSource);
         }
 
-        // POST: Callers/Edit/5
+        // POST: ReferralSources/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,CallerIdentifier,FirstName,LastName,DateOfBirth,Phone,IsMinor,PreferredLanguage,PreferredContactMethod,Note,IsActive,ResidencePostalCode,HouseholdSize,HouseholdIncome,FirstContactDate,ResidenceState,ReferralSourceId,HousingUnstable")] Caller caller)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,IsActive")] ReferralSource referralSource)
         {
             if (!await UserHas2FA())
             {
                 return Forbid();
             }
 
-            if (id != caller.Id)
+            if (id != referralSource.Id)
             {
                 return NotFound();
             }
@@ -135,12 +127,12 @@ namespace CASNApp.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(caller);
+                    _context.Update(referralSource);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CallerExists(caller.Id))
+                    if (!ReferralSourceExists(referralSource.Id))
                     {
                         return NotFound();
                     }
@@ -149,13 +141,12 @@ namespace CASNApp.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Details), new { id = caller.Id });
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["ReferralSourceId"] = new SelectList(_context.ReferralSources, "Id", "Name", caller.ReferralSourceId);
-            return View(caller);
+            return View(referralSource);
         }
 
-        // GET: Callers/Delete/5
+        // GET: ReferralSources/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (!await UserHas2FA())
@@ -168,18 +159,17 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var caller = await _context.Callers
-                .Include(c => c.ReferralSource)
+            var referralSource = await _context.ReferralSources
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (caller == null)
+            if (referralSource == null)
             {
                 return NotFound();
             }
 
-            return View(caller);
+            return View(referralSource);
         }
 
-        // POST: Callers/Delete/5
+        // POST: ReferralSources/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -189,15 +179,15 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            var caller = await _context.Callers.FindAsync(id);
-            _context.Callers.Remove(caller);
+            var referralSource = await _context.ReferralSources.FindAsync(id);
+            _context.ReferralSources.Remove(referralSource);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CallerExists(int id)
+        private bool ReferralSourceExists(int id)
         {
-            return _context.Callers.Any(e => e.Id == id);
+            return _context.ReferralSources.Any(e => e.Id == id);
         }
 
         private async Task<bool> UserHas2FA()

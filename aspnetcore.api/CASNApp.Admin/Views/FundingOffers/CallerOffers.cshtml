@@ -8,6 +8,8 @@
 
 <p>
     <a asp-action="Index">Back to Funding Offers</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a asp-controller="Callers" asp-action="Edit" asp-route-id="@ViewBag.CallerId">Edit Caller</a>
     <a asp-action="CallerCreateOffer" asp-route-id="@ViewBag.CallerId" class="btn btn-primary float-right">Create New</a>
 </p>
 <table class="table">

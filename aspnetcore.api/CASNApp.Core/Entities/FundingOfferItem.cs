@@ -17,11 +17,13 @@ namespace CASNApp.Core.Entities
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
+        public int? GrantId { get; set; }
 
         public virtual NullReason FundingAmountNullReason { get; set; }
         public virtual FundingOffer FundingOffer { get; set; }
         public virtual FundingSource FundingSource { get; set; }
         public virtual FundingType FundingType { get; set; }
+        public virtual Grant Grant { get; set; }
         public virtual NullReason NeedAmountNullReason { get; set; }
         public virtual PaymentMethod PaymentMethod { get; set; }
     }

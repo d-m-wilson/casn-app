@@ -95,6 +95,42 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ResidencePostalCode)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseholdSize)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HouseholdSize)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseholdIncome)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HouseholdIncome)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstContactDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FirstContactDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ResidenceState)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ResidenceState)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HousingUnstable)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HousingUnstable)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ReferralSource)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ReferralSource.Name)
+        </dd class>
     </dl>
     
     <form asp-action="Delete">

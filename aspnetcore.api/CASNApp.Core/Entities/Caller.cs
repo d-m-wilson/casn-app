@@ -26,7 +26,14 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
         public string ResidencePostalCode { get; set; }
+        public int? HouseholdSize { get; set; }
+        public int? HouseholdIncome { get; set; }
+        public DateTime? FirstContactDate { get; set; }
+        public string ResidenceState { get; set; }
+        public int? ReferralSourceId { get; set; }
+        public bool HousingUnstable { get; set; }
 
+        public virtual ReferralSource ReferralSource { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<FundingOffer> FundingOffers { get; set; }
     }

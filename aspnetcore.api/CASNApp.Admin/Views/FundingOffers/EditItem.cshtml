@@ -50,6 +50,11 @@
                 <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
                 <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="GrantId" class="control-label">Grant</label>
+                <select asp-for="GrantId" class="form-control" asp-items="ViewBag.GrantId"></select>
+                <span asp-validation-for="GrantId" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> Is Active

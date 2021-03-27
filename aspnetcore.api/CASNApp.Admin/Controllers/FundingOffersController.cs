@@ -170,7 +170,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ClinicId,AppointmentTypeId,AppointmentDate,Note,IsActive")] FundingOffer fundingOffer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ClinicId,AppointmentTypeId,AppointmentDate,Note,IsActive,FollowUpConsent,DemographicSurveySent,ClinicReferenceNumber")] FundingOffer fundingOffer)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -263,6 +263,10 @@ namespace CASNApp.Admin.Controllers
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, "Id", "Name", fundingOfferItem.FundingTypeId);
             ViewData["NeedAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.NeedAmountNullReasonId);
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "Name", fundingOfferItem.PaymentMethodId);
+
+            var activeGrants = await _context.Grants.Where(x => x.IsActive).ToListAsync();
+            ViewData["GrantId"] = new SelectList(activeGrants, nameof(Grant.Id), nameof(Grant.Name));
+
             return View(fundingOfferItem);
         }
 
@@ -271,7 +275,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditItem(int id, [Bind("Id,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId,IsActive")] FundingOfferItem fundingOfferItem)
+        public async Task<IActionResult> EditItem(int id, [Bind("Id,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId,IsActive,GrantId")] FundingOfferItem fundingOfferItem)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -328,6 +332,10 @@ namespace CASNApp.Admin.Controllers
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, "Id", "Name", fundingOfferItem.FundingTypeId);
             ViewData["NeedAmountNullReasonId"] = new SelectList(_context.NullReasons, "Id", "Name", fundingOfferItem.NeedAmountNullReasonId);
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "Id", "Name", fundingOfferItem.PaymentMethodId);
+
+            var activeGrants = await _context.Grants.Where(x => x.IsActive).ToListAsync();
+            ViewData["GrantId"] = new SelectList(activeGrants, nameof(Grant.Id), nameof(Grant.Name));
+
             return View(fundingOfferItem);
         }
 
@@ -462,12 +470,16 @@ namespace CASNApp.Admin.Controllers
         }
 
         // GET: FundingOffers/CallerCreate
-        public IActionResult CallerCreate([FromQuery]string callerIdentifier)
+        public async Task<IActionResult> CallerCreate([FromQuery]string callerIdentifier)
         {
             var caller = new Caller()
             {
                 CallerIdentifier = callerIdentifier,
             };
+
+            var activeReferralSources = await _context.ReferralSources.Where(x => x.IsActive).ToListAsync();
+            ViewData["ReferralSourceId"] = new SelectList(activeReferralSources, nameof(ReferralSource.Id), nameof(ReferralSource.Name));
+
             return View(caller);
         }
 
@@ -476,7 +488,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CallerCreate([Bind("Id,CiviContactId,CallerIdentifier,FirstName,LastName,DateOfBirth,Phone,IsMinor,PreferredLanguage,PreferredContactMethod,Note,ResidencePostalCode")] Caller caller)
+        public async Task<IActionResult> CallerCreate([Bind("Id,CiviContactId,CallerIdentifier,FirstName,LastName,DateOfBirth,Phone,IsMinor,PreferredLanguage,PreferredContactMethod,Note,ResidencePostalCode,HouseholdSize,HouseholdIncome,FirstContactDate,ResidenceState,ReferralSourceId,HousingUnstable")] Caller caller)
         {
             if (ModelState.IsValid)
             {
@@ -571,7 +583,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CallerCreateOffer([Bind("CallerId,ClinicId,AppointmentTypeId,AppointmentDate,Note")] FundingOffer fundingOffer)
+        public async Task<IActionResult> CallerCreateOffer([Bind("CallerId,ClinicId,AppointmentTypeId,AppointmentDate,Note,FollowUpConsent,DemographicSurveySent,ClinicReferenceNumber")] FundingOffer fundingOffer)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -628,6 +640,10 @@ namespace CASNApp.Admin.Controllers
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, nameof(FundingType.Id), nameof(FundingType.Name));
             ViewData["NeedAmountNullReasonId"] = new SelectList(_context.NullReasons, nameof(NullReason.Id), nameof(NullReason.Name));
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, nameof(PaymentMethod.Id), nameof(PaymentMethod.Name));
+
+            var activeGrants = await _context.Grants.Where(x => x.IsActive).ToListAsync();
+            ViewData["GrantId"] = new SelectList(activeGrants, nameof(Grant.Id), nameof(Grant.Name));
+
             return View();
         }
 
@@ -636,7 +652,7 @@ namespace CASNApp.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateItem([Bind("FundingOfferId,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId")] FundingOfferItem fundingOfferItem, string saveandnew, string saveonly)
+        public async Task<IActionResult> CreateItem([Bind("FundingOfferId,FundingSourceId,FundingTypeId,NeedAmount,NeedAmountNullReasonId,FundingAmount,FundingAmountNullReasonId,PaymentMethodId,GrantId")] FundingOfferItem fundingOfferItem, string saveandnew, string saveonly)
         {
             var volunteer = await GetVolunteerForCurrentUserAsync();
 
@@ -684,6 +700,10 @@ namespace CASNApp.Admin.Controllers
             ViewData["FundingTypeId"] = new SelectList(_context.FundingTypes, nameof(FundingType.Id), nameof(FundingType.Name), fundingOfferItem.FundingTypeId);
             ViewData["NeedAmountNullReasonId"] = new SelectList(_context.NullReasons, nameof(NullReason.Id), nameof(NullReason.Name), fundingOfferItem.NeedAmountNullReasonId);
             ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, nameof(PaymentMethod.Id), nameof(PaymentMethod.Name), fundingOfferItem.PaymentMethodId);
+
+            var activeGrants = await _context.Grants.Where(x => x.IsActive).ToListAsync();
+            ViewData["GrantId"] = new SelectList(activeGrants, nameof(Grant.Id), nameof(Grant.Name));
+
             return View(fundingOfferItem);
         }
 

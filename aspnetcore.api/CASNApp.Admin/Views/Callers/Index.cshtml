@@ -13,9 +13,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CiviContactId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.CallerIdentifier)
             </th>
             <th>
@@ -34,15 +31,6 @@
                 @Html.DisplayNameFor(model => model.IsMinor)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PreferredLanguage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PreferredContactMethod)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th>
@@ -51,18 +39,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Updated)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ResidencePostalCode)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CiviContactId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CallerIdentifier)
             </td>
@@ -82,15 +64,6 @@
                 @Html.DisplayFor(modelItem => item.IsMinor)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PreferredLanguage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PreferredContactMethod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
@@ -100,12 +73,7 @@
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ResidencePostalCode)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> 
             </td>
         </tr>
 }

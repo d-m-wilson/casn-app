@@ -37,13 +37,24 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsMinor" /> @Html.DisplayNameFor(model => model.IsMinor)
+                    <input class="form-check-input" asp-for="IsMinor" /> Caller is a minor
                 </label>
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
                 <input asp-for="DateOfBirth" class="form-control" type="date" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ResidenceState" class="control-label">Residence State</label>
+                <input asp-for="ResidenceState" class="form-control" maxlength="2" list="stateOptions" />
+                <datalist id="stateOptions">
+                    <option value="TX" />
+                    <option value="LA" />
+                    <option value="AR" />
+                    <option value="OK" />
+                </datalist>
+                <span asp-validation-for="ResidenceState" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ResidencePostalCode" class="control-label">Residence Postal Code</label>
@@ -68,6 +79,33 @@
                     <option value="2">Call</option>
                 </select>
                 <span asp-validation-for="PreferredContactMethod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReferralSourceId" class="control-label">Referral Source</label>
+                <select asp-for="ReferralSourceId" class="form-control" asp-items="ViewBag.ReferralSourceId">
+                    <option selected value=""></option>
+                </select>
+                <span asp-validation-for="ReferralSourceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstContactDate" class="control-label">First Contact Date</label>
+                <input asp-for="FirstContactDate" class="form-control" type="date" />
+                <span asp-validation-for="FirstContactDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HouseholdSize" class="control-label">Household Size</label>
+                <input asp-for="HouseholdSize" class="form-control" type="number" />
+                <span asp-validation-for="HouseholdSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HouseholdIncome" class="control-label">Household Income</label>
+                <input asp-for="HouseholdIncome" class="form-control" type="number" />
+                <span asp-validation-for="HouseholdIncome" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HousingUnstable" /> Housing is unstable
+                </label>
             </div>
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>

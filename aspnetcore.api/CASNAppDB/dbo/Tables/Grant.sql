@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[Grant]
+(
+	[Id] INT NOT NULL IDENTITY(1,1),
+	[Name] NVARCHAR(50) NOT NULL,
+    [IsActive] BIT NOT NULL CONSTRAINT [DF_Grant_IsActive] DEFAULT (1),
+    [Created] DATETIME NOT NULL CONSTRAINT [DF_Grant_Created] DEFAULT (GETUTCDATE()),
+    [Updated] DATETIME NULL,
+	CONSTRAINT [PK_Grant] PRIMARY KEY CLUSTERED
+	(
+		[Id] ASC
+	)
+)

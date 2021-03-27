@@ -9,6 +9,7 @@
 	[FundingAmount] DECIMAL(10,2) NULL,
 	[FundingAmountNullReasonId] INT NULL,
 	[PaymentMethodId] INT NULL,
+	[GrantId] INT NULL,
     [IsActive] BIT NOT NULL CONSTRAINT [DF_FundingOfferItem_IsActive] DEFAULT (0x01),
     [Created] DATETIME NOT NULL CONSTRAINT [DF_FundingOfferItem_Created] DEFAULT (GETUTCDATE()),
     [Updated] DATETIME NULL,
@@ -20,6 +21,7 @@
 	CONSTRAINT [CK_FundingOfferItem_NeedAmountOrNullReason] CHECK ([NeedAmount] IS NOT NULL OR [NeedAmountNullReasonId] IS NOT NULL),
 	CONSTRAINT [FK_FundingOfferItem_FundingAmountNullReason] FOREIGN KEY ([FundingAmountNullReasonId]) REFERENCES [dbo].[NullReason]([Id]),
 	CONSTRAINT [CK_FundingOfferItem_FundingAmountOrNullReason] CHECK ([FundingAmount] IS NOT NULL OR [FundingAmountNullReasonId] IS NOT NULL),
+	CONSTRAINT [FK_FundingOfferItem_Grant] FOREIGN KEY ([GrantId]) REFERENCES [dbo].[Grant]([Id]),
 	CONSTRAINT [PK_FundingOfferItem] PRIMARY KEY CLUSTERED
 	(
 		[Id] ASC

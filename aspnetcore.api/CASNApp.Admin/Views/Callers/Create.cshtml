@@ -13,11 +13,6 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="CiviContactId" class="control-label"></label>
-                <input asp-for="CiviContactId" class="form-control" />
-                <span asp-validation-for="CiviContactId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="CallerIdentifier" class="control-label"></label>
                 <input asp-for="CallerIdentifier" class="form-control" />
                 <span asp-validation-for="CallerIdentifier" class="text-danger"></span>
@@ -49,12 +44,21 @@
             </div>
             <div class="form-group">
                 <label asp-for="PreferredLanguage" class="control-label"></label>
-                <input asp-for="PreferredLanguage" class="form-control" />
+                <input asp-for="PreferredLanguage" class="form-control" list="languageOptions" autocomplete="off" />
+                <datalist id="languageOptions">
+                    <option value="English" />
+                    <option value="Spanish" />
+                    <option value="Mandarin" />
+                    <option value="Vietnamese" />
+                </datalist>
                 <span asp-validation-for="PreferredLanguage" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PreferredContactMethod" class="control-label"></label>
-                <input asp-for="PreferredContactMethod" class="form-control" />
+                <select asp-for="PreferredContactMethod" class="form-control">
+                    <option selected value="1">Text</option>
+                    <option value="2">Call</option>
+                </select>
                 <span asp-validation-for="PreferredContactMethod" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -62,25 +66,41 @@
                 <input asp-for="Note" class="form-control" />
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Created" class="control-label"></label>
-                <input asp-for="Created" class="form-control" />
-                <span asp-validation-for="Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Updated" class="control-label"></label>
-                <input asp-for="Updated" class="form-control" />
-                <span asp-validation-for="Updated" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="ResidencePostalCode" class="control-label"></label>
                 <input asp-for="ResidencePostalCode" class="form-control" />
                 <span asp-validation-for="ResidencePostalCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HouseholdSize" class="control-label"></label>
+                <input asp-for="HouseholdSize" class="form-control" />
+                <span asp-validation-for="HouseholdSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HouseholdIncome" class="control-label"></label>
+                <input asp-for="HouseholdIncome" class="form-control" />
+                <span asp-validation-for="HouseholdIncome" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstContactDate" class="control-label"></label>
+                <input asp-for="FirstContactDate" class="form-control" />
+                <span asp-validation-for="FirstContactDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ResidenceState" class="control-label"></label>
+                <input asp-for="ResidenceState" class="form-control" />
+                <span asp-validation-for="ResidenceState" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReferralSourceId" class="control-label"></label>
+                <select asp-for="ReferralSourceId" class ="form-control" asp-items="ViewBag.ReferralSourceId">
+                    <option selected value=""></option>
+                </select>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="HousingUnstable" /> @Html.DisplayNameFor(model => model.HousingUnstable)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -93,3 +113,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

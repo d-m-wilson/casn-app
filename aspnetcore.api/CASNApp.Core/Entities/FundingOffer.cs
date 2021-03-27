@@ -27,6 +27,9 @@ namespace CASNApp.Core.Entities
         public int? UpdatedById { get; set; }
         public int AppointmentTypeId { get; set; }
         public DateTime AppointmentDate { get; set; }
+        public bool FollowUpConsent { get; set; }
+        public bool DemographicSurveySent { get; set; }
+        public string ClinicReferenceNumber { get; set; }
 
         public virtual AppointmentType AppointmentType { get; set; }
         public virtual Caller Caller { get; set; }

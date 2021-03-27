@@ -175,21 +175,40 @@
                             <td class="data-label">Appointment Date:</td>
                             <td>@($"{Model.AppointmentDate:MM/dd/yyyy h:mm tt}")</td>
                         </tr>
+                        @if (!string.IsNullOrWhiteSpace(Model.ClinicReferenceNumber))
+                        {
+                            <tr>
+                                <td class="data-label">Clinic Reference #:</td>
+                                <td>@($"{Model.ClinicReferenceNumber}")</td>
+                            </tr>
+                        }
                         <tr>
                             <td class="data-label">Voucher #:</td>
-                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@Model.Id</text> } else { <text>Preview</text> }</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@Model.Id</text> }
+                        else
+                        { <text>Preview</text>}</td>
                         </tr>
                         <tr>
                             <td class="data-label">Issued By:</td>
-                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@Model.IssuedBy?.Name</text> } else { <text>Preview</text> }</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@Model.IssuedBy?.Name</text> }
+                        else
+                        { <text>Preview</text>}</td>
                         </tr>
                         <tr>
                             <td class="data-label">Issue Date:</td>
-                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@($"{Model.Issued:MM/dd/yyyy}")</text> } else { <text>Preview</text> }</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@($"{Model.Issued:MM/dd/yyyy}")</text> }
+                        else
+                        { <text>Preview</text>}</td>
                         </tr>
                         <tr>
                             <td class="data-label">Valid Through:</td>
-                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue) { <text>@($"{Model.Issued?.AddDays(30):MM/dd/yyyy}")</text> } else { <text>Preview</text> }</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@($"{Model.Issued?.AddDays(30):MM/dd/yyyy}")</text> }
+                        else
+                        { <text>Preview</text>}</td>
                         </tr>
                     </table>
                 </div>

@@ -38,6 +38,21 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
+                    <input class="form-check-input" asp-for="FollowUpConsent" /> Follow-up Consent
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="DemographicSurveySent" /> Demographic Survey Sent
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClinicReferenceNumber" class="control-label">Clinic Reference #</label>
+                <input asp-for="ClinicReferenceNumber" class="form-control" />
+                <span asp-validation-for="ClinicReferenceNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
             </div>

@@ -47,6 +47,13 @@
                 <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
             </div>
             <div class="form-group">
+                <label asp-for="GrantId" class="control-label">Grant</label>
+                <select asp-for="GrantId" class="form-control" asp-items="ViewBag.GrantId">
+                    <option selected value="">-</option>
+                </select>
+                <span asp-validation-for="GrantId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" name="saveandnew" value="Save and Add New" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="submit" name="saveonly" value="Save" class="btn btn-success" />
             </div>

@@ -111,6 +111,8 @@
     <Build Include="dbo\Tables\FundingOfferStatus.sql" />
     <Build Include="dbo\Tables\PaymentMethod.sql" />
     <Build Include="dbo\Tables\NullReason.sql" />
+    <Build Include="dbo\Tables\ReferralSource.sql" />
+    <Build Include="dbo\Tables\Grant.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
