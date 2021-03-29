@@ -18,12 +18,6 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CiviContactId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CiviContactId)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CallerIdentifier)
         </dt>
         <dd class = "col-sm-10">
@@ -68,8 +62,11 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PreferredContactMethod)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PreferredContactMethod)
+        <dd class="col-sm-10">
+            <select asp-for="PreferredContactMethod" class="form-control" style="max-width: 25%;" disabled>
+                <option selected value="1">Text</option>
+                <option value="2">Call</option>
+            </select>
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Note)

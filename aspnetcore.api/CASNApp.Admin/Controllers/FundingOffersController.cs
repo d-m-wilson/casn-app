@@ -195,11 +195,6 @@ namespace CASNApp.Admin.Controllers
                         return NotFound();
                     }
 
-                    if (!existingFundingOffer.AllowsEdits)
-                    {
-                        return Conflict();
-                    }
-
                     // prevent user from directly editing the status
                     fundingOffer.FundingOfferStatusId = existingFundingOffer.FundingOfferStatusId;
 
@@ -211,7 +206,18 @@ namespace CASNApp.Admin.Controllers
 
                     fundingOffer.UpdatedById = volunteer.Id;
 
-                    _context.Entry(existingFundingOffer).CurrentValues.SetValues(fundingOffer);
+                    if (existingFundingOffer.AllowsEdits)
+                    {
+                        _context.Entry(existingFundingOffer).CurrentValues.SetValues(fundingOffer);
+                    }
+                    else
+                    {
+                        // User is still allowed to change the following properties, despite AllowsEdits == false
+                        existingFundingOffer.FollowUpConsent = fundingOffer.FollowUpConsent;
+                        existingFundingOffer.DemographicSurveySent = fundingOffer.DemographicSurveySent;
+                        existingFundingOffer.Note = fundingOffer.Note;
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -251,7 +257,12 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var fundingOfferItem = await _context.FundingOfferItems.FindAsync(id);
+            var fundingOfferItem = await _context.FundingOfferItems
+                .Include(foi => foi.FundingOffer)
+                .Include(foi => foi.FundingSource)
+                .Include(foi => foi.PaymentMethod)
+                .Where(foi => foi.Id == id.Value)
+                .SingleOrDefaultAsync();
 
             if (fundingOfferItem == null)
             {
@@ -293,7 +304,12 @@ namespace CASNApp.Admin.Controllers
             {
                 try
                 {
-                    var existingFundingOfferItem = await _context.FundingOfferItems.FindAsync(id);
+                    var existingFundingOfferItem = await _context.FundingOfferItems
+                        .Include(foi => foi.FundingOffer)
+                        .Include(foi => foi.FundingSource)
+                        .Include(foi => foi.PaymentMethod)
+                        .Where(foi => foi.Id == id)
+                        .SingleOrDefaultAsync();
 
                     if (existingFundingOfferItem == null)
                     {
@@ -302,16 +318,21 @@ namespace CASNApp.Admin.Controllers
 
                     var existingFundingOffer = await _context.FundingOffers.FindAsync(existingFundingOfferItem.FundingOfferId);
 
-                    if (!existingFundingOffer.AllowsEdits)
-                    {
-                        return Conflict();
-                    }
-
                     // prevent user from "moving" this item to a different FundingOffer (parent) record
                     fundingOfferItem.FundingOfferId = existingFundingOfferItem.FundingOfferId;
 
                     existingFundingOffer.UpdatedById = volunteer.Id;
-                    _context.Entry(existingFundingOfferItem).CurrentValues.SetValues(fundingOfferItem);
+
+                    if (existingFundingOfferItem.AllowsEdits)
+                    {
+                        _context.Entry(existingFundingOfferItem).CurrentValues.SetValues(fundingOfferItem);
+                    }
+                    else
+                    {
+                        // User is still allowed to change GrantId despite AllowsEdits == false
+                        existingFundingOfferItem.GrantId = fundingOfferItem.GrantId;
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -428,11 +449,6 @@ namespace CASNApp.Admin.Controllers
             if (existingFundingOffer == null)
             {
                 return NotFound();
-            }
-
-            if (!existingFundingOffer.AllowsEdits)
-            {
-                return Conflict();
             }
 
             existingFundingOffer.UpdatedById = volunteer.Id;

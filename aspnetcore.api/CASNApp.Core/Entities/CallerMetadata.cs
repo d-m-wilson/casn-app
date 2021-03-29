@@ -79,5 +79,8 @@ namespace CASNApp.Core.Entities
         [Display(Name = "Housing Unstable")]
         public bool HousingUnstable { get; set; }
 
+        [Display(Name = "Referral Source")]
+        public ReferralSource ReferralSource { get; set; }
+
     }
 }

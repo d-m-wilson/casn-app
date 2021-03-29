@@ -13,10 +13,7 @@
         <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
 
         <div class="float-right">
-            @if (Model.AllowsEdits)
-            {
-                <a asp-action="Edit" asp-route-id="@Model.Id">Edit Funding Offer</a><text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text>
-            }
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit Funding Offer</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <a asp-action="ChangeStatus" asp-route-id="@Model.Id">Change Status</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             @if (!Model.AllowsEdits)
             {
@@ -192,11 +189,7 @@
                             @Html.DisplayFor(modelItem => item.IsActive)
                         </td>
                         <td>
-                            @if (Model.AllowsEdits)
-                            {
-                                <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>
-                                <text>&nbsp;&nbsp;&nbsp;</text>
-                            }
+                            <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>&nbsp;&nbsp;&nbsp;
 
                             <a asp-action="ItemDetails" asp-route-id="@item.Id">Details</a>
 

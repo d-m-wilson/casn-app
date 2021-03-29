@@ -18,23 +18,28 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="ClinicId" class="control-label">Clinic</label>
-                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId" autofocus></select>
+                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId" autofocus disabled="@(!Model.AllowsEdits)"></select>
                 <span asp-validation-for="ClinicId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AppointmentTypeId" class="control-label">Appointment Type</label>
-                <select asp-for="AppointmentTypeId" class="form-control" asp-items="ViewBag.AppointmentTypeId"></select>
+                <select asp-for="AppointmentTypeId" class="form-control" asp-items="ViewBag.AppointmentTypeId" disabled="@(!Model.AllowsEdits)"></select>
                 <span asp-validation-for="AppointmentTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
-                <input asp-for="AppointmentDate" class="form-control" />
+                <input asp-for="AppointmentDate" class="form-control" disabled="@(!Model.AllowsEdits)" />
                 <span asp-validation-for="AppointmentDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Note" class="control-label"></label>
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
+                <label asp-for="ClinicReferenceNumber" class="control-label">Clinic Reference #</label>
+                <input asp-for="ClinicReferenceNumber" class="form-control" disabled="@(!Model.AllowsEdits)" />
+                <span asp-validation-for="ClinicReferenceNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" disabled="@(!Model.AllowsEdits)" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -47,14 +52,9 @@
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="ClinicReferenceNumber" class="control-label">Clinic Reference #</label>
-                <input asp-for="ClinicReferenceNumber" class="form-control" />
-                <span asp-validation-for="ClinicReferenceNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
+                <label asp-for="Note" class="control-label"></label>
+                <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
