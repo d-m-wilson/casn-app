@@ -13,7 +13,7 @@
                     label="Caller ID">
           </app-pill>
           <mat-form-field class="example-full-width hide"
-                          appearance="outline"
+                          appearance="standard"
                           disabled>
             <mat-label>Caller ID</mat-label>
             <input type="text"
@@ -23,7 +23,7 @@
             formControlName="callerIdentifier">
             <mat-error *ngIf="formAppt.callerIdentifier.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field class="example-full-width hide" appearance="outline">
+          <mat-form-field class="example-full-width hide" appearance="standard">
             <mat-label>Dispatcher ID</mat-label>
             <input type="number"
             placeholder="4321"
@@ -34,7 +34,7 @@
           </mat-form-field>
         </div>
         <div class="appt-form-group">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>Appointment Type</mat-label>
             <mat-select placeholder="Appt Type"
                         aria-label="Appointment Type"
@@ -47,7 +47,7 @@
           </mat-form-field>
           <!--********* Conditionally display clinics vs. courthouses vs. hotels based on appt type *****************-->
           <!-- Clinics Only -->
-          <mat-form-field appearance="outline" *ngIf="![7, 9, 11].includes(formAppt.appointmentTypeId.value)">
+          <mat-form-field appearance="standard" *ngIf="![7, 9, 11].includes(formAppt.appointmentTypeId.value)">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
@@ -59,7 +59,7 @@
             <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <!-- Courthouses Only -->
-          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value === 7">
+          <mat-form-field appearance="standard" *ngIf="formAppt.appointmentTypeId.value === 7">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
@@ -71,7 +71,7 @@
             <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <!-- Lodging Only -->
-          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value === 9">
+          <mat-form-field appearance="standard" *ngIf="formAppt.appointmentTypeId.value === 9">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
@@ -83,7 +83,7 @@
             <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
           <!-- Flight Only -->
-          <mat-form-field appearance="outline" *ngIf="formAppt.appointmentTypeId.value === 11">
+          <mat-form-field appearance="standard" *ngIf="formAppt.appointmentTypeId.value === 11">
             <mat-label>Service Provider</mat-label>
             <mat-select placeholder="Service Provider"
                         aria-label="Service Provider"
@@ -94,7 +94,7 @@
             </mat-select>
             <mat-error *ngIf="formAppt.serviceProviderId.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>Appointment Time</mat-label>
             <input [owlDateTimeTrigger]="dt5"
                    [owlDateTime]="dt5"
@@ -127,7 +127,7 @@
       <form [formGroup]="driveToForm">
         <ng-template matStepLabel>Drive To</ng-template>
         <div class="appt-form-group" *ngIf="!callerNeedsPickup">
-          <h3>Does the caller need a drive <em>TO</em> the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}?</h3>
+          <h3>Does the caller need a drive <em>TO</em> {{ apptServiceProvider }}?</h3>
           <button mat-raised-button
                   color="primary"
                   type="button"
@@ -143,7 +143,7 @@
         </div>
         <div class="appt-form-group" *ngIf="callerNeedsPickup">
           <h3>Pick-Up Address</h3>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>Street Address</mat-label>
             <input matInput
                    type="text"
@@ -152,7 +152,7 @@
                    placeholder="345 Main St, Apt F">
             <mat-error *ngIf="formPickup.pickupAddress.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>City</mat-label>
             <input matInput
                    type="text"
@@ -161,7 +161,7 @@
                    placeholder="Cypress">
             <mat-error *ngIf="formPickup.pickupCity.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>State</mat-label>
             <input matInput
                    type="text"
@@ -170,7 +170,7 @@
                    placeholder="TX">
             <mat-error *ngIf="formPickup.pickupState.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>Zip Code</mat-label>
             <input matInput
                    type="text"
@@ -179,7 +179,7 @@
                    placeholder="77777">
             <mat-error *ngIf="formPickup.pickupPostalCode.errors?.required">This field is required.</mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="standard">
             <mat-label>Vague Pickup Location</mat-label>
             <input matInput
                    type="text"
@@ -217,7 +217,7 @@
         been added. If there is no driveTo, the appointment must have a
         driveFrom -->
         <div class="appt-form-group" *ngIf="callerNeedsPickup && !callerNeedsDropoff">
-          <h3>Does the caller need a drive home <em>FROM</em> the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}?</h3>
+          <h3>Does the caller need a drive home <em>FROM</em> {{ apptServiceProvider }}?</h3>
           <button mat-raised-button
                   color="primary"
                   type="button"
@@ -240,7 +240,7 @@
             <br><br>
           </div>
           <ng-container *ngIf="!dropoffSameAsPickup">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="standard">
               <mat-label>Street Address</mat-label>
               <input matInput
                      type="text"
@@ -249,7 +249,7 @@
                      placeholder="21 Park Dr. Ste 200">
               <mat-error *ngIf="formDropoff.dropoffAddress.errors?.required">This field is required.</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="standard">
               <mat-label>City</mat-label>
               <input matInput
                      type="text"
@@ -258,7 +258,7 @@
                      placeholder="Cypress">
               <mat-error *ngIf="formDropoff.dropoffCity.errors?.required">This field is required.</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="standard">
               <mat-label>State</mat-label>
               <input matInput
                      type="text"
@@ -267,7 +267,7 @@
                      placeholder="TX">
               <mat-error *ngIf="formDropoff.dropoffState.errors?.required">This field is required.</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="standard">
               <mat-label>Zip Code</mat-label>
               <input matInput
                      type="text"
@@ -276,7 +276,7 @@
                      placeholder="77777">
               <mat-error *ngIf="formDropoff.dropoffPostalCode.errors?.required">This field is required.</mat-error>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="standard">
               <mat-label>Vague Dropoff Location</mat-label>
               <input matInput
                      type="text"
@@ -309,70 +309,88 @@
                             Review & Submit
 **********************************************************************-->
     <mat-step>
-      <h1>{{ title }}</h1>
+      <h1 class="summary">Summary Screen</h1>
       <ng-template matStepLabel>Summary</ng-template>
       <div *ngIf="this.appointmentForm.valid &&
                   (!callerNeedsPickup || this.driveToForm.valid) &&
                   (!callerNeedsDropoff || dropoffSameAsPickup || this.driveFromForm.valid)"
            class="appt-form-group">
-        <mat-card class="review-card candy-card">
-          <h4>Caller {{ formAppt.callerIdentifier.value }}'s {{ apptType }}</h4>
-          <span class="bold">{{ formAppt.appointmentDate.value | date:'short'}}<br><br>{{ apptServiceProvider }}</span>
-        </mat-card>
-        <mat-card class="review-card candy-card">
-          <h4>Drive To {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</h4>
-          <div *ngIf="callerNeedsPickup; else noPickup">
-            <span>Pick Up Caller At:
-              <em>{{ formPickup.pickupLocationVague.value }}</em>
-            </span>
-            <br><br>
-            <address>
-              {{ formPickup.pickupAddress.value }}<br>
-              {{ formPickup.pickupCity.value }}
-              {{ formPickup.pickupState.value }},
-              {{ formPickup.pickupPostalCode.value }}
-            </address>
+        <mat-card class="review-card candy-card no-border">
+          <div class="info-group text-small">
+            <span>{{ formAppt.callerIdentifier.value }}</span>
+            <span class="text-light">Caller ID</span>
           </div>
-          <ng-template #noPickup>
-            <p style="color:#666"><em>Caller doesn't need a ride to the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}.</em></p>
-          </ng-template>
+          <div class="info-group text-small">
+            <span>{{ formAppt.appointmentDate.value | date:'MMM d, y, h:mm a'}}</span>
+            <span class="text-light">Date</span>
+          </div>
+          <div class="info-group text-small">
+            <span>{{ apptType }}</span>
+            <span class="text-light">Type</span>
+          </div>
+          <div class="info-group text-small">
+            <span>{{ apptServiceProvider }}</span>
+            <span class="text-light">Provider</span>
+          </div>
         </mat-card>
-        <mat-card class="review-card candy-card">
-          <h4>Drive From {{ formAppt.appointmentTypeId.value === 7 ? 'Courthouse' : 'Clinic' }}</h4>
-          <div *ngIf="callerNeedsDropoff; else noDropoff">
-            <span>Drop Off Caller At:</span>
-            <ng-container *ngIf="dropoffSameAsPickup; else dropoffDifferent">
-              &nbsp;<em>{{ formPickup.pickupLocationVague.value }}</em>
-              <br><br>
+        <div class="card-icon-group">
+          <mat-icon class="icon-small icon-container secondary">place</mat-icon>
+          <mat-card class="review-card candy-card light-border text-small">
+            <h4>Drive To {{ apptServiceProvider }}</h4>
+            <div *ngIf="callerNeedsPickup; else noPickup">
+              <span>Pick Up Caller at <em>{{ formPickup.pickupLocationVague.value }}</em></span>
+              <br/>
               <address>
                 {{ formPickup.pickupAddress.value }}<br>
                 {{ formPickup.pickupCity.value }}
                 {{ formPickup.pickupState.value }},
                 {{ formPickup.pickupPostalCode.value }}
               </address>
-            </ng-container>
-            <ng-template #dropoffDifferent>
-              &nbsp;<em>{{ formDropoff.dropoffLocationVague.value }}</em>
-              <br><br>
-              <address>
-                {{ formDropoff.dropoffAddress.value }}<br>
-                {{ formDropoff.dropoffCity.value }}
-                {{ formDropoff.dropoffState.value }},
-                {{ formDropoff.dropoffPostalCode.value }}
-              </address>
+            </div>
+            <ng-template #noPickup>
+              <p style="color:#666"><em>Caller doesn't need a ride to {{ apptServiceProvider }}.</em></p>
             </ng-template>
-          </div>
-          <ng-template #noDropoff>
-            <p style="color:#666"><em>Caller doesn't need a ride home from the {{ formAppt.appointmentTypeId.value === 7 ? 'courthouse' : 'clinic' }}.</em></p>
-          </ng-template>
-        </mat-card>
+          </mat-card>
+        </div>
+        <div class="card-icon-group">
+          <mat-icon class="icon-small icon-container primary">place</mat-icon>
+          <mat-card class="review-card candy-card light-border text-small">
+            <h4>Drive From {{ apptServiceProvider }}</h4>
+            <div *ngIf="callerNeedsDropoff; else noDropoff">
+              <span>Drop Off Caller at</span>
+              <ng-container *ngIf="dropoffSameAsPickup; else dropoffDifferent">
+                &nbsp;<em>{{ formPickup.pickupLocationVague.value }}</em>
+                <br/>
+                <address>
+                  {{ formPickup.pickupAddress.value }}<br>
+                  {{ formPickup.pickupCity.value }}
+                  {{ formPickup.pickupState.value }},
+                  {{ formPickup.pickupPostalCode.value }}
+                </address>
+              </ng-container>
+              <ng-template #dropoffDifferent>
+                &nbsp;<em>{{ formDropoff.dropoffLocationVague.value }}</em>
+                <br><br>
+                <address>
+                  {{ formDropoff.dropoffAddress.value }}<br>
+                  {{ formDropoff.dropoffCity.value }}
+                  {{ formDropoff.dropoffState.value }},
+                  {{ formDropoff.dropoffPostalCode.value }}
+                </address>
+              </ng-template>
+            </div>
+            <ng-template #noDropoff>
+              <p style="color:#666"><em>Caller doesn't need a ride home from {{ apptServiceProvider }}.</em></p>
+            </ng-template>
+          </mat-card>
+        </div>
         <div class="form-actions">
           <button class="back-btn btn-cta secondary"
                   mat-raised-button
                   color="accent"
                   type="button"
                   matStepperPrevious>Back</button>
-          <button class="next-btn"
+          <button class="next-btn btn-cta flex"
                   mat-raised-button
                   color="primary"
                   [disabled]="!this.appointmentForm.valid ||

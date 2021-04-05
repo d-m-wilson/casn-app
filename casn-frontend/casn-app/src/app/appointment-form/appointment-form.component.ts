@@ -1,3 +1,4 @@
+import { PhonePipe } from './../shared/pipes/phone.pipe';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';

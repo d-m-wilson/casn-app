@@ -12,6 +12,10 @@ main {
 h1 {
   font-size: 1.2rem;
   text-align: center;
+
+  &.summary {
+    text-align: left;
+  }
 }
 
 form {
@@ -60,11 +64,47 @@ form {
   min-width: 0;
 }
 
+.btn-cta.flex {
+  flex-grow: 0
+}
+
 .hide {
   display: none;
 }
 
 .review-card {
-  text-align: center;
   margin-bottom: 15px;
+  flex-grow: 1;
+
+  .info-group {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.card-icon-group {
+  display: flex;
+  justify-content: space-between;
+
+  .icon-container {
+    border-radius: 100%;
+    padding: 3px;
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+
+    &.primary {
+      color: $primary-color-dark;
+      background: $primary-color;
+    }
+
+    &.secondary {
+      color: $error-color;
+      background: $error-color-faded;
+    }
+  }
+}
+
+.icon-small {
+  font-size: 14px;
 }
