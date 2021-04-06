@@ -104,7 +104,7 @@
             <span class="text-light label">Volunteers</span>
             <div class="volunteer-wrapper">
               <div *ngFor="let v of volunteers" class="volunteer-container">
-                {{ v.firstName }} {{ v.lastName }}
+                <a [href]="('sms:+1' + v.mobilePhone) | safeUrl">{{ v.firstName }} {{ v.lastName }}</a>
                 <div>
                   <button type="button"
                           class="volunteer-btn approve text-small"
@@ -134,7 +134,7 @@
             <ng-container *ngFor="let v of volunteers">
               <div *ngIf="v.volunteerId === ride[driveType].driverId"
                    class="volunteer-container">
-                {{ v.firstName }} {{ v.lastName }}
+                <a [href]="('sms:+1' + v.mobilePhone) | safeUrl">{{ v.firstName }} {{ v.lastName }}</a>
                 <div>
                   <span class="approved">Approved</span>
                   <span *ngIf="v.volunteerId === ride[driveType].driverId"
