@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Volunteer_Badge] (
-    [Id]          INT      IDENTITY (2, 1) NOT NULL,
+    [Id]          INT      IDENTITY (1, 1) NOT NULL,
     [VolunteerId] INT      NOT NULL,
     [BadgeId]     INT      NOT NULL,
     [VolunteerDriveLogId]  INT      NOT NULL,

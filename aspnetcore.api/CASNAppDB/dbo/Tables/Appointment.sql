@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Appointment] (
-    [Id]                    INT            IDENTITY (41, 1) NOT NULL,
+    [Id]                    INT            IDENTITY (1, 1) NOT NULL,
     [DispatcherId]          INT            NOT NULL,
     [CallerId]              INT            NULL,
     [ServiceProviderId]     INT            NOT NULL,

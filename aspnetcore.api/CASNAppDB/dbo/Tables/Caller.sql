@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Caller] (
-    [Id]                     INT            IDENTITY (1005, 1) NOT NULL,
+    [Id]                     INT            IDENTITY (1, 1) NOT NULL,
     [CiviContactId]          INT            NOT NULL,
     [CallerIdentifier]       NVARCHAR (45)  NOT NULL,
     [FirstName]              NVARCHAR (50)  NOT NULL,

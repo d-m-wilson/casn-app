@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Drive] (
-    [Id]              INT            IDENTITY (54, 1) NOT NULL,
+    [Id]              INT            IDENTITY (1, 1) NOT NULL,
     [AppointmentId]   INT            NOT NULL,
     [Direction]       TINYINT        NOT NULL,
     [StatusId]        INT            CONSTRAINT [DF_Drive_StatusId] DEFAULT ((0)) NOT NULL,

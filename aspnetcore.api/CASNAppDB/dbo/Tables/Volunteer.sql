@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Volunteer] (
-    [Id]             INT            IDENTITY (1001, 1) NOT NULL,
+    [Id]             INT            IDENTITY (1, 1) NOT NULL,
     [CiviContactId]  INT            NOT NULL,
     [FirstName]      NVARCHAR (50)  NOT NULL,
     [LastName]       NVARCHAR (50)  NOT NULL,
