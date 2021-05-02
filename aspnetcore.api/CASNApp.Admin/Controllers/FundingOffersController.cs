@@ -604,6 +604,8 @@ namespace CASNApp.Admin.Controllers
             ViewBag.CallerId = caller.Id;
             ViewBag.CallerIdentifier = caller.CallerIdentifier;
 
+            ViewBag.UserCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
+
             return View(offers);
         }
 

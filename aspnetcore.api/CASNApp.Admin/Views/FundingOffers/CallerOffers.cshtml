@@ -24,9 +24,12 @@
             <th>
                 Created By
             </th>
+            @if (ViewBag.UserCanSeeInactive)
+            {
             <th>
                 Is Active
             </th>
+            }
             <th>
                 Created
             </th>
@@ -49,9 +52,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedBy.Name)
             </td>
+            @if (ViewBag.UserCanSeeInactive)
+            {
             <td>
                 @Html.DisplayFor(modelItem => item.IsActive)
             </td>
+            }
             <td>
                 @($"{item.Created:MM/dd/yyyy}")
             </td>
