@@ -826,7 +826,7 @@ namespace CASNApp.Admin.Controllers
 
             if (fundingOffer.FundingOfferStatusId == FundingOfferStatus.Draft)
             {
-                warningText = "Note: Once a Funding Offer's status is changed, no further editing will be permitted.";
+                warningText = "Note: Once a Funding Offer's status is changed, only limited editing will be permitted.";
             }
             else
             {
