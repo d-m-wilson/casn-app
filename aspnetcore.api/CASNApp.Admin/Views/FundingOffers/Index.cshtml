@@ -59,7 +59,9 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Caller.CallerIdentifier)
+                    <a asp-action="CallerOffers" asp-route-id="@item.CallerId">
+                        @Html.DisplayFor(modelItem => item.Caller.CallerIdentifier)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Clinic.Name)

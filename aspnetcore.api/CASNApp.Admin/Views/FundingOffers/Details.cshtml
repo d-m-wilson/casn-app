@@ -32,7 +32,9 @@
             Caller
         </dt>
         <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.Caller.CallerIdentifier)
+            <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">
+                @Html.DisplayFor(model => model.Caller.CallerIdentifier)
+            </a>
         </dd>
         <dt class="col-sm-3">
             Clinic
