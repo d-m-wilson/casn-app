@@ -36,9 +36,12 @@
             <th>
                 Status
             </th>
+            @if (ViewBag.UserCanSeeInactive)
+            {
             <th>
                 Is Active
             </th>
+            }
             <th>
                 Created
             </th>
@@ -65,9 +68,12 @@
                     @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(item.FundingOfferStatusId))
                     @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
                 </td>
+                @if (ViewBag.UserCanSeeInactive)
+                {
                 <td>
                     @Html.DisplayFor(modelItem => item.IsActive)
                 </td>
+                }
                 <td>
                     @($"{item.Created:MM/dd/yyyy}")
                 </td>

@@ -36,11 +36,18 @@
                 <input asp-for="ClinicReferenceNumber" class="form-control" disabled="@(!Model.AllowsEdits)" />
                 <span asp-validation-for="ClinicReferenceNumber" class="text-danger"></span>
             </div>
+            @if (ViewBag.UserCanSeeInactive)
+            {
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" disabled="@(!Model.AllowsEdits)" /> @Html.DisplayNameFor(model => model.IsActive)
                 </label>
             </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="IsActive" />
+            }
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="FollowUpConsent" /> Follow-up Consent

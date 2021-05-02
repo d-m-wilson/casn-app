@@ -45,12 +45,16 @@ namespace CASNApp.Admin.Controllers
         // GET FundingOffers
         public async Task<IActionResult> Index()
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+            var userCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
+
             var fundingOffers = _context.FundingOffers
                 .AsNoTracking()
                 .Include(f => f.Caller)
                 .Include(f => f.Clinic)
                 .Include(f => f.CreatedBy)
                 .Include(f => f.FundingOfferStatus)
+                .Where(f => userCanSeeInactive || f.IsActive)
                 .OrderByDescending(f => f.Id)
                 .Take(50);
 
@@ -59,18 +63,24 @@ namespace CASNApp.Admin.Controllers
                 FundingOffers = await fundingOffers.ToListAsync(),
             };
 
+            ViewBag.UserCanSeeInactive = userCanSeeInactive;
+
             return View(viewModel);
         }
 
         // GET: FundingOffers/List
         public async Task<IActionResult> List()
         {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+            var userCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
+
             var casn_appContext = _context.FundingOffers
                 .AsNoTracking()
                 .Include(f => f.Caller)
                 .Include(f => f.Clinic)
                 .Include(f => f.CreatedBy)
-                .Include(f => f.FundingOfferStatus);
+                .Include(f => f.FundingOfferStatus)
+                .Where(f => userCanSeeInactive || f.IsActive);
 
             return View(await casn_appContext.ToListAsync());
         }
@@ -103,6 +113,19 @@ namespace CASNApp.Admin.Controllers
             {
                 return NotFound();
             }
+
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer == null || !volunteer.CanSeeInactive)
+            {
+                var inactiveItems = fundingOffer.FundingOfferItems.Where(foi => !foi.IsActive).ToList();
+                foreach (var inactiveItem in inactiveItems)
+                {
+                    fundingOffer.FundingOfferItems.Remove(inactiveItem);
+                }
+            }
+
+            ViewBag.UserCanSeeInactive = volunteer.CanSeeInactive;
 
             return View(fundingOffer);
         }
@@ -162,6 +185,10 @@ namespace CASNApp.Admin.Controllers
 
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "Name", fundingOffer.CreatedById);
             ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
+
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+            ViewBag.UserCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
+
             return View(fundingOffer);
         }
 
@@ -246,6 +273,9 @@ namespace CASNApp.Admin.Controllers
 
             ViewData["CreatedById"] = new SelectList(_context.Volunteers, "Id", "FirstName", fundingOffer.CreatedById);
             ViewData["FundingOfferStatusId"] = new SelectList(_context.FundingOfferStatuses, "Id", "Name", fundingOffer.FundingOfferStatusId);
+
+            ViewBag.UserCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
+
             return View(fundingOffer);
         }
 
@@ -277,6 +307,9 @@ namespace CASNApp.Admin.Controllers
 
             var activeGrants = await _context.Grants.Where(x => x.IsActive).ToListAsync();
             ViewData["GrantId"] = new SelectList(activeGrants, nameof(Grant.Id), nameof(Grant.Name));
+
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+            ViewBag.UserCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
 
             return View(fundingOfferItem);
         }
@@ -356,6 +389,8 @@ namespace CASNApp.Admin.Controllers
 
             var activeGrants = await _context.Grants.Where(x => x.IsActive).ToListAsync();
             ViewData["GrantId"] = new SelectList(activeGrants, nameof(Grant.Id), nameof(Grant.Name));
+
+            ViewBag.UserCanSeeInactive = volunteer != null && volunteer.CanSeeInactive;
 
             return View(fundingOfferItem);
         }
@@ -553,13 +588,16 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+            var canSeeInactive = volunteer != null && volunteer.CanSeeInactive;
+
             var offers = await _context.FundingOffers
                 .AsNoTracking()
                 .Include(f => f.Caller)
                 .Include(f => f.Clinic)
                 .Include(f => f.CreatedBy)
                 .Include(f => f.FundingOfferStatus)
-                .Where(fo => fo.CallerId == caller.Id)
+                .Where(fo => fo.CallerId == caller.Id && (canSeeInactive || fo.IsActive))
                 .OrderByDescending(fo => fo.Id)
                 .ToListAsync();
 

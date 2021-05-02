@@ -113,7 +113,7 @@ namespace CASNApp.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,CanSeeInactive,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
         {
             if (!await UserHas2FA())
             {

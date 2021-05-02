@@ -29,8 +29,13 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            var casn_appContext = _context.Callers.Include(c => c.ReferralSource);
-            return View(await casn_appContext.ToListAsync());
+            var userCanSeeInactive = await UserCanSeeInactive();
+
+            var callersQuery = _context.Callers
+                .Include(c => c.ReferralSource)
+                .Where(c => userCanSeeInactive || c.IsActive);
+
+            return View(await callersQuery.ToListAsync());
         }
 
         // GET: Callers/Details/5
@@ -49,6 +54,7 @@ namespace CASNApp.Admin.Controllers
             var caller = await _context.Callers
                 .Include(c => c.ReferralSource)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (caller == null)
             {
                 return NotFound();
@@ -204,6 +210,28 @@ namespace CASNApp.Admin.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             return user.TwoFactorEnabled;
+        }
+
+        private async Task<Volunteer> GetVolunteerForCurrentUserAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var volunteerQuery = new Core.Queries.VolunteerQuery(_context);
+            var volunteer = await volunteerQuery.GetVolunteerByEmailAsync(user.Email, true);
+
+            return volunteer;
+        }
+
+        private async Task<bool> UserCanSeeInactive()
+        {
+            var volunteer = await GetVolunteerForCurrentUserAsync();
+
+            if (volunteer != null && volunteer.CanSeeInactive)
+            {
+                return true;
+            }
+
+            return false;
         }
 
     }

@@ -57,11 +57,18 @@
                 </select>
                 <span asp-validation-for="GrantId" class="text-danger"></span>
             </div>
+            @if (ViewBag.UserCanSeeInactive)
+            {
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsActive" disabled="@(!Model.AllowsEdits)" /> Is Active
                 </label>
             </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="IsActive" />
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
                 <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Cancel</a>

@@ -26,6 +26,7 @@ namespace CASNApp.Core.Entities
         public string GoogleAccount { get; set; }
         public bool IsDriver { get; set; }
         public bool IsDispatcher { get; set; }
+        public bool CanSeeInactive { get; set; }
         public bool HasTextConsent { get; set; }
         public string Address { get; set; }
         public string City { get; set; }

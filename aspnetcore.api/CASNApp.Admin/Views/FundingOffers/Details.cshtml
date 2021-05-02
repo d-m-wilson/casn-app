@@ -125,12 +125,15 @@
         <dd class="col-sm-9">
             @Html.DisplayFor(model => model.Updated)
         </dd>
+        @if (ViewBag.UserCanSeeInactive)
+        {
         <dt class="col-sm-3" style="margin-bottom: 0; padding-bottom: 0;">
             Is Active
         </dt>
         <dd class="col-sm-9" style="margin-bottom: 0; padding-bottom: 0;">
             @Html.DisplayFor(model => model.IsActive)
         </dd>
+        }
     </dl>
     <div class="row" style="margin-top: 0; padding-top: 0;">
         <!-- BEGIN -->
@@ -158,9 +161,12 @@
                     <th>
                         Payment Method
                     </th>
+                    @if (ViewBag.UserCanSeeInactive)
+                    {
                     <th>
                         Is Active
                     </th>
+                    }
                     <th></th>
                 </tr>
             </thead>
@@ -185,9 +191,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.PaymentMethod.Name)
                         </td>
+                        @if (ViewBag.UserCanSeeInactive)
+                        {
                         <td>
                             @Html.DisplayFor(modelItem => item.IsActive)
                         </td>
+                        }
                         <td>
                             <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>&nbsp;&nbsp;&nbsp;
 
