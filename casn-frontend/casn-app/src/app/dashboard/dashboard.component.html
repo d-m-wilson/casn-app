@@ -1,15 +1,15 @@
 <main *ngIf="!quoteIsDismissed">
-    <h1>Welcome Back!</h1>
-    <mat-card>
-      <img src="assets/img/welcome_hero.svg" alt="Cartoon hero">
-      <mat-card-content>
-        {{ welcomeMessage }}
-      </mat-card-content>
-    </mat-card>
-    <button mat-raised-button
-            color="primary"
-            class="new-btn-style"
-            (click)="dismissQuote()">Dismiss</button>
+  <h1>Welcome Back!</h1>
+  <mat-card>
+    <img src="assets/img/welcome_hero.svg" alt="Cartoon hero">
+    <mat-card-content>
+      {{ welcomeMessage }}
+    </mat-card-content>
+  </mat-card>
+  <button mat-raised-button
+          color="primary"
+          class="new-btn-style"
+          (click)="dismissQuote()">Dismiss</button>
 </main>
 
 <main *ngIf="quoteIsDismissed">
