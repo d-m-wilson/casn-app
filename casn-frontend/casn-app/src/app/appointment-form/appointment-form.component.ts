@@ -185,7 +185,7 @@ export class AppointmentFormComponent implements OnInit {
   onSubmit(): void {
     const apptInvalid = !this.appointmentForm.valid;
     const pickupInvalid = this.callerNeedsPickup && !this.driveToForm.valid;
-    const dropoffInvalid = this.callerNeedsDropoff && !this.dropoffSameAsPickup && !this.driveFromForm.valid;
+    const dropoffInvalid = this.callerNeedsDropoff && !this.driveFromForm.valid;
     const formInvalid = apptInvalid || pickupInvalid || dropoffInvalid;
     if(formInvalid) return;
 
@@ -259,6 +259,7 @@ export class AppointmentFormComponent implements OnInit {
   // TODO: Refactor this, possibly out into a service call.
   constructAppointmentDTO(): void {
     this.appointmentDTO = {};
+
     this.appointmentDTO.appointment = {
       appointmentTypeId: this.formAppt.appointmentTypeId.value,
       callerId: this.formAppt.callerId.value,
@@ -266,8 +267,9 @@ export class AppointmentFormComponent implements OnInit {
       serviceProviderId: this.formAppt.serviceProviderId.value,
       appointmentDate: this.formAppt.appointmentDate.value.toISOString(),
       pickupLocationVague: this.formPickup.pickupLocationVague.value,
-      dropoffLocationVague: this.dropoffSameAsPickup ? this.formPickup.pickupLocationVague.value : this.formDropoff.dropoffLocationVague.value
+      dropoffLocationVague: this.formDropoff.dropoffLocationVague.value
     }
+
     if(this.callerNeedsPickup) {
       this.appointmentDTO.driveTo = {
         direction: 1,
@@ -284,31 +286,18 @@ export class AppointmentFormComponent implements OnInit {
       this.appointmentDTO.driveTo = null;
       this.appointmentDTO.appointment.pickupLocationVague = null;
     }
+
     if(this.callerNeedsDropoff) {
-      if(this.dropoffSameAsPickup) {
-        this.appointmentDTO.driveFrom = {
-          direction: 2,
-          endAddress: this.formPickup.pickupAddress.value,
-          endCity: this.formPickup.pickupCity.value,
-          endState: this.formPickup.pickupState.value,
-          endPostalCode: this.formPickup.pickupPostalCode.value,
-          startAddress: "",
-          startCity: "",
-          startState: "",
-          startPostalCode: "",
-        }
-      } else {
-        this.appointmentDTO.driveFrom = {
-          direction: 2,
-          endAddress: this.formDropoff.dropoffAddress.value,
-          endCity: this.formDropoff.dropoffCity.value,
-          endState: this.formDropoff.dropoffState.value,
-          endPostalCode: this.formDropoff.dropoffPostalCode.value,
-          startAddress: "",
-          startCity: "",
-          startState: "",
-          startPostalCode: "",
-        }
+      this.appointmentDTO.driveFrom = {
+        direction: 2,
+        endAddress: this.formDropoff.dropoffAddress.value,
+        endCity: this.formDropoff.dropoffCity.value,
+        endState: this.formDropoff.dropoffState.value,
+        endPostalCode: this.formDropoff.dropoffPostalCode.value,
+        startAddress: "",
+        startCity: "",
+        startState: "",
+        startPostalCode: "",
       }
     } else {
       this.appointmentDTO.driveFrom = null;
@@ -324,7 +313,7 @@ export class AppointmentFormComponent implements OnInit {
     this.appointmentToEdit.appointment.serviceProviderId = this.formAppt.serviceProviderId.value;
     this.appointmentToEdit.appointment.appointmentDate = this.formAppt.appointmentDate.value.toISOString();
     this.appointmentToEdit.appointment.pickupLocationVague = this.formPickup.pickupLocationVague.value;
-    this.appointmentToEdit.appointment.dropoffLocationVague = this.dropoffSameAsPickup ? this.formPickup.pickupLocationVague.value : this.formDropoff.dropoffLocationVague.value;
+    this.appointmentToEdit.appointment.dropoffLocationVague = this.formDropoff.dropoffLocationVague.value;
 
     // Update driveTo values from form
     if(this.callerNeedsPickup) {
@@ -341,17 +330,10 @@ export class AppointmentFormComponent implements OnInit {
     // Update driveFrom values values from form
     if(this.callerNeedsDropoff) {
       if (this.appointmentToEdit.driveFrom === null) this.appointmentToEdit.driveFrom = { direction: 2, startAddress: "", startCity: "", startState: "", startPostalCode: "" };
-      if(this.dropoffSameAsPickup) {
-        this.appointmentToEdit.driveFrom.endAddress = this.formPickup.pickupAddress.value;
-        this.appointmentToEdit.driveFrom.endCity = this.formPickup.pickupCity.value;
-        this.appointmentToEdit.driveFrom.endState = this.formPickup.pickupState.value;
-        this.appointmentToEdit.driveFrom.endPostalCode = this.formPickup.pickupPostalCode.value;
-      } else {
-        this.appointmentToEdit.driveFrom.endAddress = this.formDropoff.dropoffAddress.value;
-        this.appointmentToEdit.driveFrom.endCity = this.formDropoff.dropoffCity.value;
-        this.appointmentToEdit.driveFrom.endState = this.formDropoff.dropoffState.value;
-        this.appointmentToEdit.driveFrom.endPostalCode = this.formDropoff.dropoffPostalCode.value;
-      }
+      this.appointmentToEdit.driveFrom.endAddress = this.formDropoff.dropoffAddress.value;
+      this.appointmentToEdit.driveFrom.endCity = this.formDropoff.dropoffCity.value;
+      this.appointmentToEdit.driveFrom.endState = this.formDropoff.dropoffState.value;
+      this.appointmentToEdit.driveFrom.endPostalCode = this.formDropoff.dropoffPostalCode.value;
     } else {
       this.appointmentToEdit.driveFrom = null;
       this.appointmentToEdit.appointment.dropoffLocationVague = null;
@@ -366,9 +348,17 @@ export class AppointmentFormComponent implements OnInit {
   **********************************************************************/
   toggleDropoffSameAsPickup(sameAsPickup: boolean): void {
     this.dropoffSameAsPickup = sameAsPickup;
-    // Scroll to top of current step when form fields hide/show
-    const stepElement = document.getElementsByClassName('mat-drawer-content')[0];
-    stepElement.scrollTop = 0;
+
+    // Set drop-off form values to match pick-up values
+    if (this.dropoffSameAsPickup) {
+      this.formDropoff.dropoffAddress.setValue(this.formPickup.pickupAddress.value);
+      this.formDropoff.dropoffCity.setValue(this.formPickup.pickupCity.value);
+      this.formDropoff.dropoffState.setValue(this.formPickup.pickupState.value);
+      this.formDropoff.dropoffPostalCode.setValue(this.formPickup.pickupPostalCode.value);
+      this.formDropoff.dropoffLocationVague.setValue(this.formPickup.pickupLocationVague.value);
+    } else {
+      this.driveFromForm.reset();
+    }
   }
 
   onStepperChange(step: any): void {
