@@ -31,6 +31,9 @@ export class AppointmentFormComponent implements OnInit {
   lodgingServiceProviders: any;
   flightServiceProviders: any;
   appointmentDTO: any;
+
+  askIfCallerNeedsPickup: boolean = true;
+  askIfCallerNeedsDropoff: boolean = true;
   callerNeedsPickup: boolean;
   callerNeedsDropoff: boolean;
   dropoffSameAsPickup: boolean;
@@ -363,8 +366,8 @@ export class AppointmentFormComponent implements OnInit {
 
   onStepperChange(step: any): void {
     // Every time user "restarts" a step, ask if they need pickup/dropoff.
-    if(step.selectedIndex === 1) this.callerNeedsPickup = false;
-    if(step.selectedIndex === 2) this.callerNeedsDropoff = false;
+    if(step.selectedIndex === 1) this.askIfCallerNeedsPickup = true;
+    if(step.selectedIndex === 2) this.askIfCallerNeedsDropoff = true;
   }
 
 }
