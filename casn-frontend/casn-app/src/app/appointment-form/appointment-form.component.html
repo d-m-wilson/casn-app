@@ -145,7 +145,7 @@
                            askIfCallerNeedsDropoff = false"
                   matStepperNext>No</button>
         </div>
-        <div class="appt-form-group" *ngIf="callerNeedsPickup">
+        <div class="appt-form-group" *ngIf="!askIfCallerNeedsPickup && callerNeedsPickup">
           <h3>Pick-Up Address</h3>
           <mat-form-field appearance="standard">
             <mat-label>Street Address</mat-label>
@@ -235,7 +235,7 @@
                   (click)="callerNeedsDropoff = false;
                            askIfCallerNeedsDropoff = false;">No</button>
         </div>
-        <div class="appt-form-group" *ngIf="callerNeedsDropoff">
+        <div class="appt-form-group" *ngIf="!askIfCallerNeedsDropoff && callerNeedsDropoff">
           <h3>Drop-Off Address</h3>
           <!-- If there's a pickup address, we can set the dropoff address
           to be the same -->
