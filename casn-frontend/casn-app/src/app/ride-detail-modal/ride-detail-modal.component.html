@@ -101,7 +101,7 @@
           <!-- Dispatcher view: volunteer(s), but no one approved yet -->
           <div *ngIf="!driveIsApproved && userRole === '1'"
                class="info-row text-small">
-            <span class="text-light label">Volunteers</span>
+            <span class="text-light label label--volunteer">Volunteers</span>
             <div class="volunteer-wrapper">
               <div *ngFor="let v of volunteers" class="volunteer-container">
                 <a [href]="('sms:+1' + v.mobilePhone) | safeUrl">{{ v.firstName }} {{ v.lastName }}</a>
