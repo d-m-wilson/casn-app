@@ -124,26 +124,30 @@
 **********************************************************************-->
     <mat-step [stepControl]="driveToForm">
       <h1>{{ title }}</h1>
+      <h2 class="text-light">Drive To</h2>
       <form [formGroup]="driveToForm">
         <ng-template matStepLabel>Drive To</ng-template>
         <div class="appt-form-group" *ngIf="askIfCallerNeedsPickup">
-          <h3>Does the caller need a drive <em>TO</em> {{ apptServiceProvider }}?</h3>
-          <button mat-raised-button
-                  color="primary"
-                  type="button"
-                  (click)="callerNeedsPickup = true;
-                           askIfCallerNeedsPickup = false;">Yes</button>
-          <br><br>
+          <p class="text-heavy">Does the caller need a drive TO {{ apptServiceProvider }}?</p>
           <!-- If the caller doesn't need a pickup drive, then they must
           have a dropoff drive -->
-          <button mat-raised-button
-                  color="accent"
-                  type="button"
-                  (click)="callerNeedsPickup = false;
-                           askIfCallerNeedsPickup = false;
-                           callerNeedsDropoff = true;
-                           askIfCallerNeedsDropoff = false"
-                  matStepperNext>No</button>
+          <div class="btn-group">
+            <button mat-raised-button
+                    class="btn-cta primary-outline flex"
+                    color="accent"
+                    type="button"
+                    (click)="callerNeedsPickup = false;
+                             askIfCallerNeedsPickup = false;
+                             callerNeedsDropoff = true;
+                             askIfCallerNeedsDropoff = false"
+                    matStepperNext>No</button>
+            <button mat-raised-button
+                    class="btn-cta flex"
+                    color="primary"
+                    type="button"
+                    (click)="callerNeedsPickup = true;
+                             askIfCallerNeedsPickup = false;">Yes</button>
+          </div>
         </div>
         <div class="appt-form-group" *ngIf="!askIfCallerNeedsPickup && callerNeedsPickup">
           <h3>Pick-Up Address</h3>
@@ -215,25 +219,29 @@
 **********************************************************************-->
     <mat-step [stepControl]="driveFromForm">
       <h1>{{ title }}</h1>
+      <h2 class="text-light">Drive From</h2>
       <form [formGroup]="driveFromForm">
         <ng-template matStepLabel>Drive From</ng-template>
         <!-- The caller can skip the driveFrom as long as a driveTo has
         been added. If there is no driveTo, the appointment must have a
         driveFrom -->
         <div class="appt-form-group" *ngIf="askIfCallerNeedsDropoff">
-          <h3>Does the caller need a drive home <em>FROM</em> {{ apptServiceProvider }}?</h3>
-          <button mat-raised-button
-                  color="primary"
-                  type="button"
-                  (click)="callerNeedsDropoff = true;
-                           askIfCallerNeedsDropoff = false;">Yes</button>
-          <br><br>
-          <button mat-raised-button
-                  color="accent"
-                  type="button"
-                  matStepperNext
-                  (click)="callerNeedsDropoff = false;
-                           askIfCallerNeedsDropoff = false;">No</button>
+          <p class="text-heavy">Does the caller need a drive home FROM {{ apptServiceProvider }}?</p>
+          <div class="btn-group">
+            <button mat-raised-button
+                    class="btn-cta primary-outline flex"
+                    color="accent"
+                    type="button"
+                    matStepperNext
+                    (click)="callerNeedsDropoff = false;
+                             askIfCallerNeedsDropoff = false;">No</button>
+            <button mat-raised-button
+                    class="btn-cta flex"
+                    color="primary"
+                    type="button"
+                    (click)="callerNeedsDropoff = true;
+                             askIfCallerNeedsDropoff = false;">Yes</button>
+          </div>
         </div>
         <div class="appt-form-group" *ngIf="!askIfCallerNeedsDropoff && callerNeedsDropoff">
           <h3>Drop-Off Address</h3>
