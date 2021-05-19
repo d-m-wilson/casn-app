@@ -1,6 +1,9 @@
 @import "../styles/variables";
 
 $footer-height: 60px;
+$review-card-height: 100px;
+$review-card-spacer: 15px;
+$review-icon-width: 14px;
 
 main {
   display: flex;
@@ -84,8 +87,12 @@ form {
 }
 
 .review-card {
-  margin-bottom: 15px;
+  margin-bottom: $review-card-spacer;
   flex-grow: 1;
+
+  &.fixed-height {
+    height: $review-card-height;
+  }
 
   .info-group {
     display: flex;
@@ -97,11 +104,17 @@ form {
   display: flex;
   justify-content: space-between;
 
+  .icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .icon-container {
     border-radius: 100%;
     padding: 3px;
-    width: 14px;
-    height: 14px;
+    width: $review-icon-width;
+    height: $review-icon-width;
     margin-right: 8px;
 
     &.primary {
@@ -113,6 +126,12 @@ form {
       color: $error-color;
       background: $error-color-faded;
     }
+  }
+
+  .icon-connector-line {
+    width: $review-icon-width / 2;
+    border-left: 1px solid #ccc;
+    height: $review-card-height + ($review-card-spacer * 2);
   }
 }
 

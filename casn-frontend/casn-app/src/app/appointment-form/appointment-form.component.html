@@ -348,43 +348,48 @@
           </div>
         </mat-card>
         <div class="card-icon-group">
-          <mat-icon class="icon-small icon-container secondary">place</mat-icon>
-          <mat-card class="review-card candy-card light-border text-small">
-            <h4>Drive To {{ apptServiceProvider }}</h4>
-            <div *ngIf="callerNeedsPickup; else noPickup">
-              <span>Pick Up Caller at <em>{{ formPickup.pickupLocationVague.value }}</em></span>
-              <br/>
-              <address>
-                {{ formPickup.pickupAddress.value }}<br>
-                {{ formPickup.pickupCity.value }}
-                {{ formPickup.pickupState.value }},
-                {{ formPickup.pickupPostalCode.value }}
-              </address>
-            </div>
-            <ng-template #noPickup>
-              <p style="color:#666"><em>Caller doesn't need a ride to {{ apptServiceProvider }}.</em></p>
-            </ng-template>
-          </mat-card>
-        </div>
-        <div class="card-icon-group">
-          <mat-icon class="icon-small icon-container primary">place</mat-icon>
-          <mat-card class="review-card candy-card light-border text-small">
-            <h4>Drive From {{ apptServiceProvider }}</h4>
-            <div *ngIf="callerNeedsDropoff; else noDropoff">
-              <span>Drop Off Caller at</span>
-                &nbsp;<em>{{ formDropoff.dropoffLocationVague.value }}</em>
-                <br><br>
+          <div class="icons">
+            <mat-icon class="icon-small icon-container secondary">place</mat-icon>
+            <div class="icon-connector-line"></div>
+            <mat-icon class="icon-small icon-container primary">place</mat-icon>
+          </div>
+          <div class="cards">
+            <!-- Drive To Card -->
+            <mat-card class="review-card fixed-height candy-card light-border text-small">
+              <h4>Drive To {{ apptServiceProvider }}</h4>
+              <div *ngIf="callerNeedsPickup; else noPickup">
+                <span>Pick Up Caller at <em>{{ formPickup.pickupLocationVague.value }}</em></span>
+                <br/>
                 <address>
-                  {{ formDropoff.dropoffAddress.value }}<br>
-                  {{ formDropoff.dropoffCity.value }}
-                  {{ formDropoff.dropoffState.value }},
-                  {{ formDropoff.dropoffPostalCode.value }}
+                  {{ formPickup.pickupAddress.value }}<br>
+                  {{ formPickup.pickupCity.value }}
+                  {{ formPickup.pickupState.value }},
+                  {{ formPickup.pickupPostalCode.value }}
                 </address>
-            </div>
-            <ng-template #noDropoff>
-              <p style="color:#666"><em>Caller doesn't need a ride home from {{ apptServiceProvider }}.</em></p>
-            </ng-template>
-          </mat-card>
+              </div>
+              <ng-template #noPickup>
+                <p style="color:#666"><em>Caller doesn't need a ride to {{ apptServiceProvider }}.</em></p>
+              </ng-template>
+            </mat-card>
+            <!-- Drive From Card -->
+            <mat-card class="review-card fixed-height candy-card light-border text-small">
+              <h4>Drive From {{ apptServiceProvider }}</h4>
+              <div *ngIf="callerNeedsDropoff; else noDropoff">
+                <span>Drop Off Caller at</span>
+                  &nbsp;<em>{{ formDropoff.dropoffLocationVague.value }}</em>
+                  <br><br>
+                  <address>
+                    {{ formDropoff.dropoffAddress.value }}<br>
+                    {{ formDropoff.dropoffCity.value }}
+                    {{ formDropoff.dropoffState.value }},
+                    {{ formDropoff.dropoffPostalCode.value }}
+                  </address>
+              </div>
+              <ng-template #noDropoff>
+                <p style="color:#666"><em>Caller doesn't need a ride home from {{ apptServiceProvider }}.</em></p>
+              </ng-template>
+            </mat-card>
+          </div>
         </div>
         <div class="form-actions">
           <button class="back-btn btn-cta secondary"
