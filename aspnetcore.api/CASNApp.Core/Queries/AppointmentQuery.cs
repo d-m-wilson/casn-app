@@ -17,7 +17,7 @@ namespace CASNApp.Core.Queries
 
 		public List<Appointment> GetAllAppointmentsWithOpenDrives(bool readOnly)
 		{
-			var openAppointmentIds = (readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive)
+			var openAppointmentIds = (readOnly ? dbContext.Drives.AsNoTracking() : dbContext.Drives)
 				.Where(d => d.IsActive && d.StatusId == Models.Drive.StatusOpen
 						&& d.StartLatitude != null && d.StartLongitude != null
 						&& d.EndLatitude != null && d.EndLongitude != null)
@@ -25,8 +25,9 @@ namespace CASNApp.Core.Queries
 				.Distinct()
 				.ToList();
 
-			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
+			var result = (readOnly ? dbContext.Appointments.AsNoTracking() : dbContext.Appointments)
 				.Include(a => a.Drives)
+				.Include(a => a.AppointmentType)
 				.Where(a => a.IsActive && DateTime.Compare(a.AppointmentDate, DateTime.UtcNow) >= 0
 					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
@@ -36,7 +37,7 @@ namespace CASNApp.Core.Queries
 
 		public List<Appointment> GetAllNextDayAppointmentsWithOpenDrives(bool readOnly)
 		{
-			var openAppointmentIds = (readOnly ? dbContext.Drive.AsNoTracking() : dbContext.Drive)
+			var openAppointmentIds = (readOnly ? dbContext.Drives.AsNoTracking() : dbContext.Drives)
 				.Where(d => d.IsActive && d.StatusId == Models.Drive.StatusOpen 
 						&& d.StartLatitude != null && d.StartLongitude != null
 						&& d.EndLatitude != null && d.EndLongitude != null)
@@ -47,8 +48,9 @@ namespace CASNApp.Core.Queries
 			var tomorrowBeginsUTC = DateTime.Today.AddDays(1).ToUniversalTime();
 			var tomorrowEndsUTC = DateTime.Today.AddDays(2).AddMilliseconds(-1).ToUniversalTime();
 
-			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
+			var result = (readOnly ? dbContext.Appointments.AsNoTracking() : dbContext.Appointments)
 				.Include(a => a.Drives)
+				.Include(a => a.AppointmentType)
 				.Where(a => a.IsActive && a.AppointmentDate >= tomorrowBeginsUTC && a.AppointmentDate <= tomorrowEndsUTC
 					&& openAppointmentIds.Contains(a.Id))
 				.ToList();
@@ -58,8 +60,9 @@ namespace CASNApp.Core.Queries
 
 		public Appointment GetAppointmentByIdWithCaller(int appointmentId, bool readOnly)
 		{
-			var result = (readOnly ? dbContext.Appointment.AsNoTracking() : dbContext.Appointment)
+			var result = (readOnly ? dbContext.Appointments.AsNoTracking() : dbContext.Appointments)
 				.Include(a => a.Caller)
+				.Include(a => a.AppointmentType)
 				.Where(a => a.Id == appointmentId)
 				.SingleOrDefault();
 			return result;

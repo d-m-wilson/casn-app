@@ -1,9 +1,9 @@
 ﻿using System;
-using CASNApp.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public class VolunteerBadge : ICreatedDate, IUpdatedDate
+    public partial class VolunteerBadge
     {
         public int Id { get; set; }
         public int VolunteerId { get; set; }
@@ -12,9 +12,8 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public Volunteer Volunteer { get; set; }
-        public Badge Badge { get; set; }
-        public VolunteerDriveLog VolunteerDriveLog { get; set; }
-
+        public virtual Badge Badge { get; set; }
+        public virtual Volunteer Volunteer { get; set; }
+        public virtual VolunteerDriveLog VolunteerDriveLog { get; set; }
     }
 }

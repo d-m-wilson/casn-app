@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CASNApp.Core.Entities;
 using CASNApp.Core.Queries;
 using Microsoft.Extensions.Configuration;
@@ -66,6 +68,21 @@ namespace CASNApp.Core.Commands
 			AppointmentQuery appointmentQuery = new AppointmentQuery(dbContext);
 			var appointment = appointmentQuery.GetAppointmentByIdWithCaller(drive.AppointmentId, true);
 
+			AppointmentType appointmentType = null;
+
+			if (drive != null && drive.Direction == Models.Drive.DirectionFromServiceProvider)
+			{
+				if (appointment.AppointmentType != null)
+				{
+					appointmentType = appointment.AppointmentType;
+				}
+				else
+				{
+					var appointmentTypeQuery = new AppointmentTypeQuery(dbContext);
+					appointmentType = appointmentTypeQuery.GetById(appointment.AppointmentTypeId);
+				}
+			}
+
 			//check the message type to see if the message is being sent to the driver or the dispatchers
 			if (messageType == MessageType.DriverAppliedForDrive ||
 				messageType == MessageType.DriverRetractedApplication)
@@ -80,7 +97,7 @@ namespace CASNApp.Core.Commands
 					if (!String.IsNullOrEmpty(dispatcher.MobilePhone))
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, null, appointment, driver);
+						string messageText = BuildMessage(message.MessageText, null, appointment, driver, null, drive, appointmentType);
 
 						//send message to all dispatchers
 						SMSMessage(messageText, accountPhoneNumber, dispatcher.MobilePhone, dispatcher.Id, appointment.Id);
@@ -93,7 +110,7 @@ namespace CASNApp.Core.Commands
 				if (!String.IsNullOrEmpty(driver.MobilePhone))
 				{
 					//build the appintment listing
-					string messageText = BuildMessage(message.MessageText, null, appointment, driver);
+					string messageText = BuildMessage(message.MessageText, null, appointment, driver, null, drive, appointmentType);
 
 					//send text message to driver
 					SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, drive.AppointmentId);
@@ -108,7 +125,7 @@ namespace CASNApp.Core.Commands
 			Message message = messageQuery.GetMessageByType(Convert.ToInt32(messageType), true);
 
 			//build the reminder message text
-			string messageText = BuildMessage(message.MessageText, null, null, null);
+			string messageText = BuildMessage(message.MessageText, null, null, null, null, null, null);
 
 			//build the appoint list message text
 			string appointmentListText = "";
@@ -116,9 +133,23 @@ namespace CASNApp.Core.Commands
 			foreach (Appointment appointment in appointments)
 			{
 				ServiceProvider serviceProvider = serviceProviderQuery.GetServiceProviderById(appointment.ServiceProviderId, true);
+
 				if (appointmentListText != "")
 					appointmentListText += "\n";
-				appointmentListText += serviceProvider.Name + " on " + TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt");
+
+				if (appointment.Drives.Count == 1 &&
+					appointment.Drives.Single().Direction == Models.Drive.DirectionFromServiceProvider)
+				{
+					var adjustedDate = appointment.AppointmentDate.AddMinutes(appointment.AppointmentType.EstimatedDurationMinutes);
+
+					appointmentListText += serviceProvider.Name + " on " +
+						TimeZoneInfo.ConvertTimeFromUtc(adjustedDate, timeZone).ToString("MM/dd/yyyy hh:mm tt");
+				}
+				else
+				{
+					appointmentListText += serviceProvider.Name + " on " +
+						TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt");
+				}
 			}
 
 			//select the drivers 
@@ -220,7 +251,28 @@ namespace CASNApp.Core.Commands
 					if (!String.IsNullOrEmpty(driver.MobilePhone) && driver.Latitude.HasValue && driver.Longitude.HasValue)
 					{
 						//build the outbound message text
-						string messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver);
+						string messageText;
+
+						if (messageType == MessageType.ApptAddedOneWayFromServiceProvider)
+						{
+							AppointmentType appointmentType = null;
+
+							if (appointment.AppointmentType != null)
+							{
+								appointmentType = appointment.AppointmentType;
+							}
+							else
+							{
+								var appointmentTypeQuery = new AppointmentTypeQuery(dbContext);
+								appointmentType = appointmentTypeQuery.GetById(appointment.AppointmentTypeId);
+							}
+
+							messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, null, driveFrom, appointmentType);
+						}
+						else
+						{
+							messageText = BuildMessage(message.MessageText, serviceProvider, appointment, driver, null, null, null);
+						}
 
 						//send message to all drivers is appointment outside 30 miles or and appointment made for today
 						if (driveDistance >= 30 || messageType == MessageType.ApptAddedToday)
@@ -297,29 +349,50 @@ namespace CASNApp.Core.Commands
 			var messageQuery = new MessageQuery(dbContext);
 			Message message = messageQuery.GetMessageByType((int)MessageType.BadgeMessageTemplate, true);
 
-			string messageText = BuildMessage(message.MessageText, null, null, driver, badge);
+			string messageText = BuildMessage(message.MessageText, null, null, driver, badge, null, null);
 
 			//send text message to driver
 			SMSMessage(messageText, accountPhoneNumber, driver.MobilePhone, driver.Id, null);
 		}
 
-		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver)
+		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, Badge badge, Drive drive, AppointmentType appointmentType)
 		{
-			return BuildMessage(messageText, serviceProvider, appointment, driver, null);
-		}
-
-		private string BuildMessage(string messageText, ServiceProvider serviceProvider, Appointment appointment, Volunteer driver, Badge badge)
-		{
-			return messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
+			string result = messageText.Replace("{clinic}", serviceProvider?.Name ?? "")
 				.Replace("{vagueTo}", appointment?.PickupLocationVague ?? "")
-				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "")
-				.Replace("{timeDate}", appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : "")
-				.Replace("{dayOfTheWeek}", TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).DayOfWeek.ToString() ?? "")
+				.Replace("{vagueFrom}", appointment?.DropoffLocationVague ?? "");
+
+			if (appointmentType == null && appointment?.AppointmentType != null)
+			{
+				appointmentType = appointment.AppointmentType;
+			}
+
+			if (drive != null &&
+				drive.Direction == Models.Drive.DirectionFromServiceProvider &&
+				appointmentType != null)
+			{
+				var adjustedDate = appointment?.AppointmentDate.AddMinutes(appointmentType.EstimatedDurationMinutes);
+				string dateString = "";
+			
+				if (adjustedDate.HasValue)
+				{
+					dateString = TimeZoneInfo.ConvertTimeFromUtc(adjustedDate.Value, timeZone).ToString("MM/dd/yyyy hh:mm tt") + " (estimated)";
+				}
+
+				result = result.Replace("{timeDate}", dateString);
+			}
+			else
+			{
+				result = result.Replace("{timeDate}", appointment != null ? TimeZoneInfo.ConvertTimeFromUtc(appointment.AppointmentDate, timeZone).ToString("MM/dd/yyyy hh:mm tt") : "");
+			}
+
+			result = result.Replace("{dayOfTheWeek}", TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone).DayOfWeek.ToString() ?? "")
 				.Replace("{volunteerFirstName}", driver?.FirstName ?? "")
 				.Replace("{callerIdentifier}", appointment?.Caller?.CallerIdentifier)
 				.Replace("{appUrl}", appUrl ?? "")
 				.Replace("{badgeName}", badge?.Title ?? "")
 				.Replace("{badgeMessage}", badge?.MessageText ?? "");
+
+			return result;
 		}
 
 		private void SMSMessage(string messageText, string fromPhone, string toPhone, int? driverId, int? appointmentId)
@@ -346,7 +419,7 @@ namespace CASNApp.Core.Commands
 					VolunteerId = driverId
 				};
 
-				dbContext.MessageLog.Add(messageLogEntity);
+				dbContext.MessageLogs.Add(messageLogEntity);
 				dbContext.SaveChanges();
 			}
 			catch (Twilio.Exceptions.ApiException apiException)
@@ -364,7 +437,7 @@ namespace CASNApp.Core.Commands
 					ErrorDetails = apiException.ToString()
 				};
 
-				dbContext.MessageErrorLog.Add(messageErrorLogEntity);
+				dbContext.MessageErrorLogs.Add(messageErrorLogEntity);
 				dbContext.SaveChanges();
 			}
 		}

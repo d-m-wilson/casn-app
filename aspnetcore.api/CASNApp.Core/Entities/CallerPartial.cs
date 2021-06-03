@@ -1,9 +1,15 @@
-﻿using CASNApp.Core.Interfaces;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using CASNApp.Core.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CASNApp.Core.Entities
 {
+    [ModelMetadataType(typeof(CallerMetadata))]
     public partial class Caller : ICreatedDate, IUpdatedDate, ISoftDelete
     {
+        [NotMapped]
+        public string Name { get { return string.Join(" ", FirstName, LastName); } }
+
         public Caller(Models.Caller e)
         {
             if (e.Id.HasValue)

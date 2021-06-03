@@ -1,10 +1,16 @@
 ﻿using System;
-using CASNApp.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace CASNApp.Core.Entities
 {
-    public class AppointmentType : ICreatedDate, IUpdatedDate, ISoftDelete
+    public partial class AppointmentType
     {
+        public AppointmentType()
+        {
+            Appointments = new HashSet<Appointment>();
+            FundingOffers = new HashSet<FundingOffer>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
@@ -14,5 +20,7 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
+        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<FundingOffer> FundingOffers { get; set; }
     }
 }

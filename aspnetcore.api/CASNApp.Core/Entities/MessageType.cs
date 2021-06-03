@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public class MessageType : ICreatedDate, IUpdatedDate, ISoftDelete
+    public partial class MessageType
     {
         public MessageType()
         {
@@ -17,6 +16,6 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public ICollection<Message> Messages { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }

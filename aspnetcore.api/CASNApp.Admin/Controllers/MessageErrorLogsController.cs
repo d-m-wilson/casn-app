@@ -29,12 +29,12 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            var allVolunteerNames = await _context.Volunteer
+            var allVolunteerNames = await _context.Volunteers
                 .AsNoTracking()
                 .Select(v => new { v.Id, Name = $"{v.FirstName} {v.LastName}" })
                 .ToDictionaryAsync(x => x.Id, x => x.Name);
 
-            var messageErrorLogs = await _context.MessageErrorLog
+            var messageErrorLogs = await _context.MessageErrorLogs
                 .AsNoTracking()
                 .OrderByDescending(mel => mel.DateSent)
                 .Take(50)
@@ -71,7 +71,7 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var messageErrorLog = await _context.MessageErrorLog
+            var messageErrorLog = await _context.MessageErrorLogs
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -97,7 +97,7 @@ namespace CASNApp.Admin.Controllers
 
             if (messageErrorLog.VolunteerId.HasValue)
             {
-                var volunteer = await _context.Volunteer
+                var volunteer = await _context.Volunteers
                     .AsNoTracking()
                     .FirstOrDefaultAsync(v => v.Id == messageErrorLog.VolunteerId.Value);
 

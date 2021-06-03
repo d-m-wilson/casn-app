@@ -29,7 +29,7 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            var casn_appContext = _context.Message.Include(m => m.MessageType);
+            var casn_appContext = _context.Messages.Include(m => m.MessageType);
             return View(await casn_appContext.ToListAsync());
         }
 
@@ -46,7 +46,7 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Message
+            var message = await _context.Messages
                 .Include(m => m.MessageType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -66,7 +66,7 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            ViewData["MessageTypeId"] = new SelectList(_context.MessageType, "Id", "Name");
+            ViewData["MessageTypeId"] = new SelectList(_context.MessageTypes, "Id", "Name");
             return View();
         }
 
@@ -89,7 +89,7 @@ namespace CASNApp.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["MessageTypeId"] = new SelectList(_context.MessageType, "Id", "Name", message.MessageTypeId);
+            ViewData["MessageTypeId"] = new SelectList(_context.MessageTypes, "Id", "Name", message.MessageTypeId);
             return View(message);
         }
 
@@ -106,14 +106,14 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Message.FindAsync(id);
+            var message = await _context.Messages.FindAsync(id);
 
             if (message == null)
             {
                 return NotFound();
             }
 
-            ViewData["MessageTypeId"] = new SelectList(_context.MessageType, "Id", "Name", message.MessageTypeId);
+            ViewData["MessageTypeId"] = new SelectList(_context.MessageTypes, "Id", "Name", message.MessageTypeId);
             return View(message);
         }
 
@@ -156,7 +156,7 @@ namespace CASNApp.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["MessageTypeId"] = new SelectList(_context.MessageType, "Id", "Name", message.MessageTypeId);
+            ViewData["MessageTypeId"] = new SelectList(_context.MessageTypes, "Id", "Name", message.MessageTypeId);
             return View(message);
         }
 
@@ -173,7 +173,7 @@ namespace CASNApp.Admin.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Message
+            var message = await _context.Messages
                 .Include(m => m.MessageType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -195,8 +195,8 @@ namespace CASNApp.Admin.Controllers
                 return Forbid();
             }
 
-            var message = await _context.Message.FindAsync(id);
-            _context.Message.Remove(message);
+            var message = await _context.Messages.FindAsync(id);
+            _context.Messages.Remove(message);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -204,7 +204,7 @@ namespace CASNApp.Admin.Controllers
 
         private bool MessageExists(int id)
         {
-            return _context.Message.Any(e => e.Id == id);
+            return _context.Messages.Any(e => e.Id == id);
         }
 
         private async Task<bool> UserHas2FA()

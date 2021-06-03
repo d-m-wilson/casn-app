@@ -28,7 +28,7 @@ namespace CASNApp.Admin
                 return Forbid();
             }
 
-            return View(await _context.Volunteer.ToListAsync());
+            return View(await _context.Volunteers.OrderBy(m => m.LastName).ThenBy(m => m.FirstName).ToListAsync());
         }
 
         // GET: Volunteers/Details/5
@@ -44,7 +44,7 @@ namespace CASNApp.Admin
                 return NotFound();
             }
 
-            var volunteer = await _context.Volunteer
+            var volunteer = await _context.Volunteers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (volunteer == null)
             {
@@ -70,7 +70,7 @@ namespace CASNApp.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
+        public async Task<IActionResult> Create([Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,Address,City,State,PostalCode")] Volunteer volunteer)
         {
             if (!await UserHas2FA())
             {
@@ -79,6 +79,7 @@ namespace CASNApp.Admin
 
             if (ModelState.IsValid)
             {
+                volunteer.IsActive = true;
                 _context.Add(volunteer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,7 +100,7 @@ namespace CASNApp.Admin
                 return NotFound();
             }
 
-            var volunteer = await _context.Volunteer.FindAsync(id);
+            var volunteer = await _context.Volunteers.FindAsync(id);
             if (volunteer == null)
             {
                 return NotFound();
@@ -112,7 +113,7 @@ namespace CASNApp.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CiviContactId,FirstName,LastName,MobilePhone,GoogleAccount,IsDriver,IsDispatcher,CanSeeInactive,HasTextConsent,IsActive,Address,City,State,PostalCode")] Volunteer volunteer)
         {
             if (!await UserHas2FA())
             {
@@ -160,7 +161,7 @@ namespace CASNApp.Admin
                 return NotFound();
             }
 
-            var volunteer = await _context.Volunteer
+            var volunteer = await _context.Volunteers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (volunteer == null)
             {
@@ -180,15 +181,15 @@ namespace CASNApp.Admin
                 return Forbid();
             }
 
-            var volunteer = await _context.Volunteer.FindAsync(id);
-            _context.Volunteer.Remove(volunteer);
+            var volunteer = await _context.Volunteers.FindAsync(id);
+            _context.Volunteers.Remove(volunteer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool VolunteerExists(int id)
         {
-            return _context.Volunteer.Any(e => e.Id == id);
+            return _context.Volunteers.Any(e => e.Id == id);
         }
 
         private async Task<bool> UserHas2FA()

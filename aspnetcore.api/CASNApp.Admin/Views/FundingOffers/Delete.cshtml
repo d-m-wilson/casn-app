@@ -1,0 +1,85 @@
+﻿@model CASNApp.Core.Entities.FundingOffer
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>FundingOffer</h4>
+    <div>
+        <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
+    </div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issued)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issued)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Redeemed)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Redeemed)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Paid)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Paid)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Updated)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Updated)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Caller)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Caller.CallerIdentifier)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Clinic)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Clinic.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedBy.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FundingOfferStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(Model.FundingOfferStatusId))
+            @Html.DisplayFor(model => model.FundingOfferStatus.Name)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" />&nbsp;&nbsp;&nbsp;&nbsp;
+        <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Cancel</a>
+    </form>
+</div>

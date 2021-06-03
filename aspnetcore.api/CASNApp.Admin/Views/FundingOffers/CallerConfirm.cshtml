@@ -1,0 +1,26 @@
+﻿@model CASNApp.Core.Entities.Caller
+
+@{
+    ViewData["Title"] = "Confirm Caller";
+}
+
+<h4>Confirm Caller</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CallerConfirm">
+            <div class="form-group">
+                <label class="control-label">Is this your caller?</label>
+                <label class="form-control">@Model.FirstName @Model.LastName</label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Yes" class="btn btn-primary" />
+            </div>
+            <div class="form-group">
+                <a asp-action="CallerLookup">No, I'll create a different ID</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+

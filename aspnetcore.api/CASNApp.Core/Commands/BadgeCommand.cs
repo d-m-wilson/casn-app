@@ -60,7 +60,7 @@ namespace CASNApp.Core.Commands
                     VolunteerId = volunteer.Id,
                 };
 
-                dbContext.VolunteerBadge.Add(volunteerBadge);
+                dbContext.VolunteerBadges.Add(volunteerBadge);
             }
 
             return awardBadge;

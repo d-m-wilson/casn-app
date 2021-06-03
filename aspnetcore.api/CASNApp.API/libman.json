@@ -1,0 +1,18 @@
+{
+  "ConnectionStrings": {
+    //"DbConnectionString": "Server=casnapptest.database.windows.net,1433;Database=casnapp;User=developers;Password=CASNApp123;MultipleActiveResultSets=true;"
+    "DbConnectionString": "Server=localhost;Database=casnapp;User=developers;Password=CASNApp123;MultipleActiveResultSets=true;"
+  },
+  "JwtBearerAuthority": "https://casn.auth0.com/",
+  "JwtBearerAudience": "casn-app-dev",
+  "GoogleApiKey": "AIzaSyDW7J4wM3-V3xQiu-ElSRkm-8GJVgkJUYk",
+  "TwilioIsEnabled": "true",
+  "TwilioAccountSID": "AC1d0886b0dc410f2c96a66f5a07d9f1fb",
+  "TwilioAuthKey": "a0907416e1166c464c1dfd0a4caa1ce6",
+  "TwilioPhoneNumber": "+17139994173",
+  "Tier2MessageDelayMinutes": "60",
+  "Tier3MessageDelayMinutes": "60",
+  "BadgesAreEnabled": "true",
+  "UserTimeZoneName": "Central Standard Time",
+  "CASNAppURL": "https://test.casn.app"
+}

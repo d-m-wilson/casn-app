@@ -1,0 +1,153 @@
+﻿@model CASNApp.Core.Entities.FundingOffer
+
+@{
+    ViewData["Title"] = "Change Status";
+}
+
+<div>
+    <h4>Change Status</h4>
+    <div>
+        <a asp-action="Details" asp-route-id="@Model.Id">Back to Funding Offer</a>
+    </div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Caller)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Caller.CallerIdentifier)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Clinic)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Clinic.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Created By
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreatedBy.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Status
+        </dt>
+        <dd class="col-sm-10">
+            @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(Model.FundingOfferStatusId))
+            @Html.DisplayFor(model => model.FundingOfferStatus.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issued)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issued)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Redeemed)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Redeemed)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Paid)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Paid)
+        </dd>
+        <dt class="col-sm-2">
+            Last Updated
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Updated)
+        </dd>
+    </dl>
+
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Funding Type
+                    </th>
+                    <th>
+                        Funding Source
+                    </th>
+                    <th>
+                        Need Amount
+                    </th>
+                    <th>
+                        Funding Amount
+                    </th>
+                    <th>
+                        Payment Method
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FundingOfferItems.Where(foi => foi.IsActive))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundingType.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundingSource.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NeedAmount)
+                            @Html.DisplayFor(modelItem => item.NeedAmountNullReason.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundingAmount)
+                            @Html.DisplayFor(modelItem => item.FundingAmountNullReason.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaymentMethod.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <br />
+
+    <span class="font-weight-bold">Current Status:</span> @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(Model.FundingOfferStatusId)) @Model.FundingOfferStatus.Name<br />
+
+    <br />
+
+    <div class="text-danger font-weight-bold">@ViewBag.WarningText</div>
+    <br />
+    <div class="row">
+        <div class="col-sm-6">
+            <form asp-action="ChangeStatus">
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group">
+                    <label asp-for="FundingOfferStatusId" class="control-label">New Status</label>
+                    <select asp-for="FundingOfferStatusId" class="form-control" asp-items="ViewBag.FundingOfferStatusId">
+                        <option selected value="">-</option>
+                    </select>
+                    <span asp-validation-for="FundingOfferStatusId" class="text-danger"></span>
+                </div>
+                <input type="submit" value="Change Status" class="btn btn-danger" id="changeStatusButton" disabled />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        $('#FundingOfferStatusId').on('change', function () {
+            if (this.value != '') $('#changeStatusButton').prop('disabled', false);
+            else $('#changeStatusButton').prop('disabled', true);
+        });
+    });
+</script>

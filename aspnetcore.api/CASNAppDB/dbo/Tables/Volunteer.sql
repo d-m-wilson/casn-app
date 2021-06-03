@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Volunteer] (
-    [Id]             INT            IDENTITY (1001, 1) NOT NULL,
+    [Id]             INT            IDENTITY (1, 1) NOT NULL,
     [CiviContactId]  INT            NOT NULL,
     [FirstName]      NVARCHAR (50)  NOT NULL,
     [LastName]       NVARCHAR (50)  NOT NULL,
@@ -7,6 +7,7 @@
     [GoogleAccount]  NVARCHAR (100) NOT NULL,
     [IsDriver]       BIT            NOT NULL,
     [IsDispatcher]   BIT            NOT NULL,
+    [CanSeeInactive] BIT            CONSTRAINT [DF_Volunteer_CanSeeInactive] DEFAULT (0) NOT NULL,
     [HasTextConsent] BIT            CONSTRAINT [DF_Volunteer_HasTextConsent] DEFAULT (0x01) NOT NULL,
     [Address]        NVARCHAR (100) NULL,
     [City]           NVARCHAR (50)  NULL,

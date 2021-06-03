@@ -1,0 +1,274 @@
+﻿@model CASNApp.Core.Entities.FundingOffer
+@using CASNApp.Core.Entities
+@{
+    Layout = null;
+    ViewData["Title"] = "CASN Patient Funding Form";
+}
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title</title>
+    <style type="text/css">
+        * {
+            margin: 0 !important;
+        }
+
+        html, body {
+            font-family: sans-serif;
+            text-align: left;
+            line-height: 1.5;
+            height: 100%;
+            overflow: hidden;
+            background: #fff;
+            font-size: 11pt;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        .container {
+            width: 7.5in;
+            height: 10in;
+        }
+
+        .row {
+            width: 100%;
+            height: 100%;
+        }
+
+        #left-column {
+            float: left;
+            border-right: 5px solid #333399;
+            max-width: 74.5%;
+            height: 99.5%;
+        }
+
+        #right-column {
+            float: right;
+            max-width: 24.5%;
+            height: 99.5%;
+            vertical-align: middle;
+        }
+
+        .vertical-center-wrapper {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #vertical-banner {
+            width: 100%;
+            height: auto;
+        }
+
+        .signature-prompt {
+            display: inline-block;
+            width: 1.25in;
+        }
+
+        .signature-line {
+            display: inline-block;
+            border-bottom: 1px solid black;
+            min-width: 3.25in;
+        }
+
+        .date-line {
+            display: inline-block;
+            border-bottom: 1px solid black;
+            min-width: 2in;
+        }
+
+        #page-title {
+            font-size: 150%;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .section-title {
+            text-decoration: underline;
+        }
+
+        .voucher-section {
+            padding-top: 0.4in;
+        }
+
+        .data-label {
+            font-weight: bold;
+            min-width: 1.75in;
+        }
+
+        table.funding-details thead tr th:first-of-type {
+            width: 1.75in;
+        }
+
+        table.funding-details tbody tr {
+            border-top: 1px solid black;
+        }
+
+        #org-info-text {
+            text-align: center;
+            font-size: 85%;
+            font-weight: bold;
+            font-style: italic;
+            padding: 0.25in 0 0.25in 0;
+            width: 98%;
+        }
+
+        #legal-text-1 {
+            padding-right: 0.25in;
+        }
+
+        #legal-text-2 {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .right-align {
+            text-align: right;
+        }
+    </style>
+    <script type="text/javascript">
+        window.onload = function () { window.print(); };
+    </script>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="row">
+
+            <div id="left-column">
+
+                <div id="page-title">@ViewBag.Title</div>
+                <div id="patient-info-section" class="voucher-section">
+                    <div class="section-title">Patient Information</div>
+                    <table>
+                        <tr>
+                            <td class="data-label">Name:</td>
+                            <td>@Model.Caller.Name</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">DOB:</td>
+                            <td>@($"{Model.Caller.DateOfBirth:MM/dd/yyyy}")</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">CASN Caller ID:</td>
+                            <td>@Model.Caller.CallerIdentifier</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="voucher-info-section" class="voucher-section">
+                    <div class="section-title">Voucher Information</div>
+                    <table>
+                        <tr>
+                            <td class="data-label">Clinic:</td>
+                            <td>@Model.Clinic.Name</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">Appointment Type:</td>
+                            <td>@Model.AppointmentType.Title</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">Appointment Date:</td>
+                            <td>@($"{Model.AppointmentDate:MM/dd/yyyy h:mm tt}")</td>
+                        </tr>
+                        @if (!string.IsNullOrWhiteSpace(Model.ClinicReferenceNumber))
+                        {
+                            <tr>
+                                <td class="data-label">Clinic Reference #:</td>
+                                <td>@($"{Model.ClinicReferenceNumber}")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="data-label">Voucher #:</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@Model.Id</text> }
+                        else
+                        { <text>Preview</text>}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">Issued By:</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@Model.IssuedBy?.Name</text> }
+                        else
+                        { <text>Preview</text>}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">Issue Date:</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@($"{Model.Issued:MM/dd/yyyy}")</text> }
+                        else
+                        { <text>Preview</text>}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label">Valid Through:</td>
+                            <td>@if (Model.Issued.HasValue && Model.IssuedById.HasValue)
+                            {<text>@($"{Model.Issued?.AddDays(30):MM/dd/yyyy}")</text> }
+                        else
+                        { <text>Preview</text>}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="voucher-details-section" class="voucher-section">
+                    <table class="funding-details">
+                        <thead>
+                            <tr>
+                                <th>Funding Purpose</th>
+                                <th>Funding Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.FundingOfferItems.Where(foi => foi.PaymentMethodId == PaymentMethod.Voucher && foi.IsActive && !foi.FundingSource.IsExternal))
+                            {
+                            <tr>
+                                <td>@item.FundingType.Name</td>
+                                <td class="right-align">@($"{item.FundingAmount:C2}")</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="legal-text-1" class="voucher-section">
+                    By signing this you are accepting funding from CASN for the above listed amount and purpose in the form of a credit on your account with the clinic.
+                </div>
+
+                <div id="caller-signature-section" class="voucher-section">
+                    <span class="data-label signature-prompt">Patient signature:</span><span class="signature-line"></span><br />
+                    <br />
+                    <span class="data-label signature-prompt">Date signed:</span><span class="date-line"></span>
+                </div>
+
+                <br />
+
+                <div id="legal-text-2">
+                    For reimbursement, please return to: info@clinicaccess.org<br />
+                    <br />
+                    <small>rev. 20210117A</small>
+                </div>
+
+            </div> <!-- left column -->
+
+            <div id="right-column">
+                <div class="vertical-center-wrapper">
+                    <img src="~/img/casnbanner01_25pct.png" id="vertical-banner" />
+                    <div id="org-info-text">
+                        3824 Cedar Springs Rd<br />
+                        #801-3614<br />
+                        Dallas, TX 75219<br />
+                        <br />
+                        (281) 947-2276
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- row -->
+
+    </div><!-- container -->
+
+</body>
+</html>

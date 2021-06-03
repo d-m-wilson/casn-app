@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
 {
-    public class ServiceProviderType : ICreatedDate, IUpdatedDate, ISoftDelete
+    public partial class ServiceProviderType
     {
         public ServiceProviderType()
         {
@@ -17,6 +16,6 @@ namespace CASNApp.Core.Entities
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public ICollection<ServiceProvider> ServiceProviders { get; set; }
+        public virtual ICollection<ServiceProvider> ServiceProviders { get; set; }
     }
 }

@@ -69,3 +69,40 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #e5e5e5;
+}
+
+a.custom-nav-link {
+    padding-right: 10px;
+}
+
+.status-draft {
+    color: #a2a4b6;
+    font-size: 125%;
+}
+
+.status-issued {
+    color: #e9a843;
+    font-size: 125%;
+}
+
+.status-redeemed {
+    color: #3546c7;
+    font-size: 125%;
+}
+
+.status-paid {
+    color: #439149;
+    font-size: 125%;
+}
+
+.status-voided {
+    color: #ca0d45;
+    font-size: 125%;
+}

@@ -20,5 +20,8 @@ namespace CASNApp.Core
         public const string BadgesAreEnabled = nameof(BadgesAreEnabled);
         public const string UserTimeZoneName = nameof(UserTimeZoneName);
         public const string CASNAppURL = nameof(CASNAppURL);
+        public const string WEBJOBS_APPINSIGHTS_INSTRUMENTATIONKEY = nameof(WEBJOBS_APPINSIGHTS_INSTRUMENTATIONKEY);
+        public const string ResponseCode_Success = "success";
+        public const string ResponseCode_Error = "error";
     }
 }

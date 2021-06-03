@@ -17,7 +17,7 @@ namespace CASNApp.Core.Queries
 
         public Task<List<DriveStatus>> GetActiveDriveStatusesAsync(bool readOnly)
         {
-            var result = (readOnly ? dbContext.DriveStatus.AsNoTracking() : dbContext.DriveStatus)
+            var result = (readOnly ? dbContext.DriveStatuses.AsNoTracking() : dbContext.DriveStatuses)
                 .Where(e => e.IsActive)
                 .OrderBy(e => e.Id)
                 .ToListAsync();

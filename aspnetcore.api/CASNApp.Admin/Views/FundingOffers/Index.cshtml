@@ -1,0 +1,98 @@
+﻿@model CASNApp.Admin.Models.FundingOfferIndexViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>Caller Lookup</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CallerLookup">
+            <div class="form-group">
+                <label class="control-label">Add or look up caller information</label>
+                <input asp-for="CallerIdentifier" class="form-control" placeholder="1234" autofocus />
+                <span asp-validation-for="CallerIdentifier" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Next" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<h4>List</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Caller
+            </th>
+            <th>
+                Clinic
+            </th>
+            <th>
+                Status
+            </th>
+            @if (ViewBag.UserCanSeeInactive)
+            {
+            <th>
+                Is Active
+            </th>
+            }
+            <th>
+                Created
+            </th>
+            <th>
+                Updated
+            </th>
+            <th>
+                Created By
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.FundingOffers)
+        {
+            <tr>
+                <td>
+                    <a asp-action="CallerOffers" asp-route-id="@item.CallerId">
+                        @Html.DisplayFor(modelItem => item.Caller.CallerIdentifier)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Clinic.Name)
+                </td>
+                <td>
+                    @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(item.FundingOfferStatusId))
+                    @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
+                </td>
+                @if (ViewBag.UserCanSeeInactive)
+                {
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                }
+                <td>
+                    @($"{item.Created:MM/dd/yyyy}")
+                </td>
+                <td>
+                    @($"{item.Updated:MM/dd/yyyy}")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy.Name)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="custom-nav-link">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

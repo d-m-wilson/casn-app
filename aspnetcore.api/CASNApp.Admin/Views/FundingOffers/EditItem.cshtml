@@ -1,0 +1,78 @@
+﻿@model CASNApp.Core.Entities.FundingOfferItem
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>FundingOfferItem</h4>
+<div>
+    <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Back to Funding Offer</a>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditItem">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="FundingOfferId" />
+            <div class="form-group">
+                <label asp-for="FundingSourceId" class="control-label">Funding Source</label>
+                <select asp-for="FundingSourceId" class="form-control" asp-items="ViewBag.FundingSourceId" autofocus="@Model.AllowsEdits" disabled="@(!Model.AllowsEdits)"></select>
+                <span asp-validation-for="FundingSourceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundingTypeId" class="control-label">Funding Type</label>
+                <select asp-for="FundingTypeId" class="form-control" asp-items="ViewBag.FundingTypeId" disabled="@(!Model.AllowsEdits)"></select>
+                <span asp-validation-for="FundingTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NeedAmount" class="control-label">Need Amount</label>
+                <input asp-for="NeedAmount" class="form-control" disabled="@(!Model.AllowsEdits)" />
+                <span asp-validation-for="NeedAmount" class="text-danger"></span>
+                <select asp-for="NeedAmountNullReasonId" class="form-control" asp-items="ViewBag.NeedAmountNullReasonId" disabled="@(!Model.AllowsEdits)">
+                    <option selected value="">-</option>
+                </select>
+                <span asp-validation-for="NeedAmountNullReasonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundingAmount" class="control-label">Funding Amount</label>
+                <input asp-for="FundingAmount" class="form-control" disabled="@(!Model.AllowsEdits)" />
+                <span asp-validation-for="FundingAmount" class="text-danger"></span>
+                <select asp-for="FundingAmountNullReasonId" class="form-control" asp-items="ViewBag.FundingAmountNullReasonId" disabled="@(!Model.AllowsEdits)">
+                    <option selected value="">-</option>
+                </select>
+                <span asp-validation-for="FundingAmountNullReasonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentMethodId" class="control-label">Payment Method</label>
+                <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId" disabled="@(!Model.AllowsEdits)"></select>
+                <span asp-validation-for="PaymentMethodId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GrantId" class="control-label">Grant</label>
+                <select asp-for="GrantId" class="form-control" asp-items="ViewBag.GrantId">
+                    <option value=""></option>
+                </select>
+                <span asp-validation-for="GrantId" class="text-danger"></span>
+            </div>
+            @if (ViewBag.UserCanSeeInactive)
+            {
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" disabled="@(!Model.AllowsEdits)" /> Is Active
+                </label>
+            </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="IsActive" />
+            }
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <a asp-action="Details" asp-route-id="@Model.FundingOfferId">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

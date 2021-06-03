@@ -5,6 +5,7 @@
     INSERT [dbo].[DriveStatus] ([Id], [Name], [IsActive], [Created], [Updated]) VALUES (1, N'Pending', 1, @utcNow, NULL)
     INSERT [dbo].[DriveStatus] ([Id], [Name], [IsActive], [Created], [Updated]) VALUES (2, N'Approved', 1, @utcNow, NULL)
     INSERT [dbo].[DriveStatus] ([Id], [Name], [IsActive], [Created], [Updated]) VALUES (3, N'Canceled', 1, @utcNow, NULL)
+    INSERT [dbo].[DriveStatus] ([Id], [Name], [IsActive], [Created], [Updated]) VALUES (4, N'Rideshare', 1, @utcNow, NULL)
     COMMIT TRANSACTION
 END TRY
 BEGIN CATCH

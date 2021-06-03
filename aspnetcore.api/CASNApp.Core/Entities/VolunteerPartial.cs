@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using CASNApp.Core.Interfaces;
 
 namespace CASNApp.Core.Entities
@@ -16,6 +17,9 @@ namespace CASNApp.Core.Entities
             Longitude = point.Longitude;
             Geocoded = DateTime.UtcNow;
         }
+
+        [NotMapped]
+        public string Name { get { return string.Join(" ", FirstName, LastName); } }
 
     }
 }

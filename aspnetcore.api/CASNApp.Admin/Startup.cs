@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog.Extensions.Logging;
+using ProxyKit;
 
 namespace CASNApp.Admin
 {
@@ -89,6 +90,8 @@ namespace CASNApp.Admin
             services.AddControllersWithViews();
 
             services.AddRazorPages();
+
+            services.AddProxy();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +117,11 @@ namespace CASNApp.Admin
             app.UseAuthentication();
             app.UseAuthorization();
 
+            if (string.Equals(Configuration[ReportProxy.ReportProxyEnabled], bool.TrueString, StringComparison.OrdinalIgnoreCase))
+            {
+                app.UseReportProxy(Configuration);
+            }
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -122,5 +130,6 @@ namespace CASNApp.Admin
                 endpoints.MapRazorPages();
             });
         }
+
     }
 }

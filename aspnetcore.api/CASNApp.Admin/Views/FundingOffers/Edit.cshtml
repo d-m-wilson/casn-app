@@ -1,0 +1,76 @@
+﻿@model CASNApp.Core.Entities.FundingOffer
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Funding Offer</h4>
+<div>
+    <a asp-action="Details" asp-route-id="@Model.Id">Back to Funding Offer</a>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="ClinicId" class="control-label">Clinic</label>
+                <select asp-for="ClinicId" class="form-control" asp-items="ViewBag.ClinicId" autofocus disabled="@(!Model.AllowsEdits)"></select>
+                <span asp-validation-for="ClinicId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentTypeId" class="control-label">Appointment Type</label>
+                <select asp-for="AppointmentTypeId" class="form-control" asp-items="ViewBag.AppointmentTypeId" disabled="@(!Model.AllowsEdits)"></select>
+                <span asp-validation-for="AppointmentTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AppointmentDate" class="control-label">Appointment Date</label>
+                <input asp-for="AppointmentDate" class="form-control" disabled="@(!Model.AllowsEdits)" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClinicReferenceNumber" class="control-label">Clinic Reference #</label>
+                <input asp-for="ClinicReferenceNumber" class="form-control" disabled="@(!Model.AllowsEdits)" />
+                <span asp-validation-for="ClinicReferenceNumber" class="text-danger"></span>
+            </div>
+            @if (ViewBag.UserCanSeeInactive)
+            {
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" disabled="@(!Model.AllowsEdits)" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="IsActive" />
+            }
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="FollowUpConsent" /> Follow-up Consent
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="DemographicSurveySent" /> Demographic Survey Sent
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Note" class="control-label"></label>
+                <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <a asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

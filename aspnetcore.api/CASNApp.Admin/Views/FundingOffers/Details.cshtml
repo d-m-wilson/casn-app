@@ -1,0 +1,219 @@
+﻿@model CASNApp.Core.Entities.FundingOffer
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Funding Offer</h4>
+
+    <div>
+        <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">Back to List</a>
+
+        <div class="float-right">
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit Funding Offer</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a asp-action="ChangeStatus" asp-route-id="@Model.Id">Change Status</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            @if (!Model.AllowsEdits)
+            {
+                <a asp-action="Voucher" asp-route-id="@Model.Id" class="btn btn-info" target="_blank">Print Voucher</a>
+            }
+            @if (Model.AllowsEdits)
+            {
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="text-danger">Delete Funding Offer</a>
+            }
+        </div>
+    </div>
+
+    <hr />
+    <dl class="row" style="margin-bottom: 0; padding-bottom: 0;">
+        <dt class="col-sm-3">
+            Caller
+        </dt>
+        <dd class="col-sm-9">
+            <a asp-action="CallerOffers" asp-route-id="@Model.CallerId">
+                @Html.DisplayFor(model => model.Caller.CallerIdentifier)
+            </a>
+        </dd>
+        <dt class="col-sm-3">
+            Clinic
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Clinic.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Appointment Type
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.AppointmentType.Title)
+        </dd>
+        <dt class="col-sm-3">
+            Appointment Date
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.AppointmentDate)
+        </dd>
+        <dt class="col-sm-3">
+            Status
+        </dt>
+        <dd class="col-sm-9">
+            @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(Model.FundingOfferStatusId))
+            @Html.DisplayFor(model => model.FundingOfferStatus.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Note
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+        <dt class="col-sm-3">
+            Follow-up Consent
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.FollowUpConsent)
+        </dd>
+        <dt class="col-sm-3">
+            Demographic Survey Sent
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DemographicSurveySent)
+        </dd>
+        <dt class="col-sm-3">
+            Clinic Reference #
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClinicReferenceNumber)
+        </dd>
+        <dt class="col-sm-3">
+            Created By
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CreatedBy.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Issued By
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.IssuedBy.Name)
+        </dd>
+        <dt class="col-sm-3">
+            Created
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+        <dt class="col-sm-3">
+            Issued
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Issued)
+        </dd>
+        <dt class="col-sm-3">
+            Redeemed
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Redeemed)
+        </dd>
+        <dt class="col-sm-3">
+            Paid
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Paid)
+        </dd>
+        <dt class="col-sm-3">
+            Updated
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Updated)
+        </dd>
+        @if (ViewBag.UserCanSeeInactive)
+        {
+        <dt class="col-sm-3" style="margin-bottom: 0; padding-bottom: 0;">
+            Is Active
+        </dt>
+        <dd class="col-sm-9" style="margin-bottom: 0; padding-bottom: 0;">
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+        }
+    </dl>
+    <div class="row" style="margin-top: 0; padding-top: 0;">
+        <!-- BEGIN -->
+        @if (Model.AllowsEdits)
+        {
+            <div class="col-sm-12" style="padding-bottom: 5px;">
+                <a asp-action="CreateItem" asp-route-id="@Model.Id" class="btn btn-primary float-right">Add Funding</a>
+            </div>
+        }
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Funding Type
+                    </th>
+                    <th>
+                        Funding Source
+                    </th>
+                    <th>
+                        Need Amount
+                    </th>
+                    <th>
+                        Funding Amount
+                    </th>
+                    <th>
+                        Payment Method
+                    </th>
+                    @if (ViewBag.UserCanSeeInactive)
+                    {
+                    <th>
+                        Is Active
+                    </th>
+                    }
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FundingOfferItems)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundingType.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundingSource.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.NeedAmount)
+                            @Html.DisplayFor(modelItem => item.NeedAmountNullReason.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FundingAmount)
+                            @Html.DisplayFor(modelItem => item.FundingAmountNullReason.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaymentMethod.Name)
+                        </td>
+                        @if (ViewBag.UserCanSeeInactive)
+                        {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsActive)
+                        </td>
+                        }
+                        <td>
+                            <a asp-action="EditItem" asp-route-id="@item.Id">Edit</a>&nbsp;&nbsp;&nbsp;
+
+                            <a asp-action="ItemDetails" asp-route-id="@item.Id">Details</a>
+
+                            @if (Model.AllowsEdits)
+                            {
+                                <text>&nbsp;&nbsp;&nbsp;</text>
+                                <a asp-action="DeleteItem" asp-route-id="@item.Id" class="text-danger">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!-- END -->
+    </div>
+</div>

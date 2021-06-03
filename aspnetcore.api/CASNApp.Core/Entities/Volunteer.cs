@@ -10,6 +10,10 @@ namespace CASNApp.Core.Entities
             Appointments = new HashSet<Appointment>();
             Approvals = new HashSet<Drive>();
             Drives = new HashSet<Drive>();
+            FundingOfferCreatedBies = new HashSet<FundingOffer>();
+            FundingOfferIssuedBies = new HashSet<FundingOffer>();
+            FundingOfferUpdatedBies = new HashSet<FundingOffer>();
+            FundingOfferVoidedBies = new HashSet<FundingOffer>();
             VolunteerBadges = new HashSet<VolunteerBadge>();
             VolunteerDriveLogs = new HashSet<VolunteerDriveLog>();
         }
@@ -22,8 +26,8 @@ namespace CASNApp.Core.Entities
         public string GoogleAccount { get; set; }
         public bool IsDriver { get; set; }
         public bool IsDispatcher { get; set; }
+        public bool CanSeeInactive { get; set; }
         public bool HasTextConsent { get; set; }
-        public bool IsActive { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public string State { get; set; }
@@ -31,14 +35,18 @@ namespace CASNApp.Core.Entities
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
         public DateTime? Geocoded { get; set; }
+        public bool IsActive { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; }
-        public ICollection<Drive> Approvals { get; set; }
-        public ICollection<Drive> Drives { get; set; }
-        public ICollection<VolunteerBadge> VolunteerBadges { get; set; }
-        public ICollection<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
-
+        public virtual ICollection<Appointment> Appointments { get; set; }
+        public virtual ICollection<Drive> Approvals { get; set; }
+        public virtual ICollection<Drive> Drives { get; set; }
+        public virtual ICollection<FundingOffer> FundingOfferCreatedBies { get; set; }
+        public virtual ICollection<FundingOffer> FundingOfferIssuedBies { get; set; }
+        public virtual ICollection<FundingOffer> FundingOfferUpdatedBies { get; set; }
+        public virtual ICollection<FundingOffer> FundingOfferVoidedBies { get; set; }
+        public virtual ICollection<VolunteerBadge> VolunteerBadges { get; set; }
+        public virtual ICollection<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
     }
 }

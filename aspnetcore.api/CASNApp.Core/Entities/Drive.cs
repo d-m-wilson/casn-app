@@ -36,11 +36,11 @@ namespace CASNApp.Core.Entities
         public int? ApprovedById { get; set; }
         public int? CancelReasonId { get; set; }
 
-        public Appointment Appointment { get; set; }
-        public Volunteer Driver { get; set; }
-        public Volunteer Approver { get; set; }
-        public DriveCancelReason CancelReason { get; set; }
-        public DriveStatus Status { get; set; }
-        public ICollection<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
+        public virtual Appointment Appointment { get; set; }
+        public virtual Volunteer Approver { get; set; }
+        public virtual DriveCancelReason CancelReason { get; set; }
+        public virtual Volunteer Driver { get; set; }
+        public virtual DriveStatus Status { get; set; }
+        public virtual ICollection<VolunteerDriveLog> VolunteerDriveLogs { get; set; }
     }
 }

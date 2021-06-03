@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[ServiceProvider] (
-    [Id]            INT            IDENTITY (5, 1) NOT NULL,
+    [Id]            INT            IDENTITY (1, 1) NOT NULL,
     [CiviContactId] INT            NULL,
     [ServiceProviderTypeId] INT    NOT NULL,
     [Name]          NVARCHAR (100) NOT NULL,

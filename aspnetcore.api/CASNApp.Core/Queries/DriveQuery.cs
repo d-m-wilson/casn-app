@@ -15,7 +15,7 @@ namespace CASNApp.Core.Queries
 
         public Task<Drive> GetDriveAsync(int driveId)
         {
-            var result = dbContext.Drive.SingleOrDefaultAsync(d => d.Id == driveId);
+            var result = dbContext.Drives.SingleOrDefaultAsync(d => d.Id == driveId);
             return result;
         }
 

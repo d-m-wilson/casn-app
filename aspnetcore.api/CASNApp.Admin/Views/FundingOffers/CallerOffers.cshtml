@@ -1,0 +1,73 @@
+﻿@model IEnumerable<CASNApp.Core.Entities.FundingOffer>
+
+@{
+    ViewData["Title"] = "Funding Offers";
+}
+
+<h1>Funding Offers for Caller @ViewBag.CallerIdentifier</h1>
+
+<p>
+    <a asp-action="Index">Back to Funding Offers</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a asp-controller="Callers" asp-action="Edit" asp-route-id="@ViewBag.CallerId">Edit Caller</a>
+    <a asp-action="CallerCreateOffer" asp-route-id="@ViewBag.CallerId" class="btn btn-primary float-right">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Status
+            </th>
+            <th>
+                Clinic
+            </th>
+            <th>
+                Created By
+            </th>
+            @if (ViewBag.UserCanSeeInactive)
+            {
+            <th>
+                Is Active
+            </th>
+            }
+            <th>
+                Created
+            </th>
+            <th>
+                Updated
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.Raw(CASNApp.Admin.Classes.StatusIconHelper.GetHtml(item.FundingOfferStatusId))
+                @Html.DisplayFor(modelItem => item.FundingOfferStatus.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Clinic.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy.Name)
+            </td>
+            @if (ViewBag.UserCanSeeInactive)
+            {
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            }
+            <td>
+                @($"{item.Created:MM/dd/yyyy}")
+            </td>
+            <td>
+                @($"{item.Updated:MM/dd/yyyy}")
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id" class="custom-nav-link">Details</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

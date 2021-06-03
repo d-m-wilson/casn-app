@@ -1,0 +1,62 @@
+﻿@model CASNApp.Core.Entities.FundingOfferItem
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Funding Offer Item</h4>
+<div>
+    <a asp-action="Details" asp-route-id="@ViewBag.FundingOfferId">Back to Funding Offer</a>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateItem">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="FundingOfferId" type="hidden" value="@ViewBag.FundingOfferId" />
+            <div class="form-group">
+                <label asp-for="FundingSourceId" class="control-label">Funding Source</label>
+                <select asp-for="FundingSourceId" class="form-control" asp-items="ViewBag.FundingSourceId" autofocus></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundingTypeId" class="control-label">Funding Type</label>
+                <select asp-for="FundingTypeId" class="form-control" asp-items="ViewBag.FundingTypeId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="NeedAmount" class="control-label">Need Amount</label>
+                <input asp-for="NeedAmount" class="form-control" />
+                <span asp-validation-for="NeedAmount" class="text-danger"></span>
+                <select asp-for="NeedAmountNullReasonId" class="form-control" asp-items="ViewBag.NeedAmountNullReasonId">
+                    <option selected value="">-</option>
+                </select>
+                <span asp-validation-for="NeedAmountNullReasonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FundingAmount" class="control-label">Funding Amount</label>
+                <input asp-for="FundingAmount" class="form-control" />
+                <span asp-validation-for="FundingAmount" class="text-danger"></span>
+                <select asp-for="FundingAmountNullReasonId" class="form-control" asp-items="ViewBag.FundingAmountNullReasonId">
+                    <option selected value="">-</option>
+                </select>
+                <span asp-validation-for="FundingAmountNullReasonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentMethodId" class="control-label">Payment Method</label>
+                <select asp-for="PaymentMethodId" class="form-control" asp-items="ViewBag.PaymentMethodId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="GrantId" class="control-label">Grant</label>
+                <select asp-for="GrantId" class="form-control" asp-items="ViewBag.GrantId">
+                    <option selected value="">-</option>
+                </select>
+                <span asp-validation-for="GrantId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" name="saveandnew" value="Save and Add New" class="btn btn-primary" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="submit" name="saveonly" value="Save" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
