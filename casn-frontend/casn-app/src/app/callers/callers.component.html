@@ -6,23 +6,27 @@
   <p *ngIf="!editingCaller && !displayCallerForm" class="text-light">Add or look up caller information</p>
   <p *ngIf="displayCallerForm" class="text-light">{{ editingCaller ? 'Edit' : 'Add' }} caller information</p>
   <div class="caller-form-group" *ngIf="!displayCallerForm">
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Caller ID</mat-label>
-      <input type="text"
-      placeholder="1234"
-      aria-label="Caller Identifier"
-      matInput
-      [formControl]="callerIdentifierSearch">
-      <mat-error *ngIf="callerIdentifierSearch.errors?.required">This field is required.</mat-error>
-      <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
-    </mat-form-field>
+    <form (submit)="searchCallerIdentifier()">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Caller ID</mat-label>
 
-    <button class="next-btn"
+        <input type="text"
+        placeholder="1234"
+        aria-label="Caller Identifier"
+        matInput
+        [formControl]="callerIdentifierSearch">
+        <mat-error *ngIf="callerIdentifierSearch.errors?.required">This field is required.</mat-error>
+        <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
+      </mat-form-field>
+
+      <button class="next-btn"
             mat-mini-fab
             color="primary"
             [disabled]="callerIdentifierSearch.invalid"
             *ngIf="!displayCallerForm"
-            (click)="searchCallerIdentifier()"><mat-icon>keyboard_arrow_right</mat-icon></button>
+            (click)="searchCallerIdentifier()"><mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </form>
   </div>
 
 <!--********************************************************************
