@@ -332,19 +332,19 @@
         <mat-card class="review-card candy-card no-border">
           <div class="info-group text-small">
             <span class="text-light">Caller ID</span>
-            <span>{{ formAppt.callerIdentifier.value }}</span>
+            <span class="align-right">{{ formAppt.callerIdentifier.value }}</span>
           </div>
           <div class="info-group text-small">
             <span class="text-light">Date</span>
-            <span>{{ formAppt.appointmentDate.value | date:'MMM d, y, h:mm a'}}</span>
+            <span class="align-right">{{ formAppt.appointmentDate.value | date:'MMM d, y, h:mm a'}}</span>
           </div>
           <div class="info-group text-small">
             <span class="text-light">Type</span>
-            <span>{{ apptType }}</span>
+            <span class="align-right">{{ apptType }}</span>
           </div>
           <div class="info-group text-small">
             <span class="text-light">Provider</span>
-            <span>{{ apptServiceProvider }}</span>
+            <span class="align-right">{{ apptServiceProvider }}</span>
           </div>
         </mat-card>
         <div class="card-icon-group">
