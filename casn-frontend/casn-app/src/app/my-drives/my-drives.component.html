@@ -16,7 +16,8 @@
         </app-rides-header>
       </header>
       <!-- Spacer so body elements will clear the fixed header -->
-      <div [style.marginTop.px]="showDateFilters ? 110 : 60"></div>
+      <!-- TODO: Extract this into a CSS variable or service -->
+      <div [style.marginTop.px]="showDateFilters ? 150 : 90"></div>
 
       <!--********************************************************************
                                   My Drive Stats
