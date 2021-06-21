@@ -164,6 +164,10 @@ body {
   background-color: rgba(0,0,0,0.4);
 }
 
+.modal--hide {
+  display: none;
+}
+
 .modal-content {
   border-radius: 5px;
   background: $white;

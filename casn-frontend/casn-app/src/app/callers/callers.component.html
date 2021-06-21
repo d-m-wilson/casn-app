@@ -9,12 +9,12 @@
     <form (submit)="searchCallerIdentifier()">
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Caller ID</mat-label>
-
         <input type="text"
-        placeholder="1234"
-        aria-label="Caller Identifier"
-        matInput
-        [formControl]="callerIdentifierSearch">
+               autofocus
+               placeholder="1234"
+               aria-label="Caller Identifier"
+               matInput
+               [formControl]="callerIdentifierSearch">
         <mat-error *ngIf="callerIdentifierSearch.errors?.required">This field is required.</mat-error>
         <mat-error *ngIf="callerIdentifierSearch.errors?.minlength || f.callerIdentifier.errors?.maxlength">ID should be 4-5 digits.</mat-error>
       </mat-form-field>
@@ -167,26 +167,27 @@
 <!--********************************************************************
                             Caller Modal
 **********************************************************************-->
-<div *ngIf="displayCallerFoundModal" class="modal">
+<div [ngClass]="displayCallerFoundModal ? 'modal' : 'modal--hide'">
   <div class="modal-content">
     <mat-card class="candy-card">
       <mat-card-title>Match Found</mat-card-title>
       <p>
-        <strong>ID:</strong> {{ existingCaller.callerIdentifier }}
+        <strong>ID:</strong> {{ existingCaller?.callerIdentifier }}
         <br>
-        <strong>Name:</strong> {{ existingCaller.firstName }} {{ existingCaller.lastName }}
+        <strong>Name:</strong> {{ existingCaller?.firstName }} {{ existingCaller?.lastName }}
       </p>
       <br>
       <p>Is this your caller?</p>
       <hr>
       <div class="modal-actions">
         <button mat-button
-        color="accent"
-        (click)="handleNoClick()">No, I'll create a different ID.</button>
+                color="accent"
+                (click)="handleNoClick()">No, I'll create a different ID.</button>
         <button mat-raised-button
-        class="btn-cta flex yes-btn"
-        color="primary"
-        (click)="handleYesClick()">Yes</button>
+                #modalBtnRef
+                class="btn-cta flex yes-btn"
+                color="primary"
+                (click)="handleYesClick()">Yes</button>
       </div>
     </mat-card>
   </div>

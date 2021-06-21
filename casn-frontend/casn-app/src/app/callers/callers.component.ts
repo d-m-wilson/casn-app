@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DispatcherApiService } from '../api/api/dispatcherApi.service';
@@ -14,14 +14,27 @@ import { CallerIdentifierValidator } from './caller-identifier.validator';
   styleUrls: ['./callers.component.scss']
 })
 export class CallersComponent implements OnInit {
+
   loading: boolean = false;
   existingCaller: any = {};
   existingCallerId: Number;
   editingCaller: boolean = false;
   appointmentToEdit: any;
   /* Display flags for caller lookup feature */
-  displayCallerFoundModal: boolean = false;
   displayCallerForm: boolean = false;
+  @ViewChild('modalBtnRef') modalBtnRef;
+  _displayCallerFoundModal: boolean = false;
+
+  get displayCallerFoundModal(): boolean {
+    return this._displayCallerFoundModal;
+  }
+
+  set displayCallerFoundModal(value: boolean) {
+    this._displayCallerFoundModal = value;
+    if(value) {
+      this.modalBtnRef.focus();
+    }
+  }
 
   /*********************************************************************
                       Constructor, Lifecycle Hooks
