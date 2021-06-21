@@ -79,6 +79,8 @@ export class AppointmentFormComponent implements OnInit {
       this.setFormValuesForEditing();
       console.log("The appointment to edit:", this.appointmentToEdit);
     }
+
+    this.onAppointmentTypeChange();
   }
 
   /*********************************************************************
@@ -185,6 +187,13 @@ export class AppointmentFormComponent implements OnInit {
     dropoffLocationVague: ['', Validators.required],
   });
 
+  onAppointmentTypeChange(): void {
+    this.formAppt.appointmentTypeId.valueChanges.subscribe(val => {
+      // Reset service provider whenever user changes appt type
+      this.formAppt.serviceProviderId.setValue(undefined);
+    });
+  }
+
   onSubmit(): void {
     const apptInvalid = !this.appointmentForm.valid;
     const pickupInvalid = this.callerNeedsPickup && !this.driveToForm.valid;
@@ -218,11 +227,11 @@ export class AppointmentFormComponent implements OnInit {
   get formDropoff() { return this.driveFromForm.controls; }
 
   get apptType(): string {
-    return (this.appointmentTypes.find(a => a.value === this.formAppt.appointmentTypeId.value)).displayValue;
+    return (this.appointmentTypes.find(a => a.value === this.formAppt.appointmentTypeId.value))?.displayValue || null;
   }
 
   get apptServiceProvider(): string {
-    return (this.serviceProviders.find(s => s.id == this.formAppt.serviceProviderId.value)).name;
+    return (this.serviceProviders.find(s => s.id == this.formAppt.serviceProviderId.value))?.name || null;
   }
 
   setFormValuesForEditing(): void {
