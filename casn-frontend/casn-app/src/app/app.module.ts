@@ -40,6 +40,7 @@ import { MassTextComponent } from './mass-text/mass-text.component';
 import { LoaderComponent } from './loader/loader.component';
 import { MyDrivesComponent } from './my-drives/my-drives.component';
 import { RideshareModalComponent } from './rideshare-modal/rideshare-modal.component';
+import { LinksPageComponent } from './links-page/links-page.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { RideshareModalComponent } from './rideshare-modal/rideshare-modal.compo
     LoaderComponent,
     MyDrivesComponent,
     RideshareModalComponent,
+    LinksPageComponent,
   ],
   imports: [
     NgxMaskModule.forRoot(),

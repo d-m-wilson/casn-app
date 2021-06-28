@@ -37,6 +37,12 @@ export class Constants {
       //   icon: "chat",
       //   dispatcherOnly: true
       // },
+      {
+        name: "Important Links",
+        address: "/links",
+        icon: "event_note",
+        dispatcherOnly: false
+      }
     ];
 
   // These routes are only accessible to dispatchers.
