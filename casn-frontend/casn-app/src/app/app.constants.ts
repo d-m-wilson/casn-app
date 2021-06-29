@@ -40,7 +40,7 @@ export class Constants {
       {
         name: "Important Links",
         address: "/links",
-        icon: "event_note",
+        icon: "link",
         dispatcherOnly: false
       }
     ];

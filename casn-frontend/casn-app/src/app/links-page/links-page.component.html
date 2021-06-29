@@ -1,1 +1,6 @@
-<p>links-page works!</p>
+<h1>Important Links</h1>
+<ul>
+    <li *ngFor="let l of links">
+        <a [href]="l.href">{{ l.title }}</a>
+    </li>
+</ul>

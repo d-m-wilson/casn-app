@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
 
       if (event instanceof NavigationEnd) {
         // Check if white bg page
-        this.whiteBg = event.url.includes('caller') || event.url.includes('appointment');
+        this.whiteBg = event.url.includes('caller') || event.url.includes('appointment') || event.url.includes("link");
 
         const onHomePage = event.url.includes('dashboard');
         this.currentRoute = event.url;

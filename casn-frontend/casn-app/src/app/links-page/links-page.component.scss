@@ -1,0 +1,27 @@
+@import "../styles/variables";
+
+h1 {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 20px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+li {
+    border: 1px solid gray;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+a {
+    text-decoration: none;
+    font-weight: 500;
+    color: $primary-color-dark;
+}
