@@ -113,6 +113,7 @@
     <Build Include="dbo\Tables\NullReason.sql" />
     <Build Include="dbo\Tables\ReferralSource.sql" />
     <Build Include="dbo\Tables\Grant.sql" />
+    <Build Include="dbo\Tables\Link.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

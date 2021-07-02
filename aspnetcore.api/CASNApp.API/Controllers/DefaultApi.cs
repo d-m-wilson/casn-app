@@ -360,5 +360,34 @@ namespace CASNApp.API.Controllers
             return new ObjectResult(results);
         }
 
+        /// <summary>
+        /// gets list of links
+        /// </summary>
+        /// <response code="200">successful operation</response>
+        [HttpGet]
+        [Route("api/link")]
+        [ValidateModelState]
+        [SwaggerOperation("GetLinks")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<Core.Models.Link>), description: "successful operation")]
+        public virtual async Task<IActionResult> GetLinks()
+        {
+            var userEmail = HttpContext.GetUserEmail();
+            var volunteerQuery = new VolunteerQuery(dbContext);
+            var volunteer = volunteerQuery.GetActiveVolunteerByEmail(userEmail, true);
+
+            if (volunteer == null)
+            {
+                return Forbid();
+            }
+
+            var query = new LinkQuery(dbContext);
+            var results = await query.GetActiveLinksAsync(true);
+
+            var linkDTOs = results.Select(l => new Core.Models.Link(l))
+                .ToList();
+
+            return new ObjectResult(results);
+        }
+
     }
 }
