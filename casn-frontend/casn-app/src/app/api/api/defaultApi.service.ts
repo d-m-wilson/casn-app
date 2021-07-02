@@ -23,6 +23,7 @@ import { CASNAppCoreModelsAppointmentType } from '../model/cASNAppCoreModelsAppo
 import { CASNAppCoreModelsServiceProvider } from '../model/cASNAppCoreModelsServiceProvider';
 import { CASNAppCoreModelsDriveCancelReason } from '../model/cASNAppCoreModelsDriveCancelReason';
 import { CASNAppCoreModelsDriveStatus } from '../model/cASNAppCoreModelsDriveStatus';
+import { CASNAppCoreModelsLink } from '../model/cASNAppCoreModelsLink';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -373,6 +374,49 @@ export class DefaultApiService implements DefaultApiServiceInterface {
         ];
 
         return this.httpClient.get<Array<CASNAppCoreModelsDriveStatus>>(`${this.basePath}/badge`,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * gets list of links
+     *
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getLinks(observe?: 'body', reportProgress?: boolean): Observable<Array<CASNAppCoreModelsLink>>;
+    public getLinks(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<CASNAppCoreModelsLink>>>;
+    public getLinks(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<CASNAppCoreModelsLink>>>;
+    public getLinks(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Bearer) required
+        if (this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]) {
+            headers = headers.set('Authorization', this.configuration.apiKeys && this.configuration.apiKeys["Authorization"]);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'text/plain',
+            'application/json',
+            'text/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+        ];
+
+        return this.httpClient.get<Array<CASNAppCoreModelsLink>>(`${this.basePath}/link`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DefaultApiService } from '../api/api/defaultApi.service';
 
 @Component({
   selector: 'app-links-page',
@@ -34,9 +35,22 @@ export class LinksPageComponent implements OnInit {
     },
   ]
 
-  constructor() { }
+  constructor( private defaultService: DefaultApiService ) { }
 
   ngOnInit(): void {
+    this.getLinks();
+  }
+
+  /*********************************************************************
+                            Service Calls
+  **********************************************************************/
+  getLinks(): void {
+    this.defaultService.getLinks().subscribe(l => {
+      console.log("Links", l);
+      // this.appointmentTypes = a.map(i => {
+      //   return { value: i.id, displayValue: i.title };
+      // })
+    })
   }
 
 }

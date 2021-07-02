@@ -18,7 +18,7 @@ import { CASNAppCoreModelsAppointmentType } from '../model/cASNAppCoreModelsAppo
 import { CASNAppCoreModelsServiceProvider } from '../model/cASNAppCoreModelsServiceProvider';
 import { CASNAppCoreModelsDriveCancelReason } from '../model/cASNAppCoreModelsDriveCancelReason';
 import { CASNAppCoreModelsDriveStatus } from '../model/cASNAppCoreModelsDriveStatus';
-
+import { CASNAppCoreModelsLink } from '../model/cASNAppCoreModelsLink';
 
 import { Configuration }                                     from '../configuration';
 
@@ -72,5 +72,11 @@ export interface DefaultApiServiceInterface {
     *
     */
     getBadges(extraHttpRequestParams?: any): Observable<Array<any>>;
+
+    /**
+    * gets list of links
+    *
+    */
+    getLinks(extraHttpRequestParams?: any): Observable<Array<CASNAppCoreModelsLink>>;
 
 }
