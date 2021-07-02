@@ -381,12 +381,12 @@ namespace CASNApp.API.Controllers
             }
 
             var query = new LinkQuery(dbContext);
-            var results = await query.GetActiveLinksAsync(true);
+            var links = await query.GetActiveLinksAsync(true);
 
-            var linkDTOs = results.Select(l => new Core.Models.Link(l))
+            var linkDTOs = links.Select(l => new Core.Models.Link(l))
                 .ToList();
 
-            return new ObjectResult(results);
+            return new ObjectResult(linkDTOs);
         }
 
     }
