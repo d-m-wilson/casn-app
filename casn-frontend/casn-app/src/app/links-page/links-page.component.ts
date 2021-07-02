@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 
+export interface Link {
+  title?: string;
+  target?: string;
+  url?: string;
+  useTelLinkStyle: boolean;
+}
+
 @Component({
   selector: 'app-links-page',
   templateUrl: './links-page.component.html',
@@ -8,32 +15,7 @@ import { DefaultApiService } from '../api/api/defaultApi.service';
 })
 export class LinksPageComponent implements OnInit {
 
-  links = [
-    {
-      href: "",
-      title: "Covid-19 Drive Waiver"
-    },
-    {
-      href: "",
-      title: "Reimbursement and Donation Form"
-    },
-    {
-      href: "",
-      title: "Liability Waiver"
-    },
-    {
-      href: "",
-      title: "Mandatory Reporting Incident Form"
-    },
-    {
-      href: "",
-      title: "Suicide Incident Reporting Protocol"
-    },
-    {
-      href: "",
-      title: "Hotline - 123 456 789"
-    },
-  ]
+  links: Link[] = [];
 
   constructor( private defaultService: DefaultApiService ) { }
 
@@ -45,12 +27,16 @@ export class LinksPageComponent implements OnInit {
                             Service Calls
   **********************************************************************/
   getLinks(): void {
-    this.defaultService.getLinks().subscribe(l => {
-      console.log("Links", l);
-      // this.appointmentTypes = a.map(i => {
-      //   return { value: i.id, displayValue: i.title };
-      // })
-    })
+    this.defaultService.getLinks().subscribe(linksDTO => {
+      this.links = linksDTO.map(l => {
+        return {
+          title: l.title,
+          target: l.target,
+          url: l.url,
+          useTelLinkStyle: l.url && l.url.startsWith('tel'),
+        };
+      });
+    });
   }
 
 }

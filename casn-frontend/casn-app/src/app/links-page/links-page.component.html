@@ -1,6 +1,12 @@
 <h1>Important Links</h1>
 <ul>
-    <li *ngFor="let l of links">
-        <a [href]="l.href">{{ l.title }}</a>
-    </li>
+    <ng-container *ngFor="let l of links">
+        <li [ngClass]="{ 'tel': l.useTelLinkStyle }">
+            <div *ngIf="l.useTelLinkStyle" class="tel-icon">
+                <mat-icon>phone</mat-icon>
+            </div>
+            <a [attr.href]="(l.url ? l.url : null) | safeUrl"
+               [attr.target]="l.target ? l.target : null">{{ l.title || "Link" }}</a>
+        </li>
+    </ng-container>
 </ul>

@@ -15,13 +15,38 @@ ul {
 }
 
 li {
-    border: 1px solid $frosted;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba($border-color, 0.4);
+    box-shadow: 1px 1px 4px 0 rgba($border-color, 0.2);
     border-radius: 8px;
-    padding: 10px;
+    padding: 16px;
+
+    &.tel {
+        background: $primary-color-med;
+        padding: 8px 16px;
+
+        a {
+            color: $white;
+        }
+    }
 }
 
 a {
     text-decoration: none;
     font-weight: 500;
-    color: $primary-color-dark;
+    color: $primary-color-med;
+}
+
+.tel-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 4px;
+    margin-right: 8px;
+
+    background: $white;
+    color: $primary-color-med;
+    border-radius: 50%;
 }
