@@ -126,7 +126,9 @@ namespace CASNApp.Admin
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}")
+                    .RequireAuthorization(); // require authn for all controllers not opted out w/ [AllowAnonymous]
+
                 endpoints.MapRazorPages();
             });
         }
