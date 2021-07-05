@@ -22,7 +22,7 @@ li {
     border-radius: 8px;
     padding: 16px;
 
-    &.tel {
+    &.special-link {
         background: $primary-color-med;
         padding: 8px 16px;
 
@@ -38,7 +38,7 @@ a {
     color: $primary-color-med;
 }
 
-.tel-icon {
+.link-icon {
     display: flex;
     justify-content: center;
     align-items: center;

@@ -5,7 +5,14 @@ export interface Link {
   title?: string;
   target?: string;
   url?: string;
-  useTelLinkStyle: boolean;
+  linkStyle: LinkStyle;
+}
+
+enum LinkStyle {
+  Http,
+  Tel,
+  Sms,
+  Mailto
 }
 
 @Component({
@@ -16,6 +23,8 @@ export interface Link {
 export class LinksPageComponent implements OnInit {
 
   links: Link[] = [];
+  // NOTE: Declared here simply so the template can reference it
+  linkStyleType = LinkStyle;
 
   constructor( private defaultService: DefaultApiService ) { }
 
@@ -33,10 +42,18 @@ export class LinksPageComponent implements OnInit {
           title: l.title,
           target: l.target,
           url: l.url,
-          useTelLinkStyle: l.url && l.url.startsWith('tel'),
+          linkStyle: this.getLinkStyle(l.url)
         };
       });
     });
   }
 
+  getLinkStyle(url: string): LinkStyle {
+    if(url.startsWith('http')) return LinkStyle.Http;
+    if(url.startsWith('tel')) return LinkStyle.Tel;
+    if(url.startsWith('sms')) return LinkStyle.Sms;
+    if(url.startsWith('mailto')) return LinkStyle.Mailto;
+
+    return LinkStyle.Http;
+  }
 }
