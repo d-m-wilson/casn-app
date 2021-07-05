@@ -381,7 +381,7 @@ namespace CASNApp.API.Controllers
             }
 
             var query = new LinkQuery(dbContext);
-            var links = await query.GetActiveLinksAsync(true);
+            var links = await query.GetLinksAsync(true, false);
 
             var linkDTOs = links.Select(l => new Core.Models.Link(l))
                 .ToList();

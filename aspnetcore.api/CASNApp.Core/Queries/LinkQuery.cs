@@ -15,10 +15,10 @@ namespace CASNApp.Core.Queries
             this.dbContext = dbContext;
         }
 
-        public Task<List<Link>> GetActiveLinksAsync(bool readOnly)
+        public Task<List<Link>> GetLinksAsync(bool readOnly, bool includeInactive)
         {
             var result = (readOnly ? dbContext.Links.AsNoTracking() : dbContext.Links)
-                .Where(e => e.IsActive)
+                .Where(e => includeInactive || e.IsActive)
                 .OrderBy(e => e.DisplayOrdinal)
                 .ThenBy(e => e.Title)
                 .ToListAsync();

@@ -1,0 +1,58 @@
+﻿@model CASNApp.Core.Entities.Link
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Link</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Url" class="control-label"></label>
+                <p id="url-hint"
+                   class="input-hint">
+                    Ex:&nbsp;&nbsp;&nbsp;<samp>https://example.com</samp>&nbsp;&nbsp;&nbsp;<samp>tel:+1-555-555-1111</samp>
+                </p>
+                <input asp-for="Url" class="form-control" aria-describedby="url-hint" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Target" class="control-label"></label>
+                <input asp-for="Target" class="form-control" list="targets" />
+                <datalist id="targets">
+                    <option value="_self" />
+                    <option value="_blank" />
+                    <option value="_parent" />
+                    <option value="_top" />
+                </datalist>
+                <span asp-validation-for="Target" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DisplayOrdinal" class="control-label"></label>
+                <input asp-for="DisplayOrdinal" class="form-control" />
+                <span asp-validation-for="DisplayOrdinal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
