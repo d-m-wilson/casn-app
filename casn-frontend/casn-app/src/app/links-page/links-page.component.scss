@@ -28,7 +28,6 @@ li {
     border: 1px solid rgba($border-color, 0.4);
     box-shadow: 1px 1px 4px 0 rgba($border-color, 0.2);
     border-radius: 8px;
-    padding: 16px;
 
     &.special-link {
         background: $primary-color-med;
@@ -38,12 +37,18 @@ li {
             color: $white;
         }
     }
+
+    &:hover {
+        box-shadow: 1px 1px 5px 0 rgba($border-color, 0.4);
+    }
 }
 
 a {
     text-decoration: none;
     font-weight: 500;
     color: $primary-color-med;
+    padding: 16px;
+    width: 100%;
 }
 
 .link-icon {
