@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DefaultApiService } from '../api/api/defaultApi.service';
 import { Constants } from '../app.constants';
 import { DatePipe } from '@angular/common';
+import { DateUtilityService } from '../shared/utils/date-utility.service';
 
 @Component({
   selector: 'app-rides',
   templateUrl: './rides.component.html',
   styleUrls: ['./rides.component.scss']
 })
-export class RidesComponent implements OnInit {
+export class RidesComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   objectKeys: any = Object.keys;
   userRole: string;
+
   startDate: string;
   startDateLong: Date;
   endDate: string;
@@ -26,13 +28,15 @@ export class RidesComponent implements OnInit {
 
   /************** Settings Modal **************/
   showSettingsModal: boolean = false;
-  showDateFilters: boolean = false;
+  showDateFilters: boolean;
   // For showing badges on date filter cards
   dateFilterProperties: any = {};
-  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled
-  displayRides: boolean[] = [true, true, true, true];
+  // Display flags for rides. 0=open, 1=pending, 2=approved, 3=cancelled, 4=rideshare
+  displayRides: boolean[] = [true, true, true, true, true];
+  activeTab: string = "all";
   // Display flags for service providers
   displayServiceProviders: any = {};
+  allProvidersDisplayed: boolean = true;
 
   /************** Ride Modal **************/
   displayRideModal: boolean = false;
@@ -42,28 +46,48 @@ export class RidesComponent implements OnInit {
   /*************** Map Modal *************/
   displayMapModal: boolean = false;
 
+  dateUtilSubscription;
+
   /*********************************************************************
                       Constructor, Lifecycle Hooks
   **********************************************************************/
   constructor( private ds: DefaultApiService,
                public constants: Constants,
-               private datePipe: DatePipe ) { }
+               private datePipe: DatePipe,
+               private dateUtils: DateUtilityService ) { }
 
   ngOnInit() {
     this.userRole = localStorage.getItem("userRole");
-    this.setDateRange();
+    this.getDateConfig();
     this.getAppointmentTypes();
     this.getServiceProviders();
-    this.getRides();
     this.getDriveStatuses();
 
-    const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters"));
+    const showDateFilters = JSON.parse(localStorage.getItem("showDateFilters")) ?? true;
     if(showDateFilters) this.toggleDateFilters();
+  }
+
+  ngOnDestroy() {
+    this.dateUtilSubscription.unsubscribe();
   }
 
   /*********************************************************************
                             Service Calls
   **********************************************************************/
+  getDateConfig(): void {
+    this.dateUtils.setDateRange();
+    // TODO: Put this in a config object & type-check it
+    this.dateUtilSubscription = this.dateUtils.dateConfig.subscribe(d => {
+      this.startDate = d.startDate;
+      this.startDateLong = d.startDateLong;
+      this.endDate = d.endDate;
+      this.endDateLong = d.endDateLong;
+      this.datesToDisplay = d.datesToDisplay;
+      this.activeDate = d.activeDate;
+      this.getRides();
+    });
+  }
+
   getDriveStatuses(): void {
     this.ds.getDriveStatuses().subscribe(s => {
       this.driveStatuses = s.map(i => i.name);
@@ -116,7 +140,7 @@ export class RidesComponent implements OnInit {
   /*********************************************************************
                               Click Handlers
   **********************************************************************/
-  toggleRideModal(ride?: any, isDriveTo?: boolean): void {
+  toggleRideModal(isDriveTo?: boolean, ride?: any): void {
     this.displayRideModal = !this.displayRideModal;
     ride ? this.rideModalContent = ride : this.rideModalContent = null;
     this.showRideModalDriveTo = isDriveTo;
@@ -150,10 +174,19 @@ export class RidesComponent implements OnInit {
     this.ridesToDisplay = this.rides;
   }
 
+  toggleDisplayServiceProviders(showProviders: boolean): void {
+    // NOTE: All courthouses are displayed/hidden with a single toggle.
+    // The rest of the service providers are toggled on/off individually.
+    this.displayServiceProviders['courthouses'] = showProviders;
+    this.objectKeys(this.serviceProviders).forEach(s => {
+      if (s.serviceProviderTypeId !== 2) this.displayServiceProviders[s] = showProviders;
+    });
+    this.allProvidersDisplayed = showProviders;
+  }
+
   handleChangeWeekClick(changeType: string): void {
-    if(changeType === 'prev') this.setDateRange(this.addDays(this.endDateLong, -7));
-    if(changeType === 'next') this.setDateRange(this.addDays(this.endDateLong, 7));
-    this.getRides();
+    if(changeType === 'prev') this.dateUtils.setDateRange(this.dateUtils.addDays(this.endDateLong, -7));
+    if(changeType === 'next') this.dateUtils.setDateRange(this.dateUtils.addDays(this.endDateLong, 7));
   }
 
   onMapDriveDetailsClick(event: any): void {
@@ -161,54 +194,30 @@ export class RidesComponent implements OnInit {
     this.toggleRideModal(event.ride, isDriveTo);
   }
 
+  setActiveTab(tabName: string) {
+    this.activeTab = tabName;
+    /* Display flags for rides. 0=open/unstaffed, 1=pending, 2=approved, 3=cancelled
+       Though we have a 3 or "cancelled" status, there is no tab to
+       display only cancelled drives. They'll only be shown under "All" */
+    // TODO: Possibly refactor, array may not be most appropriate data structure anymore
+    switch(tabName) {
+      case 'unstaffed':
+        this.displayRides = [true, false, false, false, false];
+        break;
+      case 'pending':
+        this.displayRides = [false, true, false, false, false];
+        break;
+      case 'approved':
+        this.displayRides = [false, false, true, false, false];
+        break;
+      default:
+       this.displayRides = [true, true, true, true, true];
+    }
+  }
+
   /*********************************************************************
                                 Utilities
   **********************************************************************/
-  setDateRange(date?: any): void {
-    const currentDate = date || new Date();
-    this.startDateLong = this.addDays(currentDate, -currentDate.getDay());
-    this.startDate = this.datePipe.transform(this.startDateLong, 'yyyy-MM-dd');
-    this.endDateLong = this.addDays(this.startDate, 7);
-    this.endDate = this.datePipe.transform(this.endDateLong, 'yyyy-MM-dd');
-    this.getDatesForDateRange();
-    this.activeDate = null;
-  }
-
-  private addDays(date, days) {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-  }
-
-  private getDatesForDateRange(): void {
-    this.datesToDisplay = [];
-    let currentDate = new Date(this.startDateLong);
-    for(let i = 0; i < 7; i++) {
-      this.datesToDisplay.push(this.datePipe.transform(currentDate, 'yyyy-MM-dd'));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  }
-
-  getStatusIcon(status: number): string {
-    switch(status) {
-      case 0: return "panorama_fish_eye";
-      case 1: return "timelapse";
-      case 2: return "check_circle";
-      case 3: return "block"
-      default: return "";
-    }
-  }
-
-  getStatusText(status: number): string {
-    switch(status) {
-      case 0: return "Apply Now!";
-      case 1: return "Pending";
-      case 2: return "Approved";
-      case 3: return "Canceled"
-      default: return "";
-    }
-  }
-
   updateDateFilterProperties(): void {
     this.datesToDisplay.forEach(d => {
       this.dateFilterProperties[d] = {};

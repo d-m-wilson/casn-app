@@ -5,13 +5,66 @@ main {
   flex-direction: column;
   min-height: 90vh;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 1.2em;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.logo-container {
+  border-radius: 100%;
+  background-color: $white;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn-dash {
-  width: 250px;
-  height: 90px;
+  width: 215px;
+  height: 55px;
   border-radius: 50px;
-  background: $primary-color;
-  border: 2px solid;
+  background: #3546C7;
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 18px;
+
+  &.alt-color {
+    background: #A60B84;
+  }
+
+  .flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.mr-10 {
+  margin-right: 10px;
+}
+
+.new-btn-style {
+  border-radius: 3px;
+  box-shadow: none;
+  padding: 4px 40px;
+  margin-top: 24px;
+}
+
+.mat-card {
+  max-width: 308px;
+  padding: 0;
+
+  .mat-card-content {
+    margin: 20px;
+    text-align: center;
+    font-size: 16px;
+  }
 }

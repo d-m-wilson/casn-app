@@ -1,13 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Pre-built Angular Material themes */
-/* @import '~@angular/material/prebuilt-themes/deeppurple-amber.css'; */
-/* @import '~@angular/material/prebuilt-themes/purple-green.css'; */
-/* @import '~@angular/material/prebuilt-themes/pink-bluegrey.css'; */
-/* @import '~@angular/material/prebuilt-themes/indigo-pink.css'; */
-
 /* ng-datetime-picker */
 @import "~@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+
 @import './variables';
 
 /********************************************************************
@@ -26,6 +19,7 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  letter-spacing: 0.25px;
 }
 
 .mat-badge-content {
@@ -56,6 +50,24 @@ body {
   text-align: center;
 }
 
+.text-small {
+  font-size: 13px;
+}
+
+.text-light {
+  color: rgba($body-color, 0.5);
+  font-weight: 500;
+}
+
+.text-heavy {
+  font-weight: 500;
+}
+
+.checkbox-container {
+  margin-bottom: 10px;
+  font-size: 11px;
+}
+
 /*******************************************************************
                         Buttons, Mat-Buttons
 ********************************************************************/
@@ -67,13 +79,54 @@ body {
 }
 
 .mat-raised-button.btn-cta {
-  width: 100%;
-  height: 65px;
+  min-width: 250px;
   border-radius: 50px;
-  border: 2px solid;
+  background-color: $primary-color-dark;
+  color: $white;
+  font-weight: bold;
+  box-shadow: none;
+
+  &.flex {
+    min-width: 0;
+    display: flex;
+    flex-grow: 1;
+    margin: 0 10px;
+    justify-content: center;
+  }
+
+  &.secondary {
+    font-weight: normal;
+    background-color: #F3F5FF;
+    color: #495dee;
+  }
 
   &.warn {
-    background-color: $error-color;
+    font-weight: normal;
+    background-color: $error-color-faded;
+    color: $error-color;
+
+    &.no-bg {
+      background: none;
+    }
+  }
+
+  &.cancel {
+    background-color: #DC5E71;
+    color: $white;
+  }
+
+  &.outline {
+    font-weight: normal;
+    background: none;
+    border: 1px solid rgba($body-color, 0.5);
+    color: rgba($body-color, 0.5);
+  }
+
+  &.primary-outline {
+    font-weight: normal;
+    background: none;
+    border: 1px solid $primary-color-dark;
+    color: $primary-color-dark;
   }
 }
 
@@ -111,17 +164,47 @@ body {
   background-color: rgba(0,0,0,0.4);
 }
 
-.modal-title {
-  text-align: center;
+.modal--hide {
+  display: none;
 }
 
 .modal-content {
-  border-radius: 15px;
-  background: $modal-background-color;
+  border-radius: 5px;
+  background: $white;
   color: $body-color;
   margin: 5px auto;
-  padding: 10px;
   width: 90%;
+}
+
+.modal-title {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: #F3F5FF;
+  border-bottom: 1px solid rgba(#4758CE, 0.7);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin: 0;
+
+  &.no-bg {
+    background: none;
+    border: none;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  h3 {
+    margin: 0;
+    margin-top: 4px;
+  }
+}
+
+.modal-body {
+  padding: 15px 20px;
 }
 
 .modal-ctrl-btns {
@@ -130,10 +213,8 @@ body {
 }
 
 .close {
-  color: $body-color;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+  color: #4758CE;
+  font-size: 12px;
 }
 
 .close:hover, .close:focus {

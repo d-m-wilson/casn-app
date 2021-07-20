@@ -24,8 +24,10 @@ export class RideDetailModalComponent implements OnInit {
   volunteers: any[];
   // Details for Cancel Drive Modal
   showCancelDriveModal: boolean = false;
-  driveToCancel: string;
+  driveId: string;
   callerContactLink: string;
+  // Details for Rideshare Modal
+  showRideshareModal: boolean = false;
 
   constructor( private ds: DefaultApiService,
                private driverService: DriverApiService,
@@ -40,6 +42,7 @@ export class RideDetailModalComponent implements OnInit {
     this.getAppointmentTypes();
     this.getServiceProviders();
     this.driveType = this.isDriveTo ? 'driveTo' : 'driveFrom';
+    this.driveId = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.constructContactNumber();
   }
 
@@ -73,7 +76,6 @@ export class RideDetailModalComponent implements OnInit {
     this.dispatcherService.getVolunteerDrives(id).subscribe(
       res => {
         if(res.length > 0) this.volunteers = res;
-        console.log("Volunteers", this.volunteers);
       },
       err => {
         // TODO: Handle error
@@ -123,13 +125,12 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   handleCancelDriveClick() {
-    this.driveToCancel = this.isDriveTo ? this.ride.driveTo.id : this.ride.driveFrom.id;
     this.showCancelDriveModal = true;
   }
 
-  hideCancelDriveModal(update?: boolean) {
-    this.driveToCancel = null;
+  hideModal(update?: boolean) {
     this.showCancelDriveModal = false;
+    this.showRideshareModal = false;
     if(update) this.closeRideModalAndUpdateClick.emit(true);
   }
 
@@ -212,8 +213,9 @@ export class RideDetailModalComponent implements OnInit {
   }
 
   get driveIsApproved() {
-    const driverId = this.ride[this.driveType].driverId
-    return !!driverId;
+    const driverId = this.ride[this.driveType].driverId;
+    const isRideshare = this.ride[this.driveType].statusId === 4;
+    return !!driverId || isRideshare;
   }
 
   getAppointmentEndTime(apptTime, apptType) {

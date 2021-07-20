@@ -1,11 +1,29 @@
+@import "../styles/variables";
+
+$footer-height: 60px;
+$review-card-height: 100px;
+$review-card-spacer: 15px;
+$review-icon-width: 14px;
+
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: ($footer-height * 2);
 }
 
 h1 {
   font-size: 1.2rem;
+  text-align: center;
+
+  &.summary {
+    text-align: left;
+  }
+}
+
+h2 {
+  font-size: 0.8rem;
+  text-align: center;
 }
 
 form {
@@ -20,6 +38,12 @@ form {
   margin: 10px;
 }
 
+.btn-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .mat-form-field, .mat-checkbox {
   margin: 5px 0;
 }
@@ -30,8 +54,32 @@ form {
 
 
 .form-actions {
+  box-sizing: border-box;
+  background: $white;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  border-top: 1px solid #ccc;
+  width: 100%;
+  padding: 0 8px;
+  height: $footer-height;
+}
+
+.next-btn {
+  margin: 8px;
+}
+
+.back-btn {
+  margin: 8px;
+  min-width: 0;
+}
+
+.btn-cta.flex {
+  flex-grow: 0
 }
 
 .hide {
@@ -39,6 +87,58 @@ form {
 }
 
 .review-card {
-  text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: $review-card-spacer;
+  flex-grow: 1;
+
+  &.fixed-height {
+    height: $review-card-height;
+  }
+
+  .info-group {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.card-icon-group {
+  display: flex;
+  justify-content: space-between;
+
+  .icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .icon-container {
+    border-radius: 100%;
+    padding: 3px;
+    width: $review-icon-width;
+    height: $review-icon-width;
+    margin-right: 8px;
+
+    &.primary {
+      color: $primary-color-dark;
+      background: $primary-color;
+    }
+
+    &.secondary {
+      color: $error-color;
+      background: $error-color-faded;
+    }
+  }
+
+  .icon-connector-line {
+    width: $review-icon-width / 2;
+    border-left: 1px solid #ccc;
+    height: $review-card-height + ($review-card-spacer * 2);
+  }
+}
+
+.icon-small {
+  font-size: 14px;
+}
+
+.align-right {
+  text-align: right;
 }

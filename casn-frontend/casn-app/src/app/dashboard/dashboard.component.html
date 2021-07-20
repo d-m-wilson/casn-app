@@ -1,15 +1,37 @@
-<main>
+<main *ngIf="!quoteIsDismissed">
+  <h1>Welcome Back!</h1>
+  <mat-card>
+    <img src="assets/img/welcome_hero.svg" alt="Cartoon hero">
+    <mat-card-content>
+      {{ welcomeMessage }}
+    </mat-card-content>
+  </mat-card>
+  <button mat-raised-button
+          color="primary"
+          class="new-btn-style"
+          (click)="dismissQuote()">Dismiss</button>
+</main>
+
+<main *ngIf="quoteIsDismissed">
+  <div class="logo-container mat-elevation-z2">
+    <img src="assets/img/casn_logo_butterfly_only.svg" alt="CASN logo">
+  </div>
+  <h1 class="mb-24">Welcome Back!</h1>
   <button class="btn-dash"
           mat-raised-button
           color="primary"
           routerLink="/caller"
           [disabled]="userRole === '2'">
-          <mat-icon>departure_board</mat-icon> Schedule a Ride
+          <div class="flex-container">
+            <mat-icon class="mr-10" svgIcon="casn_car">car</mat-icon> Schedule Ride
+          </div>
   </button>
-  <button class="btn-dash"
+  <button class="btn-dash alt-color"
           mat-raised-button
           color="primary"
           routerLink="/view-schedule">
-          <mat-icon>event_note</mat-icon> View Schedule
+          <div class="flex-container">
+            <mat-icon class="mr-10" svgIcon="casn_calendar">calendar</mat-icon> View Schedule
+          </div>
   </button>
 </main>

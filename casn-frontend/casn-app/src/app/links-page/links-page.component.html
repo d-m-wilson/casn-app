@@ -1,0 +1,16 @@
+<section>
+    <h1>Important Links</h1>
+    <ul>
+        <ng-container *ngFor="let l of links">
+            <li [ngClass]="{ 'special-link': l.linkStyle !== linkStyleType.Http }">
+                <div *ngIf="l.linkStyle !== linkStyleType.Http" class="link-icon">
+                    <mat-icon *ngIf="l.linkStyle === linkStyleType.Tel">phone</mat-icon>
+                    <mat-icon *ngIf="l.linkStyle === linkStyleType.Sms">sms</mat-icon>
+                    <mat-icon *ngIf="l.linkStyle === linkStyleType.Mailto">email</mat-icon>
+                </div>
+                <a [attr.href]="(l.url ? l.url : null) | safeUrl"
+                   [attr.target]="l.target ? l.target : null">{{ l.title || "Link" }}</a>
+            </li>
+        </ng-container>
+    </ul>
+</section>

@@ -1,0 +1,19 @@
+h1 {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  .mat-raised-button {
+    flex-grow: 0;
+  }
+}
+
+.rideshare-info {
+  padding: 0 1rem;
+}

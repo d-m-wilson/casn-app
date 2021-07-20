@@ -1,0 +1,28 @@
+<!--********************************************************************
+                            Rideshare Modal
+**********************************************************************-->
+<div class="modal">
+  <div class="modal-content">
+    <div class="modal-title no-bg">
+      <h1>Set as Rideshare</h1>
+      <span class="text-light"
+            (click)="handleCloseModalClick()"><i class="fas fa-times"></i></span>
+    </div>
+    <div class="rideshare-info">
+      <p>This drive will be set as rideshare and <em>cannot</em> be reversed.</p>
+    </div>
+    <!--=========== Modal Actions ============-->
+    <div class="mt modal-actions">
+      <button type="button"
+              mat-raised-button
+              class="btn-cta outline flex"
+              (click)="handleCloseModalClick()"
+              color="accent">Cancel</button>
+      <button type="button"
+              class="btn-cta flex"
+              mat-raised-button
+              (click)="markDriveAsRideshare()"
+              color="primary">Set Rideshare</button>
+    </div>
+  </div>
+</div>

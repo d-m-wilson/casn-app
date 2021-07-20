@@ -1,49 +1,181 @@
 @import '../styles/variables';
 
+a {
+  text-decoration: none;
+  color: $pending-color;
+}
+
+address {
+  font-style: normal;
+  line-height: 20px;
+  margin-top: 5px;
+}
+
 h1 {
   font-size: 1rem;
   text-align: center;
 }
 
-.appointment-card {
-  text-align: center;
+/****************************************************************
+                          Modal Styles
+****************************************************************/
+.modal-title {
+  border-bottom: none; /* use tabs border instead */
+  padding-bottom: 0;
 }
 
-.edit-card {
+.ride-card {
+  width: 100%;
+}
+
+.drive-container {
   display: flex;
-  align-items: center;
-  // justify-content: space-evenly;
   justify-content: space-between;
-  text-align: left;
+  padding: 12px 0;
 }
 
-.edit-btn {
-  margin-left: 10px;
-}
-
-.modal-actions {
+.icon-container {
+  background-color: #E2E4F7;
+  color: $primary-color-dark;
   display: flex;
+  border-radius: 100%;
+  width: 25px;
+  height: 20px;
   justify-content: center;
-  padding-top: 1rem;
-}
-
-.modal-actions-cancel {
-  display: flex;
-  justify-content: space-evenly;
-  padding-top: 1rem;
-}
-
-.volunteer-container {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.info-row {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #ccc;
+  align-items: center;
 }
 
 .approved {
   color: $success-color;
 }
 
+.label {
+  min-width: 60px;
+  max-width: 60px;
+  margin-right: 16px;
+}
+
+.label--volunteer {
+  padding-top: 10px;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #ccc;
+}
+
 agm-map {
   height: 400px;
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .btn-cta {
+    margin-top: 10px;
+  }
+}
+
+.modal-actions-cancel {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/****************************************************************
+                      Volunteers Section
+****************************************************************/
+.volunteer-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.volunteer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+
+  div {
+    display: flex;
+  }
+
+  .approved {
+    background-color: $success-color;
+    color: $white;
+    border-radius: 50px;
+    padding: 10px;
+    margin-right: 5px;
+  }
+
+  .retract {
+    border-radius: 100%;
+    font-weight: 600;
+    background-color: #DC5E71;
+    color: white;
+    width: 25px;
+    height: 25px;
+    padding: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.volunteer-btn {
+  border-radius: 50px;
+  font-weight: normal;
+  font-weight: normal;
+  padding: 0 10px;
+  min-width: 0;
+
+  &.approve {
+    background-color: $success-color-faded;
+    color: $success-color;
+  }
+
+  &.deny {
+    background-color: $error-color-faded;
+    color: $error-color;
+  }
+
+  &.retract {
+    background-color: #A60B84;
+    color: $white;
+  }
+}
+
+.rideshare {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+
+  span {
+    font-size: 0.8em;
+    font-weight: normal;
+    margin-right: 6px;
+  }
+}
+
+.rideshare-text {
+  color: $rideshare-color;
+  font-weight: bold;
 }

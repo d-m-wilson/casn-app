@@ -1,141 +1,167 @@
-<!--********************************************************************
-                          Ride Detail Modal
-**********************************************************************-->
 <div class="modal" *ngIf="ride && serviceProviders && apptTypes">
   <div class="modal-content">
-    <span class="close"
-          (click)="handleCloseModalClick()">x</span>
-    <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
-    <mat-tab-group mat-align-tabs="center" class="candy-tab-group">
-      <mat-tab label="Details">
-        <!--=========== Appt Card ============-->
-        <mat-card class="appointment-card candy-card"
-                  [ngClass]="{ 'edit-card': userRole === '1' }">
-          <div>
-            <span class="bolder">{{ ride.appointment.appointmentDate | date:'MMM d, y, h:mm a'}}</span><br>
-            <span class="bold">at {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
-          </div>
-            <button *ngIf="userRole === '1'"
-                    class="edit-btn"
-                    mat-mini-fab
-                    color="accent"
-                    (click)="editAppointment()"><mat-icon>edit</mat-icon></button>
-        </mat-card>
-        <!--=========== Caller Info ============-->
-        <mat-expansion-panel expanded class="mt candy-expansion-panel">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Caller Information</mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-list>
-            <mat-list-item *ngIf="userRole === '2' && !ride.caller.phone">
-              <em>The caller's contact info will be available once you are approved for the drive!</em>
-            </mat-list-item>
-            <mat-list-item *ngIf="ride.caller.firstName">
-              <mat-icon mat-list-icon>account_circle</mat-icon>
-              <h4 mat-line>{{ ride.caller.firstName }} {{ ride.caller.lastName }}</h4>
-            </mat-list-item>
-            <mat-list-item *ngIf="ride.caller.phone">
-              <mat-icon mat-list-icon>{{ ride.caller.preferredContactMethod === 1 ? 'textsms' : 'phone' }}</mat-icon>
-              <h4 mat-line>
-                <a [href]="callerContactLink | safeUrl">{{ ride.caller.phone | phone }}</a>
-              </h4>
-            </mat-list-item>
-            <mat-list-item *ngIf="ride.caller.preferredLanguage !== 'English'">
-              <mat-icon mat-list-icon>speaker_notes</mat-icon>
-              <h4 mat-line>Preferred Language</h4>
-              <p mat-line>{{ ride.caller.preferredLanguage }}</p>
-            </mat-list-item>
-            <mat-list-item *ngIf="ride.caller.isMinor">
-              <mat-icon mat-list-icon>report</mat-icon>
-              <h4 mat-line>Caller is a minor</h4>
-            </mat-list-item>
-          </mat-list>
-        </mat-expansion-panel>
-        <!--=========== Caller Notes ============-->
-        <mat-expansion-panel expanded
-                             class="mt candy-expansion-panel"
-                             *ngIf="ride.caller.note">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Notes from Dispatcher</mat-panel-title>
-          </mat-expansion-panel-header>
-          <p>{{ ride.caller.note }}</p>
-        </mat-expansion-panel>
-        <!--=========== Pick Up Info ============-->
-        <mat-card class="mt candy-card">
-          <mat-card-subtitle>
-            Pick up caller {{ ride.caller.callerIdentifier }} by<span *ngIf="!isDriveTo"> <br>{{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }} at {{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>:
-          </mat-card-subtitle>
-          <!-- NOTE: Conditional tests if real address available -->
-          <a *ngIf="ride[driveType].startPostalCode; else startAddress"
-             [href]="startAddressGoogleMapLink"
-             target="_blank">
-            <address>
-              {{ ride[driveType].startAddress }}<br>
-              {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
-            </address>
-          </a>
-        </mat-card>
-        <!--=========== Drop Off Info ============-->
-        <mat-card class="mt candy-card">
-          <mat-card-subtitle>
-            Drop off at<span *ngIf="isDriveTo"> {{ serviceProviders[ride.appointment.serviceProviderId].name }} by {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span>:
-          </mat-card-subtitle>
-          <!-- NOTE: Conditional tests if real address available -->
-          <a *ngIf="ride[driveType].endPostalCode; else endAddress"
-             [href]="endAddressGoogleMapLink"
-             target="_blank">
-            <address>
-              {{ ride[driveType].endAddress }}<br>
-              {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
-            </address>
-          </a>
-        </mat-card>
-        <!--=========== Volunteers ============-->
-        <mat-card *ngIf="volunteers && !driveIsApproved && userRole === '1'" class="mt candy-card">
-          <span class="bolder">Volunteers</span>
-          <div *ngFor="let v of volunteers" class="volunteer-container">
-            {{ v.firstName }} {{ v.lastName }}
-            <div>
-              <button type="button"
-                      [style.margin-right.px]="5"
-                      mat-raised-button
-                      color="warn"
-                      (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
-              <button type="button"
-                      mat-raised-button
-                      (click)="handleApproveClick(v.id)"
-                      color="primary">Approve</button>
-            </div>
-          </div>
-        </mat-card>
-        <mat-card *ngIf="driveIsApproved && userRole === '1'" class="mt candy-card">
-          <span class="bolder">Volunteers</span>
-          <ng-container *ngFor="let v of volunteers">
-            <div *ngIf="v.volunteerId === ride[driveType].driverId"
-                 class="volunteer-container">
-              {{ v.firstName }} {{ v.lastName }}
-              <span class="approved"><mat-icon>done</mat-icon>Approved</span>
-            </div>
-            <div class="text-center">
-              <button *ngIf="v.volunteerId === ride[driveType].driverId"
-                      [style.margin-top.px]="10"
-                      type="button"
-                      mat-raised-button
-                      color="warn"
-                      (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><mat-icon>cancel</mat-icon> Retract {{ v.firstName }}'s Application</button>
-            </div>
-          </ng-container>
-        </mat-card>
-        <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">
-          <span class="bolder">This drive has already been approved :).</span>
-        </mat-card>
-        <mat-card *ngIf="userRole === '2' && ride[driveType].statusId === 1" class="mt candy-card">
-          <span class="bolder">Thanks, you've applied for this drive! Your application is awaiting dispatcher approval.</span>
-          <br><br>
 
-        </mat-card>
+    <!--********************************************************************
+                                Modal Title
+    **********************************************************************-->
+    <div class="modal-title">
+      <h1>{{ ride.caller.callerIdentifier }}'s {{ apptTypes[ride.appointment?.appointmentTypeId].title }}</h1>
+      <span class="text-light"
+            (click)="handleCloseModalClick()"><i class="fas fa-times"></i></span>
+    </div>
+    <mat-tab-group mat-align-tabs="center"
+                   class="candy-tab-group">
+
+      <!--********************************************************************
+                                Detail View Tab
+      **********************************************************************-->
+      <mat-tab label="Details">
+        <div class="modal-body">
+
+          <!--=========== Appt Info ============-->
+          <div class="info-row text-small">
+            <span class="text-light label">Location</span>
+            <span>{{ serviceProviders[ride.appointment.serviceProviderId].name }}</span>
+          </div>
+          <div class="info-row text-small">
+            <span class="text-light label">Date</span>
+            <span>{{ ride.appointment.appointmentDate | date:'MMMM d, y'}}</span>
+          </div>
+
+          <!--=========== Pick Up Info ============-->
+          <div class="mt drive-container text-small">
+            <div class="label">
+              <div class="icon-container">
+                <mat-icon>place</mat-icon>
+              </div>
+            </div>
+            <div class="ride-card">
+              <span class="bold">Pick up </span><span *ngIf="!isDriveTo">&ndash; {{ getAppointmentEndTime(ride.appointment.appointmentDate, ride.appointment.appointmentTypeId) | date:'shortTime' }}</span><br>
+              <!-- NOTE: This conditional tests if real address is available
+                  (exact address is hidden from non-approved drivers for privacy) -->
+              <a *ngIf="ride[driveType].startPostalCode; else startAddress"
+                 [href]="startAddressGoogleMapLink"
+                 target="_blank">
+                <address>
+                  {{ ride[driveType].startAddress }}<br>
+                  {{ ride[driveType].startCity }} {{ ride[driveType].startState }} {{ ride[driveType].startPostalCode }}
+                </address>
+              </a>
+            </div>
+          </div>
+
+          <!--=========== Drop Off Info ============-->
+          <div class="mt drive-container text-small border-bottom">
+            <div class="label">
+              <div class="icon-container">
+                <mat-icon>place</mat-icon>
+              </div>
+            </div>
+            <div class="ride-card">
+              <span class="bold">Drop off </span><span *ngIf="isDriveTo">&ndash; {{ ride.appointment?.appointmentDate | date:'shortTime'}}</span><br>
+              <!-- NOTE: This conditional tests if real address is available
+                  (exact address is hidden from non-approved drivers for privacy) -->
+              <a *ngIf="ride[driveType].endPostalCode; else endAddress"
+                 [href]="endAddressGoogleMapLink"
+                 target="_blank">
+                <address>
+                  {{ ride[driveType].endAddress }}<br>
+                  {{ ride[driveType].endCity }} {{ ride[driveType].endState }} {{ ride[driveType].endPostalCode }}
+                </address>
+              </a>
+            </div>
+          </div>
+
+          <!--=========== Caller Info ============-->
+            <div class="info-row text-small" *ngIf="userRole === '2' && !ride.caller.phone">
+              <em>The caller's contact info will be available once you are approved for the drive!</em>
+            </div>
+            <div class="info-row text-small" *ngIf="ride.caller.firstName">
+              <span class="text-light label">Caller Name</span>
+              <span>{{ ride.caller.firstName }} {{ ride.caller.lastName }}</span>
+            </div>
+            <div class="info-row text-small" *ngIf="ride.caller.phone">
+              <span class="text-light label">Phone Number</span>
+              <a [href]="callerContactLink | safeUrl">{{ ride.caller.phone | phone }}</a>
+            </div>
+            <div class="info-row text-small" *ngIf="ride.caller.preferredLanguage !== 'English'">
+              <span class="text-light label">Alert</span>
+              <em>Preferred Language is {{ ride.caller.preferredLanguage }}</em>
+            </div>
+            <div class="info-row text-small" *ngIf="ride.caller.isMinor">
+              <span class="text-light label">Alert</span>
+              <em>Caller is a minor</em>
+            </div>
+          <div class="info-row text-small">
+            <span class="text-light label">Notes</span><br>
+            <span>{{ ride.caller.note || 'N/A'}}</span>
+          </div>
+
+          <!--=========== Volunteer Info ============-->
+          <!-- Dispatcher view: volunteer(s), but no one approved yet -->
+          <div *ngIf="!driveIsApproved && userRole === '1'"
+               class="info-row text-small">
+            <span class="text-light label label--volunteer">Volunteers</span>
+            <div class="volunteer-wrapper">
+              <div *ngFor="let v of volunteers" class="volunteer-container">
+                <a [href]="('sms:+1' + v.mobilePhone) | safeUrl">{{ v.firstName }} {{ v.lastName }}</a>
+                <div>
+                  <button type="button"
+                          class="volunteer-btn approve text-small"
+                          mat-button
+                          [style.margin-right.px]="5"
+                          (click)="handleApproveClick(v.id)">Approve</button>
+                  <button type="button"
+                          class="volunteer-btn deny text-small"
+                          mat-button
+                          (click)="handleDenyClick(v.id, v.firstName)">Deny</button>
+                </div>
+              </div>
+              <div class="rideshare text-small text-light">
+                <span>Set as rideshare</span> <mat-slide-toggle [(ngModel)]="showRideshareModal"></mat-slide-toggle>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dispatcher view: a volunteer has been approved -->
+          <div *ngIf="driveIsApproved && userRole === '1'"
+               class="info-row text-small">
+            <span class="text-light label">Volunteers</span>
+            <div *ngIf="ride[driveType].statusId === 4"
+                 class="volunteer-container">
+              <span class="rideshare-text">Rideshare</span>
+            </div>
+            <ng-container *ngFor="let v of volunteers">
+              <div *ngIf="v.volunteerId === ride[driveType].driverId"
+                   class="volunteer-container">
+                <a [href]="('sms:+1' + v.mobilePhone) | safeUrl">{{ v.firstName }} {{ v.lastName }}</a>
+                <div>
+                  <span class="approved">Approved</span>
+                  <span *ngIf="v.volunteerId === ride[driveType].driverId"
+                        class="clicky retract text-small"
+                        (click)="handleUnapproveClick(ride[driveType].id, v.firstName)"><i class="fas fa-times"></i></span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <!-- Driver view: a volunteer has been approved -->
+          <mat-card *ngIf="userRole === '2' && driveIsApproved" class="mt candy-card">
+            <span class="bolder">This drive has already been approved :).</span>
+          </mat-card>
+
+          <!-- Driver view: the current user has applied, but has not been approved yet -->
+          <!-- NOTE: Drives will only appear "pending" to drivers if they've applied themselves -->
+          <mat-card *ngIf="userRole === '2' && ride[driveType].statusId === 1" class="mt candy-card">
+            <span class="bolder">Thanks, you've applied for this drive! Your application is awaiting dispatcher approval.</span>
+            <br><br>
+          </mat-card>
+        </div>
       </mat-tab>
-      <!--================ Map ===============-->
+
+      <!--********************************************************************
+                                  Map View Tab
+      **********************************************************************-->
       <mat-tab label="Map View">
         <mat-card class="candy-card">
           <agm-map [latitude]="ride[driveType].startLatitude"
@@ -174,46 +200,58 @@
         </mat-card>
       </mat-tab>
     </mat-tab-group>
-    <!--=========== Modal Actions ============-->
+
+
+    <!--********************************************************************
+                            Modal Action Buttons
+    **********************************************************************-->
     <div class="modal-actions">
+      <!-- Apply -->
       <button type="button"
-              class="btn-cta"
+              class="flex btn-cta"
+              [ngClass]="{ 'secondary': userRole === '1' }"
               mat-raised-button
               *ngIf="userRole === '1' || ride[driveType].statusId === 0"
-              [disabled]="ride[driveType].statusId === 2"
-              (click)="handleApplyClick()"
-              color="primary">Apply Now!</button>
+              [disabled]="ride[driveType].statusId === 2 || ride[driveType].cancelReasonId"
+              (click)="handleApplyClick()">Apply Now!</button>
+      <!-- Edit Appt (Dispatcher Only) -->
       <button type="button"
-              class="btn-cta warn"
+              class="flex btn-cta"
+              mat-raised-button
+              *ngIf="userRole === '1'"
+              (click)="editAppointment()">Edit Appointment</button>
+      <!-- Un-Apply (Driver Only, Dispatchers can do this via volunteer list) -->
+      <button type="button"
+              class="flex btn-cta warn"
               mat-raised-button
               *ngIf="userRole === '2' && ride[driveType].statusId === 1"
-              (click)="handleRetractClick(ride[driveType].id)"
-              color="primary">Retract Application</button>
+              (click)="handleRetractClick(ride[driveType].id)">Retract My Application</button>
     </div>
     <div class="modal-actions-cancel">
       <button type="button"
-              mat-button
-              (click)="handleCloseModalClick()"
-              color="accent"
-              class="mr">Go Back</button>
-      <button type="button"
               *ngIf="userRole === '1' && ride[driveType].statusId !== 3"
-              mat-button
-              (click)="handleCancelDriveClick()"
-              color="accent">Cancel This Drive</button>
+              mat-raised-button
+              class="btn-cta warn no-bg"
+              (click)="handleCancelDriveClick()">Cancel This Drive</button>
     </div>
-    <pre class="debug">{{ ride | json }}</pre>
   </div>
 </div>
+
 <!--********************************************************************
                           Drive Cancel Modal
 **********************************************************************-->
 <app-cancel-drive-modal *ngIf="showCancelDriveModal"
-                        (closeCancelDriveModalClick)="hideCancelDriveModal()"
-                        (closeCancelDriveModalAndUpdateClick)="hideCancelDriveModal(true)"
-                        [driveId]="driveToCancel"></app-cancel-drive-modal>
+                        (closeCancelDriveModalClick)="hideModal()"
+                        (closeCancelDriveModalAndUpdateClick)="hideModal(true)"
+                        [driveId]="driveId"></app-cancel-drive-modal>
 
-
+<!--********************************************************************
+                            Rideshare Modal
+**********************************************************************-->
+<app-rideshare-modal *ngIf="showRideshareModal"
+                     (closeRideshareModalClick)="hideModal()"
+                     (closeRideshareModalAndUpdateClick)="hideModal(true)"
+                     [driveId]="driveId"></app-rideshare-modal>
 
 <ng-template #startAddress>
   <address>

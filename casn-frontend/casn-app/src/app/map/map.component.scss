@@ -7,14 +7,13 @@ agm-map {
   padding: 5px;
 }
 
-.modal-title {
-  text-align: center;
-}
-
 h2 {
   font-size: 1rem;
 }
 
 .map-filter-container {
-  padding-top: 10px;
+  padding: 15px 20px 0 15px;
+  display: flex;
+  font-size: 10px;
+  justify-content: space-between;
 }

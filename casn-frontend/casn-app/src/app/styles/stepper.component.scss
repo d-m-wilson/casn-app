@@ -7,6 +7,52 @@
   // Extract the palettes you need from the theme definition.
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
+
+  // Define any styles affected by the theme.
+  .candy-stepper {
+    max-width: 100%;
+    width: 100%;
+
+    .mat-horizontal-stepper-header {
+      height: 20px;
+      padding: 0;
+      flex-direction: column;
+      flex: 1;
+      text-align: center;
+
+      .mat-step-label {
+        // color: $white;
+        color: rgba($body-color, 0.5);
+        font-size: 11px;
+        font-weight: 400;
+
+        &.mat-step-label-selected {
+          // color: rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .mat-step-icon {
+        // background-color: rgba(0, 0, 0, 0.1);
+        margin-right: 0;
+        height: 3px;
+        border-radius: 0;
+        width: 100%;
+
+        &.mat-step-icon-selected {
+          // background-color: $primary-color-dark;
+        }
+
+        .mat-step-icon-content {
+          display: none;
+        }
+      }
+
+    }
+
+    .mat-stepper-horizontal-line {
+      display: none;
+    }
+  }
 }
 
 @mixin candy-stepper-typography($config) {

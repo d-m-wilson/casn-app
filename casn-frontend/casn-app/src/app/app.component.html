@@ -1,4 +1,5 @@
-<mat-sidenav-container class="app-container">
+<mat-sidenav-container class="app-container"
+                       [ngClass]="whiteBg ? 'white' : ''">
 <!--********************************************************************
                           Sidenav Menu
 **********************************************************************-->
@@ -7,22 +8,23 @@
                mode="over"
                [(opened)]="opened">
     <mat-list>
-        <img class="sidenav-logo"
-             src="assets/img/casn-logo.png"
-             alt="CASN logo"
-             routerLink="/">
         <ng-container *ngFor="let m of menuItems">
           <mat-list-item *ngIf="!m.dispatcherOnly || userRole === '1'"
           [routerLink]="m.address"
           (click)="sidenav.close()">
-            <mat-icon mat-list-icon>{{ m.icon }}</mat-icon>
-            <h4 mat-line>{{ m.name }}</h4>
+            <div class="icon-container"
+                 [ngClass]="m.address === currentRoute ? 'active' : ''">
+              <mat-icon>{{ m.icon }}</mat-icon>
+            </div>
+            <p class="icon-text"
+               [ngClass]="m.address === currentRoute ? 'active' : ''">{{ m.name }}</p>
             </mat-list-item>
-            <mat-divider></mat-divider>
         </ng-container>
-        <mat-list-item>
-          <mat-icon mat-list-icon>cancel</mat-icon>
-          <h4 mat-line (click)="logout()">Log Out</h4>
+        <mat-list-item (click)="logout()" class="logout-menu-item">
+          <div class="icon-container">
+            <mat-icon>cancel</mat-icon>
+          </div>
+          <p class="icon-text">Log Out</p>
         </mat-list-item>
     </mat-list>
   </mat-sidenav>
@@ -38,15 +40,17 @@
             <mat-icon>home</mat-icon>
             <span class="btn-text">Install CASN on Your Home Screen</span>
     </button>
-    <mat-toolbar class="app-navbar candy-toolbar">
+    <mat-toolbar class="app-navbar candy-toolbar mat-elevation-z2">
+      <mat-icon *ngIf="isLoggedIn()"
+                class="clicky"
+                (click)="sidenav.toggle()"
+                style="width:18px"
+                svgIcon="casn_menu">menu</mat-icon>
       <img class="logo"
            src="assets/img/casn-logo.png"
            alt="CASN logo"
            routerLink="/">
       <span class="fill-remaining-space"></span>
-      <mat-icon *ngIf="isLoggedIn()"
-                class="clicky"
-                (click)="sidenav.toggle()">menu</mat-icon>
     </mat-toolbar>
     <main>
       <router-outlet></router-outlet>

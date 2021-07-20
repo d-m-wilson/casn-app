@@ -12,8 +12,20 @@
   .candy-tab-group {
     color: $body-color;
 
+    .mat-tab-header {
+      background-color: #F3F5FF;
+      border-bottom: 1px solid rgba(#4758CE, 0.7);
+    }
+
+    .mat-tab-label {
+      height: 36px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     .mat-tab-label-content {
       color: $body-color;
+      font-size: 11px;
     }
   }
 }

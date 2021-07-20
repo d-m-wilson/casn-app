@@ -1,0 +1,111 @@
+<!-- Collapsible card -->
+<mat-expansion-panel [expanded]="true"
+                     class="candy-expansion-panel">
+
+  <!-- Card header -->
+  <mat-expansion-panel-header collapsedHeight="45px"
+                              expandedHeight="45px">
+    <mat-panel-title>
+      <p>
+        {{ ride.caller.callerIdentifier }}'s {{ appointmentType }}
+        <br/>
+        <span class="text-small text-light">{{ ride.appointment.appointmentDate | date:'fullDate' }}</span>
+      </p>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <!-- Card body -->
+  <p><img src="assets/icons/v2/location.svg" alt="location marker"> {{ serviceProviderName }}</p>
+  <div class="drives-container">
+
+    <!-- Drive to clinic -->
+    <div class="drive-to-clinic"
+         *ngIf="ride.driveTo; else noDriveTo"
+         (click)="showRideDetail.emit(true)">
+      <div class="drive-info">
+        <span><strong>To {{ serviceProviderType }}:</strong> {{ ride.appointment.appointmentDate | date:'shortTime' }}</span>
+        <br/>
+        <address>
+          {{ ride.driveTo.startAddress }}<br/>
+          {{ ride.driveTo.startCity }}
+        </address>
+      </div>
+      <div class="drive-actions">
+        <!-- TODO: How shall we handled canceled btns? -->
+        <button class="drive-btn"
+                [ngClass]="{ 'open': ride.driveTo.statusId === 0,
+                             'pending': ride.driveTo.statusId === 1,
+                             'approved': ride.driveTo.statusId === 2,
+                             'rideshare': ride.driveTo.statusId === 4,
+                             'canceled-by-caller': ride.driveTo.cancelReasonId === 1,
+                             'canceled-by-us': ride.driveTo.cancelReasonId === 2 }"
+                type="button">
+          <span class="status-text">{{ ride.driveTo.statusId | ridecta }}</span>
+        </button>
+      </div>
+    </div>
+    <ng-template #noDriveTo>
+      <div *ngIf="!ride.driveBuddy" class="drive-to-clinic">
+        <em>No drive to {{ serviceProviderType }}</em>
+      </div>
+      <div *ngIf="ride.driveBuddy" class="drive-to-clinic">
+        <div class="drive-card-header">
+          <mat-icon class="status-text">supervisor_account</mat-icon>
+          <span class="status-text bolder">Drive Buddy</span>
+        </div>
+        <div class="drive-card-content">
+          <p>
+            <span class="bolder text-sm">{{ ride.driveBuddy.firstName }} {{ ride.driveBuddy.lastName }}</span><br>
+            <a [href]="ride.driveBuddy.contactLink | safeUrl"><span>{{ ride.driveBuddy.mobilePhone | phone }}</span></a>
+          </p>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="vertical-divider"></div>
+
+    <!-- Drive from clinic -->
+    <div class="drive-from-clinic"
+         *ngIf="ride.driveFrom; else noDriveFrom"
+         (click)="showRideDetail.emit(false)">
+      <div class="drive-info">
+        <span><strong>From {{ serviceProviderType }}:</strong> {{ appointmentEndTime | date:'shortTime' }}</span>
+        <br/>
+        <address>
+          {{ ride.driveFrom.endAddress }}<br/>
+          {{ ride.driveFrom.endCity }}
+        </address>
+      </div>
+      <div class="drive-actions">
+        <button class="drive-btn"
+                [ngClass]="{ 'open': ride.driveFrom.statusId === 0,
+                             'pending': ride.driveFrom.statusId === 1,
+                             'approved': ride.driveFrom.statusId === 2,
+                             'rideshare': ride.driveFrom.statusId === 4,
+                             'canceled-by-caller': ride.driveFrom.cancelReasonId === 1,
+                             'canceled-by-us': ride.driveFrom.cancelReasonId === 2 }"
+                type="button">
+          <span class="status-text">{{ ride.driveFrom.statusId | ridecta }}</span>
+        </button>
+      </div>
+    </div>
+    <ng-template #noDriveFrom>
+      <div *ngIf="!ride.driveBuddy" class="drive-from-clinic">
+        <em>No drive from {{ serviceProviderType }}</em>
+      </div>
+      <div *ngIf="ride.driveBuddy" class="drive-from-clinic">
+        <div class="drive-card-header">
+          <mat-icon class="status-text">supervisor_account</mat-icon>
+          <span class="status-text bolder">Drive Buddy</span>
+        </div>
+        <div class="drive-card-content">
+          <p>
+            <span class="bolder text-sm">{{ ride.driveBuddy.firstName }} {{ ride.driveBuddy.lastName }}</span><br>
+            <a [href]="ride.driveBuddy.contactLink | safeUrl"><span>{{ ride.driveBuddy.mobilePhone | phone }}</span></a>
+          </p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+</mat-expansion-panel>

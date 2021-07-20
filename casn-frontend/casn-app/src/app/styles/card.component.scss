@@ -10,8 +10,18 @@
 
   // Define any styles affected by the theme.
   .candy-card {
-    background: $background-color;
+    background: $white;
     color: $body-color;
+
+    &.no-border {
+      border: none;
+      box-shadow: none;
+    }
+
+    &.light-border {
+      border: 1px solid #f1f1f1;
+      box-shadow: none;
+    }
 
     .mat-card-subtitle {
       color: $body-color;

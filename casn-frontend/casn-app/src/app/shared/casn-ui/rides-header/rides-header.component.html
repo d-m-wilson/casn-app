@@ -1,0 +1,44 @@
+<div class="title-section">
+  <h4>{{ title }}</h4>
+  <div class="controls">
+    <button mat-mini-fab
+            color="accent"
+            class="control-btn"
+            aria-label="Open map"
+            (click)="handleMapClick()">
+      <mat-icon>map</mat-icon>
+    </button>
+    <button mat-mini-fab
+            color="accent"
+            class="control-btn"
+            aria-label="Example icon button with a delete icon"
+            (click)="handleCalendarClick()">
+      <mat-icon>calendar_today</mat-icon>
+    </button>
+    <button *ngIf="showFilters"
+            mat-raised-button
+            color="accent"
+            class="list-view-btn"
+            (click)="handleFiltersClick()">
+      <mat-icon>tune</mat-icon> Filters
+    </button>
+  </div>
+</div>
+<div *ngIf="showDates" class="date-header">
+  <hr [style.width.px]="24">
+  <h5 *ngIf="showDates" class="month">{{ datesToDisplay[0] | date:'MMMM' }}</h5>
+  <hr>
+</div>
+<nav *ngIf="showDates" class="date-bar">
+  <span class="week-change-btn"
+        (click)="handleChangeWeekClick('prev')"><mat-icon>arrow_back_ios</mat-icon></span>
+  <div class="date-card"
+       *ngFor="let d of datesToDisplay"
+       (click)="handleDateClick(d)"
+       [ngClass]="{ 'active': d === activeDate }">
+    <span>{{ d | date:'EEE' }}</span>
+    <span class="day">{{ d | date:'d' }}</span>
+  </div>
+  <span class="week-change-btn"
+        (click)="handleChangeWeekClick('next')"><mat-icon>arrow_forward_ios</mat-icon></span>
+</nav>

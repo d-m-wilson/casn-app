@@ -15,6 +15,8 @@ export class AppComponent implements OnInit {
   opened: boolean;
   menuItems: any[];
   userRole: string;
+  currentRoute: string; // The currently active page
+  whiteBg: boolean = false; // A few pages have white bg
   // A2HS
   deferredPrompt: any;
   showButton: boolean = false;
@@ -32,8 +34,12 @@ export class AppComponent implements OnInit {
       }
 
       if (event instanceof NavigationEnd) {
-        // When user navigates away, hide a2hs button
+        // Check if white bg page
+        this.whiteBg = event.url.includes('caller') || event.url.includes('appointment') || event.url.includes("link");
+
         const onHomePage = event.url.includes('dashboard');
+        this.currentRoute = event.url;
+        // When user navigates away, hide a2hs button
         if(!onHomePage) this.showButton = false;
         // TODO: Hide loading indicator
       }
@@ -59,6 +65,7 @@ export class AppComponent implements OnInit {
 
     this.menuItems = this.constants.MENU_ITEMS;
     this.userRole = localStorage.getItem("userRole");
+    localStorage.setItem("showWelcomeMessage", "1");
     this.registerCustomMaterialIcons();
   }
   /*********************************************************************
@@ -81,6 +88,7 @@ export class AppComponent implements OnInit {
   /*********************************************************************
                               Custom Icons
   **********************************************************************/
+  // TODO: Use URL constructor instead of strings
   registerCustomMaterialIcons(): void {
     this.matIconRegistry.addSvgIcon(
       `drive_to`,
@@ -89,6 +97,26 @@ export class AppComponent implements OnInit {
     this.matIconRegistry.addSvgIcon(
       `drive_from`,
       this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/drive-to.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_calendar`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/calendar.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_menu`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/menu.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_location`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/location.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_car`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/car.svg`)
+    );
+    this.matIconRegistry.addSvgIcon(
+      `casn_list`,
+      this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.clientRoot}assets/icons/v2/list-view.svg`)
     );
   }
 

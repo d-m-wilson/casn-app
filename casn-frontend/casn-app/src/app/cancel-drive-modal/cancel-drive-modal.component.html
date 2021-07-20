@@ -3,29 +3,33 @@
 **********************************************************************-->
 <div class="modal" *ngIf="driveId && driveCancelReasons">
   <div class="modal-content">
-    <span class="close"
-          (click)="handleCloseModalClick()">x</span>
-    <h1>Please Provide a Reason</h1>
-    <mat-radio-group aria-label="Drive Cancel Reason"
-                     [formControl]="cancelReason">
-      <mat-radio-button *ngFor="let d of driveCancelReasons" [value]="d.id">
-        {{ d.name }}
-      </mat-radio-button>
-    </mat-radio-group>
-    <br><br>
+    <div class="modal-title no-bg">
+      <h1>Please Provide a Reason</h1>
+      <span class="text-light"
+            (click)="handleCloseModalClick()"><i class="fas fa-times"></i></span>
+    </div>
+    <div>
+      <mat-radio-group aria-label="Drive Cancel Reason"
+                       [formControl]="cancelReason"
+                       style="display:flex;flex-direction:column;padding: 0 1rem;">
+        <mat-radio-button *ngFor="let d of driveCancelReasons" [value]="d.id">
+          {{ d.name }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
     <!--=========== Modal Actions ============-->
-    <div class="mt" style="text-align:center">
+    <div class="mt modal-actions">
       <button type="button"
-              class="btn-cta"
+              mat-raised-button
+              class="btn-cta outline flex"
+              (click)="handleCloseModalClick()"
+              color="accent">Go Back</button>
+      <button type="button"
+              class="btn-cta cancel flex"
               mat-raised-button
               (click)="submitDriveCancelRequest()"
               [disabled]="!cancelReason.valid"
-              color="primary">Submit</button>
-      <br><br>
-      <button type="button"
-              mat-button
-              (click)="handleCloseModalClick()"
-              color="accent">Go Back</button>
+              color="primary">Cancel Drive</button>
     </div>
     <pre class="debug">{{ driveCancelReasons | json }}</pre>
   </div>
