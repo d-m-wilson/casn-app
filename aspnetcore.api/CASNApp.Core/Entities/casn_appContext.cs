@@ -21,6 +21,7 @@ namespace CASNApp.Core.Entities
         public virtual DbSet<FundingSource> FundingSources { get; set; }
         public virtual DbSet<FundingType> FundingTypes { get; set; }
         public virtual DbSet<Grant> Grants { get; set; }
+        public virtual DbSet<Link> Links { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<MessageErrorLog> MessageErrorLogs { get; set; }
         public virtual DbSet<MessageLog> MessageLogs { get; set; }
@@ -516,6 +517,27 @@ namespace CASNApp.Core.Entities
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Updated).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Link>(entity =>
+            {
+                entity.ToTable("Link");
+
+                entity.Property(e => e.Created).HasColumnType("datetime");
+
+                entity.Property(e => e.Target)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Updated).HasColumnType("datetime");
+
+                entity.Property(e => e.Url)
+                    .IsRequired()
+                    .HasMaxLength(1000);
             });
 
             modelBuilder.Entity<Message>(entity =>
